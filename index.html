@@ -46,13 +46,11 @@ a{color:inherit;text-decoration:none;}
 img{max-width:100%;display:block;}
 ::selection{background:rgba(232,195,107,.28);color:#fff;}
  
-/* ---------- Cursor-follow spotlight (ambient) ---------- */
 #spotlight{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0;transition:opacity .6s ease;
   background:radial-gradient(320px 320px at var(--sx,50%) var(--sy,50%), rgba(232,195,107,.10), transparent 70%);
   mix-blend-mode:screen;}
 body.fx #spotlight{opacity:1;}
  
-/* ---------- Custom cursor ---------- */
 #cursorDot,#cursorRing{position:fixed;top:0;left:0;z-index:9999;pointer-events:none;border-radius:50%;
   transform:translate(-50%,-50%);opacity:0;transition:opacity .3s ease;}
 #cursorDot{width:7px;height:7px;background:var(--gold-shine);box-shadow:0 0 12px var(--gold);}
@@ -63,18 +61,15 @@ body.fx.cursorHot #cursorRing{width:64px;height:64px;background:rgba(232,195,107
 body.fx.cursorHot #cursorDot{background:#fff;}
 @media (pointer:fine){body.fx *{cursor:none;}}
  
-/* ---------- Scroll progress ---------- */
 #progress{position:fixed;top:0;left:0;height:3px;width:100%;transform:scaleX(0);transform-origin:0 50%;z-index:60;
   background:linear-gradient(90deg,var(--gold-deep),var(--gold-shine),var(--gold));box-shadow:0 0 14px var(--glow);}
  
-/* ---------- Sparkle trail ---------- */
 #sparkles{position:fixed;inset:0;z-index:9990;pointer-events:none;}
 .spark{position:absolute;width:6px;height:6px;border-radius:50%;
   background:radial-gradient(circle,var(--gold-shine),var(--gold) 55%,transparent 72%);
   transform:translate(-50%,-50%) scale(1);animation:sparkFade .8s ease-out forwards;}
 @keyframes sparkFade{to{opacity:0;transform:translate(-50%,-50%) scale(.2) translateY(-14px);}}
  
-/* ---------- Preloader ---------- */
 #preloader{position:fixed;inset:0;z-index:10000;background:var(--obsidian);display:grid;place-items:center;
   transition:opacity .8s ease, visibility .8s ease;}
 #preloader.done{opacity:0;visibility:hidden;}
@@ -94,7 +89,6 @@ body.fx.cursorHot #cursorDot{background:#fff;}
   background:linear-gradient(90deg,transparent,var(--gold),transparent);animation:plslide 1.2s ease-in-out infinite;}
 @keyframes plslide{to{transform:translateX(100%);}}
  
-/* ---------- Reusable ---------- */
 .wrap{max-width:var(--maxw);margin:0 auto;padding:0 26px;}
 .eyebrow{font-family:var(--util);font-size:.72rem;letter-spacing:.34em;text-transform:uppercase;color:var(--gold);
   display:inline-flex;align-items:center;gap:.75rem;font-weight:500;}
@@ -110,17 +104,14 @@ body.fx.cursorHot #cursorDot{background:#fff;}
 .btn-ghost:hover{border-color:var(--gold);color:var(--gold);}
 :focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:2px;}
  
-/* Click ripple */
 .ripple{position:absolute;border-radius:50%;transform:translate(-50%,-50%) scale(0);pointer-events:none;
   background:radial-gradient(circle,rgba(252,231,184,.55),transparent 70%);animation:rip .6s ease-out forwards;}
 @keyframes rip{to{transform:translate(-50%,-50%) scale(9);opacity:0;}}
  
-/* Reveal */
 .reveal{opacity:0;transform:translateY(30px);filter:blur(6px);
   transition:opacity 1s cubic-bezier(.2,.7,.2,1), transform 1s cubic-bezier(.2,.7,.2,1), filter 1s ease;}
 .reveal.in{opacity:1;transform:none;filter:none;}
  
-/* ---------- Nav ---------- */
 header.nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:center;
   transition:background .4s ease, border-color .4s ease, backdrop-filter .4s ease;border-bottom:1px solid transparent;}
 header.nav.scrolled{background:rgba(8,7,12,.72);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);}
@@ -136,7 +127,6 @@ header.nav.scrolled{background:rgba(8,7,12,.72);backdrop-filter:blur(14px);borde
 .nav-tag{font-family:var(--util);font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);border:1px solid var(--line-strong);padding:.4rem .7rem;border-radius:2px;}
 .nav-toggle{display:none;background:none;border:0;color:var(--gold);cursor:pointer;padding:6px;}
  
-/* ---------- Hero ---------- */
 .hero{position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden;}
 #star-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;display:block;}
 .hero-veil{position:absolute;inset:0;z-index:1;pointer-events:none;
@@ -162,13 +152,11 @@ header.nav.scrolled{background:rgba(8,7,12,.72);backdrop-filter:blur(14px);borde
 .scroll-cue .bar{width:1px;height:42px;background:linear-gradient(var(--gold),transparent);animation:cue 2.2s ease-in-out infinite;}
 @keyframes cue{0%,100%{transform:scaleY(.4);opacity:.4;transform-origin:top;}50%{transform:scaleY(1);opacity:1;transform-origin:top;}}
  
-/* ---------- Sections ---------- */
 section{position:relative;padding:clamp(72px,11vh,140px) 0;}
 .sec-head{max-width:640px;margin-bottom:3.4rem;}
 .sec-head h2{font-family:var(--serif);font-weight:600;font-size:clamp(2.1rem,5.2vw,3.6rem);line-height:1.05;margin:1rem 0 0;letter-spacing:-.01em;overflow-wrap:break-word;word-break:break-word;max-width:100%;}
 .sec-head p{color:var(--muted);margin:1.1rem 0 0;font-weight:300;font-size:1.05rem;}
  
-/* ---------- Marquee ---------- */
 .marquee{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:22px 0;overflow:hidden;
   -webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);
   mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);}
@@ -180,7 +168,6 @@ section{position:relative;padding:clamp(72px,11vh,140px) 0;}
 .marquee-track span b{color:var(--gold-deep);-webkit-text-stroke:0;}
 @keyframes scrollx{to{transform:translateX(-50%);}}
  
-/* ---------- About ---------- */
 .about-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(2rem,5vw,5rem);align-items:start;}
 .about-copy p{color:#cbc6b6;font-weight:300;margin:0 0 1.2rem;}
 .about-copy p strong{color:var(--ivory);font-weight:500;}
@@ -192,7 +179,6 @@ section{position:relative;padding:clamp(72px,11vh,140px) 0;}
 .pillar h4{font-family:var(--serif);font-size:1.3rem;font-weight:600;margin:0 0 .25rem;}
 .pillar p{margin:0;color:var(--muted);font-size:.92rem;font-weight:300;line-height:1.6;}
  
-/* ---------- Stats ---------- */
 .stats{border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);}
 .stat{padding:1rem 1.6rem 1rem 0;position:relative;}
@@ -203,7 +189,6 @@ section{position:relative;padding:clamp(72px,11vh,140px) 0;}
 .stats-note span{display:inline-flex;align-items:center;gap:.55rem;}
 .stats-note span::before{content:"★";color:var(--gold-deep);}
  
-/* ---------- Members ---------- */
 .members-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;}
 .member-card{position:relative;background:linear-gradient(180deg,var(--onyx),var(--obsidian-2));
   border:1px solid var(--line);border-radius:10px;padding:26px 22px 22px;transform-style:preserve-3d;
@@ -237,13 +222,11 @@ section{position:relative;padding:clamp(72px,11vh,140px) 0;}
 .socials a:hover{color:var(--gold);border-color:var(--gold);transform:translateY(-2px);background:rgba(232,195,107,.06);}
 .socials svg{width:15px;height:15px;}
  
-/* ---------- Footer ---------- */
 footer{border-top:1px solid var(--line);padding:46px 0 60px;margin-top:40px;}
 .foot-inner{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;}
 .foot-inner p{color:var(--muted);font-size:.85rem;margin:0;}
 .foot-inner .brand{font-size:1.1rem;}
  
-/* ---------- Responsive ---------- */
 @media (max-width:1000px){
   .stats-grid{grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);}
   .stat{background:var(--obsidian-2);padding:1.6rem;}
@@ -263,7 +246,6 @@ footer{border-top:1px solid var(--line);padding:46px 0 60px;margin-top:40px;}
 }
 
 
-/* ---------- Ultra Interaction FX ---------- */
 :root{
   --ease-premium:cubic-bezier(.2,.72,.2,1);
 }
@@ -354,7 +336,6 @@ body.sound-on .dock-btn#soundBtn::after{
   .audio-hint,.interaction-flash,.tap-ripple,.sound-wave i{animation:none!important}
 }
 
-/* ---------- Ultra Advanced Layer ---------- */
 .command-section{padding-top:clamp(70px,9vh,120px)}
 .command-panel{border:1px solid var(--line);background:linear-gradient(180deg,rgba(27,26,34,.78),rgba(8,7,12,.9));border-radius:14px;padding:20px;box-shadow:0 35px 90px -55px var(--glow);backdrop-filter:blur(18px)}
 .command-top{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-bottom:16px;border-bottom:1px solid var(--line)}
@@ -421,31 +402,25 @@ body.glow-off #spotlight,body.glow-off #sparkles{display:none}
 
 </style>
 
-<!-- ===== Mobile App-Shell Enhancements (additive only — no existing rule above is modified) ===== -->
 <style id="app-mobile-css">
 @media (max-width:860px){
   html,body{overscroll-behavior-y:contain;}
   body{touch-action:manipulation;padding-bottom:calc(64px + env(safe-area-inset-bottom));}
-  #quickDock{display:none;} /* replaced by the app tab-bar on mobile */
+  #quickDock{display:none;}
   header.nav{padding-top:env(safe-area-inset-top);}
 
-  /* iOS Safari auto-zooms any input with font-size below 16px on focus — keep it at 16px on mobile */
   .search-box input{font-size:16px;}
 
-  /* Touch has no :hover — give the same visual feedback on tap instead */
   .rank-row:active{border-color:var(--line);background:rgba(232,195,107,.06);}
   .member-card:active{transform:scale(.98);}
   .profile-btn:active{color:var(--gold);border-color:var(--gold);}
 
-  /* Smooth momentum scrolling inside the profile modal on iOS */
   .modal-card{-webkit-overflow-scrolling:touch;}
 
-  /* Comfortable minimum tap-target sizing */
   .mini-btn,.filter-chip{min-height:38px;}
   .modal-card [data-close-modal]{min-width:40px;min-height:40px;}
 }
 
-/* Bottom app tab-bar — hidden on desktop by default */
 .app-tabbar{display:none;}
 @media (max-width:860px){
   .app-tabbar{
@@ -468,7 +443,6 @@ body.glow-off #spotlight,body.glow-off #sparkles{display:none}
   .tab-btn.active .tab-ic{text-shadow:0 0 14px var(--glow);}
 }
 
-/* Bottom action sheet ("More") */
 .sheet-backdrop{position:fixed;inset:0;z-index:10050;background:rgba(4,4,6,.55);backdrop-filter:blur(3px);
   opacity:0;visibility:hidden;transition:opacity .25s ease,visibility .25s ease;}
 .sheet-backdrop.open{opacity:1;visibility:visible;}
@@ -493,17 +467,14 @@ body.glow-off #spotlight,body.glow-off #sparkles{display:none}
 .sheet-ic{font-size:1rem;color:var(--gold);width:20px;text-align:center;}
 .sheet-ios-hint{font:.72rem var(--sans);color:var(--muted);text-align:center;margin:6px 4px 0;line-height:1.5;}
 
-/* Standalone (installed app) refinements */
 body.standalone-app header.nav{padding-top:calc(env(safe-area-inset-top) + 6px);}
 body.standalone-app .app-tabbar{padding-bottom:calc(10px + env(safe-area-inset-bottom));}
 
-/* Swipe-affordance on modal/sheet while dragging */
 .modal-card.dragging,.action-sheet.dragging{transition:none;}
 
 .modal-kbd-hint{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font:500 .62rem var(--util);letter-spacing:.04em;color:var(--muted);text-align:center;display:none;}
 @media (pointer:fine){.modal-kbd-hint{display:block;}}
 
-/* ---- Print stylesheet: clean leaderboard printout, no chrome/decoration ---- */
 @media print{
   header.nav,.quick-dock,.app-tabbar,.sheet-backdrop,.action-sheet,.hero canvas,.hero-veil,
   .scroll-cue,#cursorDot,#cursorRing,#spotlight,#sparkles,#progress,.audio-hint,footer,
@@ -519,7 +490,6 @@ body.standalone-app .app-tabbar{padding-bottom:calc(10px + env(safe-area-inset-b
 </head>
 <body>
  
-<!-- Preloader -->
 <div id="preloader">
   <div class="pl-inner">
     <div class="pl-star"><svg viewBox="-2 -2 40 40"><path d="M18 0 L22 13 L36 13 L25 21 L29 34 L18 26 L7 34 L11 21 L0 13 L14 13 Z"/></svg></div>
@@ -534,7 +504,6 @@ body.standalone-app .app-tabbar{padding-bottom:calc(10px + env(safe-area-inset-b
 <div id="cursorRing" aria-hidden="true"></div>
 <div id="cursorDot" aria-hidden="true"></div>
  
-<!-- NAV -->
 <header class="nav" id="nav">
   <div class="nav-inner">
     <a href="#top" class="brand magnet"><span class="mark" aria-hidden="true"></span>Team&nbsp;Elite&nbsp;Star</span></a>
@@ -551,7 +520,6 @@ body.standalone-app .app-tabbar{padding-bottom:calc(10px + env(safe-area-inset-b
 </header>
  
 <main id="top">
-  <!-- HERO -->
   <section class="hero" id="hero" aria-label="Introduction">
     <canvas id="star-canvas" aria-hidden="true"></canvas>
     <div class="hero-veil" aria-hidden="true"></div>
@@ -567,12 +535,10 @@ body.standalone-app .app-tabbar{padding-bottom:calc(10px + env(safe-area-inset-b
     <div class="scroll-cue" aria-hidden="true"><span>Scroll</span><span class="bar"></span></div>
   </section>
  
-  <!-- MARQUEE -->
   <div class="marquee" aria-hidden="true">
     <div class="marquee-track" id="marquee"></div>
   </div>
  
-  <!-- ABOUT -->
   <section id="about" aria-label="About the team">
     <div class="wrap">
       <div class="about-grid">
@@ -595,7 +561,6 @@ body.standalone-app .app-tabbar{padding-bottom:calc(10px + env(safe-area-inset-b
     </div>
   </section>
  
-  <!-- ACHIEVEMENTS -->
   <section id="impact" class="stats" aria-label="Achievements">
     <div class="wrap">
       <div class="sec-head reveal">
@@ -613,7 +578,6 @@ body.standalone-app .app-tabbar{padding-bottom:calc(10px + env(safe-area-inset-b
     </div>
   </section>
  
-  <!-- MEMBERS -->
   <section id="team" aria-label="Team members">
     <div class="wrap">
       <div class="sec-head reveal">
@@ -627,7 +591,6 @@ body.standalone-app .app-tabbar{padding-bottom:calc(10px + env(safe-area-inset-b
 </main>
  
 
-<!-- ULTRA ADVANCED DASHBOARD / INTERACTION LAYER -->
 <section id="command" class="command-section" aria-label="Team command center">
   <div class="wrap">
     <div class="sec-head reveal">
@@ -682,7 +645,6 @@ body.standalone-app .app-tabbar{padding-bottom:calc(10px + env(safe-area-inset-b
   <button class="dock-btn" id="topBtn" aria-label="Back to top" title="Back to top">↑</button>
 </div>
 
-<!-- App-style bottom tab-bar (mobile only) -->
 <nav class="app-tabbar" id="appTabbar" aria-label="App navigation">
   <button class="tab-btn active" data-target="#hero" aria-label="Home"><span class="tab-ic">⌂</span><span class="tab-lb">Home</span></button>
   <button class="tab-btn" data-target="#about" aria-label="About"><span class="tab-ic">✦</span><span class="tab-lb">About</span></button>
@@ -698,7 +660,7 @@ body.standalone-app .app-tabbar{padding-bottom:calc(10px + env(safe-area-inset-b
   <button class="sheet-item" id="sheetGlow" type="button"><span class="sheet-ic">◈</span> Toggle Ambient Glow</button>
   <button class="sheet-item" id="sheetTop" type="button"><span class="sheet-ic">↑</span> Back to Top</button>
   <button class="sheet-item" id="sheetInstall" type="button" hidden><span class="sheet-ic">⇩</span> Install App</button>
-  <p class="sheet-ios-hint" id="sheetIosHint" hidden>iPhone/iPad এ অ্যাপ হিসেবে ইনস্টল করতে: নিচের Share বাটনে ট্যাপ করুন → "Add to Home Screen" নির্বাচন করুন।</p>
+  <p class="sheet-ios-hint" id="sheetIosHint" hidden>To install as an app on iPhone/iPad: Tap the Share button below → select 'Add to Home Screen'.</p>
 </div>
 
 <div class="audio-hint" id="audioHint" role="status" aria-live="polite">
@@ -730,8 +692,8 @@ body.standalone-app .app-tabbar{padding-bottom:calc(10px + env(safe-area-inset-b
 
 <footer>
   <div class="wrap foot-inner">
-    <a href="#top" class="brand magnet"><span class="mark" aria-hidden="true"></span>Team&nbsp;Elite&nbsp;Star</span> · Made By Talha ·</a>
-    <p>Nagad Customer Service · Team Leader: Albina Jahan · <span id="year"></span></p>
+    <a href="#top" class="brand magnet"><span class="mark" aria-hidden="true"></span>Team&nbsp;Elite&nbsp;Star</span> · Albina Jahan ·</a>
+    <p>© All Rights Reserved · Made By Talha · <span id="year"></span></p>
   </div>
 </footer>
  
@@ -766,7 +728,7 @@ const MEMBERS = [
     qa: "Rasel Hossain", trainer: "Reduan Islam", mtdScore: "97.91%", attendance: "100.00%",
     staffedTime: "8:56:55", prodTime: "7:54:50", breakTime: "1:02:05", aht: "0:02:52",
     fbBreak: "0:48:00", trBreak: "0:00:00",
-    bio: "Dedicated specialist delivering steady handling times and high quality execution."
+    bio: "Focused on efficient handling, consistent performance, and delivering quality service with every interaction."
   },
   { 
     dgId: "18314", name: "MD.shakibuzzaman shacho", cubeId: "Shacho_JSR", role: "CSR", rank: "CSR",
@@ -836,7 +798,6 @@ const MEMBERS = [
 const REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const FINE   = window.matchMedia('(pointer:fine)').matches;
  
-/* ---- Preloader name letters ---- */
 (function pl(){
   const el = document.getElementById('plName');
   if(!el) return;
@@ -847,7 +808,6 @@ function hidePreloader(){ const p=document.getElementById('preloader'); if(p) p.
 if(REDUCE){ hidePreloader(); }
 else{ window.addEventListener('load', ()=>setTimeout(hidePreloader,1400)); setTimeout(hidePreloader,3200); }
  
-/* ---- Build member cards ---- */
 (function buildMembers(){
   const grid = document.getElementById('membersGrid'); if(!grid) return;
   const initials = n => n.trim().split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase();
@@ -855,7 +815,6 @@ else{ window.addEventListener('load', ()=>setTimeout(hidePreloader,1400)); setTi
   const li='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5A2.5 2.5 0 1 1 5 8.5a2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM10 9h3.8v1.7h.1c.5-.9 1.8-1.9 3.6-1.9 3.9 0 4.6 2.5 4.6 5.8V21h-4v-5.2c0-1.2 0-2.8-1.7-2.8s-2 1.3-2 2.7V21h-4z"/></svg>';
   const mail='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>';
 
-  // Render Team Leader First
   let html = `
     <article class="member-card tl-card reveal" tabindex="0">
       <span class="rank">${TEAM_LEADER.rank}</span>
@@ -875,7 +834,6 @@ else{ window.addEventListener('load', ()=>setTimeout(hidePreloader,1400)); setTi
     </article>
   `;
 
-  // Render 12 Active Members with Detailed Attributes from Images
   html += MEMBERS.map(m=>`
     <article class="member-card reveal" tabindex="0">
       <span class="rank">${m.rank}</span>
@@ -902,7 +860,6 @@ else{ window.addEventListener('load', ()=>setTimeout(hidePreloader,1400)); setTi
   grid.innerHTML = html;
 })();
  
-/* ---- Marquee ---- */
 (function marquee(){
   const t=document.getElementById('marquee'); if(!t) return;
   const items=['Albina Jahan Leadership','98.06% Quality Score','100% On-Time Login','Trust','Speed','Accuracy'];
@@ -912,7 +869,6 @@ else{ window.addEventListener('load', ()=>setTimeout(hidePreloader,1400)); setTi
  
 document.getElementById('year').textContent = new Date().getFullYear();
  
-/* ---- Nav ---- */
 const nav=document.getElementById('nav');
 const onScroll=()=>nav.classList.toggle('scrolled', window.scrollY>40);
 onScroll();
@@ -923,7 +879,6 @@ document.getElementById('navToggle').addEventListener('click',()=>{
   target?.scrollIntoView({behavior:'smooth',block:'start'});
 });
  
-/* ---- Scroll progress ---- */
 const prog=document.getElementById('progress');
 function updateProgress(){ const h=document.documentElement; const max=h.scrollHeight-h.clientHeight;
   prog.style.transform='scaleX('+(max>0?(h.scrollTop/max):0)+')'; }
@@ -931,7 +886,6 @@ updateProgress();
 let progTicking=false;
 window.addEventListener('scroll',()=>{ if(!progTicking){ requestAnimationFrame(()=>{updateProgress();progTicking=false;}); progTicking=true; } },{passive:true});
  
-/* ---- Reveal on scroll ---- */
 (function reveals(){
   const els=document.querySelectorAll('.reveal');
   if(REDUCE||!('IntersectionObserver' in window)){els.forEach(e=>e.classList.add('in'));return;}
@@ -939,7 +893,6 @@ window.addEventListener('scroll',()=>{ if(!progTicking){ requestAnimationFrame((
   els.forEach(e=>io.observe(e));
 })();
  
-/* ---- Counters ---- */
 (function counters(){
   const nums=document.querySelectorAll('.num[data-count]');
   const fmt=(v,d)=>d>0?v.toFixed(d):Math.round(v).toString();
@@ -953,7 +906,6 @@ window.addEventListener('scroll',()=>{ if(!progTicking){ requestAnimationFrame((
   nums.forEach(n=>io.observe(n));
 })();
  
-/* ---- Card 3D tilt + glare ---- */
 (function tilt(){
   if(REDUCE||!FINE) return;
   document.querySelectorAll('.member-card').forEach(card=>{
@@ -967,7 +919,6 @@ window.addEventListener('scroll',()=>{ if(!progTicking){ requestAnimationFrame((
   });
 })();
  
-/* ---- Custom cursor + spotlight ---- */
 let MX=window.innerWidth/2, MY=window.innerHeight/2;
 if(FINE && !REDUCE){
   document.body.classList.add('fx');
@@ -985,7 +936,6 @@ if(FINE && !REDUCE){
   window.addEventListener('pointermove',e=>{MX=e.clientX;MY=e.clientY;},{passive:true});
 }
  
-/* ---- Gold sparkle trail ---- */
 if(FINE && !REDUCE){
   const box=document.getElementById('sparkles'); let last=0;
   window.addEventListener('pointermove',e=>{
@@ -998,7 +948,6 @@ if(FINE && !REDUCE){
   },{passive:true});
 }
  
-/* ---- Magnetic elements ---- */
 if(FINE && !REDUCE){
   document.querySelectorAll('.magnet').forEach(el=>{
     const strength=el.classList.contains('btn')?0.35:0.5;
@@ -1009,7 +958,6 @@ if(FINE && !REDUCE){
   });
 }
  
-/* ---- Click ripple ---- */
 if(!REDUCE){
   document.querySelectorAll('.btn').forEach(btn=>{
     btn.addEventListener('click',e=>{const r=btn.getBoundingClientRect();const s=document.createElement('span');
@@ -1018,7 +966,6 @@ if(!REDUCE){
   });
 }
  
-/* ---- Hero parallax on scroll ---- */
 if(!REDUCE){
   const hi=document.getElementById('heroInner');
   let heroTicking=false;
@@ -1027,13 +974,13 @@ if(!REDUCE){
   window.addEventListener('scroll',()=>{ if(!heroTicking){ requestAnimationFrame(()=>{applyParallax();heroTicking=false;}); heroTicking=true; } },{passive:true});
 }
  
-/* ---- 3D golden star hero ---- */
 (function hero3d(){
   const canvas=document.getElementById('star-canvas');
   if(!canvas||typeof THREE==='undefined') return;
   let W=innerWidth,H=innerHeight;
-  const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true});
-  renderer.setPixelRatio(Math.min(devicePixelRatio||1,2)); renderer.setSize(W,H); renderer.setClearColor(0x000000,0);
+  const lite = !window.matchMedia('(pointer:fine)').matches;
+  const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:!lite,powerPreference:'low-power'});
+  renderer.setPixelRatio(Math.min(devicePixelRatio||1, lite?1.5:2)); renderer.setSize(W,H); renderer.setClearColor(0x000000,0);
   const scene=new THREE.Scene();
   const camera=new THREE.PerspectiveCamera(46,W/H,0.1,100); camera.position.set(0,0,6.2);
   const rig=new THREE.Group(); scene.add(rig);
@@ -1041,13 +988,13 @@ if(!REDUCE){
   function starShape(o,i2,p){const s=new THREE.Shape();const st=Math.PI/p;
     for(let i=0;i<p*2;i++){const r=i%2===0?o:i2,a=i*st-Math.PI/2,x=Math.cos(a)*r,y=Math.sin(a)*r;i===0?s.moveTo(x,y):s.lineTo(x,y);}
     s.closePath();return s;}
-  const geo=new THREE.ExtrudeGeometry(starShape(1.55,0.62,5),{depth:0.42,bevelEnabled:true,bevelThickness:0.14,bevelSize:0.12,bevelSegments:4,curveSegments:8});
+  const geo=new THREE.ExtrudeGeometry(starShape(1.55,0.62,5),{depth:0.42,bevelEnabled:true,bevelThickness:0.14,bevelSize:0.12,bevelSegments:lite?2:4,curveSegments:lite?5:8});
   geo.center();
   const mat=new THREE.MeshStandardMaterial({color:0xE8C36B,metalness:0.95,roughness:0.28,emissive:0x3a2c0c,emissiveIntensity:0.5});
   const star=new THREE.Mesh(geo,mat); rig.add(star);
   const wire=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({color:0xFCE7B8,wireframe:true,transparent:true,opacity:0.06})); wire.scale.setScalar(1.02); rig.add(wire);
  
-  const COUNT=1000,pos=new Float32Array(COUNT*3);
+  const COUNT=lite?400:1000,pos=new Float32Array(COUNT*3);
   for(let i=0;i<COUNT;i++){const r=4+Math.random()*9,th=Math.random()*Math.PI*2,ph=Math.acos(2*Math.random()-1);
     pos[i*3]=r*Math.sin(ph)*Math.cos(th);pos[i*3+1]=r*Math.sin(ph)*Math.sin(th);pos[i*3+2]=r*Math.cos(ph)-2;}
   const pGeo=new THREE.BufferGeometry(); pGeo.setAttribute('position',new THREE.BufferAttribute(pos,3));
@@ -1059,9 +1006,19 @@ if(!REDUCE){
   const fill=new THREE.PointLight(0xfff0cf,0.9,40); fill.position.set(-6,-3,4); scene.add(fill);
   const rim=new THREE.DirectionalLight(0xffffff,0.5); rim.position.set(-2,4,-5); scene.add(rim);
  
-  let cx=0,cy=0,t=0,visible=true;
-  document.addEventListener('visibilitychange',()=>{visible=!document.hidden; if(visible)loop();});
-  function loop(){ if(!visible)return; requestAnimationFrame(loop); t+=0.01;
+  let cx=0,cy=0,t=0,pageVisible=true,inView=true,contextLost=false;
+  document.addEventListener('visibilitychange',()=>{pageVisible=!document.hidden; if(pageVisible)loop();});
+
+  if('IntersectionObserver' in window){
+    new IntersectionObserver(entries=>{
+      entries.forEach(en=>{ inView=en.isIntersecting; if(inView) loop(); });
+    },{threshold:0}).observe(canvas);
+  }
+
+  canvas.addEventListener('webglcontextlost',e=>{ e.preventDefault(); contextLost=true; },false);
+  canvas.addEventListener('webglcontextrestored',()=>{ contextLost=false; loop(); },false);
+
+  function loop(){ if(!pageVisible||!inView||contextLost)return; requestAnimationFrame(loop); t+=0.01;
     if(!REDUCE){
       const tx=(MX/innerWidth-0.5), ty=(MY/innerHeight-0.5);
       star.rotation.y+=0.006; star.rotation.x=Math.sin(t*0.6)*0.18; wire.rotation.copy(star.rotation);
@@ -1075,12 +1032,21 @@ if(!REDUCE){
     }
     renderer.render(scene,camera);
   }
-  window.addEventListener('resize',()=>{W=innerWidth;H=innerHeight;camera.aspect=W/H;camera.updateProjectionMatrix();renderer.setSize(W,H);},{passive:true});
+
+  let resizeTimer=null;
+  window.addEventListener('resize',()=>{
+    clearTimeout(resizeTimer);
+    resizeTimer=setTimeout(()=>{
+      const nw=innerWidth, nh=innerHeight;
+      if(nw===W && Math.abs(nh-H)<80) return;
+      W=nw;H=nh;camera.aspect=W/H;camera.updateProjectionMatrix();renderer.setSize(W,H);
+    },200);
+  },{passive:true});
+
   if(REDUCE){renderer.render(scene,camera);}else{loop();}
 })();
 </script>
 <script>
-/* ---------- Ultra Advanced Intelligence ---------- */
 (function ultraCommand(){
   const panel = document.getElementById('rankList');
   const search = document.getElementById('memberSearch');
@@ -1148,7 +1114,6 @@ if(!REDUCE){
   document.getElementById('sortAht').addEventListener('click',()=>{data.sort((a,b)=>ahtSecs(a.aht)-ahtSecs(b.aht));draw()});
   document.getElementById('resetView').addEventListener('click',()=>{data=[...all];filter='all';search.value='';document.querySelectorAll('.filter-chip').forEach((x,i)=>x.classList.toggle('active',i===0));draw()});
 
-  /* ---- Export current view to CSV (desktop power-user feature) ---- */
   document.getElementById('exportCsv')?.addEventListener('click',()=>{
     const rows=visible();
     if(!rows.length) return;
@@ -1179,10 +1144,17 @@ if(!REDUCE){
       <div><div class="modal-bar-head"><span>Attendance</span><b>${m.attendance||'—'}</b></div><div class="modal-bar-track"><i style="--w:${Math.min(100,parseFloat(m.attendance)||0)}%"></i></div></div>`;
     modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
   }
-  function closeProfile(){currentProfile=null;const modal=document.getElementById('memberModal');modal.classList.remove('open');modal.setAttribute('aria-hidden','true');document.body.style.overflow='';}
+  function closeProfile(){
+    try{
+      currentProfile=null;
+      const modal=document.getElementById('memberModal');
+      modal.classList.remove('open');modal.setAttribute('aria-hidden','true');
+    } finally {
+      document.body.style.overflow='';
+    }
+  }
   document.querySelectorAll('[data-close-modal]').forEach(x=>x.addEventListener('click',closeProfile));
 
-  /* Click the ID line in a profile to copy it (Cube/DG ID) — handy for CSR lookups */
   const modalRoleEl=document.getElementById('modalRole');
   if(modalRoleEl){
     modalRoleEl.style.cursor='pointer';
@@ -1194,7 +1166,7 @@ if(!REDUCE){
         const prev=modalRoleEl.textContent;
         modalRoleEl.textContent='Copied ✓';
         setTimeout(()=>{ modalRoleEl.textContent=prev; },1100);
-      }catch(_){/* clipboard unavailable, ignore silently */}
+      }catch(_){/* Team Elite Star */}
     });
   }
 
@@ -1214,15 +1186,10 @@ if(!REDUCE){
 })();
 
 
-/* ---------- Ultra Interaction Engine ---------- */
 (function ultraInteractionEngine(){
   const $ = (s,root=document)=>root.querySelector(s);
   const $$ = (s,root=document)=>[...root.querySelectorAll(s)];
 
-  /* Shared tap binder: on touch devices a click normally follows touchend, which would
-     fire toggle-style handlers (sound, glow) twice. This runs the handler once on
-     touchend (preventing the trailing synthetic click) and falls back to click for
-     mouse/keyboard/trackpad input. */
   function bindTap(el, handler){
     if(!el) return;
     let touched=false;
@@ -1238,7 +1205,6 @@ if(!REDUCE){
     });
   }
 
-  /* Reliable top button: works even when smooth scrolling is unavailable. */
   const topBtn = $('#topBtn');
   const goTop = () => {
     try{ window.scrollTo({top:0,left:0,behavior:'smooth'}); }
@@ -1248,20 +1214,21 @@ if(!REDUCE){
   };
   bindTap(topBtn, goTop);
 
-  /* Audio: best-effort autoplay + first-gesture fallback due to browser autoplay policies.
-     Uses Web Audio generated ambience, so there is no external music file dependency. */
   const soundBtn=$('#soundBtn'), audioHint=$('#audioHint'), enableSound=$('#enableSound');
-  let audioCtx=null, master=null, ambientTimer=null, soundOn=false, primed=false;
+  let audioCtx=null, master=null, ambientTimer=null, soundOn=false, uiSoundOn=true, primed=false;
 
-  function audioAllowed(){
+  function ensureAudioCtx(){
     try{
       audioCtx = audioCtx || new (window.AudioContext||window.webkitAudioContext)();
       if(audioCtx.state === 'suspended') audioCtx.resume().catch(()=>{});
-      master = master || audioCtx.createGain();
-      master.gain.value = 0.0;
-      master.connect(audioCtx.destination);
       return true;
     }catch(e){ return false; }
+  }
+
+  function audioAllowed(){
+    if(!ensureAudioCtx()) return false;
+    if(!master){ master=audioCtx.createGain(); master.gain.value=0.0; master.connect(audioCtx.destination); }
+    return true;
   }
 
   function tone(freq, duration, gain=0.018, type='sine', when=0){
@@ -1272,6 +1239,16 @@ if(!REDUCE){
     g.gain.linearRampToValueAtTime(gain,audioCtx.currentTime+when+0.04);
     g.gain.exponentialRampToValueAtTime(0.0001,audioCtx.currentTime+when+duration);
     osc.connect(g);g.connect(master);osc.start(audioCtx.currentTime+when);osc.stop(audioCtx.currentTime+when+duration+0.05);
+  }
+
+  function uiTone(freq, duration, gain=0.022, type='sine'){
+    if(!uiSoundOn || !ensureAudioCtx()) return;
+    const osc=audioCtx.createOscillator(), g=audioCtx.createGain();
+    osc.type=type; osc.frequency.setValueAtTime(freq,audioCtx.currentTime);
+    g.gain.setValueAtTime(0,audioCtx.currentTime);
+    g.gain.linearRampToValueAtTime(gain,audioCtx.currentTime+0.035);
+    g.gain.exponentialRampToValueAtTime(0.0001,audioCtx.currentTime+duration);
+    osc.connect(g);g.connect(audioCtx.destination);osc.start();osc.stop(audioCtx.currentTime+duration+0.05);
   }
 
   function startAmbience(){
@@ -1286,7 +1263,6 @@ if(!REDUCE){
     master.gain.cancelScheduledValues(audioCtx.currentTime);
     master.gain.linearRampToValueAtTime(0.020,audioCtx.currentTime+2.2);
 
-    /* Gentle endless harmonic bed: deliberately extremely quiet. */
     clearInterval(ambientTimer);
     const sequence=[261.63,329.63,392.00,523.25,392.00,329.63];
     let step=0;
@@ -1319,7 +1295,6 @@ if(!REDUCE){
   bindTap(soundBtn, toggleSound);
   bindTap(enableSound, (e)=>{e.stopPropagation();startAmbience();});
 
-  /* Try immediately when the page is entered. Modern browsers may block it; first interaction then unlocks it. */
   setTimeout(()=>{
     const ok=startAmbience();
     if(!ok && audioHint){
@@ -1336,12 +1311,9 @@ if(!REDUCE){
   document.addEventListener('pointerdown',unlockOnce,{passive:true});
   document.addEventListener('keydown',unlockOnce,{passive:true});
 
-  /* Ambient glow dock button — same touch-safe binder as sound/top. */
   const themeGlow=$('#themeGlow');
   bindTap(themeGlow, ()=>document.body.classList.toggle('glow-off'));
 
-  /* Keyboard shortcuts: Home -> scroll to top, S -> toggle ambience.
-     Skipped while typing in the search field or any other text input. */
   document.addEventListener('keydown', e=>{
     const tag=(e.target && e.target.tagName || '').toLowerCase();
     if(tag==='input' || tag==='textarea' || e.target?.isContentEditable) return;
@@ -1349,24 +1321,23 @@ if(!REDUCE){
     else if(e.key.toLowerCase()==='s' && !e.metaKey && !e.ctrlKey && !e.altKey){ toggleSound(); }
   });
 
-  /* Subtle interaction sounds for hover, focus, touch and clicks. */
   let lastHover=0;
-  const interactive='a,button,.btn,.member-card,.pillar,.intel-card,.filter-chip,.mini-btn,.profile-btn,.dock-btn';
+  const interactive='a,button,.btn,.member-card,.pillar,.intel-card,.filter-chip,.mini-btn,.profile-btn,.dock-btn,.tab-btn,.sheet-item';
   document.addEventListener('pointerover',e=>{
     const el=e.target.closest(interactive);
-    if(!el || !soundOn) return;
+    if(!el) return;
     const now=performance.now(); if(now-lastHover<90) return; lastHover=now;
-    tone(740,0.055,0.009,'sine');
+    uiTone(740,0.055,0.011,'sine');
   },{passive:true});
 
   document.addEventListener('focusin',e=>{
-    if(soundOn && e.target.closest(interactive)) tone(620,0.07,0.008,'triangle');
+    if(e.target.closest(interactive)) uiTone(620,0.07,0.01,'triangle');
   });
 
   document.addEventListener('click',e=>{
     const el=e.target.closest(interactive);
     if(!el) return;
-    if(soundOn) tone(980,0.07,0.012,'sine');
+    uiTone(980,0.075,0.015,'sine');
     const x=e.clientX, y=e.clientY;
     if(x||y){
       const flash=document.createElement('span');flash.className='interaction-flash';
@@ -1375,17 +1346,15 @@ if(!REDUCE){
     }
   },{passive:true});
 
-  /* Touch feedback without interfering with native clicks. */
   document.addEventListener('touchstart',e=>{
     const t=e.touches[0], el=e.target.closest(interactive);
     if(!el) return;
-    if(soundOn) tone(560,0.055,0.007,'sine');
+    uiTone(560,0.06,0.01,'sine');
     const r=document.createElement('span');r.className='tap-ripple';
     r.style.left=t.clientX+'px';r.style.top=t.clientY+'px';document.body.appendChild(r);
     setTimeout(()=>r.remove(),700);
   },{passive:true});
 
-  /* Better scroll reveal: stagger cards by row. */
   if('IntersectionObserver' in window && !REDUCE){
     const obs=new IntersectionObserver(entries=>{
       entries.forEach(entry=>{
@@ -1400,7 +1369,6 @@ if(!REDUCE){
     });
   }
 
-  /* Fix command panel's dynamic list after it re-renders by applying stagger vars. */
   const rankList=$('#rankList');
   if(rankList){
     const mo=new MutationObserver(()=>{
@@ -1412,7 +1380,6 @@ if(!REDUCE){
 
 </script>
 
-<!-- ===== Mobile App-Shell Script (additive — does not modify any function above) ===== -->
 <script>
 (function mobileAppExperience(){
   const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
@@ -1421,14 +1388,6 @@ if(!REDUCE){
     try{ if('vibrate' in navigator) navigator.vibrate(ms); }catch(_){/* silent */}
   }
 
-  /* ---- Live screen-mode detection ----
-     One responsive document adapts instead of shipping two separate pages:
-     the mobile app-shell (tab-bar, action sheet, PWA install) shows under 860px,
-     the desktop layout (quick-dock, hover cursor, wide grids) shows above it —
-     all driven by CSS media queries already in this file. This just exposes the
-     current mode as html[data-mode] / html.is-mobile / html.is-desktop so any
-     future script or CSS can hook into it, and keeps it correct live if someone
-     resizes the window or rotates/docks a tablet — no reload needed. */
   const screenModeQuery = window.matchMedia('(max-width:860px)');
   function applyScreenMode(mql){
     const mobile = mql.matches;
@@ -1439,11 +1398,9 @@ if(!REDUCE){
   applyScreenMode(screenModeQuery);
   (screenModeQuery.addEventListener ? screenModeQuery.addEventListener.bind(screenModeQuery) : screenModeQuery.addListener.bind(screenModeQuery))('change', applyScreenMode);
 
-  /* ---- Standalone (installed) app detection ---- */
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
   if(isStandalone) document.body.classList.add('standalone-app');
 
-  /* ---- Snappier repeat visits: skip long preloader once already seen this session ---- */
   try{
     if(sessionStorage.getItem('tes_visited')){
       const p=document.getElementById('preloader');
@@ -1451,9 +1408,8 @@ if(!REDUCE){
     }else{
       sessionStorage.setItem('tes_visited','1');
     }
-  }catch(_){/* storage unavailable, ignore */}
+  }catch(_){/* Team Elite Star */}
 
-  /* ---- Bottom tab-bar navigation ---- */
   const tabbar=$('#appTabbar');
   if(tabbar){
     const tabs=$$('.tab-btn[data-target]',tabbar);
@@ -1485,7 +1441,6 @@ if(!REDUCE){
     }
   }
 
-  /* ---- "More" action sheet ---- */
   const moreBtn=$('#moreTabBtn'), sheet=$('#actionSheet'), sheetBackdrop=$('#sheetBackdrop');
   function openSheet(){
     if(!sheet||!sheetBackdrop) return;
@@ -1504,12 +1459,10 @@ if(!REDUCE){
   sheetBackdrop?.addEventListener('click',closeSheet);
   document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeSheet(); });
 
-  /* Sheet items proxy the existing, already-working dock buttons — no duplicate logic */
   $('#sheetSound')?.addEventListener('click',()=>{ haptic(12); $('#soundBtn')?.click(); closeSheet(); });
   $('#sheetGlow')?.addEventListener('click',()=>{ haptic(12); $('#themeGlow')?.click(); closeSheet(); });
   $('#sheetTop')?.addEventListener('click',()=>{ haptic(12); $('#topBtn')?.click(); closeSheet(); });
 
-  /* ---- PWA install prompt ---- */
   let deferredPrompt=null;
   const installBtn=$('#sheetInstall'), iosHint=$('#sheetIosHint');
   window.addEventListener('beforeinstallprompt',e=>{
@@ -1529,29 +1482,35 @@ if(!REDUCE){
   const isIOS=/iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1);
   if(isIOS && !isStandalone && iosHint) iosHint.hidden=false;
 
-  /* ---- Swipe-down-to-close: member modal (reuses existing closeProfile via its backdrop) ---- */
   function bindSwipeClose(panelSelector, triggerClose){
     const panel=$(panelSelector);
     if(!panel) return;
-    let startY=0, dy=0, dragging=false;
+    let startY=0, dy=0, dragging=false, eligible=false;
     panel.addEventListener('touchstart',e=>{
-      startY=e.touches[0].clientY; dragging=true; panel.classList.add('dragging');
+      startY=e.touches[0].clientY; dy=0; dragging=false;
+
+      eligible = panel.scrollTop<=0;
     },{passive:true});
     panel.addEventListener('touchmove',e=>{
-      if(!dragging) return;
-      dy=Math.max(0,e.touches[0].clientY-startY);
-      if(dy>0) panel.style.transform=`translateY(${dy}px)`;
+      if(!eligible) return;
+      const rawDy=e.touches[0].clientY-startY;
+      if(rawDy<=0){ dragging=false; return; }
+      dragging=true; panel.classList.add('dragging');
+      dy=rawDy;
+      panel.style.transform=`translateY(${dy}px)`;
     },{passive:true});
     panel.addEventListener('touchend',()=>{
-      dragging=false; panel.classList.remove('dragging');
-      if(dy>90){ haptic(10); triggerClose(); }
-      panel.style.transform=''; dy=0;
+      if(dragging){
+        panel.classList.remove('dragging');
+        if(dy>90){ haptic(10); triggerClose(); }
+        panel.style.transform='';
+      }
+      dragging=false; dy=0; eligible=false;
     });
   }
   bindSwipeClose('.modal-card', ()=>{ $('[data-close-modal]')?.click(); });
   bindSwipeClose('#actionSheet', closeSheet);
 
-  /* ---- Light haptic feedback for app-shell controls ---- */
   ['#navToggle','#soundBtn','#themeGlow','#topBtn'].forEach(sel=>{
     $(sel)?.addEventListener('click',()=>haptic(8));
   });
