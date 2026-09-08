@@ -778,7 +778,7 @@ body.standalone-app .app-tabbar{padding-bottom:calc(10px + env(safe-area-inset-b
    there is no embedded fallback dataset, so stale HTML data cannot silently override the JSON.
    A validated last-known-good copy is stored locally as a resilience layer for temporary
    network/server failures. ---- */
-const DATA_JSON_URL = 'https://team.elitestar.page.gd/data.json';
+const DATA_JSON_URL = 'data.json';
 const DATA_CACHE_KEY = 'tes_last_valid_json_v2';
 let CONTENT = null;
 let TEAM_LEADER = null;
@@ -800,7 +800,7 @@ else{ window.addEventListener('load', ()=>setTimeout(hidePreloader,1400)); setTi
  
 /* ---- Build member cards ---- */
 function buildMembers(){
-  const grid = document.getElementById('membersGrid'); if(!grid) return;
+  const grid = document.getElementById('membersGrid'); if(!grid || !TEAM_LEADER || !Array.isArray(MEMBERS)) return;
   const initials = n => n.trim().split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase();
   const fb='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.2c-1.2 0-1.6.8-1.6 1.5V12h2.7l-.4 2.9h-2.3v7A10 10 0 0 0 22 12z"/></svg>';
   const li='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5A2.5 2.5 0 1 1 5 8.5a2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM10 9h3.8v1.7h.1c.5-.9 1.8-1.9 3.6-1.9 3.9 0 4.6 2.5 4.6 5.8V21h-4v-5.2c0-1.2 0-2.8-1.7-2.8s-2 1.3-2 2.7V21h-4z"/></svg>';
@@ -852,20 +852,21 @@ function buildMembers(){
 
   grid.innerHTML = html;
 }
-buildMembers();
+/* Data is rendered only after JSON/cache validation succeeds. */
 
 /* ---- Marquee ---- */
 function renderMarquee(items){
-  const t=document.getElementById('marquee'); if(!t) return;
+  const t=document.getElementById('marquee'); if(!t || !Array.isArray(items)) return;
   const unit=items.map(w=>`<span>${w}</span><span class="solid"><b>★</b></span>`).join('');
   t.innerHTML=unit+unit;
 }
-renderMarquee(CONTENT.marquee);
 
-document.getElementById('year').textContent = new Date().getFullYear();
+const yearEl=document.getElementById('year');
+if(yearEl) yearEl.textContent = new Date().getFullYear();
 
 /* ---- Render all copy/headings/stats from CONTENT (JSON-driven, daily-editable) ---- */
 function applyContentData(D){
+  if(!D || !D.hero || !D.about || !D.impact || !D.team || !D.command || !D.meta) return;
   const setText=(id,val)=>{ const el=document.getElementById(id); if(el && val!=null) el.textContent=val; };
   const setHTML=(id,val)=>{ const el=document.getElementById(id); if(el && val!=null) el.innerHTML=val; };
   const headingHTML=(prefix,emph,suffix)=>`${prefix}&nbsp;<span class="gold-text">${emph}</span>${suffix}`;
