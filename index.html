@@ -6,6 +6,7 @@
 <title>Team Elite Star</title>
 <meta name="description" content="Team Elite Star — the elite Nagad customer service squad under Team Leader Albina Jahan." />
 
+<!-- App-shell / PWA meta -->
 <meta name="theme-color" content="#08070C" />
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -13,8 +14,8 @@
 <meta name="apple-mobile-web-app-title" content="Elite Star" />
 <meta name="format-detection" content="telephone=no" />
 <link rel="manifest" href="manifest.json" />
-<link rel="apple-touch-icon" href="icon.svg.jpg" />
-<link rel="icon" href="icon.svg.jpg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="icon.svg" />
+<link rel="icon" href="icon.svg" type="image/svg+xml" />
  
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -45,11 +46,13 @@ a{color:inherit;text-decoration:none;}
 img{max-width:100%;display:block;}
 ::selection{background:rgba(232,195,107,.28);color:#fff;}
  
+/* ---------- Cursor-follow spotlight (ambient) ---------- */
 #spotlight{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:0;transition:opacity .6s ease;
   background:radial-gradient(320px 320px at var(--sx,50%) var(--sy,50%), rgba(232,195,107,.10), transparent 70%);
   mix-blend-mode:screen;}
 body.fx #spotlight{opacity:1;}
  
+/* ---------- Custom cursor ---------- */
 #cursorDot,#cursorRing{position:fixed;top:0;left:0;z-index:9999;pointer-events:none;border-radius:50%;
   transform:translate(-50%,-50%);opacity:0;transition:opacity .3s ease;}
 #cursorDot{width:7px;height:7px;background:var(--gold-shine);box-shadow:0 0 12px var(--gold);}
@@ -60,15 +63,18 @@ body.fx.cursorHot #cursorRing{width:64px;height:64px;background:rgba(232,195,107
 body.fx.cursorHot #cursorDot{background:#fff;}
 @media (pointer:fine){body.fx *{cursor:none;}}
  
+/* ---------- Scroll progress ---------- */
 #progress{position:fixed;top:0;left:0;height:3px;width:100%;transform:scaleX(0);transform-origin:0 50%;z-index:60;
   background:linear-gradient(90deg,var(--gold-deep),var(--gold-shine),var(--gold));box-shadow:0 0 14px var(--glow);}
  
+/* ---------- Sparkle trail ---------- */
 #sparkles{position:fixed;inset:0;z-index:9990;pointer-events:none;}
 .spark{position:absolute;width:6px;height:6px;border-radius:50%;
   background:radial-gradient(circle,var(--gold-shine),var(--gold) 55%,transparent 72%);
   transform:translate(-50%,-50%) scale(1);animation:sparkFade .8s ease-out forwards;}
 @keyframes sparkFade{to{opacity:0;transform:translate(-50%,-50%) scale(.2) translateY(-14px);}}
  
+/* ---------- Preloader ---------- */
 #preloader{position:fixed;inset:0;z-index:10000;background:var(--obsidian);display:grid;place-items:center;
   transition:opacity .8s ease, visibility .8s ease;}
 #preloader.done{opacity:0;visibility:hidden;}
@@ -88,6 +94,7 @@ body.fx.cursorHot #cursorDot{background:#fff;}
   background:linear-gradient(90deg,transparent,var(--gold),transparent);animation:plslide 1.2s ease-in-out infinite;}
 @keyframes plslide{to{transform:translateX(100%);}}
  
+/* ---------- Reusable ---------- */
 .wrap{max-width:var(--maxw);margin:0 auto;padding:0 26px;}
 .eyebrow{font-family:var(--util);font-size:.72rem;letter-spacing:.34em;text-transform:uppercase;color:var(--gold);
   display:inline-flex;align-items:center;gap:.75rem;font-weight:500;}
@@ -103,14 +110,17 @@ body.fx.cursorHot #cursorDot{background:#fff;}
 .btn-ghost:hover{border-color:var(--gold);color:var(--gold);}
 :focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:2px;}
  
+/* Click ripple */
 .ripple{position:absolute;border-radius:50%;transform:translate(-50%,-50%) scale(0);pointer-events:none;
   background:radial-gradient(circle,rgba(252,231,184,.55),transparent 70%);animation:rip .6s ease-out forwards;}
 @keyframes rip{to{transform:translate(-50%,-50%) scale(9);opacity:0;}}
  
+/* Reveal */
 .reveal{opacity:0;transform:translateY(30px);filter:blur(6px);
   transition:opacity 1s cubic-bezier(.2,.7,.2,1), transform 1s cubic-bezier(.2,.7,.2,1), filter 1s ease;}
 .reveal.in{opacity:1;transform:none;filter:none;}
  
+/* ---------- Nav ---------- */
 header.nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;justify-content:center;
   transition:background .4s ease, border-color .4s ease, backdrop-filter .4s ease;border-bottom:1px solid transparent;}
 header.nav.scrolled{background:rgba(8,7,12,.72);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);}
@@ -126,6 +136,7 @@ header.nav.scrolled{background:rgba(8,7,12,.72);backdrop-filter:blur(14px);borde
 .nav-tag{font-family:var(--util);font-size:.66rem;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);border:1px solid var(--line-strong);padding:.4rem .7rem;border-radius:2px;}
 .nav-toggle{display:none;background:none;border:0;color:var(--gold);cursor:pointer;padding:6px;}
  
+/* ---------- Hero ---------- */
 .hero{position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden;}
 #star-canvas{position:absolute;inset:0;width:100%;height:100%;z-index:0;display:block;}
 .hero-veil{position:absolute;inset:0;z-index:1;pointer-events:none;
@@ -151,11 +162,13 @@ header.nav.scrolled{background:rgba(8,7,12,.72);backdrop-filter:blur(14px);borde
 .scroll-cue .bar{width:1px;height:42px;background:linear-gradient(var(--gold),transparent);animation:cue 2.2s ease-in-out infinite;}
 @keyframes cue{0%,100%{transform:scaleY(.4);opacity:.4;transform-origin:top;}50%{transform:scaleY(1);opacity:1;transform-origin:top;}}
  
+/* ---------- Sections ---------- */
 section{position:relative;padding:clamp(72px,11vh,140px) 0;}
 .sec-head{max-width:640px;margin-bottom:3.4rem;}
 .sec-head h2{font-family:var(--serif);font-weight:600;font-size:clamp(2.1rem,5.2vw,3.6rem);line-height:1.05;margin:1rem 0 0;letter-spacing:-.01em;overflow-wrap:break-word;word-break:break-word;max-width:100%;}
 .sec-head p{color:var(--muted);margin:1.1rem 0 0;font-weight:300;font-size:1.05rem;}
  
+/* ---------- Marquee ---------- */
 .marquee{border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:22px 0;overflow:hidden;
   -webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);
   mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);}
@@ -167,6 +180,7 @@ section{position:relative;padding:clamp(72px,11vh,140px) 0;}
 .marquee-track span b{color:var(--gold-deep);-webkit-text-stroke:0;}
 @keyframes scrollx{to{transform:translateX(-50%);}}
  
+/* ---------- About ---------- */
 .about-grid{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(2rem,5vw,5rem);align-items:start;}
 .about-copy p{color:#cbc6b6;font-weight:300;margin:0 0 1.2rem;}
 .about-copy p strong{color:var(--ivory);font-weight:500;}
@@ -178,6 +192,7 @@ section{position:relative;padding:clamp(72px,11vh,140px) 0;}
 .pillar h4{font-family:var(--serif);font-size:1.3rem;font-weight:600;margin:0 0 .25rem;}
 .pillar p{margin:0;color:var(--muted);font-size:.92rem;font-weight:300;line-height:1.6;}
  
+/* ---------- Stats ---------- */
 .stats{border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
 .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);}
 .stat{padding:1rem 1.6rem 1rem 0;position:relative;}
@@ -188,6 +203,7 @@ section{position:relative;padding:clamp(72px,11vh,140px) 0;}
 .stats-note span{display:inline-flex;align-items:center;gap:.55rem;}
 .stats-note span::before{content:"★";color:var(--gold-deep);}
  
+/* ---------- Members ---------- */
 .members-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;}
 .member-card{position:relative;background:linear-gradient(180deg,var(--onyx),var(--obsidian-2));
   border:1px solid var(--line);border-radius:10px;padding:26px 22px 22px;transform-style:preserve-3d;
@@ -221,11 +237,13 @@ section{position:relative;padding:clamp(72px,11vh,140px) 0;}
 .socials a:hover{color:var(--gold);border-color:var(--gold);transform:translateY(-2px);background:rgba(232,195,107,.06);}
 .socials svg{width:15px;height:15px;}
  
+/* ---------- Footer ---------- */
 footer{border-top:1px solid var(--line);padding:46px 0 60px;margin-top:40px;}
 .foot-inner{display:flex;align-items:center;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;}
 .foot-inner p{color:var(--muted);font-size:.85rem;margin:0;}
 .foot-inner .brand{font-size:1.1rem;}
  
+/* ---------- Responsive ---------- */
 @media (max-width:1000px){
   .stats-grid{grid-template-columns:repeat(2,1fr);gap:1px;background:var(--line);}
   .stat{background:var(--obsidian-2);padding:1.6rem;}
@@ -245,6 +263,7 @@ footer{border-top:1px solid var(--line);padding:46px 0 60px;margin-top:40px;}
 }
 
 
+/* ---------- Ultra Interaction FX ---------- */
 :root{
   --ease-premium:cubic-bezier(.2,.72,.2,1);
 }
@@ -335,6 +354,7 @@ body.sound-on .dock-btn#soundBtn::after{
   .audio-hint,.interaction-flash,.tap-ripple,.sound-wave i{animation:none!important}
 }
 
+/* ---------- Ultra Advanced Layer ---------- */
 .command-section{padding-top:clamp(70px,9vh,120px)}
 .command-panel{border:1px solid var(--line);background:linear-gradient(180deg,rgba(27,26,34,.78),rgba(8,7,12,.9));border-radius:14px;padding:20px;box-shadow:0 35px 90px -55px var(--glow);backdrop-filter:blur(18px)}
 .command-top{display:flex;align-items:center;justify-content:space-between;gap:1rem;padding-bottom:16px;border-bottom:1px solid var(--line)}
@@ -401,25 +421,31 @@ body.glow-off #spotlight,body.glow-off #sparkles{display:none}
 
 </style>
 
+<!-- ===== Mobile App-Shell Enhancements (additive only — no existing rule above is modified) ===== -->
 <style id="app-mobile-css">
 @media (max-width:860px){
   html,body{overscroll-behavior-y:contain;}
   body{touch-action:manipulation;padding-bottom:calc(64px + env(safe-area-inset-bottom));}
-  #quickDock{display:none;}
+  #quickDock{display:none;} /* replaced by the app tab-bar on mobile */
   header.nav{padding-top:env(safe-area-inset-top);}
 
+  /* iOS Safari auto-zooms any input with font-size below 16px on focus — keep it at 16px on mobile */
   .search-box input{font-size:16px;}
 
+  /* Touch has no :hover — give the same visual feedback on tap instead */
   .rank-row:active{border-color:var(--line);background:rgba(232,195,107,.06);}
   .member-card:active{transform:scale(.98);}
   .profile-btn:active{color:var(--gold);border-color:var(--gold);}
 
+  /* Smooth momentum scrolling inside the profile modal on iOS */
   .modal-card{-webkit-overflow-scrolling:touch;}
 
+  /* Comfortable minimum tap-target sizing */
   .mini-btn,.filter-chip{min-height:38px;}
   .modal-card [data-close-modal]{min-width:40px;min-height:40px;}
 }
 
+/* Bottom app tab-bar — hidden on desktop by default */
 .app-tabbar{display:none;}
 @media (max-width:860px){
   .app-tabbar{
@@ -442,6 +468,7 @@ body.glow-off #spotlight,body.glow-off #sparkles{display:none}
   .tab-btn.active .tab-ic{text-shadow:0 0 14px var(--glow);}
 }
 
+/* Bottom action sheet ("More") */
 .sheet-backdrop{position:fixed;inset:0;z-index:10050;background:rgba(4,4,6,.55);backdrop-filter:blur(3px);
   opacity:0;visibility:hidden;transition:opacity .25s ease,visibility .25s ease;}
 .sheet-backdrop.open{opacity:1;visibility:visible;}
@@ -466,14 +493,17 @@ body.glow-off #spotlight,body.glow-off #sparkles{display:none}
 .sheet-ic{font-size:1rem;color:var(--gold);width:20px;text-align:center;}
 .sheet-ios-hint{font:.72rem var(--sans);color:var(--muted);text-align:center;margin:6px 4px 0;line-height:1.5;}
 
+/* Standalone (installed app) refinements */
 body.standalone-app header.nav{padding-top:calc(env(safe-area-inset-top) + 6px);}
 body.standalone-app .app-tabbar{padding-bottom:calc(10px + env(safe-area-inset-bottom));}
 
+/* Swipe-affordance on modal/sheet while dragging */
 .modal-card.dragging,.action-sheet.dragging{transition:none;}
 
 .modal-kbd-hint{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font:500 .62rem var(--util);letter-spacing:.04em;color:var(--muted);text-align:center;display:none;}
 @media (pointer:fine){.modal-kbd-hint{display:block;}}
 
+/* ---- Print stylesheet: clean leaderboard printout, no chrome/decoration ---- */
 @media print{
   header.nav,.quick-dock,.app-tabbar,.sheet-backdrop,.action-sheet,.hero canvas,.hero-veil,
   .scroll-cue,#cursorDot,#cursorRing,#spotlight,#sparkles,#progress,.audio-hint,footer,
@@ -489,6 +519,7 @@ body.standalone-app .app-tabbar{padding-bottom:calc(10px + env(safe-area-inset-b
 </head>
 <body>
  
+<!-- Preloader -->
 <div id="preloader">
   <div class="pl-inner">
     <div class="pl-star"><svg viewBox="-2 -2 40 40"><path d="M18 0 L22 13 L36 13 L25 21 L29 34 L18 26 L7 34 L11 21 L0 13 L14 13 Z"/></svg></div>
@@ -503,6 +534,7 @@ body.standalone-app .app-tabbar{padding-bottom:calc(10px + env(safe-area-inset-b
 <div id="cursorRing" aria-hidden="true"></div>
 <div id="cursorDot" aria-hidden="true"></div>
  
+<!-- NAV -->
 <header class="nav" id="nav">
   <div class="nav-inner">
     <a href="#top" class="brand magnet"><span class="mark" aria-hidden="true"></span>Team&nbsp;Elite&nbsp;Star</span></a>
@@ -519,13 +551,14 @@ body.standalone-app .app-tabbar{padding-bottom:calc(10px + env(safe-area-inset-b
 </header>
  
 <main id="top">
+  <!-- HERO -->
   <section class="hero" id="hero" aria-label="Introduction">
     <canvas id="star-canvas" aria-hidden="true"></canvas>
     <div class="hero-veil" aria-hidden="true"></div>
     <div class="hero-inner" id="heroInner">
-      <span class="eyebrow hero-eyebrow">Nagad · Customer Service Excellence</span>
-      <h1><span class="shine l1">Team Elite</span><span class="shine l2">Star</span></h1>
-      <p class="lede">Led by Team Leader Albina Jahan, our dedicated customer service squad delivers top-tier performance for Nagad — resolving queries with speed, maintaining high accuracy, and ensuring customer satisfaction.</p>
+      <span class="eyebrow hero-eyebrow" id="heroEyebrow">Nagad · Customer Service Excellence</span>
+      <h1><span class="shine l1" id="heroTitle1">Team Elite</span><span class="shine l2" id="heroTitle2">Star</span></h1>
+      <p class="lede" id="heroLede">Led by Team Leader Albina Jahan, our dedicated customer service squad delivers top-tier performance for Nagad — resolving queries with speed, maintaining high accuracy, and ensuring customer satisfaction.</p>
       <div class="hero-cta">
         <a href="#team" class="btn btn-primary magnet">Meet the Team <span aria-hidden="true">→</span></a>
         <a href="#impact" class="btn btn-ghost magnet">See Our Impact</a>
@@ -534,23 +567,27 @@ body.standalone-app .app-tabbar{padding-bottom:calc(10px + env(safe-area-inset-b
     <div class="scroll-cue" aria-hidden="true"><span>Scroll</span><span class="bar"></span></div>
   </section>
  
+  <!-- MARQUEE -->
   <div class="marquee" aria-hidden="true">
     <div class="marquee-track" id="marquee"></div>
   </div>
  
+  <!-- ABOUT -->
   <section id="about" aria-label="About the team">
     <div class="wrap">
       <div class="about-grid">
         <div class="about-copy reveal">
-          <span class="eyebrow">Who we are</span>
+          <span class="eyebrow" id="aboutEyebrow">Who we are</span>
           <div class="sec-head" style="margin-bottom:1.6rem;">
-            <h2>Support, elevated to an&nbsp;<span class="gold-text">art</span>.</h2>
+            <h2 id="aboutHeading">Support, elevated to an&nbsp;<span class="gold-text">art</span>.</h2>
           </div>
+          <div id="aboutParagraphs">
           <p><strong>Team Elite Star</strong>, under the leadership of <strong>Albina Jahan</strong>, is the frontline of the Nagad customer experience. Every call and query is handled with complete dedication, precision, and efficiency.</p>
           <p>Our team achieves an impressive average MTD Quality Score of <strong>98.06%</strong> and maintains <strong>100% On-time Login</strong> performance across operations. Supported by QA Rasel Hossain and dedicated trainers (Reduan Islam, Md. Mynul Islam, and Md. Shahin Akter), we strive for perfection every day.</p>
           <p>Fast when it matters. Precise always. Human throughout.</p>
+          </div>
         </div>
-        <div class="pillars reveal">
+        <div class="pillars reveal" id="pillarsGrid">
           <div class="pillar"><div class="pico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><div><h4>Empathy first</h4><p>We hear the person before the problem. Tone, patience, and respect on every contact.</p></div></div>
           <div class="pillar"><div class="pico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2 3 14h7l-1 8 10-12h-7z"/></svg></div><div><h4>Speed with care</h4><p>Avg. AHT of 0:02:50 with rapid first response without cutting corners.</p></div></div>
           <div class="pillar"><div class="pico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="m9 11 3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div><div><h4>Accuracy</h4><p>Maintaining a stellar 98.06% overall quality score with strict QA compliance.</p></div></div>
@@ -560,29 +597,31 @@ body.standalone-app .app-tabbar{padding-bottom:calc(10px + env(safe-area-inset-b
     </div>
   </section>
  
+  <!-- ACHIEVEMENTS -->
   <section id="impact" class="stats" aria-label="Achievements">
     <div class="wrap">
       <div class="sec-head reveal">
-        <span class="eyebrow">By the numbers</span>
-        <h2>Proof, not promises.</h2>
-        <p>Real performance data from our team metrics report.</p>
+        <span class="eyebrow" id="impactEyebrow">By the numbers</span>
+        <h2 id="impactHeading">Proof, not promises.</h2>
+        <p id="impactSubheading">Real performance data from our team metrics report.</p>
       </div>
-      <div class="stats-grid reveal">
+      <div class="stats-grid reveal" id="statsGrid">
         <div class="stat"><div class="num" data-count="98.06" data-suffix="%" data-dec="2">0</div><div class="lbl">MTD Quality Score</div></div>
         <div class="stat"><div class="num" data-count="100" data-suffix="%" data-dec="0">0</div><div class="lbl">On-Time Login</div></div>
         <div class="stat"><div class="num" data-count="8.28" data-suffix="h" data-dec="2">0</div><div class="lbl">Avg. Productivity / Day</div></div>
         <div class="stat"><div class="num" data-count="85.71" data-suffix="%" data-dec="2">0</div><div class="lbl">Overall Attendance</div></div>
       </div>
-      <div class="stats-note reveal"><span>TL: Albina Jahan</span><span>QA: Rasel Hossain</span><span>12 Active Team Members</span></div>
+      <div class="stats-note reveal" id="statsNote"><span>TL: Albina Jahan</span><span>QA: Rasel Hossain</span><span>12 Active Team Members</span></div>
     </div>
   </section>
  
+  <!-- MEMBERS -->
   <section id="team" aria-label="Team members">
     <div class="wrap">
       <div class="sec-head reveal">
-        <span class="eyebrow">Our Squad</span>
-        <h2>Meet the <span class="gold-text">stars</span>.</h2>
-        <p>Driven professionals delivering excellence under the guidance of Albina Jahan.</p>
+        <span class="eyebrow" id="teamEyebrow">Our Squad</span>
+        <h2 id="teamHeading">Meet the <span class="gold-text">stars</span>.</h2>
+        <p id="teamSubheading">Driven professionals delivering excellence under the guidance of Albina Jahan.</p>
       </div>
       <div class="members-grid" id="membersGrid"></div>
     </div>
@@ -590,12 +629,13 @@ body.standalone-app .app-tabbar{padding-bottom:calc(10px + env(safe-area-inset-b
 </main>
  
 
+<!-- ULTRA ADVANCED DASHBOARD / INTERACTION LAYER -->
 <section id="command" class="command-section" aria-label="Team command center">
   <div class="wrap">
     <div class="sec-head reveal">
-      <span class="eyebrow">Command Center</span>
-      <h2>Performance, <span class="gold-text">decoded</span>.</h2>
-      <p>Explore the same Team Elite Star structure with live client-side filtering, ranking, metric intelligence and quick insights.</p>
+      <span class="eyebrow" id="commandEyebrow">Command Center</span>
+      <h2 id="commandHeading">Performance, <span class="gold-text">decoded</span>.</h2>
+      <p id="commandSubheading">Explore the same Team Elite Star structure with live client-side filtering, ranking, metric intelligence and quick insights.</p>
     </div>
 
     <div class="command-panel reveal">
@@ -644,6 +684,7 @@ body.standalone-app .app-tabbar{padding-bottom:calc(10px + env(safe-area-inset-b
   <button class="dock-btn" id="topBtn" aria-label="Back to top" title="Back to top">↑</button>
 </div>
 
+<!-- App-style bottom tab-bar (mobile only) -->
 <nav class="app-tabbar" id="appTabbar" aria-label="App navigation">
   <button class="tab-btn active" data-target="#hero" aria-label="Home"><span class="tab-ic">⌂</span><span class="tab-lb">Home</span></button>
   <button class="tab-btn" data-target="#about" aria-label="About"><span class="tab-ic">✦</span><span class="tab-lb">About</span></button>
@@ -659,7 +700,7 @@ body.standalone-app .app-tabbar{padding-bottom:calc(10px + env(safe-area-inset-b
   <button class="sheet-item" id="sheetGlow" type="button"><span class="sheet-ic">◈</span> Toggle Ambient Glow</button>
   <button class="sheet-item" id="sheetTop" type="button"><span class="sheet-ic">↑</span> Back to Top</button>
   <button class="sheet-item" id="sheetInstall" type="button" hidden><span class="sheet-ic">⇩</span> Install App</button>
-  <p class="sheet-ios-hint" id="sheetIosHint" hidden>To install as an app on iPhone/iPad: Tap the Share button below → select 'Add to Home Screen'.</p>
+  <p class="sheet-ios-hint" id="sheetIosHint" hidden>iPhone/iPad এ অ্যাপ হিসেবে ইনস্টল করতে: নিচের Share বাটনে ট্যাপ করুন → "Add to Home Screen" নির্বাচন করুন।</p>
 </div>
 
 <div class="audio-hint" id="audioHint" role="status" aria-live="polite">
@@ -691,112 +732,357 @@ body.standalone-app .app-tabbar{padding-bottom:calc(10px + env(safe-area-inset-b
 
 <footer>
   <div class="wrap foot-inner">
-    <a href="#top" class="brand magnet"><span class="mark" aria-hidden="true"></span>Team&nbsp;Elite&nbsp;Star</span> · Albina Jahan ·</a>
-    <p>© All Rights Reserved · Made By Talha · <span id="year"></span></p>
+    <a href="#top" class="brand magnet"><span class="mark" aria-hidden="true"></span>Team&nbsp;Elite&nbsp;Star</span> · Made By Talha ·</a>
+    <p>Nagad Customer Service · Team Leader: Albina Jahan · <span id="year"></span></p>
   </div>
 </footer>
  
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 
-const TEAM_LEADER = {
-  name: "Albina Jahan",
-  role: "Team Leader",
-  bio: "Leading Team Elite Star to operational excellence, driving high quality standards and top-tier customer satisfaction.",
-  rank: "Team Leader",
-  cubeId: "TL_ALBINA_JSR"
+/* ---- Fallback content (used instantly on load, and if data.json can't be fetched
+     e.g. when this file is opened directly instead of served from a web server).
+     Editing data.json is the normal way to update content daily; this fallback is
+     just a safety net so the page never renders blank. ---- */
+/*const FALLBACK_DATA = {
+  "meta": {
+    "lastUpdated": "2026-09-05",
+    "teamName": "Team Elite Star",
+    "orgTag": "Nagad · CSR"
+  },
+  "hero": {
+    "eyebrow": "Nagad · Customer Service Excellence",
+    "titleLine1": "Team Elite",
+    "titleLine2": "Star",
+    "lede": "Led by Team Leader Albina Jahan, our dedicated customer service squad delivers top-tier performance for Nagad — resolving queries with speed, maintaining high accuracy, and ensuring customer satisfaction."
+  },
+  "about": {
+    "eyebrow": "Who we are",
+    "headingPrefix": "Support, elevated to an",
+    "headingEmphasis": "art",
+    "headingSuffix": ".",
+    "paragraphs": [
+      "<strong>Team Elite Star</strong>, under the leadership of <strong>Albina Jahan</strong>, is the frontline of the Nagad customer experience. Every call and query is handled with complete dedication, precision, and efficiency.",
+      "Our team achieves an impressive average MTD Quality Score of <strong>98.06%</strong> and maintains <strong>100% On-time Login</strong> performance across operations. Supported by QA Rasel Hossain and dedicated trainers (Reduan Islam, Md. Mynul Islam, and Md. Shahin Akter), we strive for perfection every day.",
+      "Fast when it matters. Precise always. Human throughout."
+    ],
+    "pillars": [
+      {
+        "title": "Empathy first",
+        "desc": "We hear the person before the problem. Tone, patience, and respect on every contact.",
+        "icon": "<path d=\"M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z\"/>"
+      },
+      {
+        "title": "Speed with care",
+        "desc": "Avg. AHT of 0:02:50 with rapid first response without cutting corners.",
+        "icon": "<path d=\"M13 2 3 14h7l-1 8 10-12h-7z\"/>"
+      },
+      {
+        "title": "Accuracy",
+        "desc": "Maintaining a stellar 98.06% overall quality score with strict QA compliance.",
+        "icon": "<path d=\"m9 11 3 3L22 4\"/><path d=\"M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11\"/>"
+      },
+      {
+        "title": "Trust & Security",
+        "desc": "100% On-time Login rate reflecting ultimate operational discipline.",
+        "icon": "<path d=\"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z\"/>"
+      }
+    ]
+  },
+  "impact": {
+    "eyebrow": "By the numbers",
+    "heading": "Proof, not promises.",
+    "subheading": "Real performance data from our team metrics report.",
+    "stats": [
+      {
+        "value": 98.06,
+        "decimals": 2,
+        "suffix": "%",
+        "label": "MTD Quality Score"
+      },
+      {
+        "value": 100,
+        "decimals": 0,
+        "suffix": "%",
+        "label": "On-Time Login"
+      },
+      {
+        "value": 8.28,
+        "decimals": 2,
+        "suffix": "h",
+        "label": "Avg. Productivity / Day"
+      },
+      {
+        "value": 85.71,
+        "decimals": 2,
+        "suffix": "%",
+        "label": "Overall Attendance"
+      }
+    ],
+    "note": {
+      "tl": "Albina Jahan",
+      "qa": "Rasel Hossain",
+      "activeMembers": 12
+    }
+  },
+  "team": {
+    "eyebrow": "Our Squad",
+    "headingPrefix": "Meet the",
+    "headingEmphasis": "stars",
+    "headingSuffix": ".",
+    "subheading": "Driven professionals delivering excellence under the guidance of Albina Jahan."
+  },
+  "command": {
+    "eyebrow": "Command Center",
+    "headingPrefix": "Performance,",
+    "headingEmphasis": "decoded",
+    "headingSuffix": ".",
+    "subheading": "Explore the same Team Elite Star structure with live client-side filtering, ranking, metric intelligence and quick insights."
+  },
+  "marquee": [
+    "Albina Jahan Leadership",
+    "98.06% Quality Score",
+    "100% On-Time Login",
+    "Trust",
+    "Speed",
+    "Accuracy"
+  ],
+  "leader": {
+    "name": "Albina Jahan",
+    "role": "Team Leader",
+    "bio": "Leading Team Elite Star to operational excellence, driving high quality standards and top-tier customer satisfaction.",
+    "rank": "Team Leader",
+    "cubeId": "TL_ALBINA_JSR",
+    "qa": "Rasel Hossain"
+  },
+  "members": [
+    {
+      "dgId": "16546",
+      "name": "Suraya",
+      "cubeId": "Suraya46_JSR",
+      "role": "CSR",
+      "rank": "CSR",
+      "qa": "Rasel Hossain",
+      "trainer": "Reduan Islam",
+      "mtdScore": "97.09%",
+      "attendance": "100.00%",
+      "staffedTime": "9:00:03",
+      "prodTime": "7:41:14",
+      "breakTime": "1:18:49",
+      "aht": "0:02:39",
+      "fbBreak": "0:05:08",
+      "trBreak": "0:00:00",
+      "bio": "Consistent customer support provider with strong compliance and 100% attendance."
+    },
+    {
+      "dgId": "17174",
+      "name": "Sarmin Sultana Apon",
+      "cubeId": "Apon74_JSR",
+      "role": "CSR · Our Star",
+      "rank": "CSR · Star",
+      "qa": "Rasel Hossain",
+      "trainer": "Md. Mynul Islam",
+      "mtdScore": "98.81%",
+      "attendance": "100.00%",
+      "staffedTime": "10:08:14",
+      "prodTime": "9:10:03",
+      "breakTime": "0:58:10",
+      "aht": "0:02:43",
+      "fbBreak": "0:57:43",
+      "trBreak": "3:02:32",
+      "bio": "Top performer with excellent 98.81% quality score and over 9 hours avg. daily productivity."
+    },
+    {
+      "dgId": "17916",
+      "name": "Md.Sajman Basar",
+      "cubeId": "Sajman_JSR",
+      "role": "CSR",
+      "rank": "CSR",
+      "qa": "Rasel Hossain",
+      "trainer": "Reduan Islam",
+      "mtdScore": "97.91%",
+      "attendance": "100.00%",
+      "staffedTime": "8:56:55",
+      "prodTime": "7:54:50",
+      "breakTime": "1:02:05",
+      "aht": "0:02:52",
+      "fbBreak": "0:48:00",
+      "trBreak": "0:00:00",
+      "bio": "Dedicated specialist delivering steady handling times and high quality execution."
+    },
+    {
+      "dgId": "18314",
+      "name": "MD.shakibuzzaman shacho",
+      "cubeId": "Shacho_JSR",
+      "role": "CSR",
+      "rank": "CSR",
+      "qa": "Rasel Hossain",
+      "trainer": "Md. Mynul Islam",
+      "mtdScore": "99.20%",
+      "attendance": "100.00%",
+      "staffedTime": "8:57:50",
+      "prodTime": "8:07:30",
+      "breakTime": "0:50:19",
+      "aht": "0:02:59",
+      "fbBreak": "0:33:11",
+      "trBreak": "2:10:48",
+      "bio": "Outstanding performance featuring a stellar 99.20% quality score and low break durations."
+    },
+    {
+      "dgId": "18636",
+      "name": "Farjana Yesmin",
+      "cubeId": "Farjana36_JSR",
+      "role": "CSR",
+      "rank": "CSR",
+      "qa": "Rasel Hossain",
+      "trainer": "Reduan Islam",
+      "mtdScore": "98.62%",
+      "attendance": "25.00%",
+      "staffedTime": "9:00:39",
+      "prodTime": "7:55:33",
+      "breakTime": "1:05:06",
+      "aht": "0:02:35",
+      "fbBreak": "0:30:11",
+      "trBreak": "0:00:00",
+      "bio": "Fast AHT of 2m 35s with impressive 98.62% MTD performance rating."
+    },
+    {
+      "dgId": "19249",
+      "name": "Md. Arifuzzaman",
+      "cubeId": "Arifuzzaman_JSR",
+      "role": "CSR",
+      "rank": "CSR",
+      "qa": "Rasel Hossain",
+      "trainer": "Reduan Islam",
+      "mtdScore": "98.92%",
+      "attendance": "100.00%",
+      "staffedTime": "9:01:52",
+      "prodTime": "8:01:27",
+      "breakTime": "1:00:25",
+      "aht": "0:02:40",
+      "fbBreak": "0:27:27",
+      "trBreak": "0:00:00",
+      "bio": "High accuracy and reliable 8+ hours productivity time with 98.92% MTD score."
+    },
+    {
+      "dgId": "19266",
+      "name": "Shuly Khatun",
+      "cubeId": "Shulykhatun_JSR",
+      "role": "CSR · Our Star",
+      "rank": "CSR · Star",
+      "qa": "Rasel Hossain",
+      "trainer": "Reduan Islam",
+      "mtdScore": "99.28%",
+      "attendance": "100.00%",
+      "staffedTime": "9:42:03",
+      "prodTime": "8:47:14",
+      "breakTime": "0:54:49",
+      "aht": "0:02:31",
+      "fbBreak": "1:11:59",
+      "trBreak": "0:41:06",
+      "bio": "Elite squad member boasting an overall 99.28% MTD score and swift 2m 31s AHT."
+    },
+    {
+      "dgId": "19420",
+      "name": "Shekh Afsana mimi",
+      "cubeId": "Afsanamimi_JSR",
+      "role": "CSR",
+      "rank": "CSR",
+      "qa": "Rasel Hossain",
+      "trainer": "Md. Shahin Akter",
+      "mtdScore": "97.20%",
+      "attendance": "100.00%",
+      "staffedTime": "9:17:29",
+      "prodTime": "8:14:41",
+      "breakTime": "1:02:49",
+      "aht": "0:02:38",
+      "fbBreak": "1:38:57",
+      "trBreak": "0:46:40",
+      "bio": "Hardworking team member delivering over 9 hours staffed time daily with strong focus."
+    },
+    {
+      "dgId": "19667",
+      "name": "Al Tamim Hridoy",
+      "cubeId": "Tamim_JSR",
+      "role": "CSR",
+      "rank": "CSR",
+      "qa": "Rasel Hossain",
+      "trainer": "Md. Shahin Akter",
+      "mtdScore": "97.75%",
+      "attendance": "50.00%",
+      "staffedTime": "8:58:36",
+      "prodTime": "7:56:58",
+      "breakTime": "1:01:38",
+      "aht": "0:02:50",
+      "fbBreak": "0:00:00",
+      "trBreak": "0:56:13",
+      "bio": "Attentive support specialist with balanced AHT and active training development."
+    },
+    {
+      "dgId": "19672",
+      "name": "Rina Parvin",
+      "cubeId": "Parvin72_JSR",
+      "role": "CSR",
+      "rank": "CSR",
+      "qa": "Rasel Hossain",
+      "trainer": "Md. Shahin Akter",
+      "mtdScore": "97.19%",
+      "attendance": "100.00%",
+      "staffedTime": "9:17:26",
+      "prodTime": "8:18:29",
+      "breakTime": "0:58:58",
+      "aht": "0:02:58",
+      "fbBreak": "0:41:57",
+      "trBreak": "0:41:32",
+      "bio": "Dependable and disciplined, maintaining high staffed time and 100% login punctuality."
+    },
+    {
+      "dgId": "20071",
+      "name": "Abu Talha Raj",
+      "cubeId": "Talharaj_JSR",
+      "role": "CSR",
+      "rank": "CSR",
+      "qa": "Rasel Hossain",
+      "trainer": "Md. Shahin Akter",
+      "mtdScore": "96.06%",
+      "attendance": "100.00%",
+      "staffedTime": "9:02:01",
+      "prodTime": "8:02:32",
+      "breakTime": "0:59:28",
+      "aht": "0:03:04",
+      "fbBreak": "1:13:42",
+      "trBreak": "0:11:23",
+      "bio": "Focused team player driving continuous customer engagement and thorough resolution."
+    },
+    {
+      "dgId": "20204",
+      "name": "Bijoya Ray",
+      "cubeId": "Bijoya_JSR",
+      "role": "CSR",
+      "rank": "CSR",
+      "qa": "Rasel Hossain",
+      "trainer": "Md. Shahin Akter",
+      "mtdScore": "97.39%",
+      "attendance": "100.00%",
+      "staffedTime": "9:01:58",
+      "prodTime": "8:05:33",
+      "breakTime": "0:56:25",
+      "aht": "0:03:28",
+      "fbBreak": "1:35:21",
+      "trBreak": "0:46:42",
+      "bio": "Reliable member maintaining stellar attendance and consistent daily productivity."
+    }
+  ]
 };
 
-const MEMBERS = [
-  { 
-    dgId: "16546", name: "Suraya", cubeId: "Suraya46_JSR", role: "CSR", rank: "CSR",
-    qa: "Rasel Hossain", trainer: "Reduan Islam", mtdScore: "97.09%", attendance: "100.00%",
-    staffedTime: "9:00:03", prodTime: "7:41:14", breakTime: "1:18:49", aht: "0:02:39",
-    fbBreak: "0:05:08", trBreak: "0:00:00",
-    bio: "Consistent customer support provider with strong compliance and 100% attendance."
-  },
-  { 
-    dgId: "17174", name: "Sarmin Sultana Apon", cubeId: "Apon74_JSR", role: "CSR · Our Star", rank: "CSR · Star",
-    qa: "Rasel Hossain", trainer: "Md. Mynul Islam", mtdScore: "98.81%", attendance: "100.00%",
-    staffedTime: "10:08:14", prodTime: "9:10:03", breakTime: "0:58:10", aht: "0:02:43",
-    fbBreak: "0:57:43", trBreak: "3:02:32",
-    bio: "Top performer with excellent 98.81% quality score and over 9 hours avg. daily productivity."
-  },
-  { 
-    dgId: "17916", name: "Md.Sajman Basar", cubeId: "Sajman_JSR", role: "CSR", rank: "CSR",
-    qa: "Rasel Hossain", trainer: "Reduan Islam", mtdScore: "97.91%", attendance: "100.00%",
-    staffedTime: "8:56:55", prodTime: "7:54:50", breakTime: "1:02:05", aht: "0:02:52",
-    fbBreak: "0:48:00", trBreak: "0:00:00",
-    bio: "Focused on efficient handling, consistent performance, and delivering quality service with every interaction."
-  },
-  { 
-    dgId: "18314", name: "MD.shakibuzzaman shacho", cubeId: "Shacho_JSR", role: "CSR", rank: "CSR",
-    qa: "Rasel Hossain", trainer: "Md. Mynul Islam", mtdScore: "99.20%", attendance: "100.00%",
-    staffedTime: "8:57:50", prodTime: "8:07:30", breakTime: "0:50:19", aht: "0:02:59",
-    fbBreak: "0:33:11", trBreak: "2:10:48",
-    bio: "Outstanding performance featuring a stellar 99.20% quality score and low break durations."
-  },
-  { 
-    dgId: "18636", name: "Farjana Yesmin", cubeId: "Farjana36_JSR", role: "CSR", rank: "CSR",
-    qa: "Rasel Hossain", trainer: "Reduan Islam", mtdScore: "98.62%", attendance: "25.00%",
-    staffedTime: "9:00:39", prodTime: "7:55:33", breakTime: "1:05:06", aht: "0:02:35",
-    fbBreak: "0:30:11", trBreak: "0:00:00",
-    bio: "Fast AHT of 2m 35s with impressive 98.62% MTD performance rating."
-  },
-  { 
-    dgId: "19249", name: "Md. Arifuzzaman", cubeId: "Arifuzzaman_JSR", role: "CSR", rank: "CSR",
-    qa: "Rasel Hossain", trainer: "Reduan Islam", mtdScore: "98.92%", attendance: "100.00%",
-    staffedTime: "9:01:52", prodTime: "8:01:27", breakTime: "1:00:25", aht: "0:02:40",
-    fbBreak: "0:27:27", trBreak: "0:00:00",
-    bio: "High accuracy and reliable 8+ hours productivity time with 98.92% MTD score."
-  },
-  { 
-    dgId: "19266", name: "Shuly Khatun", cubeId: "Shulykhatun_JSR", role: "CSR · Our Star", rank: "CSR · Star",
-    Qa: "Rasel Hossain", trainer: "Reduan Islam", mtdScore: "99.28%", attendance: "100.00%",
-    staffedTime: "9:42:03", prodTime: "8:47:14", breakTime: "0:54:49", aht: "0:02:31",
-    fbBreak: "1:11:59", trBreak: "0:41:06",
-    bio: "Elite squad member boasting an overall 99.28% MTD score and swift 2m 31s AHT."
-  },
-  { 
-    dgId: "19420", name: "Shekh Afsana mimi", cubeId: "Afsanamimi_JSR", role: "CSR", rank: "CSR",
-    qa: "Rasel Hossain", trainer: "Md. Shahin Akter", mtdScore: "97.20%", attendance: "100.00%",
-    staffedTime: "9:17:29", prodTime: "8:14:41", breakTime: "1:02:49", aht: "0:02:38",
-    fbBreak: "1:38:57", trBreak: "0:46:40",
-    bio: "Hardworking team member delivering over 9 hours staffed time daily with strong focus."
-  },
-  { 
-    dgId: "19667", name: "Al Tamim Hridoy", cubeId: "Tamim_JSR", role: "CSR", rank: "CSR",
-    qa: "Rasel Hossain", trainer: "Md. Shahin Akter", mtdScore: "97.75%", attendance: "50.00%",
-    staffedTime: "8:58:36", prodTime: "7:56:58", breakTime: "1:01:38", aht: "0:02:50",
-    fbBreak: "0:00:00", trBreak: "0:56:13",
-    bio: "Attentive support specialist with balanced AHT and active training development."
-  },
-  { 
-    dgId: "19672", name: "Rina Parvin", cubeId: "Parvin72_JSR", role: "CSR", rank: "CSR",
-    qa: "Rasel Hossain", trainer: "Md. Shahin Akter", mtdScore: "97.19%", attendance: "100.00%",
-    staffedTime: "9:17:26", prodTime: "8:18:29", breakTime: "0:58:58", aht: "0:02:58",
-    fbBreak: "0:41:57", trBreak: "0:41:32",
-    bio: "Dependable and disciplined, maintaining high staffed time and 100% login punctuality."
-  },
-  { 
-    dgId: "20071", name: "Abu Talha Raj", cubeId: "Talharaj_JSR", role: "CSR", rank: "CSR",
-    qa: "Rasel Hossain", trainer: "Md. Shahin Akter", mtdScore: "96.06%", attendance: "100.00%",
-    staffedTime: "9:02:01", prodTime: "8:02:32", breakTime: "0:59:28", aht: "0:03:04",
-    fbBreak: "1:13:42", trBreak: "0:11:23",
-    bio: "Focused team player driving continuous customer engagement and thorough resolution."
-  },
-  { 
-    dgId: "20204", name: "Bijoya Ray", cubeId: "Bijoya_JSR", role: "CSR", rank: "CSR",
-    qa: "Rasel Hossain", trainer: "Md. Shahin Akter", mtdScore: "97.39%", attendance: "100.00%",
-    staffedTime: "9:01:58", prodTime: "8:05:33", breakTime: "0:56:25", aht: "0:03:28",
-    fbBreak: "1:35:21", trBreak: "0:46:42",
-    bio: "Reliable member maintaining stellar attendance and consistent daily productivity."
-  }
-];
+let CONTENT = FALLBACK_DATA;
+let TEAM_LEADER = FALLBACK_DATA.leader;
+let MEMBERS = FALLBACK_DATA.members;
  
 const REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-const FINE   = window.matchMedia('(pointer:fine)').matches;
+const FINE   = window.matchMedia('(pointer:fine)').matches;*/
  
+/* ---- Preloader name letters ---- */
 (function pl(){
   const el = document.getElementById('plName');
   if(!el) return;
@@ -807,13 +1093,15 @@ function hidePreloader(){ const p=document.getElementById('preloader'); if(p) p.
 if(REDUCE){ hidePreloader(); }
 else{ window.addEventListener('load', ()=>setTimeout(hidePreloader,1400)); setTimeout(hidePreloader,3200); }
  
-(function buildMembers(){
+/* ---- Build member cards ---- */
+function buildMembers(){
   const grid = document.getElementById('membersGrid'); if(!grid) return;
   const initials = n => n.trim().split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase();
   const fb='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.2c-1.2 0-1.6.8-1.6 1.5V12h2.7l-.4 2.9h-2.3v7A10 10 0 0 0 22 12z"/></svg>';
   const li='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5A2.5 2.5 0 1 1 5 8.5a2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM10 9h3.8v1.7h.1c.5-.9 1.8-1.9 3.6-1.9 3.9 0 4.6 2.5 4.6 5.8V21h-4v-5.2c0-1.2 0-2.8-1.7-2.8s-2 1.3-2 2.7V21h-4z"/></svg>';
   const mail='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>';
 
+  // Render Team Leader First
   let html = `
     <article class="member-card tl-card reveal" tabindex="0">
       <span class="rank">${TEAM_LEADER.rank}</span>
@@ -822,8 +1110,8 @@ else{ window.addEventListener('load', ()=>setTimeout(hidePreloader,1400)); setTi
       <div class="role">${TEAM_LEADER.role} · Cube: ${TEAM_LEADER.cubeId}</div>
       <p class="bio">${TEAM_LEADER.bio}</p>
       <div class="metrics-badge">
-        <span class="badge" style="background:rgba(232,195,107,.2);color:var(--gold);">Lead Alignment: Albina Jahan</span>
-        <span class="badge">Team QA: Rasel Hossain</span>
+        <span class="badge" style="background:rgba(232,195,107,.2);color:var(--gold);">Lead Alignment: ${TEAM_LEADER.name}</span>
+        <span class="badge">Team QA: ${TEAM_LEADER.qa||CONTENT.impact.note.qa}</span>
       </div>
       <div class="socials">
         <a href="#" class="magnet" aria-label="${TEAM_LEADER.name} on Facebook">${fb}</a>
@@ -833,6 +1121,7 @@ else{ window.addEventListener('load', ()=>setTimeout(hidePreloader,1400)); setTi
     </article>
   `;
 
+  // Render active members with detailed attributes
   html += MEMBERS.map(m=>`
     <article class="member-card reveal" tabindex="0">
       <span class="rank">${m.rank}</span>
@@ -857,17 +1146,87 @@ else{ window.addEventListener('load', ()=>setTimeout(hidePreloader,1400)); setTi
     </article>`).join('');
 
   grid.innerHTML = html;
-})();
- 
-(function marquee(){
+}
+buildMembers();
+
+/* ---- Marquee ---- */
+function renderMarquee(items){
   const t=document.getElementById('marquee'); if(!t) return;
-  const items=['Albina Jahan Leadership','98.06% Quality Score','100% On-Time Login','Trust','Speed','Accuracy'];
   const unit=items.map(w=>`<span>${w}</span><span class="solid"><b>★</b></span>`).join('');
   t.innerHTML=unit+unit;
-})();
- 
+}
+renderMarquee(CONTENT.marquee);
+
 document.getElementById('year').textContent = new Date().getFullYear();
- 
+
+/* ---- Render all copy/headings/stats from CONTENT (JSON-driven, daily-editable) ---- */
+function applyContentData(D){
+  const setText=(id,val)=>{ const el=document.getElementById(id); if(el && val!=null) el.textContent=val; };
+  const setHTML=(id,val)=>{ const el=document.getElementById(id); if(el && val!=null) el.innerHTML=val; };
+  const headingHTML=(prefix,emph,suffix)=>`${prefix}&nbsp;<span class="gold-text">${emph}</span>${suffix}`;
+
+  setText('heroEyebrow', D.hero.eyebrow);
+  setText('heroTitle1', D.hero.titleLine1);
+  setText('heroTitle2', D.hero.titleLine2);
+  setText('heroLede', D.hero.lede);
+
+  setText('aboutEyebrow', D.about.eyebrow);
+  setHTML('aboutHeading', headingHTML(D.about.headingPrefix, D.about.headingEmphasis, D.about.headingSuffix));
+  const aboutP=document.getElementById('aboutParagraphs');
+  if(aboutP) aboutP.innerHTML = D.about.paragraphs.map(p=>`<p>${p}</p>`).join('');
+  const pillarsGrid=document.getElementById('pillarsGrid');
+  if(pillarsGrid) pillarsGrid.innerHTML = D.about.pillars.map(p=>`
+    <div class="pillar"><div class="pico" aria-hidden="true"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">${p.icon}</svg></div><div><h4>${p.title}</h4><p>${p.desc}</p></div></div>`).join('');
+
+  setText('impactEyebrow', D.impact.eyebrow);
+  setText('impactHeading', D.impact.heading);
+  setText('impactSubheading', D.impact.subheading);
+  const statEls=document.querySelectorAll('#statsGrid .stat .num');
+  D.impact.stats.forEach((s,i)=>{
+    const el=statEls[i]; if(!el) return;
+    el.dataset.count=s.value; el.dataset.dec=s.decimals; el.dataset.suffix=s.suffix;
+    el.closest('.stat').querySelector('.lbl').textContent=s.label;
+    if(el.dataset.__animated==='1'){ /* already animated once — refresh in place */
+      const fmt=(v,d)=>d>0?v.toFixed(d):Math.round(v).toString();
+      el.textContent=fmt(s.value,s.decimals)+s.suffix;
+    }
+  });
+  setHTML('statsNote', `<span>TL: ${D.impact.note.tl}</span><span>QA: ${D.impact.note.qa}</span><span>${D.impact.note.activeMembers} Active Team Members</span>`);
+
+  setText('teamEyebrow', D.team.eyebrow);
+  setHTML('teamHeading', headingHTML(D.team.headingPrefix, D.team.headingEmphasis, D.team.headingSuffix));
+  setText('teamSubheading', D.team.subheading);
+
+  setText('commandEyebrow', D.command.eyebrow);
+  setHTML('commandHeading', headingHTML(D.command.headingPrefix, D.command.headingEmphasis, D.command.headingSuffix));
+  setText('commandSubheading', D.command.subheading);
+
+  const brand=document.querySelectorAll('.nav-tag'); brand.forEach(b=>{ if(D.meta.orgTag) b.textContent=D.meta.orgTag; });
+}
+applyContentData(CONTENT);
+
+/* ---- Load content from data.json (daily-editable) and re-render everything on success ---- */
+(async function loadContentJSON(){
+  try{
+    const res = await fetch('data.json', {cache:'no-store'});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const fresh = await res.json();
+    CONTENT = fresh;
+    TEAM_LEADER = fresh.leader;
+    MEMBERS = fresh.members;
+    applyContentData(CONTENT);
+    buildMembers();
+    renderMarquee(CONTENT.marquee);
+    if(typeof refreshCommandCenter === 'function') refreshCommandCenter();
+  }catch(err){
+    /* Falls back to the embedded FALLBACK_DATA already rendered above — this is
+       expected if the page was opened directly as a file instead of being served
+       from a web server (fetch of local files is blocked by the browser). */
+    console.warn('data.json could not be loaded, using embedded fallback content:', err.message);
+  }
+})();
+
+/* ---- Nav ---- */
 const nav=document.getElementById('nav');
 const onScroll=()=>nav.classList.toggle('scrolled', window.scrollY>40);
 onScroll();
@@ -878,6 +1237,7 @@ document.getElementById('navToggle').addEventListener('click',()=>{
   target?.scrollIntoView({behavior:'smooth',block:'start'});
 });
  
+/* ---- Scroll progress ---- */
 const prog=document.getElementById('progress');
 function updateProgress(){ const h=document.documentElement; const max=h.scrollHeight-h.clientHeight;
   prog.style.transform='scaleX('+(max>0?(h.scrollTop/max):0)+')'; }
@@ -885,6 +1245,7 @@ updateProgress();
 let progTicking=false;
 window.addEventListener('scroll',()=>{ if(!progTicking){ requestAnimationFrame(()=>{updateProgress();progTicking=false;}); progTicking=true; } },{passive:true});
  
+/* ---- Reveal on scroll ---- */
 (function reveals(){
   const els=document.querySelectorAll('.reveal');
   if(REDUCE||!('IntersectionObserver' in window)){els.forEach(e=>e.classList.add('in'));return;}
@@ -892,6 +1253,7 @@ window.addEventListener('scroll',()=>{ if(!progTicking){ requestAnimationFrame((
   els.forEach(e=>io.observe(e));
 })();
  
+/* ---- Counters ---- */
 (function counters(){
   const nums=document.querySelectorAll('.num[data-count]');
   const fmt=(v,d)=>d>0?v.toFixed(d):Math.round(v).toString();
@@ -905,6 +1267,7 @@ window.addEventListener('scroll',()=>{ if(!progTicking){ requestAnimationFrame((
   nums.forEach(n=>io.observe(n));
 })();
  
+/* ---- Card 3D tilt + glare ---- */
 (function tilt(){
   if(REDUCE||!FINE) return;
   document.querySelectorAll('.member-card').forEach(card=>{
@@ -918,6 +1281,7 @@ window.addEventListener('scroll',()=>{ if(!progTicking){ requestAnimationFrame((
   });
 })();
  
+/* ---- Custom cursor + spotlight ---- */
 let MX=window.innerWidth/2, MY=window.innerHeight/2;
 if(FINE && !REDUCE){
   document.body.classList.add('fx');
@@ -935,6 +1299,7 @@ if(FINE && !REDUCE){
   window.addEventListener('pointermove',e=>{MX=e.clientX;MY=e.clientY;},{passive:true});
 }
  
+/* ---- Gold sparkle trail ---- */
 if(FINE && !REDUCE){
   const box=document.getElementById('sparkles'); let last=0;
   window.addEventListener('pointermove',e=>{
@@ -947,6 +1312,7 @@ if(FINE && !REDUCE){
   },{passive:true});
 }
  
+/* ---- Magnetic elements ---- */
 if(FINE && !REDUCE){
   document.querySelectorAll('.magnet').forEach(el=>{
     const strength=el.classList.contains('btn')?0.35:0.5;
@@ -957,6 +1323,7 @@ if(FINE && !REDUCE){
   });
 }
  
+/* ---- Click ripple ---- */
 if(!REDUCE){
   document.querySelectorAll('.btn').forEach(btn=>{
     btn.addEventListener('click',e=>{const r=btn.getBoundingClientRect();const s=document.createElement('span');
@@ -965,6 +1332,7 @@ if(!REDUCE){
   });
 }
  
+/* ---- Hero parallax on scroll ---- */
 if(!REDUCE){
   const hi=document.getElementById('heroInner');
   let heroTicking=false;
@@ -973,11 +1341,12 @@ if(!REDUCE){
   window.addEventListener('scroll',()=>{ if(!heroTicking){ requestAnimationFrame(()=>{applyParallax();heroTicking=false;}); heroTicking=true; } },{passive:true});
 }
  
+/* ---- 3D golden star hero ---- */
 (function hero3d(){
   const canvas=document.getElementById('star-canvas');
   if(!canvas||typeof THREE==='undefined') return;
   let W=innerWidth,H=innerHeight;
-  const lite = !window.matchMedia('(pointer:fine)').matches;
+  const lite = !window.matchMedia('(pointer:fine)').matches; /* touch device: lighten the scene */
   const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:!lite,powerPreference:'low-power'});
   renderer.setPixelRatio(Math.min(devicePixelRatio||1, lite?1.5:2)); renderer.setSize(W,H); renderer.setClearColor(0x000000,0);
   const scene=new THREE.Scene();
@@ -1008,12 +1377,17 @@ if(!REDUCE){
   let cx=0,cy=0,t=0,pageVisible=true,inView=true,contextLost=false;
   document.addEventListener('visibilitychange',()=>{pageVisible=!document.hidden; if(pageVisible)loop();});
 
+  /* Pause the render loop entirely once the hero has scrolled out of view — it was
+     previously rendering every single frame forever, even far down the page, which
+     wasted battery/GPU and contributed to scroll jank on phones. */
   if('IntersectionObserver' in window){
     new IntersectionObserver(entries=>{
       entries.forEach(en=>{ inView=en.isIntersecting; if(inView) loop(); });
     },{threshold:0}).observe(canvas);
   }
 
+  /* WebGL contexts get reclaimed by mobile browsers under memory pressure — without
+     handling this the canvas is left showing a blank/white star forever. Recover it. */
   canvas.addEventListener('webglcontextlost',e=>{ e.preventDefault(); contextLost=true; },false);
   canvas.addEventListener('webglcontextrestored',()=>{ contextLost=false; loop(); },false);
 
@@ -1032,12 +1406,15 @@ if(!REDUCE){
     renderer.render(scene,camera);
   }
 
+  /* Debounced resize: mobile browsers fire resize repeatedly while the address bar
+     collapses/expands during scrolling. Calling renderer.setSize() on every one of
+     those re-allocates WebGL framebuffers and was a major cause of scroll stutter/freeze. */
   let resizeTimer=null;
   window.addEventListener('resize',()=>{
     clearTimeout(resizeTimer);
     resizeTimer=setTimeout(()=>{
       const nw=innerWidth, nh=innerHeight;
-      if(nw===W && Math.abs(nh-H)<80) return;
+      if(nw===W && Math.abs(nh-H)<80) return; /* ignore pure URL-bar height jitter */
       W=nw;H=nh;camera.aspect=W/H;camera.updateProjectionMatrix();renderer.setSize(W,H);
     },200);
   },{passive:true});
@@ -1046,14 +1423,22 @@ if(!REDUCE){
 })();
 </script>
 <script>
+/* ---------- Ultra Advanced Intelligence ---------- */
 (function ultraCommand(){
   const panel = document.getElementById('rankList');
   const search = document.getElementById('memberSearch');
   const empty = document.getElementById('emptyState');
   if(!panel || !search) return;
 
-  const all = MEMBERS.map(m=>({...m, leader:false}));
+  let all = MEMBERS.map(m=>({...m, leader:false}));
   let data=[...all], filter='all';
+
+  window.refreshCommandCenter = function(){
+    all = MEMBERS.map(m=>({...m, leader:false}));
+    data=[...all]; filter='all'; search.value='';
+    document.querySelectorAll('.filter-chip').forEach((x,i)=>x.classList.toggle('active',i===0));
+    updateIntel(); draw();
+  };
 
   const secs=s=>{const p=s.split(':').map(Number);return p.length===3?p[0]*3600+p[1]*60+p[2]:p[0]*60+p[1]}
   const ahtSecs=s=>s==='—'?99999:secs(s);
@@ -1113,6 +1498,7 @@ if(!REDUCE){
   document.getElementById('sortAht').addEventListener('click',()=>{data.sort((a,b)=>ahtSecs(a.aht)-ahtSecs(b.aht));draw()});
   document.getElementById('resetView').addEventListener('click',()=>{data=[...all];filter='all';search.value='';document.querySelectorAll('.filter-chip').forEach((x,i)=>x.classList.toggle('active',i===0));draw()});
 
+  /* ---- Export current view to CSV (desktop power-user feature) ---- */
   document.getElementById('exportCsv')?.addEventListener('click',()=>{
     const rows=visible();
     if(!rows.length) return;
@@ -1149,11 +1535,12 @@ if(!REDUCE){
       const modal=document.getElementById('memberModal');
       modal.classList.remove('open');modal.setAttribute('aria-hidden','true');
     } finally {
-      document.body.style.overflow='';
+      document.body.style.overflow=''; /* always release the scroll-lock, even if something above throws */
     }
   }
   document.querySelectorAll('[data-close-modal]').forEach(x=>x.addEventListener('click',closeProfile));
 
+  /* Click the ID line in a profile to copy it (Cube/DG ID) — handy for CSR lookups */
   const modalRoleEl=document.getElementById('modalRole');
   if(modalRoleEl){
     modalRoleEl.style.cursor='pointer';
@@ -1165,7 +1552,7 @@ if(!REDUCE){
         const prev=modalRoleEl.textContent;
         modalRoleEl.textContent='Copied ✓';
         setTimeout(()=>{ modalRoleEl.textContent=prev; },1100);
-      }catch(_){/* Team Elite Star */}
+      }catch(_){/* clipboard unavailable, ignore silently */}
     });
   }
 
@@ -1185,10 +1572,15 @@ if(!REDUCE){
 })();
 
 
+/* ---------- Ultra Interaction Engine ---------- */
 (function ultraInteractionEngine(){
   const $ = (s,root=document)=>root.querySelector(s);
   const $$ = (s,root=document)=>[...root.querySelectorAll(s)];
 
+  /* Shared tap binder: on touch devices a click normally follows touchend, which would
+     fire toggle-style handlers (sound, glow) twice. This runs the handler once on
+     touchend (preventing the trailing synthetic click) and falls back to click for
+     mouse/keyboard/trackpad input. */
   function bindTap(el, handler){
     if(!el) return;
     let touched=false;
@@ -1204,6 +1596,7 @@ if(!REDUCE){
     });
   }
 
+  /* Reliable top button: works even when smooth scrolling is unavailable. */
   const topBtn = $('#topBtn');
   const goTop = () => {
     try{ window.scrollTo({top:0,left:0,behavior:'smooth'}); }
@@ -1213,6 +1606,13 @@ if(!REDUCE){
   };
   bindTap(topBtn, goTop);
 
+  /* Audio: best-effort autoplay + first-gesture fallback due to browser autoplay policies.
+     Uses Web Audio generated ambience, so there is no external music file dependency.
+     Two independent layers share one AudioContext:
+       - soundOn:   the continuous soft ambient pad (endless loop) — toggled by the sound button.
+       - uiSoundOn: short click/touch/hover tones on cards & buttons — on by default,
+                    and plays straight to the output so it works even if the ambient
+                    pad is muted or hasn't been unlocked yet. */
   const soundBtn=$('#soundBtn'), audioHint=$('#audioHint'), enableSound=$('#enableSound');
   let audioCtx=null, master=null, ambientTimer=null, soundOn=false, uiSoundOn=true, primed=false;
 
@@ -1240,6 +1640,8 @@ if(!REDUCE){
     osc.connect(g);g.connect(master);osc.start(audioCtx.currentTime+when);osc.stop(audioCtx.currentTime+when+duration+0.05);
   }
 
+  /* Plays a short UI tone straight to the destination (bypassing the ambience
+     gain node), so tapping a card or button always gives feedback. */
   function uiTone(freq, duration, gain=0.022, type='sine'){
     if(!uiSoundOn || !ensureAudioCtx()) return;
     const osc=audioCtx.createOscillator(), g=audioCtx.createGain();
@@ -1262,6 +1664,7 @@ if(!REDUCE){
     master.gain.cancelScheduledValues(audioCtx.currentTime);
     master.gain.linearRampToValueAtTime(0.020,audioCtx.currentTime+2.2);
 
+    /* Gentle endless harmonic bed: deliberately extremely quiet. */
     clearInterval(ambientTimer);
     const sequence=[261.63,329.63,392.00,523.25,392.00,329.63];
     let step=0;
@@ -1294,6 +1697,7 @@ if(!REDUCE){
   bindTap(soundBtn, toggleSound);
   bindTap(enableSound, (e)=>{e.stopPropagation();startAmbience();});
 
+  /* Try immediately when the page is entered. Modern browsers may block it; first interaction then unlocks it. */
   setTimeout(()=>{
     const ok=startAmbience();
     if(!ok && audioHint){
@@ -1310,9 +1714,12 @@ if(!REDUCE){
   document.addEventListener('pointerdown',unlockOnce,{passive:true});
   document.addEventListener('keydown',unlockOnce,{passive:true});
 
+  /* Ambient glow dock button — same touch-safe binder as sound/top. */
   const themeGlow=$('#themeGlow');
   bindTap(themeGlow, ()=>document.body.classList.toggle('glow-off'));
 
+  /* Keyboard shortcuts: Home -> scroll to top, S -> toggle ambience.
+     Skipped while typing in the search field or any other text input. */
   document.addEventListener('keydown', e=>{
     const tag=(e.target && e.target.tagName || '').toLowerCase();
     if(tag==='input' || tag==='textarea' || e.target?.isContentEditable) return;
@@ -1320,6 +1727,7 @@ if(!REDUCE){
     else if(e.key.toLowerCase()==='s' && !e.metaKey && !e.ctrlKey && !e.altKey){ toggleSound(); }
   });
 
+  /* Subtle interaction sounds for hover, focus, touch and clicks — independent of the ambience toggle. */
   let lastHover=0;
   const interactive='a,button,.btn,.member-card,.pillar,.intel-card,.filter-chip,.mini-btn,.profile-btn,.dock-btn,.tab-btn,.sheet-item';
   document.addEventListener('pointerover',e=>{
@@ -1345,6 +1753,7 @@ if(!REDUCE){
     }
   },{passive:true});
 
+  /* Touch feedback without interfering with native clicks. */
   document.addEventListener('touchstart',e=>{
     const t=e.touches[0], el=e.target.closest(interactive);
     if(!el) return;
@@ -1354,6 +1763,7 @@ if(!REDUCE){
     setTimeout(()=>r.remove(),700);
   },{passive:true});
 
+  /* Better scroll reveal: stagger cards by row. */
   if('IntersectionObserver' in window && !REDUCE){
     const obs=new IntersectionObserver(entries=>{
       entries.forEach(entry=>{
@@ -1368,6 +1778,7 @@ if(!REDUCE){
     });
   }
 
+  /* Fix command panel's dynamic list after it re-renders by applying stagger vars. */
   const rankList=$('#rankList');
   if(rankList){
     const mo=new MutationObserver(()=>{
@@ -1379,6 +1790,7 @@ if(!REDUCE){
 
 </script>
 
+<!-- ===== Mobile App-Shell Script (additive — does not modify any function above) ===== -->
 <script>
 (function mobileAppExperience(){
   const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
@@ -1387,6 +1799,14 @@ if(!REDUCE){
     try{ if('vibrate' in navigator) navigator.vibrate(ms); }catch(_){/* silent */}
   }
 
+  /* ---- Live screen-mode detection ----
+     One responsive document adapts instead of shipping two separate pages:
+     the mobile app-shell (tab-bar, action sheet, PWA install) shows under 860px,
+     the desktop layout (quick-dock, hover cursor, wide grids) shows above it —
+     all driven by CSS media queries already in this file. This just exposes the
+     current mode as html[data-mode] / html.is-mobile / html.is-desktop so any
+     future script or CSS can hook into it, and keeps it correct live if someone
+     resizes the window or rotates/docks a tablet — no reload needed. */
   const screenModeQuery = window.matchMedia('(max-width:860px)');
   function applyScreenMode(mql){
     const mobile = mql.matches;
@@ -1397,9 +1817,11 @@ if(!REDUCE){
   applyScreenMode(screenModeQuery);
   (screenModeQuery.addEventListener ? screenModeQuery.addEventListener.bind(screenModeQuery) : screenModeQuery.addListener.bind(screenModeQuery))('change', applyScreenMode);
 
+  /* ---- Standalone (installed) app detection ---- */
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
   if(isStandalone) document.body.classList.add('standalone-app');
 
+  /* ---- Snappier repeat visits: skip long preloader once already seen this session ---- */
   try{
     if(sessionStorage.getItem('tes_visited')){
       const p=document.getElementById('preloader');
@@ -1407,8 +1829,9 @@ if(!REDUCE){
     }else{
       sessionStorage.setItem('tes_visited','1');
     }
-  }catch(_){/* Team Elite Star */}
+  }catch(_){/* storage unavailable, ignore */}
 
+  /* ---- Bottom tab-bar navigation ---- */
   const tabbar=$('#appTabbar');
   if(tabbar){
     const tabs=$$('.tab-btn[data-target]',tabbar);
@@ -1440,6 +1863,7 @@ if(!REDUCE){
     }
   }
 
+  /* ---- "More" action sheet ---- */
   const moreBtn=$('#moreTabBtn'), sheet=$('#actionSheet'), sheetBackdrop=$('#sheetBackdrop');
   function openSheet(){
     if(!sheet||!sheetBackdrop) return;
@@ -1458,10 +1882,12 @@ if(!REDUCE){
   sheetBackdrop?.addEventListener('click',closeSheet);
   document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeSheet(); });
 
+  /* Sheet items proxy the existing, already-working dock buttons — no duplicate logic */
   $('#sheetSound')?.addEventListener('click',()=>{ haptic(12); $('#soundBtn')?.click(); closeSheet(); });
   $('#sheetGlow')?.addEventListener('click',()=>{ haptic(12); $('#themeGlow')?.click(); closeSheet(); });
   $('#sheetTop')?.addEventListener('click',()=>{ haptic(12); $('#topBtn')?.click(); closeSheet(); });
 
+  /* ---- PWA install prompt ---- */
   let deferredPrompt=null;
   const installBtn=$('#sheetInstall'), iosHint=$('#sheetIosHint');
   window.addEventListener('beforeinstallprompt',e=>{
@@ -1481,19 +1907,21 @@ if(!REDUCE){
   const isIOS=/iP(hone|ad|od)/.test(navigator.userAgent) || (navigator.platform==='MacIntel' && navigator.maxTouchPoints>1);
   if(isIOS && !isStandalone && iosHint) iosHint.hidden=false;
 
+  /* ---- Swipe-down-to-close: member modal (reuses existing closeProfile via its backdrop) ---- */
   function bindSwipeClose(panelSelector, triggerClose){
     const panel=$(panelSelector);
     if(!panel) return;
     let startY=0, dy=0, dragging=false, eligible=false;
     panel.addEventListener('touchstart',e=>{
       startY=e.touches[0].clientY; dy=0; dragging=false;
-
+      /* Only allow a drag-to-close when the panel is already scrolled to the top —
+         otherwise this would hijack normal scrolling of the modal's content. */
       eligible = panel.scrollTop<=0;
     },{passive:true});
     panel.addEventListener('touchmove',e=>{
       if(!eligible) return;
       const rawDy=e.touches[0].clientY-startY;
-      if(rawDy<=0){ dragging=false; return; }
+      if(rawDy<=0){ dragging=false; return; } /* scrolling up/within content — let it scroll natively */
       dragging=true; panel.classList.add('dragging');
       dy=rawDy;
       panel.style.transform=`translateY(${dy}px)`;
@@ -1510,6 +1938,7 @@ if(!REDUCE){
   bindSwipeClose('.modal-card', ()=>{ $('[data-close-modal]')?.click(); });
   bindSwipeClose('#actionSheet', closeSheet);
 
+  /* ---- Light haptic feedback for app-shell controls ---- */
   ['#navToggle','#soundBtn','#themeGlow','#topBtn'].forEach(sel=>{
     $(sel)?.addEventListener('click',()=>haptic(8));
   });
