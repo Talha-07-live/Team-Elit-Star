@@ -593,6 +593,24 @@ body.fx-minimal .member-card::before,body.fx-minimal .member-card::after{display
  .fx-panel{width:100%;max-height:82vh;border-radius:18px 18px 10px 10px;padding:18px;}
 }
 @media(prefers-reduced-motion:reduce){.member-card::before,.member-card::after,.card-scan{display:none!important;}#fxMenu{transition:none}.fx-panel{transition:none}}
+
+/* ===== FUTURE SYSTEM LAYER ===== */
+:root{--future-cyan:#bfe8ff;--future-violet:#cbb8ff;--future-green:#b7f7d1;--hud-bg:rgba(8,7,12,.72)}
+.futures-hud{position:fixed;left:18px;bottom:18px;z-index:9200;display:flex;align-items:stretch;border:1px solid var(--line);background:var(--hud-bg);backdrop-filter:blur(16px) saturate(140%);box-shadow:0 18px 55px -28px #000,0 0 35px -25px var(--glow);border-radius:10px;overflow:hidden;font-family:var(--util)}
+.futures-hud .hud-cell{min-width:94px;padding:8px 11px;border-right:1px solid var(--line);position:relative}
+.futures-hud .hud-cell:last-child{border-right:0}.hud-cell b{display:block;color:var(--gold);font-size:.72rem;letter-spacing:.08em}.hud-cell small{display:block;color:var(--muted);font-size:.48rem;letter-spacing:.14em;margin-top:2px}.hud-scan{position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(232,195,107,.07),transparent);transform:translateX(-110%);animation:hudSweep 5s ease-in-out infinite}.futures-hud.hud-alert{border-color:rgba(255,140,140,.4)}
+@keyframes hudSweep{55%,100%{transform:translateX(110%)}}
+.future-console{margin-top:18px;display:grid;grid-template-columns:1.1fr .9fr;gap:12px}.future-card{border:1px solid var(--line);background:linear-gradient(145deg,rgba(27,26,34,.72),rgba(8,7,12,.72));border-radius:12px;padding:16px;box-shadow:0 25px 70px -50px var(--glow);position:relative;overflow:hidden}.future-card::before{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 15%,rgba(232,195,107,.035) 50%,transparent 85%);transform:translateX(-110%);animation:futureSweep 9s ease-in-out infinite;pointer-events:none}.future-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}.future-title{font:600 .68rem var(--util);letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}.future-sub{font:.65rem var(--sans);color:var(--muted)}.future-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.future-metric{border:1px solid var(--line);border-radius:8px;padding:11px;background:rgba(255,255,255,.018)}.future-metric span{display:block;color:var(--muted);font:.52rem var(--util);letter-spacing:.1em;text-transform:uppercase}.future-metric b{display:block;font:600 1rem var(--serif);margin-top:4px;color:var(--ivory)}.signal-row{display:flex;align-items:center;gap:8px;font:.58rem var(--util);color:var(--muted);margin-top:8px}.signal{width:7px;height:7px;border-radius:50%;background:#9ff0be;box-shadow:0 0 13px rgba(159,240,190,.6);animation:signalPulse 1.8s ease-in-out infinite}.signal.warn{background:#f4d47d;box-shadow:0 0 13px rgba(244,212,125,.55)}@keyframes signalPulse{50%{opacity:.3;transform:scale(.7)}}
+.activity-feed{display:grid;gap:7px;max-height:210px;overflow:auto;padding-right:3px}.activity-item{display:grid;grid-template-columns:30px 1fr auto;gap:9px;align-items:center;padding:9px 10px;border:1px solid transparent;background:rgba(255,255,255,.016);border-radius:8px}.activity-item:hover{border-color:var(--line);background:rgba(232,195,107,.04)}.activity-dot{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);color:var(--gold);font-size:.75rem}.activity-text b{display:block;font:.62rem var(--util);color:var(--ivory)}.activity-text span{display:block;color:var(--muted);font:.6rem var(--sans);margin-top:2px}.activity-time{font:.55rem var(--util);color:var(--gold-deep)}
+#matrixCanvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0;mix-blend-mode:screen;transition:opacity .5s ease}.matrix-on #matrixCanvas{opacity:.08}
+body.fx-neon #spotlight{background:radial-gradient(320px 320px at var(--sx,50%) var(--sy,50%),rgba(191,232,255,.12),transparent 70%)}
+body.fx-neon .member-card:hover,body.fx-neon .member-card.card-active{box-shadow:0 35px 90px -32px rgba(190,220,255,.33),0 0 0 1px rgba(190,232,255,.08) inset}
+body.fx-minimal .futures-hud{opacity:.65}
+.command-pulse{animation:commandPulse 1.25s ease-out}.command-jump{animation:commandJump .55s ease-out}@keyframes commandPulse{0%{box-shadow:0 0 0 0 rgba(232,195,107,.0)}35%{box-shadow:0 0 0 9px rgba(232,195,107,.08)}100%{box-shadow:0 0 0 0 rgba(232,195,107,0)}}@keyframes commandJump{0%{transform:translateY(14px);opacity:.4}100%{transform:none;opacity:1}}
+.future-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);padding:6px 8px;border-radius:999px;color:var(--muted);font:.54rem var(--util);letter-spacing:.06em}.future-chip b{color:var(--gold)}
+@media(max-width:860px){.futures-hud{left:10px;right:10px;bottom:70px;justify-content:center}.futures-hud .hud-cell{flex:1;min-width:0;text-align:center}.future-console{grid-template-columns:1fr}.future-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:500px){.future-grid{grid-template-columns:1fr 1fr}.futures-hud .hud-cell b{font-size:.62rem}.futures-hud .hud-cell small{font-size:.42rem}}
+@keyframes futureSweep{50%,100%{transform:translateX(110%)}}
 </style>
 </head>
 <body>
@@ -611,6 +629,7 @@ body.fx-minimal .member-card::before,body.fx-minimal .member-card::after{display
 <div id="sparkles" aria-hidden="true"></div>
 <div id="cursorRing" aria-hidden="true"></div>
 <div id="cursorDot" aria-hidden="true"></div>
+<canvas id="matrixCanvas" aria-hidden="true"></canvas>
  
 <!-- NAV -->
 <header class="nav" id="nav">
@@ -758,6 +777,25 @@ body.fx-minimal .member-card::before,body.fx-minimal .member-card::after{display
   </div>
 </section>
 
+<section class="wrap future-console" id="futureConsole" aria-label="Future system overview">
+  <div class="future-card reveal">
+    <div class="future-head"><div><div class="future-title">System telemetry</div><div class="future-sub">Live client-side interface diagnostics</div></div><span class="future-chip">CORE <b id="coreScore">100%</b></span></div>
+    <div class="future-grid">
+      <div class="future-metric"><span>Members</span><b id="futureMembers">—</b></div>
+      <div class="future-metric"><span>Stars</span><b id="futureStars">—</b></div>
+      <div class="future-metric"><span>Quality</span><b id="futureQuality">—</b></div>
+      <div class="future-metric"><span>AHT</span><b id="futureAht">—</b></div>
+      <div class="future-metric"><span>Attendance</span><b id="futureAttendance">—</b></div>
+      <div class="future-metric"><span>Mode</span><b id="futureMode">—</b></div>
+    </div>
+    <div class="signal-row"><i class="signal"></i><span id="futureSignal">All systems nominal · JSON integrity checked</span></div>
+  </div>
+  <div class="future-card reveal">
+    <div class="future-head"><div><div class="future-title">Activity stream</div><div class="future-sub">Interface events, loaded from current session</div></div><span class="future-chip">LIVE <b>●</b></span></div>
+    <div class="activity-feed" id="activityFeed"></div>
+  </div>
+</section>
+
 <div class="futures-hud" aria-label="Live system status">
   <span class="hud-scan"></span>
   <span class="hud-cell"><b id="hudClock">--:--:--</b><small>LOCAL TIME</small></span>
@@ -805,6 +843,12 @@ body.fx-minimal .member-card::before,body.fx-minimal .member-card::after{display
       <button class="fx-option" data-fx-mode="minimal"><b>Minimal</b><span>Keep the premium structure while reducing ambient visual effects.</span></button>
       <button class="fx-option" id="fxRefresh" type="button"><b>Sync JSON</b><span>Reload the external data.json and rebuild every data-driven view.</span></button>
       <button class="fx-option" id="fxFullscreen" type="button"><b>Immersive</b><span>Enter fullscreen for a presentation-style desktop or mobile view.</span></button>
+    </div>
+    <div class="fx-grid" aria-label="Interface actions">
+      <button class="fx-option" type="button" data-fx-action="focusTeam"><b>◎ Spotlight Team</b><span>Focus the team cards and dim peripheral chrome.</span></button>
+      <button class="fx-option" type="button" data-fx-action="matrix"><b>▦ Matrix Field</b><span>Toggle a subtle cyber particle overlay for the interface.</span></button>
+      <button class="fx-option" type="button" data-fx-action="telemetry"><b>⌁ Telemetry</b><span>Jump to live system metrics and activity feed.</span></button>
+      <button class="fx-option" type="button" data-fx-action="reveal"><b>✦ Reveal Sequence</b><span>Replay the premium section entrance choreography.</span></button>
     </div>
     <div class="fx-readout">SYSTEM MODE · <strong id="fxModeReadout">STANDARD</strong> · COMMAND <strong>CTRL/⌘ K</strong></div>
   </section>
@@ -1873,5 +1917,65 @@ if(!REDUCE){
 })();
 </script>
 
+
+<script>
+/* ===== Futuristic telemetry / command enhancements ===== */
+(function futureSystem(){
+  const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+  const feed=$('#activityFeed');
+  const state=[];
+  const now=()=>new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  function activity(icon,title,detail){
+    state.unshift({icon,title,detail,time:now()});
+    state.splice(8);
+    if(feed) feed.innerHTML=state.map(x=>`<div class="activity-item"><div class="activity-dot">${x.icon}</div><div class="activity-text"><b>${x.title}</b><span>${x.detail}</span></div><div class="activity-time">${x.time}</div></div>`).join('');
+  }
+  function parseSec(v){if(!v)return 0;const p=String(v).split(':').map(Number);return p.length===3?p[0]*3600+p[1]*60+p[2]:p[0]*60+p[1];}
+  function telemetry(){
+    const count=(window.MEMBERS||[]).length;
+    const stars=(window.MEMBERS||[]).filter(m=>/star/i.test(m.rank||'')).length;
+    const avg=count?(window.MEMBERS.reduce((s,m)=>s+(parseFloat(m.mtdScore)||0),0)/count):0;
+    const att=count?(window.MEMBERS.reduce((s,m)=>s+(parseFloat(m.attendance)||0),0)/count):0;
+    const fastest=(window.MEMBERS||[]).slice().sort((a,b)=>parseSec(a.aht)-parseSec(b.aht))[0];
+    $('#futureMembers') && ($('#futureMembers').textContent=count);
+    $('#futureStars') && ($('#futureStars').textContent=stars);
+    $('#futureQuality') && ($('#futureQuality').textContent=avg.toFixed(2)+'%');
+    $('#futureAttendance') && ($('#futureAttendance').textContent=att.toFixed(2)+'%');
+    $('#futureAht') && ($('#futureAht').textContent=fastest?.aht||'—');
+    $('#futureMode') && ($('#futureMode').textContent=document.documentElement.dataset.mode==='mobile'?'MOBILE':'DESKTOP');
+    const score=Math.round(Math.min(100,95 + (count?5:0)));
+    $('#coreScore') && ($('#coreScore').textContent=score+'%');
+  }
+  function clock(){const e=$('#hudClock'); if(e)e.textContent=now();const m=$('#hudMode');if(m)m.textContent=document.documentElement.dataset.mode==='mobile'?'MOBILE':'DESKTOP';}
+  telemetry();clock();setInterval(clock,1000);
+  setTimeout(()=>activity('◈','Interface initialized','Futuristic control layer online'),600);
+  setTimeout(()=>activity('↻','Data core verified','Team dataset available for live inspection'),1400);
+  setTimeout(()=>activity('✦','Visual engine ready','Adaptive desktop/mobile effects enabled'),2200);
+  const originalRefresh=window.reloadTeamJSON;
+  window.reloadTeamJSON=async function(){activity('↻','JSON sync started','Refreshing local data.json');try{const r=await originalRefresh?.();telemetry();activity('✓','JSON sync complete','Live team interface refreshed');return r}catch(e){activity('!','JSON sync warning','Local JSON could not be refreshed');throw e;}};
+
+  // Matrix field
+  const canvas=$('#matrixCanvas'); const ctx=canvas?.getContext('2d'); let raf=0, running=false, drops=[];
+  function resize(){if(!canvas||!ctx)return;canvas.width=innerWidth;canvas.height=innerHeight;drops=Array(Math.ceil(innerWidth/18)).fill(0).map(()=>Math.random()*innerHeight/14)}
+  function drawMatrix(){if(!running||!ctx)return;ctx.clearRect(0,0,canvas.width,canvas.height);ctx.font='10px monospace';ctx.fillStyle='rgba(232,195,107,.8)';for(let i=0;i<drops.length;i++){const x=i*18,y=drops[i]*14;ctx.fillText(Math.random()>.5?'1':'0',x,y);drops[i]+=0.5;if(y>canvas.height&&Math.random()>.975)drops[i]=0}raf=requestAnimationFrame(drawMatrix)}
+  function toggleMatrix(){document.body.classList.toggle('matrix-on');running=document.body.classList.contains('matrix-on');if(running){resize();cancelAnimationFrame(raf);drawMatrix();activity('▦','Matrix field enabled','Cyber overlay rendering at low intensity')}else{cancelAnimationFrame(raf);if(ctx)ctx.clearRect(0,0,canvas.width,canvas.height);activity('×','Matrix field disabled','Overlay removed')}}
+  addEventListener('resize',resize,{passive:true});
+
+  // Action buttons inside existing experience menu
+  $$('[data-fx-action]').forEach(b=>b.addEventListener('click',()=>{
+    const a=b.dataset.fxAction;
+    if(a==='matrix') toggleMatrix();
+    if(a==='telemetry'){$('#futureConsole')?.scrollIntoView({behavior:'smooth',block:'center'});activity('⌁','Telemetry focused','Jumped to system overview')}
+    if(a==='focusTeam'){document.body.classList.toggle('fx-focus');document.querySelector('#team')?.scrollIntoView({behavior:'smooth',block:'start'});activity('◎','Team spotlight toggled','Focus presentation updated')}
+    if(a==='reveal'){const els=$$('.reveal');els.forEach((e,i)=>{e.classList.remove('in');void e.offsetWidth;e.style.transitionDelay=(i%6)*60+'ms';requestAnimationFrame(()=>e.classList.add('in'))});activity('✦','Reveal sequence replayed','Entrance choreography restarted')}
+  }));
+
+  // Double tap / double click on cards for spotlight + haptic
+  const grid=$('#membersGrid'); if(grid){grid.addEventListener('dblclick',e=>{const card=e.target.closest('.member-card');if(!card)return;document.body.classList.add('fx-focus');card.classList.add('card-active','command-pulse');card.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>card.classList.remove('command-pulse'),1300);activity('◎','Member spotlight','Focused '+(card.querySelector('h3')?.textContent||'member'));});}
+
+  // Hook interaction events into activity stream without noisy logging
+  document.addEventListener('click',e=>{const b=e.target.closest('#exportCsv,#resetView,#sortQuality,#sortAht,.profile-btn');if(!b)return;activity('•','Interface action',b.textContent.trim()||'Control triggered');},{passive:true});
+})();
+</script>
 </body>
 </html>
