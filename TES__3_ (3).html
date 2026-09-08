@@ -336,6 +336,30 @@ body.sound-on .dock-btn#soundBtn::after{
 .btn-primary:hover::after{transform:skewX(-20deg) translateX(650%)}
 
 .command-panel{position:relative;overflow:hidden}
+
+/* ---- Live data status (compact "system telemetry" pill) ---- */
+.command-status{display:inline-flex;align-items:center;gap:8px;margin-top:16px;padding:7px 12px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.02);font:600 .62rem var(--util);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
+.status-dot{width:7px;height:7px;border-radius:50%;background:#8a8578;flex:none;}
+#dataStatus[data-state="live"]{color:#b9e8c4;}
+#dataStatus[data-state="live"] + .data-stamp{color:var(--muted);}
+.command-status:has(#dataStatus[data-state="live"]) .status-dot{background:#7be2a0;box-shadow:0 0 10px rgba(123,226,160,.7);animation:statusPulse 2.4s ease-in-out infinite;}
+#dataStatus[data-state="syncing"]{color:var(--gold);}
+.command-status:has(#dataStatus[data-state="syncing"]) .status-dot{background:var(--gold);animation:statusPulse 1s ease-in-out infinite;}
+#dataStatus[data-state="error"]{color:#ff9c9c;}
+.command-status:has(#dataStatus[data-state="error"]) .status-dot{background:#ff8a8a;}
+@keyframes statusPulse{50%{opacity:.35;transform:scale(.75);}}
+.data-stamp{color:var(--muted);font-weight:500;letter-spacing:.04em;text-transform:none;}
+#statusRefresh{margin-left:2px;border:0;background:none;color:var(--muted);cursor:pointer;font-size:.85rem;line-height:1;padding:2px;border-radius:50%;transition:.2s ease;}
+#statusRefresh:hover{color:var(--gold);transform:rotate(90deg);}
+.data-status-detail{margin-top:6px;font:500 .68rem var(--sans);color:var(--muted);}
+
+.data-loading{grid-column:1/-1;text-align:center;color:var(--muted);padding:50px 10px;font:.85rem var(--sans);letter-spacing:.02em;animation:dataLoadingPulse 1.6s ease-in-out infinite;}
+@keyframes dataLoadingPulse{50%{opacity:.35;}}
+.data-error{grid-column:1/-1;border:1px solid rgba(255,140,140,.28);background:rgba(255,80,80,.04);padding:22px;border-radius:12px;display:grid;gap:8px;color:#e8ded4;font:.82rem var(--sans);}
+.data-error strong{color:#ffb1b1;font:600 1rem var(--serif);}
+.data-error code{color:var(--gold);font-family:var(--util);}
+.data-error .mini-btn{justify-self:start;margin-top:4px;}
+
 .command-panel::after{
   content:"";position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(110deg,transparent 20%,rgba(232,195,107,.035) 50%,transparent 80%);
@@ -416,26 +440,6 @@ body.sound-on .dock-btn#soundBtn::after{
 .modal-bar-track{height:5px;background:#25232b;border-radius:99px;overflow:hidden;margin-top:5px}
 .modal-bar-track i{display:block;height:100%;width:var(--w);background:linear-gradient(90deg,var(--gold-deep),var(--gold-shine))}
 body.glow-off #spotlight,body.glow-off #sparkles{display:none}
-
-/* ---------- Futuristic telemetry HUD + JSON health ---------- */
-.data-status-detail{margin-top:5px;font:500 .56rem var(--util);letter-spacing:.08em;color:#777266}
-.data-stamp{margin-left:10px;color:#777266;font-size:.54rem;letter-spacing:.08em}
-.command-status[data-state="live"],#dataStatus[data-state="live"]{color:#b9ffcf}
-#dataStatus[data-state="cache"]{color:var(--gold)}
-#dataStatus[data-state="error"]{color:#ff9c9c}
-.data-error{grid-column:1/-1;border:1px solid rgba(255,130,130,.28);background:rgba(255,80,80,.035);padding:22px;border-radius:10px;display:grid;gap:7px;color:#d2cbc0;font:.8rem var(--util)}
-.data-error strong{color:#ffb1b1;font-size:.95rem}
-.data-error code{color:var(--gold)}
-.futures-hud{position:fixed;left:20px;bottom:20px;z-index:9190;display:flex;align-items:stretch;gap:1px;border:1px solid var(--line);background:rgba(10,9,14,.68);backdrop-filter:blur(16px) saturate(140%);border-radius:12px;overflow:hidden;box-shadow:0 16px 40px -22px #000}
-.hud-cell{min-width:84px;padding:9px 11px;border-left:1px solid var(--line);display:grid;gap:2px}
-.hud-cell:first-of-type{border-left:0}
-.hud-cell b{font:600 .74rem var(--util);color:var(--gold);letter-spacing:.08em}
-.hud-cell small{font:500 .5rem var(--util);letter-spacing:.14em;color:var(--muted)}
-.hud-scan{width:3px;align-self:stretch;background:linear-gradient(180deg,transparent,var(--gold),transparent);animation:hudScan 2.2s ease-in-out infinite}
-@keyframes hudScan{50%{opacity:.25;transform:translateY(3px)}}
-@media(max-width:860px){.futures-hud{left:12px;bottom:76px;right:12px;justify-content:center}.hud-cell{flex:1;min-width:0;text-align:center}.data-stamp{display:none}}
-@media(max-width:520px){.hud-cell{padding:7px 6px}.hud-cell b{font-size:.65rem}.hud-cell small{font-size:.44rem}}
-
 @media(max-width:800px){.command-grid{grid-template-columns:1fr}.filter-box{justify-content:flex-start}.intel-grid{grid-template-columns:repeat(2,1fr)}.rank-row{grid-template-columns:24px 1fr auto auto;gap:10px}.rank-row .rank-meta,.rank-row .rank-bar{display:none}}
 @media(max-width:500px){.command-panel{padding:13px}.intel-grid{grid-template-columns:1fr 1fr}.modal-card{padding:20px}.modal-metrics{grid-template-columns:1fr 1fr}.rank-row{gap:7px}.rank-name{font-size:.84rem}}
 
@@ -523,6 +527,52 @@ body.standalone-app .app-tabbar{padding-bottom:calc(10px + env(safe-area-inset-b
 .modal-kbd-hint{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font:500 .62rem var(--util);letter-spacing:.04em;color:var(--muted);text-align:center;display:none;}
 @media (pointer:fine){.modal-kbd-hint{display:block;}}
 
+/* ===== Experience Menu (Ctrl/⌘K) — appearance modes + live telemetry ===== */
+#matrixCanvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0;mix-blend-mode:screen;transition:opacity .6s ease;}
+body.matrix-on #matrixCanvas{opacity:.09;}
+
+.fx-backdrop{position:fixed;inset:0;z-index:11000;background:rgba(3,3,6,.72);backdrop-filter:blur(14px) saturate(120%);opacity:0;visibility:hidden;transition:opacity .25s ease,visibility .25s ease;}
+.fx-menu{position:fixed;inset:0;z-index:11001;display:grid;place-items:center;padding:24px;opacity:0;visibility:hidden;transition:opacity .25s ease,visibility .25s ease;}
+.fx-menu.open{opacity:1;visibility:visible;}
+#fxBackdrop.open{opacity:1;visibility:visible;}
+.fx-panel{position:relative;width:min(560px,100%);max-height:min(720px,88vh);overflow:auto;border:1px solid rgba(232,195,107,.32);border-radius:18px;
+  background:linear-gradient(145deg,rgba(25,22,31,.97),rgba(7,6,11,.97));box-shadow:0 50px 140px -45px #000,0 0 70px -38px rgba(232,195,107,.42);
+  padding:24px;transform:translateY(20px) scale(.97);transition:transform .35s cubic-bezier(.2,.8,.2,1);}
+.fx-menu.open .fx-panel{transform:none;}
+.fx-top{display:flex;align-items:center;justify-content:space-between;gap:18px;padding-bottom:16px;border-bottom:1px solid var(--line);}
+.fx-kicker{font:600 .6rem var(--util);letter-spacing:.22em;text-transform:uppercase;color:var(--gold);}
+.fx-title{font:600 clamp(1.35rem,3.4vw,1.8rem) var(--serif);margin:.3rem 0 0;}
+.fx-close{width:36px;height:36px;flex:none;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.02);color:var(--muted);font-size:1.15rem;cursor:pointer;transition:.2s ease;}
+.fx-close:hover{color:var(--gold);border-color:var(--line-strong);}
+.fx-section{margin-top:18px;}
+.fx-label{display:block;font:600 .58rem var(--util);letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-bottom:9px;}
+.fx-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;}
+.fx-option{position:relative;text-align:left;padding:13px 14px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.022);color:var(--ivory);cursor:pointer;transition:.25s ease;}
+.fx-option:hover{border-color:var(--line-strong);background:rgba(232,195,107,.06);}
+.fx-option.active{border-color:rgba(232,195,107,.55);background:rgba(232,195,107,.09);box-shadow:0 12px 32px -22px rgba(232,195,107,.5);}
+.fx-option b{display:block;font:600 .78rem var(--util);letter-spacing:.06em;text-transform:uppercase;color:var(--gold);}
+.fx-option span{display:block;color:var(--muted);font:.72rem var(--sans);margin-top:4px;line-height:1.4;}
+.fx-telemetry{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;}
+.fx-tcell{border:1px solid var(--line);border-radius:8px;padding:10px;background:rgba(255,255,255,.016);}
+.fx-tcell small{display:block;color:var(--muted);font:.5rem var(--util);letter-spacing:.09em;text-transform:uppercase;}
+.fx-tcell b{display:block;font:600 .92rem var(--serif);margin-top:4px;color:var(--ivory);}
+.fx-readout{margin-top:11px;padding:10px 12px;border:1px solid var(--line);border-radius:9px;font:.66rem var(--util);color:var(--muted);letter-spacing:.03em;background:rgba(0,0,0,.15);display:flex;align-items:center;gap:7px;}
+.fx-readout strong{color:var(--gold);font-weight:600;}
+.fx-actions{display:flex;flex-wrap:wrap;gap:8px;}
+
+/* Appearance modes — opt-in only, default "standard" leaves everything exactly as-is */
+body.fx-focus header.nav,body.fx-focus .quick-dock,body.fx-focus .app-tabbar{opacity:.15;pointer-events:none;transition:.4s ease;}
+body.fx-neon{--gold:#f6d77d;--gold-deep:#9f7c1e;--gold-shine:#fff6d8;--line:rgba(246,215,125,.28);--line-strong:rgba(255,238,176,.58);--glow:rgba(246,215,125,.45);}
+body.fx-minimal #spotlight,body.fx-minimal #sparkles,body.fx-minimal #cursorRing{display:none!important;}
+
+@media(max-width:640px){
+  .fx-grid{grid-template-columns:1fr;}
+  .fx-telemetry{grid-template-columns:repeat(2,1fr);}
+  .fx-menu{padding:12px;align-items:end;}
+  .fx-panel{width:100%;max-height:85vh;border-radius:18px 18px 8px 8px;}
+}
+@media(prefers-reduced-motion:reduce){.fx-menu,.fx-panel,.fx-backdrop{transition:none;}}
+
 /* ---- Print stylesheet: clean leaderboard printout, no chrome/decoration ---- */
 @media print{
   header.nav,.quick-dock,.app-tabbar,.sheet-backdrop,.action-sheet,.hero canvas,.hero-veil,
@@ -535,82 +585,6 @@ body.standalone-app .app-tabbar{padding-bottom:calc(10px + env(safe-area-inset-b
   .profile-btn{display:none;}
   a[href]::after{content:none;}
 }
-</style>
-<style id="next-gen-experience-css">
-/* ===== NEXT-GEN CARD + CONTROL LAYER ===== */
-.member-card{position:relative;isolation:isolate;transform-style:preserve-3d;perspective:1100px;transition:transform .16s cubic-bezier(.2,.8,.2,1),box-shadow .35s ease,border-color .35s ease,background .35s ease;}
-.member-card::before{content:"";position:absolute;inset:-1px;border-radius:12px;padding:1px;opacity:0;pointer-events:none;z-index:4;background:conic-gradient(from var(--card-angle,180deg),transparent 0 18%,rgba(252,231,184,.95) 23%,rgba(232,195,107,.15) 34%,transparent 46% 100%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;transition:opacity .35s ease;}
-.member-card::after{content:"";position:absolute;inset:0;border-radius:11px;pointer-events:none;z-index:1;background:radial-gradient(320px 220px at var(--card-x,50%) var(--card-y,20%),rgba(252,231,184,.19),transparent 58%),linear-gradient(120deg,transparent 0 45%,rgba(255,255,255,.055) 50%,transparent 55%);opacity:.0;mix-blend-mode:screen;transition:opacity .35s ease,background-position .25s ease;}
-.member-card>*{position:relative;z-index:3;transform:translateZ(0);transition:transform .18s ease-out;}
-.member-card:hover,.member-card.card-active{border-color:rgba(232,195,107,.55)!important;box-shadow:0 30px 80px -34px rgba(232,195,107,.42),0 0 0 1px rgba(252,231,184,.05) inset;}
-.member-card:hover::before,.member-card.card-active::before,.member-card:hover::after,.member-card.card-active::after{opacity:1;}
-.member-card:hover h3,.member-card.card-active h3{transform:translateZ(28px);}
-.member-card:hover .role,.member-card.card-active .role{transform:translateZ(20px);}
-.member-card:hover .avatar,.member-card.card-active .avatar{transform:translateZ(34px) scale(1.06);box-shadow:0 0 0 5px rgba(232,195,107,.07),0 0 34px rgba(232,195,107,.16),inset 0 0 20px rgba(232,195,107,.15);}
-.member-card .metrics-badge,.member-card .socials{transition:transform .2s ease-out;}
-.member-card:hover .metrics-badge{transform:translateZ(16px);}
-.member-card:hover .socials{transform:translateZ(10px);}
-.member-card.tl-card{box-shadow:0 20px 60px -40px rgba(232,195,107,.18);}
-.member-card .badge{transition:transform .25s ease,background .25s ease,border-color .25s ease;}
-.member-card:hover .badge{border-color:rgba(232,195,107,.35);background:rgba(232,195,107,.10);}
-.card-scan{position:absolute!important;left:10px;right:10px;top:0;height:1px!important;background:linear-gradient(90deg,transparent,rgba(252,231,184,.7),transparent);opacity:0;z-index:5!important;pointer-events:none;transform:translateZ(45px) translateY(-8px)!important;}
-.member-card:hover .card-scan,.member-card.card-active .card-scan{animation:cardScan 1.6s ease-in-out infinite;opacity:.8;}
-@keyframes cardScan{0%{top:4%}50%{top:94%}100%{top:4%}}
-.card-index{position:absolute!important;left:14px;top:12px;font:600 .55rem var(--util);letter-spacing:.16em;color:rgba(232,195,107,.48);z-index:5!important;pointer-events:none;}
-
-/* Desktop command menu */
-#fxMenu{position:fixed;inset:0;z-index:11000;display:grid;place-items:center;padding:24px;opacity:0;visibility:hidden;transition:opacity .25s ease,visibility .25s ease;}
-#fxMenu.open{opacity:1;visibility:visible;}
-.fx-backdrop{position:absolute;inset:0;background:rgba(3,3,6,.72);backdrop-filter:blur(14px) saturate(120%);}
-.fx-panel{position:relative;width:min(760px,100%);max-height:min(760px,88vh);overflow:auto;border:1px solid rgba(232,195,107,.32);border-radius:18px;background:linear-gradient(145deg,rgba(25,22,31,.96),rgba(7,6,11,.96));box-shadow:0 50px 140px -45px #000,0 0 70px -38px rgba(232,195,107,.42);padding:24px;transform:translateY(20px) scale(.97);transition:transform .35s cubic-bezier(.2,.8,.2,1);}
-#fxMenu.open .fx-panel{transform:none;}
-.fx-top{display:flex;align-items:center;justify-content:space-between;gap:18px;padding-bottom:16px;border-bottom:1px solid var(--line);}
-.fx-kicker{font:600 .62rem var(--util);letter-spacing:.22em;text-transform:uppercase;color:var(--gold);}
-.fx-title{font:600 clamp(1.6rem,4vw,2.35rem) var(--serif);margin:.25rem 0 0;}
-.fx-close{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.02);color:var(--muted);font-size:1.2rem;cursor:pointer;}
-.fx-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:18px;}
-.fx-option{position:relative;text-align:left;padding:15px 16px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.025);color:var(--ivory);cursor:pointer;overflow:hidden;transition:.25s ease;}
-.fx-option:hover,.fx-option.active{transform:translateY(-2px);border-color:var(--line-strong);background:rgba(232,195,107,.08);box-shadow:0 12px 35px -24px rgba(232,195,107,.55);}
-.fx-option b{display:block;font:600 .82rem var(--util);letter-spacing:.08em;text-transform:uppercase;color:var(--gold);}
-.fx-option span{display:block;color:var(--muted);font:.78rem var(--sans);margin-top:5px;line-height:1.45;}
-.fx-readout{margin-top:15px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;font:.68rem var(--util);color:var(--muted);letter-spacing:.05em;background:rgba(0,0,0,.15);}
-.fx-readout strong{color:var(--gold);}
-
-/* Modes */
-body.fx-focus header.nav,body.fx-focus .futures-hud,body.fx-focus .quick-dock{opacity:.15;pointer-events:none;transition:.4s ease;}
-body.fx-focus .member-card{filter:saturate(1.08);}
-body.fx-neon{--gold:#f6d77d;--gold-deep:#9f7c1e;--gold-shine:#fff6d8;--line:rgba(246,215,125,.28);--line-strong:rgba(255,238,176,.58);--glow:rgba(246,215,125,.45);}
-body.fx-neon::before{filter:saturate(1.15) contrast(1.02);}
-body.fx-minimal #spotlight,body.fx-minimal #sparkles{display:none!important;}
-body.fx-minimal .member-card::before,body.fx-minimal .member-card::after{display:none;}
-
-@media(max-width:860px){
- .member-card{transition:transform .22s cubic-bezier(.2,.8,.2,1),box-shadow .3s ease,border-color .3s ease;}
- .member-card.card-active{transform:scale(.985)!important;}
- .member-card:active{box-shadow:0 20px 55px -30px rgba(232,195,107,.34);}
- .fx-grid{grid-template-columns:1fr;}
- #fxMenu{padding:10px;align-items:end;}
- .fx-panel{width:100%;max-height:82vh;border-radius:18px 18px 10px 10px;padding:18px;}
-}
-@media(prefers-reduced-motion:reduce){.member-card::before,.member-card::after,.card-scan{display:none!important;}#fxMenu{transition:none}.fx-panel{transition:none}}
-
-/* ===== FUTURE SYSTEM LAYER ===== */
-:root{--future-cyan:#bfe8ff;--future-violet:#cbb8ff;--future-green:#b7f7d1;--hud-bg:rgba(8,7,12,.72)}
-.futures-hud{position:fixed;left:18px;bottom:18px;z-index:9200;display:flex;align-items:stretch;border:1px solid var(--line);background:var(--hud-bg);backdrop-filter:blur(16px) saturate(140%);box-shadow:0 18px 55px -28px #000,0 0 35px -25px var(--glow);border-radius:10px;overflow:hidden;font-family:var(--util)}
-.futures-hud .hud-cell{min-width:94px;padding:8px 11px;border-right:1px solid var(--line);position:relative}
-.futures-hud .hud-cell:last-child{border-right:0}.hud-cell b{display:block;color:var(--gold);font-size:.72rem;letter-spacing:.08em}.hud-cell small{display:block;color:var(--muted);font-size:.48rem;letter-spacing:.14em;margin-top:2px}.hud-scan{position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,transparent,rgba(232,195,107,.07),transparent);transform:translateX(-110%);animation:hudSweep 5s ease-in-out infinite}.futures-hud.hud-alert{border-color:rgba(255,140,140,.4)}
-@keyframes hudSweep{55%,100%{transform:translateX(110%)}}
-.future-console{margin-top:18px;display:grid;grid-template-columns:1.1fr .9fr;gap:12px}.future-card{border:1px solid var(--line);background:linear-gradient(145deg,rgba(27,26,34,.72),rgba(8,7,12,.72));border-radius:12px;padding:16px;box-shadow:0 25px 70px -50px var(--glow);position:relative;overflow:hidden}.future-card::before{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 15%,rgba(232,195,107,.035) 50%,transparent 85%);transform:translateX(-110%);animation:futureSweep 9s ease-in-out infinite;pointer-events:none}.future-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}.future-title{font:600 .68rem var(--util);letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}.future-sub{font:.65rem var(--sans);color:var(--muted)}.future-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.future-metric{border:1px solid var(--line);border-radius:8px;padding:11px;background:rgba(255,255,255,.018)}.future-metric span{display:block;color:var(--muted);font:.52rem var(--util);letter-spacing:.1em;text-transform:uppercase}.future-metric b{display:block;font:600 1rem var(--serif);margin-top:4px;color:var(--ivory)}.signal-row{display:flex;align-items:center;gap:8px;font:.58rem var(--util);color:var(--muted);margin-top:8px}.signal{width:7px;height:7px;border-radius:50%;background:#9ff0be;box-shadow:0 0 13px rgba(159,240,190,.6);animation:signalPulse 1.8s ease-in-out infinite}.signal.warn{background:#f4d47d;box-shadow:0 0 13px rgba(244,212,125,.55)}@keyframes signalPulse{50%{opacity:.3;transform:scale(.7)}}
-.activity-feed{display:grid;gap:7px;max-height:210px;overflow:auto;padding-right:3px}.activity-item{display:grid;grid-template-columns:30px 1fr auto;gap:9px;align-items:center;padding:9px 10px;border:1px solid transparent;background:rgba(255,255,255,.016);border-radius:8px}.activity-item:hover{border-color:var(--line);background:rgba(232,195,107,.04)}.activity-dot{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line);color:var(--gold);font-size:.75rem}.activity-text b{display:block;font:.62rem var(--util);color:var(--ivory)}.activity-text span{display:block;color:var(--muted);font:.6rem var(--sans);margin-top:2px}.activity-time{font:.55rem var(--util);color:var(--gold-deep)}
-#matrixCanvas{position:fixed;inset:0;z-index:0;pointer-events:none;opacity:0;mix-blend-mode:screen;transition:opacity .5s ease}.matrix-on #matrixCanvas{opacity:.08}
-body.fx-neon #spotlight{background:radial-gradient(320px 320px at var(--sx,50%) var(--sy,50%),rgba(191,232,255,.12),transparent 70%)}
-body.fx-neon .member-card:hover,body.fx-neon .member-card.card-active{box-shadow:0 35px 90px -32px rgba(190,220,255,.33),0 0 0 1px rgba(190,232,255,.08) inset}
-body.fx-minimal .futures-hud{opacity:.65}
-.command-pulse{animation:commandPulse 1.25s ease-out}.command-jump{animation:commandJump .55s ease-out}@keyframes commandPulse{0%{box-shadow:0 0 0 0 rgba(232,195,107,.0)}35%{box-shadow:0 0 0 9px rgba(232,195,107,.08)}100%{box-shadow:0 0 0 0 rgba(232,195,107,0)}}@keyframes commandJump{0%{transform:translateY(14px);opacity:.4}100%{transform:none;opacity:1}}
-.future-chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);padding:6px 8px;border-radius:999px;color:var(--muted);font:.54rem var(--util);letter-spacing:.06em}.future-chip b{color:var(--gold)}
-@media(max-width:860px){.futures-hud{left:10px;right:10px;bottom:70px;justify-content:center}.futures-hud .hud-cell{flex:1;min-width:0;text-align:center}.future-console{grid-template-columns:1fr}.future-grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:500px){.future-grid{grid-template-columns:1fr 1fr}.futures-hud .hud-cell b{font-size:.62rem}.futures-hud .hud-cell small{font-size:.42rem}}
-@keyframes futureSweep{50%,100%{transform:translateX(110%)}}
 </style>
 </head>
 <body>
@@ -629,7 +603,6 @@ body.fx-minimal .futures-hud{opacity:.65}
 <div id="sparkles" aria-hidden="true"></div>
 <div id="cursorRing" aria-hidden="true"></div>
 <div id="cursorDot" aria-hidden="true"></div>
-<canvas id="matrixCanvas" aria-hidden="true"></canvas>
  
 <!-- NAV -->
 <header class="nav" id="nav">
@@ -720,7 +693,7 @@ body.fx-minimal .futures-hud{opacity:.65}
         <h2 id="teamHeading">Meet the <span class="gold-text">stars</span>.</h2>
         <p id="teamSubheading">Driven professionals delivering excellence under the guidance of Albina Jahan.</p>
       </div>
-      <div class="members-grid" id="membersGrid"></div>
+      <div class="members-grid" id="membersGrid"><p class="data-loading">Loading team data…</p></div>
     </div>
   </section>
 </main>
@@ -733,20 +706,25 @@ body.fx-minimal .futures-hud{opacity:.65}
       <span class="eyebrow" id="commandEyebrow">Command Center</span>
       <h2 id="commandHeading">Performance, <span class="gold-text">decoded</span>.</h2>
       <p id="commandSubheading">Explore the same Team Elite Star structure with live client-side filtering, ranking, metric intelligence and quick insights.</p>
+      <div class="command-status" id="commandStatus">
+        <span class="status-dot" aria-hidden="true"></span>
+        <span id="dataStatus" data-state="syncing">SYNCING</span>
+        <span class="data-stamp" id="dataStamp"></span>
+        <button type="button" id="statusRefresh" title="Refresh data.json now" aria-label="Refresh data now">↻</button>
+      </div>
+      <p class="data-status-detail" id="dataStatusDetail"></p>
     </div>
 
     <div class="command-panel reveal">
       <div class="command-top">
         <div>
-          <div class="command-status"><span class="live-dot"></span><span id="dataStatus" data-state="loading">SYNCING</span><span id="dataUpdated" class="data-stamp">DATA · —</span></div>
-          <div class="data-status-detail" id="dataStatusDetail">Preparing data core…</div>
+          <span class="live-dot"></span>
+          <span class="command-status">LIVE TEAM VIEW</span>
         </div>
         <div class="command-actions">
           <button class="mini-btn" id="sortQuality">Quality ↓</button>
           <button class="mini-btn" id="sortAht">AHT ↑</button>
           <button class="mini-btn" id="resetView">Reset</button>
-          <button class="mini-btn" id="refreshData">Refresh JSON</button>
-          <a class="mini-btn" id="openJson" href="data.json" target="_blank" rel="noopener">JSON</a>
           <button class="mini-btn" id="exportCsv" title="Download the current view as a CSV file">Export CSV</button>
         </div>
       </div>
@@ -771,39 +749,14 @@ body.fx-minimal .futures-hud{opacity:.65}
         <div class="intel-card"><span>Avg Productivity</span><strong id="avgProd">—</strong><small>Daily productivity time</small></div>
       </div>
 
-      <div class="rank-list" id="rankList"></div>
+      <div class="rank-list" id="rankList"><p class="data-loading">Loading live metrics…</p></div>
       <div class="empty-state" id="emptyState" hidden>No matching team member found.</div>
     </div>
   </div>
 </section>
 
-<section class="wrap future-console" id="futureConsole" aria-label="Future system overview">
-  <div class="future-card reveal">
-    <div class="future-head"><div><div class="future-title">System telemetry</div><div class="future-sub">Live client-side interface diagnostics</div></div><span class="future-chip">CORE <b id="coreScore">100%</b></span></div>
-    <div class="future-grid">
-      <div class="future-metric"><span>Members</span><b id="futureMembers">—</b></div>
-      <div class="future-metric"><span>Stars</span><b id="futureStars">—</b></div>
-      <div class="future-metric"><span>Quality</span><b id="futureQuality">—</b></div>
-      <div class="future-metric"><span>AHT</span><b id="futureAht">—</b></div>
-      <div class="future-metric"><span>Attendance</span><b id="futureAttendance">—</b></div>
-      <div class="future-metric"><span>Mode</span><b id="futureMode">—</b></div>
-    </div>
-    <div class="signal-row"><i class="signal"></i><span id="futureSignal">All systems nominal · JSON integrity checked</span></div>
-  </div>
-  <div class="future-card reveal">
-    <div class="future-head"><div><div class="future-title">Activity stream</div><div class="future-sub">Interface events, loaded from current session</div></div><span class="future-chip">LIVE <b>●</b></span></div>
-    <div class="activity-feed" id="activityFeed"></div>
-  </div>
-</section>
-
-<div class="futures-hud" aria-label="Live system status">
-  <span class="hud-scan"></span>
-  <span class="hud-cell"><b id="hudClock">--:--:--</b><small>LOCAL TIME</small></span>
-  <span class="hud-cell"><b id="hudMode">—</b><small>DISPLAY</small></span>
-  <span class="hud-cell"><b id="hudHealth">READY</b><small>DATA CORE</small></span>
-</div>
-
 <div class="quick-dock" id="quickDock" aria-label="Quick actions">
+  <button class="dock-btn" id="fxMenuBtn" aria-label="Open experience menu" title="Experience menu · Ctrl/⌘K">⌘</button>
   <button class="dock-btn" id="soundBtn" aria-label="Toggle ambience" title="Sound">◒</button>
   <button class="dock-btn" id="themeGlow" aria-label="Toggle ambient glow" title="Ambient glow">◈</button>
   <button class="dock-btn" id="topBtn" aria-label="Back to top" title="Back to top">↑</button>
@@ -821,6 +774,7 @@ body.fx-minimal .futures-hud{opacity:.65}
 <div class="sheet-backdrop" id="sheetBackdrop" data-close-sheet></div>
 <div class="action-sheet" id="actionSheet" role="dialog" aria-modal="true" aria-hidden="true" aria-label="More actions">
   <div class="sheet-handle" aria-hidden="true"></div>
+  <button class="sheet-item" id="sheetExperience" type="button"><span class="sheet-ic">⌘</span> Experience Menu</button>
   <button class="sheet-item" id="sheetSound" type="button"><span class="sheet-ic">◒</span> Toggle Ambience</button>
   <button class="sheet-item" id="sheetGlow" type="button"><span class="sheet-ic">◈</span> Toggle Ambient Glow</button>
   <button class="sheet-item" id="sheetTop" type="button"><span class="sheet-ic">↑</span> Back to Top</button>
@@ -828,30 +782,53 @@ body.fx-minimal .futures-hud{opacity:.65}
   <p class="sheet-ios-hint" id="sheetIosHint" hidden>iPhone/iPad এ অ্যাপ হিসেবে ইনস্টল করতে: নিচের Share বাটনে ট্যাপ করুন → "Add to Home Screen" নির্বাচন করুন।</p>
 </div>
 
+<!-- Matrix background overlay (opt-in via Experience Menu, off by default) -->
+<canvas id="matrixCanvas" aria-hidden="true"></canvas>
 
-<div id="fxMenu" aria-hidden="true" aria-label="Experience controls">
-  <div class="fx-backdrop" data-fx-close></div>
-  <section class="fx-panel" role="dialog" aria-modal="true" aria-labelledby="fxMenuTitle">
+<!-- Experience Menu: appearance modes + live system telemetry, opened via Ctrl/⌘K -->
+<div class="fx-backdrop" id="fxBackdrop" data-fx-close></div>
+<div class="fx-menu" id="fxMenu" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Experience menu">
+  <div class="fx-panel">
     <div class="fx-top">
-      <div><span class="fx-kicker">Elite Interface</span><h3 class="fx-title" id="fxMenuTitle">Control the experience.</h3></div>
-      <button class="fx-close" id="fxClose" type="button" aria-label="Close menu">×</button>
+      <div>
+        <span class="fx-kicker">Ctrl/⌘K</span>
+        <h3 class="fx-title">Experience Menu</h3>
+      </div>
+      <button class="fx-close" id="fxClose" type="button" aria-label="Close">×</button>
     </div>
-    <div class="fx-grid">
-      <button class="fx-option" data-fx-mode="standard"><b>Standard</b><span>Full cinematic gold interface with normal interaction depth.</span></button>
-      <button class="fx-option" data-fx-mode="focus"><b>Focus Mode</b><span>Reduce interface chrome and put the spotlight on performance cards.</span></button>
-      <button class="fx-option" data-fx-mode="neon"><b>Pulse Gold</b><span>Increase glow, contrast and edge energy for a more futuristic look.</span></button>
-      <button class="fx-option" data-fx-mode="minimal"><b>Minimal</b><span>Keep the premium structure while reducing ambient visual effects.</span></button>
-      <button class="fx-option" id="fxRefresh" type="button"><b>Sync JSON</b><span>Reload the external data.json and rebuild every data-driven view.</span></button>
-      <button class="fx-option" id="fxFullscreen" type="button"><b>Immersive</b><span>Enter fullscreen for a presentation-style desktop or mobile view.</span></button>
+
+    <div class="fx-section">
+      <span class="fx-label">Appearance</span>
+      <div class="fx-grid">
+        <button class="fx-option active" type="button" data-fx-mode="standard"><b>Standard</b><span>The default look — nothing changed.</span></button>
+        <button class="fx-option" type="button" data-fx-mode="focus"><b>Focus</b><span>Dims nav & docks to spotlight the page content.</span></button>
+        <button class="fx-option" type="button" data-fx-mode="neon"><b>Neon</b><span>Cooler, brighter gold accent throughout.</span></button>
+        <button class="fx-option" type="button" data-fx-mode="minimal"><b>Minimal</b><span>Turns off cursor glow & sparkle effects.</span></button>
+      </div>
     </div>
-    <div class="fx-grid" aria-label="Interface actions">
-      <button class="fx-option" type="button" data-fx-action="focusTeam"><b>◎ Spotlight Team</b><span>Focus the team cards and dim peripheral chrome.</span></button>
-      <button class="fx-option" type="button" data-fx-action="matrix"><b>▦ Matrix Field</b><span>Toggle a subtle cyber particle overlay for the interface.</span></button>
-      <button class="fx-option" type="button" data-fx-action="telemetry"><b>⌁ Telemetry</b><span>Jump to live system metrics and activity feed.</span></button>
-      <button class="fx-option" type="button" data-fx-action="reveal"><b>✦ Reveal Sequence</b><span>Replay the premium section entrance choreography.</span></button>
+
+    <div class="fx-section">
+      <span class="fx-label">System Telemetry</span>
+      <div class="fx-telemetry" id="fxTelemetry">
+        <div class="fx-tcell"><small>Active Members</small><b id="fxMembers">—</b></div>
+        <div class="fx-tcell"><small>Stars</small><b id="fxStars">—</b></div>
+        <div class="fx-tcell"><small>Avg Quality</small><b id="fxQuality">—</b></div>
+        <div class="fx-tcell"><small>Avg Attendance</small><b id="fxAttendance">—</b></div>
+        <div class="fx-tcell"><small>Fastest AHT</small><b id="fxAht">—</b></div>
+        <div class="fx-tcell"><small>Mode</small><b id="fxMode">—</b></div>
+      </div>
+      <p class="fx-readout"><span class="status-dot" aria-hidden="true"></span> Data: <strong id="fxDataState">—</strong> · Clock: <strong id="fxClock">—</strong></p>
     </div>
-    <div class="fx-readout">SYSTEM MODE · <strong id="fxModeReadout">STANDARD</strong> · COMMAND <strong>CTRL/⌘ K</strong></div>
-  </section>
+
+    <div class="fx-section">
+      <span class="fx-label">Actions</span>
+      <div class="fx-actions">
+        <button class="mini-btn" type="button" id="fxRefresh">↻ Refresh Data</button>
+        <button class="mini-btn" type="button" data-fx-action="matrix">▦ Toggle Matrix</button>
+        <button class="mini-btn" type="button" id="fxFullscreen">⛶ Fullscreen</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <div class="audio-hint" id="audioHint" role="status" aria-live="polite">
@@ -888,23 +865,17 @@ body.fx-minimal .futures-hud{opacity:.65}
   </div>
 </footer>
  
-<script async src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 
-/* ---- Fallback content (used instantly on load, and if data.json can't be fetched
-     e.g. when this file is opened directly instead of served from a web server).
-     Editing data.json is the normal way to update content daily; this fallback is
-     just a safety net so the page never renders blank. ---- */
-/* ---- External JSON data source ----
-   Keep data.json in the same folder as this HTML. The page is intentionally JSON-driven:
-   there is no embedded fallback dataset, so stale HTML data cannot silently override the JSON.
-   A validated last-known-good copy is stored locally as a resilience layer for temporary
-   network/server failures. ---- */
-const DATA_JSON_URL = 'data.json';
-const DATA_CACHE_KEY = 'tes_last_valid_json_v2';
+/* ---- Content state ----
+   CONTENT/TEAM_LEADER/MEMBERS are populated entirely from data.json (no embedded
+   fallback copy) — see bootData() near the end of this file, which fetches it
+   with retries and only then renders the data-driven sections. */
 let CONTENT = null;
 let TEAM_LEADER = null;
 let MEMBERS = [];
+
  
 const REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const FINE   = window.matchMedia('(pointer:fine)').matches;
@@ -922,7 +893,7 @@ else{ window.addEventListener('load', ()=>setTimeout(hidePreloader,1400)); setTi
  
 /* ---- Build member cards ---- */
 function buildMembers(){
-  const grid = document.getElementById('membersGrid'); if(!grid || !TEAM_LEADER || !Array.isArray(MEMBERS)) return;
+  const grid = document.getElementById('membersGrid'); if(!grid || !TEAM_LEADER) return;
   const initials = n => n.trim().split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase();
   const fb='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.2c-1.2 0-1.6.8-1.6 1.5V12h2.7l-.4 2.9h-2.3v7A10 10 0 0 0 22 12z"/></svg>';
   const li='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5A2.5 2.5 0 1 1 5 8.5a2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM10 9h3.8v1.7h.1c.5-.9 1.8-1.9 3.6-1.9 3.9 0 4.6 2.5 4.6 5.8V21h-4v-5.2c0-1.2 0-2.8-1.7-2.8s-2 1.3-2 2.7V21h-4z"/></svg>';
@@ -973,31 +944,22 @@ function buildMembers(){
     </article>`).join('');
 
   grid.innerHTML = html;
-  /* Cards are created asynchronously after data.json arrives. The original reveal
-     observer only sees elements present during initial page parse, so explicitly
-     reveal the freshly-created cards here instead of leaving them at opacity:0. */
-  requestAnimationFrame(()=>{
-    grid.querySelectorAll('.reveal').forEach((el,i)=>{
-      el.style.transitionDelay=(i%4*80)+'ms';
-      el.classList.add('in');
-    });
-  });
 }
-/* Data is rendered only after JSON/cache validation succeeds. */
+/* buildMembers() is invoked from bootData() once data.json has loaded, not here. */
 
 /* ---- Marquee ---- */
 function renderMarquee(items){
-  const t=document.getElementById('marquee'); if(!t || !Array.isArray(items)) return;
+  const t=document.getElementById('marquee'); if(!t) return;
   const unit=items.map(w=>`<span>${w}</span><span class="solid"><b>★</b></span>`).join('');
   t.innerHTML=unit+unit;
 }
+/* renderMarquee() is likewise invoked from bootData() once data.json has loaded. */
 
-const yearEl=document.getElementById('year');
-if(yearEl) yearEl.textContent = new Date().getFullYear();
+document.getElementById('year').textContent = new Date().getFullYear();
 
 /* ---- Render all copy/headings/stats from CONTENT (JSON-driven, daily-editable) ---- */
 function applyContentData(D){
-  if(!D || !D.hero || !D.about || !D.impact || !D.team || !D.command || !D.meta) return;
+  if(!D) return;
   const setText=(id,val)=>{ const el=document.getElementById(id); if(el && val!=null) el.textContent=val; };
   const setHTML=(id,val)=>{ const el=document.getElementById(id); if(el && val!=null) el.innerHTML=val; };
   const headingHTML=(prefix,emph,suffix)=>`${prefix}&nbsp;<span class="gold-text">${emph}</span>${suffix}`;
@@ -1040,81 +1002,58 @@ function applyContentData(D){
 
   const brand=document.querySelectorAll('.nav-tag'); brand.forEach(b=>{ if(D.meta.orgTag) b.textContent=D.meta.orgTag; });
 }
-applyContentData(CONTENT);
+/* applyContentData(CONTENT) intentionally NOT called here — CONTENT is null until
+   data.json has actually loaded (see bootData below). The page shows its built-in
+   loading state (see #dataStatus / .data-loading) until then. */
 
-/* ---- Strict JSON loader: linked JSON first, validated local cache second ---- */
-(async function loadContentJSON(){
-  const statusEl=document.getElementById('dataStatus');
+/* ---- Load content from data.json (daily-editable), with retries and a visible
+   status/error state instead of silently failing. Exposed as window.reloadTeamJSON
+   so the Experience Menu's "Refresh Data" action can reuse the exact same logic. ---- */
+function setDataStatus(state, detail){
+  const badge=document.getElementById('dataStatus');
+  if(badge){ badge.dataset.state=state; badge.textContent=state==='live'?'LIVE':state==='syncing'?'SYNCING':state==='error'?'OFFLINE':'READY'; }
   const detailEl=document.getElementById('dataStatusDetail');
-  const stampEl=document.getElementById('dataUpdated');
-  const setStatus=(state,label,detail='')=>{
-    if(statusEl){statusEl.dataset.state=state; statusEl.textContent=label;}
-    if(detailEl) detailEl.textContent=detail;
-  };
-  const isValid=(D)=>{
+  if(detailEl && detail) detailEl.textContent=detail;
+  const stamp=document.getElementById('dataStamp');
+  if(stamp && state==='live') stamp.textContent='Synced '+new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
+}
+
+function showDataError(message){
+  const grid=document.getElementById('membersGrid'), list=document.getElementById('rankList');
+  const errorHTML=`<div class="data-error"><strong>Couldn't load team data</strong><p>${message}</p><p>Make sure <code>data.json</code> is in the same folder as this page and the site is served from a web server (not opened as a local file).</p><button class="mini-btn" id="retryDataLoad" type="button">Retry now</button></div>`;
+  if(grid) grid.innerHTML=errorHTML;
+  if(list) list.innerHTML='';
+  document.getElementById('retryDataLoad')?.addEventListener('click', ()=>bootData());
+}
+
+async function bootData(silent){
+  if(!silent) setDataStatus('syncing','Fetching data.json…');
+  const attempts=[0,600,1800]; // immediate, then two retries with backoff
+  let lastErr=null;
+  for(const delay of attempts){
+    if(delay) await new Promise(r=>setTimeout(r,delay));
     try{
-      return !!(D && typeof D==='object' && D.meta && D.hero && D.about && D.about.paragraphs && Array.isArray(D.about.paragraphs)
-        && Array.isArray(D.about.pillars) && D.impact && Array.isArray(D.impact.stats) && D.impact.note
-        && D.team && D.command && Array.isArray(D.marquee) && D.leader && D.leader.name
-        && Array.isArray(D.members) && D.members.every(m=>m && m.name));
-    }catch(_){ return false; }
-  };
-  const apply=(D,source)=>{
-    if(!isValid(D)) throw new Error('JSON structure validation failed');
-    CONTENT=D; TEAM_LEADER=D.leader; MEMBERS=D.members.slice();
-    applyContentData(CONTENT); buildMembers(); renderMarquee(CONTENT.marquee);
-    if(typeof refreshCommandCenter==='function') refreshCommandCenter();
-    else window.__TES_PENDING_COMMAND_REFRESH = true;
-    if(stampEl) stampEl.textContent=D.meta.lastUpdated ? `DATA · ${D.meta.lastUpdated}` : 'DATA · LIVE';
-    setStatus('live', source==='network'?'JSON LINKED':'CACHE READY', source==='network'?'Live data loaded from data.json':'Using last validated JSON cache');
-  };
-  try{
-    setStatus('loading','SYNCING','Reading linked data.json…');
-    const controller=new AbortController();
-    const timer=setTimeout(()=>controller.abort(),7000);
-    const res=await fetch(DATA_JSON_URL,{cache:'no-store',signal:controller.signal});
-    clearTimeout(timer);
-    if(!res.ok) throw new Error('HTTP '+res.status);
-    const fresh=await res.json();
-    apply(fresh,'network');
-    try{ localStorage.setItem(DATA_CACHE_KEY,JSON.stringify(fresh)); }catch(_){/* storage unavailable */}
-  }catch(err){
-    let cached=null;
-    try{ cached=JSON.parse(localStorage.getItem(DATA_CACHE_KEY)||'null'); }catch(_){ cached=null; }
-    if(cached && isValid(cached)){
-      apply(cached,'cache');
-      setStatus('cache','CACHE READY','Network unavailable; last validated JSON retained locally');
-      console.warn('data.json unavailable; loaded last validated JSON cache:',err.message);
-    }else{
-      setStatus('error','DATA OFFLINE','Place data.json beside this HTML and serve both from a web server');
-      const grid=document.getElementById('membersGrid'); if(grid) grid.innerHTML='<div class="data-error" role="status"><strong>Data source unavailable.</strong><span>Keep <code>data.json</code> in the same folder and open the site through a web server (GitHub Pages, localhost, etc.).</span></div>';
-      const rank=document.getElementById('rankList'); if(rank) rank.innerHTML='';
-      const empty=document.getElementById('emptyState'); if(empty) empty.hidden=false;
-      console.error('Unable to load and validate data.json:',err);
-    }
+      const res = await fetch('data.json?t='+Date.now(), {cache:'no-store'});
+      if(!res.ok) throw new Error('Server responded '+res.status);
+      const fresh = await res.json();
+      if(!fresh || !Array.isArray(fresh.members) || !fresh.leader) throw new Error('data.json is missing required fields');
+      CONTENT = fresh; TEAM_LEADER = fresh.leader; MEMBERS = fresh.members;
+      applyContentData(CONTENT);
+      buildMembers();
+      renderMarquee(CONTENT.marquee||[]);
+      if(typeof window.refreshCommandCenter === 'function') window.refreshCommandCenter();
+      setDataStatus('live','Team data loaded successfully.');
+      return true;
+    }catch(err){ lastErr=err; }
   }
-})();
-
-
-/* ---- Data refresh + live telemetry ---- */
-(function futuristicCore(){
-  const refresh=document.getElementById('refreshData');
-  if(refresh){
-    refresh.addEventListener('click',()=>{
-      refresh.disabled=true; refresh.textContent='Syncing…';
-      try{ localStorage.removeItem(DATA_CACHE_KEY); }catch(_){}
-      location.reload();
-    });
-  }
-  const clock=document.getElementById('hudClock'), mode=document.getElementById('hudMode'), health=document.getElementById('hudHealth');
-  function tick(){
-    const d=new Date();
-    if(clock) clock.textContent=d.toLocaleTimeString([], {hour12:false});
-    if(mode) mode.textContent=innerWidth<=860?'MOBILE':'DESKTOP';
-    if(health){ health.textContent = MEMBERS.length ? `${MEMBERS.length+1} ONLINE` : 'SYNC…'; }
-  }
-  tick(); setInterval(tick,1000);
-})();
+  console.warn('data.json could not be loaded after retries:', lastErr?.message);
+  setDataStatus('error', lastErr?.message || 'Unknown error');
+  if(!CONTENT) showDataError(lastErr?.message || 'Unknown error'); // only show the blocking error if we truly have nothing to show
+  return false;
+}
+window.reloadTeamJSON = ()=>bootData();
+bootData();
+document.getElementById('statusRefresh')?.addEventListener('click', ()=>bootData());
 
 /* ---- Nav ---- */
 const nav=document.getElementById('nav');
@@ -1234,17 +1173,7 @@ if(!REDUCE){
 /* ---- 3D golden star hero ---- */
 (function hero3d(){
   const canvas=document.getElementById('star-canvas');
-  if(!canvas) return;
-  if(typeof THREE==='undefined'){
-    let tries=0;
-    const wait=setInterval(()=>{
-      if(typeof THREE!=='undefined'){ clearInterval(wait); init(); }
-      else if(++tries>120){ clearInterval(wait); }
-    },100);
-    return;
-  }
-  init();
-  function init(){
+  if(!canvas||typeof THREE==='undefined') return;
   let W=innerWidth,H=innerHeight;
   const lite = !window.matchMedia('(pointer:fine)').matches; /* touch device: lighten the scene */
   const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:!lite,powerPreference:'low-power'});
@@ -1320,7 +1249,6 @@ if(!REDUCE){
   },{passive:true});
 
   if(REDUCE){renderer.render(scene,camera);}else{loop();}
-  }
 })();
 </script>
 <script>
@@ -1331,11 +1259,11 @@ if(!REDUCE){
   const empty = document.getElementById('emptyState');
   if(!panel || !search) return;
 
-  let all = (Array.isArray(MEMBERS)?MEMBERS:[]).map(m=>({...m, leader:false}));
+  let all = MEMBERS.map(m=>({...m, leader:false}));
   let data=[...all], filter='all';
 
   window.refreshCommandCenter = function(){
-    all = (Array.isArray(MEMBERS)?MEMBERS:[]).map(m=>({...m, leader:false}));
+    all = MEMBERS.map(m=>({...m, leader:false}));
     data=[...all]; filter='all'; search.value='';
     document.querySelectorAll('.filter-chip').forEach((x,i)=>x.classList.toggle('active',i===0));
     updateIntel(); draw();
@@ -1371,11 +1299,8 @@ if(!REDUCE){
   }
 
   function updateIntel(){
-    const active=Array.isArray(MEMBERS)?MEMBERS:[];
-    if(!active.length){
-      ['topQuality','topQualityValue','fastestAht','fastestAhtValue','avgQuality','avgProd'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='—';});
-      document.getElementById('countAll').textContent='0'; document.getElementById('countStars').textContent='0'; document.getElementById('countPerfect').textContent='0'; return;
-    }
+    const active=MEMBERS;
+    if(!active.length) return; /* nothing loaded yet — bootData() will call this again once data.json arrives */
     const top=[...active].sort((a,b)=>quality(b)-quality(a))[0];
     const fast=[...active].sort((a,b)=>ahtSecs(a.aht)-ahtSecs(b.aht))[0];
     const avg=active.reduce((s,m)=>s+quality(m),0)/active.length;
@@ -1474,10 +1399,6 @@ if(!REDUCE){
   });
 
   updateIntel();draw();
-  if(window.__TES_PENDING_COMMAND_REFRESH){
-    window.__TES_PENDING_COMMAND_REFRESH=false;
-    refreshCommandCenter();
-  }
 })();
 
 
@@ -1854,127 +1775,108 @@ if(!REDUCE){
 })();
 </script>
 
+<!-- ===== Experience Menu: appearance modes + live telemetry (Ctrl/⌘K) =====
+     Note: deliberately does NOT include any hover/tilt effect on member cards —
+     the site's existing card hover is left completely untouched. ===== -->
 <script>
-/* ===== Next-gen cards + experience menu ===== */
-(function nextGenExperience(){
+(function experienceMenu(){
   const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
-  const grid=$('#membersGrid');
-  if(grid){
-    const state=new WeakMap();
-    const activate=(card,e)=>{
-      if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-      const r=card.getBoundingClientRect();
-      const x=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)), y=Math.max(0,Math.min(1,(e.clientY-r.top)/r.height));
-      const rx=(.5-y)*10, ry=(x-.5)*12;
-      card.style.setProperty('--card-x',(x*100)+'%'); card.style.setProperty('--card-y',(y*100)+'%');
-      card.style.setProperty('--card-angle',(135+x*180)+'deg');
-      card.style.transform=`perspective(1100px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-7px) scale(1.012)`;
-      card.classList.add('card-active');
-    };
-    const reset=(card)=>{card.style.transform='';card.classList.remove('card-active');};
-    grid.addEventListener('pointermove',e=>{const c=e.target.closest('.member-card');if(c)activate(c,e);});
-    grid.addEventListener('pointerleave',e=>{const c=e.target.closest('.member-card');if(c)reset(c);},{capture:true});
-    grid.addEventListener('pointerdown',e=>{const c=e.target.closest('.member-card');if(c){c.classList.add('card-active');state.set(c,{pressed:true});}});
-    grid.addEventListener('pointerup',e=>{const c=e.target.closest('.member-card');if(c){state.delete(c);setTimeout(()=>{if(!c.matches(':hover'))reset(c);},80);}});
-    grid.addEventListener('click',e=>{const c=e.target.closest('.member-card');if(!c)return;if(e.target.closest('a,button'))return;c.classList.add('card-active');setTimeout(()=>{if(!c.matches(':hover'))reset(c)},180);});
-    const decorate=()=>$$('.member-card',grid).forEach((c,i)=>{if(!c.querySelector('.card-scan')){const s=document.createElement('i');s.className='card-scan';c.appendChild(s);}if(!c.querySelector('.card-index')){const n=document.createElement('span');n.className='card-index';n.textContent=String(i+1).padStart(2,'0');c.appendChild(n);}});
-    decorate(); new MutationObserver(decorate).observe(grid,{childList:true});
+  function haptic(ms=8){ try{ if('vibrate' in navigator) navigator.vibrate(ms); }catch(_){} }
+  const menu=$('#fxMenu'), backdrop=$('#fxBackdrop');
+  if(!menu) return;
+
+  function openMenu(){
+    menu.classList.add('open'); backdrop.classList.add('open');
+    menu.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden';
+    refreshTelemetry();
   }
-
-  const menu=$('#fxMenu');
-  const open=()=>{if(!menu)return;menu.classList.add('open');menu.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';};
-  const close=()=>{if(!menu)return;menu.classList.remove('open');menu.setAttribute('aria-hidden','true');if(!document.querySelector('.member-modal.open'))document.body.style.overflow='';};
-  $('#fxClose')?.addEventListener('click',close); menu?.querySelector('[data-fx-close]')?.addEventListener('click',close);
-  document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();menu?.classList.contains('open')?close():open();}if(e.key==='Escape'&&menu?.classList.contains('open'))close();});
-  const modeButtons=$$('[data-fx-mode]',menu); const readout=$('#fxModeReadout');
-  const setMode=mode=>{document.body.classList.remove('fx-focus','fx-neon','fx-minimal');if(mode!=='standard')document.body.classList.add('fx-'+mode);modeButtons.forEach(b=>b.classList.toggle('active',b.dataset.fxMode===mode));if(readout)readout.textContent=mode.toUpperCase();try{localStorage.setItem('tes_fx_mode',mode)}catch(_){}};
-  modeButtons.forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.fxMode)));
-  try{setMode(localStorage.getItem('tes_fx_mode')||'standard')}catch(_){setMode('standard')}
-  $('#fxRefresh')?.addEventListener('click',()=>{ if(typeof window.reloadTeamJSON==='function'){window.reloadTeamJSON();} close(); });
-  $('#fxFullscreen')?.addEventListener('click',async()=>{try{if(!document.fullscreenElement)await document.documentElement.requestFullscreen();else await document.exitFullscreen();}catch(_){ } close();});
-
-  // Desktop launcher; mobile gets the same control from More.
-  const dock=$('#quickDock');
-  if(dock && !$('#fxMenuBtn')){const b=document.createElement('button');b.className='dock-btn';b.id='fxMenuBtn';b.type='button';b.textContent='⌘';b.title='Experience menu · Ctrl/⌘ K';b.setAttribute('aria-label','Open experience menu');dock.insertBefore(b,dock.firstChild);b.addEventListener('click',open);}
-  const sheet=$('#actionSheet');
-  if(sheet && !$('#sheetExperience')){const b=document.createElement('button');b.className='sheet-item';b.id='sheetExperience';b.type='button';b.innerHTML='<span class="sheet-ic">⌘</span> Experience Modes';sheet.insertBefore(b,sheet.firstChild);b.addEventListener('click',()=>{document.getElementById('moreTabBtn')?.click();open();});}
-  const tab=$('#moreTabBtn'); if(tab){tab.addEventListener('dblclick',open);}
-
-  // Public reload hook used by the menu; wraps the existing loader safely.
-  window.reloadTeamJSON = async function(){
-    const badge=$('#hudHealth');
-    try{
-      if(badge) badge.textContent='SYNCING';
-      const res=await fetch('data.json?ts='+Date.now(),{cache:'no-store'}); if(!res.ok) throw new Error('HTTP '+res.status);
-      const fresh=await res.json();
-      if(!fresh||!Array.isArray(fresh.members)||!fresh.leader) throw new Error('Invalid team JSON');
-      CONTENT=fresh; TEAM_LEADER=fresh.leader; MEMBERS=fresh.members;
-      applyContentData(CONTENT); buildMembers(); renderMarquee(CONTENT.marquee||[]); if(typeof refreshCommandCenter==='function')refreshCommandCenter();
-      if(badge) badge.textContent='SYNCED';
-      setTimeout(()=>{if(badge)badge.textContent='READY'},1400);
-    }catch(err){if(badge)badge.textContent='OFFLINE';console.warn('JSON refresh failed:',err);}
-  };
-})();
-</script>
-
-
-<script>
-/* ===== Futuristic telemetry / command enhancements ===== */
-(function futureSystem(){
-  const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
-  const feed=$('#activityFeed');
-  const state=[];
-  const now=()=>new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'});
-  function activity(icon,title,detail){
-    state.unshift({icon,title,detail,time:now()});
-    state.splice(8);
-    if(feed) feed.innerHTML=state.map(x=>`<div class="activity-item"><div class="activity-dot">${x.icon}</div><div class="activity-text"><b>${x.title}</b><span>${x.detail}</span></div><div class="activity-time">${x.time}</div></div>`).join('');
+  function closeMenu(){
+    menu.classList.remove('open'); backdrop.classList.remove('open');
+    menu.setAttribute('aria-hidden','true');
+    if(!document.querySelector('.member-modal.open') && !document.querySelector('.action-sheet.open')) document.body.style.overflow='';
   }
-  function parseSec(v){if(!v)return 0;const p=String(v).split(':').map(Number);return p.length===3?p[0]*3600+p[1]*60+p[2]:p[0]*60+p[1];}
-  function telemetry(){
-    const count=(window.MEMBERS||[]).length;
-    const stars=(window.MEMBERS||[]).filter(m=>/star/i.test(m.rank||'')).length;
-    const avg=count?(window.MEMBERS.reduce((s,m)=>s+(parseFloat(m.mtdScore)||0),0)/count):0;
-    const att=count?(window.MEMBERS.reduce((s,m)=>s+(parseFloat(m.attendance)||0),0)/count):0;
-    const fastest=(window.MEMBERS||[]).slice().sort((a,b)=>parseSec(a.aht)-parseSec(b.aht))[0];
-    $('#futureMembers') && ($('#futureMembers').textContent=count);
-    $('#futureStars') && ($('#futureStars').textContent=stars);
-    $('#futureQuality') && ($('#futureQuality').textContent=avg.toFixed(2)+'%');
-    $('#futureAttendance') && ($('#futureAttendance').textContent=att.toFixed(2)+'%');
-    $('#futureAht') && ($('#futureAht').textContent=fastest?.aht||'—');
-    $('#futureMode') && ($('#futureMode').textContent=document.documentElement.dataset.mode==='mobile'?'MOBILE':'DESKTOP');
-    const score=Math.round(Math.min(100,95 + (count?5:0)));
-    $('#coreScore') && ($('#coreScore').textContent=score+'%');
+  $('#fxClose')?.addEventListener('click',closeMenu);
+  backdrop?.addEventListener('click',closeMenu);
+  $('#fxMenuBtn')?.addEventListener('click',openMenu);
+  $('#sheetExperience')?.addEventListener('click',()=>{ $('#moreTabBtn')?.click(); setTimeout(openMenu,150); });
+  document.addEventListener('keydown',e=>{
+    if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){ e.preventDefault(); menu.classList.contains('open')?closeMenu():openMenu(); }
+    if(e.key==='Escape'&&menu.classList.contains('open')) closeMenu();
+  });
+
+  /* ---- Appearance modes: opt-in only, "standard" = untouched default look ---- */
+  const modeButtons=$$('[data-fx-mode]',menu);
+  function setMode(mode){
+    document.body.classList.remove('fx-focus','fx-neon','fx-minimal');
+    if(mode!=='standard') document.body.classList.add('fx-'+mode);
+    modeButtons.forEach(b=>b.classList.toggle('active', b.dataset.fxMode===mode));
+    try{ localStorage.setItem('tes_fx_mode', mode); }catch(_){}
   }
-  function clock(){const e=$('#hudClock'); if(e)e.textContent=now();const m=$('#hudMode');if(m)m.textContent=document.documentElement.dataset.mode==='mobile'?'MOBILE':'DESKTOP';}
-  telemetry();clock();setInterval(clock,1000);
-  setTimeout(()=>activity('◈','Interface initialized','Futuristic control layer online'),600);
-  setTimeout(()=>activity('↻','Data core verified','Team dataset available for live inspection'),1400);
-  setTimeout(()=>activity('✦','Visual engine ready','Adaptive desktop/mobile effects enabled'),2200);
-  const originalRefresh=window.reloadTeamJSON;
-  window.reloadTeamJSON=async function(){activity('↻','JSON sync started','Refreshing local data.json');try{const r=await originalRefresh?.();telemetry();activity('✓','JSON sync complete','Live team interface refreshed');return r}catch(e){activity('!','JSON sync warning','Local JSON could not be refreshed');throw e;}};
+  modeButtons.forEach(b=>b.addEventListener('click',()=>{ haptic(10); setMode(b.dataset.fxMode); }));
+  try{ setMode(localStorage.getItem('tes_fx_mode')||'standard'); }catch(_){ setMode('standard'); }
 
-  // Matrix field
-  const canvas=$('#matrixCanvas'); const ctx=canvas?.getContext('2d'); let raf=0, running=false, drops=[];
-  function resize(){if(!canvas||!ctx)return;canvas.width=innerWidth;canvas.height=innerHeight;drops=Array(Math.ceil(innerWidth/18)).fill(0).map(()=>Math.random()*innerHeight/14)}
-  function drawMatrix(){if(!running||!ctx)return;ctx.clearRect(0,0,canvas.width,canvas.height);ctx.font='10px monospace';ctx.fillStyle='rgba(232,195,107,.8)';for(let i=0;i<drops.length;i++){const x=i*18,y=drops[i]*14;ctx.fillText(Math.random()>.5?'1':'0',x,y);drops[i]+=0.5;if(y>canvas.height&&Math.random()>.975)drops[i]=0}raf=requestAnimationFrame(drawMatrix)}
-  function toggleMatrix(){document.body.classList.toggle('matrix-on');running=document.body.classList.contains('matrix-on');if(running){resize();cancelAnimationFrame(raf);drawMatrix();activity('▦','Matrix field enabled','Cyber overlay rendering at low intensity')}else{cancelAnimationFrame(raf);if(ctx)ctx.clearRect(0,0,canvas.width,canvas.height);activity('×','Matrix field disabled','Overlay removed')}}
-  addEventListener('resize',resize,{passive:true});
+  /* ---- Live telemetry readout ---- */
+  function parseSec(v){ if(!v) return 0; const p=String(v).split(':').map(Number); return p.length===3?p[0]*3600+p[1]*60+p[2]:p[0]*60+p[1]; }
+  function refreshTelemetry(){
+    const list=Array.isArray(window.MEMBERS)?window.MEMBERS:(typeof MEMBERS!=='undefined'?MEMBERS:[]);
+    const count=list.length;
+    const stars=list.filter(m=>/star/i.test(m.rank||'')).length;
+    const avgQ=count?(list.reduce((s,m)=>s+(parseFloat(m.mtdScore)||0),0)/count):0;
+    const avgA=count?(list.reduce((s,m)=>s+(parseFloat(m.attendance)||0),0)/count):0;
+    const fastest=count?list.slice().sort((a,b)=>parseSec(a.aht)-parseSec(b.aht))[0]:null;
+    const mode=document.documentElement.getAttribute('data-mode')==='mobile'?'MOBILE':'DESKTOP';
+    const set=(id,val)=>{ const el=document.getElementById(id); if(el) el.textContent=val; };
+    set('fxMembers', count||'—');
+    set('fxStars', stars);
+    set('fxQuality', count?avgQ.toFixed(2)+'%':'—');
+    set('fxAttendance', count?avgA.toFixed(2)+'%':'—');
+    set('fxAht', fastest?fastest.aht:'—');
+    set('fxMode', mode);
+    const statusBadge=document.getElementById('dataStatus');
+    set('fxDataState', statusBadge?statusBadge.textContent:'—');
+    set('fxClock', new Date().toLocaleTimeString([], {hour:'2-digit',minute:'2-digit',second:'2-digit'}));
+  }
+  refreshTelemetry();
+  setInterval(()=>{ if(menu.classList.contains('open')) refreshTelemetry(); }, 1000);
 
-  // Action buttons inside existing experience menu
-  $$('[data-fx-action]').forEach(b=>b.addEventListener('click',()=>{
-    const a=b.dataset.fxAction;
-    if(a==='matrix') toggleMatrix();
-    if(a==='telemetry'){$('#futureConsole')?.scrollIntoView({behavior:'smooth',block:'center'});activity('⌁','Telemetry focused','Jumped to system overview')}
-    if(a==='focusTeam'){document.body.classList.toggle('fx-focus');document.querySelector('#team')?.scrollIntoView({behavior:'smooth',block:'start'});activity('◎','Team spotlight toggled','Focus presentation updated')}
-    if(a==='reveal'){const els=$$('.reveal');els.forEach((e,i)=>{e.classList.remove('in');void e.offsetWidth;e.style.transitionDelay=(i%6)*60+'ms';requestAnimationFrame(()=>e.classList.add('in'))});activity('✦','Reveal sequence replayed','Entrance choreography restarted')}
-  }));
+  /* ---- Actions ---- */
+  $('#fxRefresh')?.addEventListener('click', async ()=>{
+    haptic(12);
+    const btn=$('#fxRefresh'); const original=btn.textContent;
+    btn.textContent='↻ Refreshing…'; btn.disabled=true;
+    if(typeof window.reloadTeamJSON==='function') await window.reloadTeamJSON();
+    refreshTelemetry();
+    btn.textContent='✓ Refreshed'; setTimeout(()=>{ btn.textContent=original; btn.disabled=false; },1200);
+  });
+  $('#fxFullscreen')?.addEventListener('click', async ()=>{
+    haptic(10);
+    try{ if(!document.fullscreenElement) await document.documentElement.requestFullscreen(); else await document.exitFullscreen(); }catch(_){}
+  });
 
-  // Double tap / double click on cards for spotlight + haptic
-  const grid=$('#membersGrid'); if(grid){grid.addEventListener('dblclick',e=>{const card=e.target.closest('.member-card');if(!card)return;document.body.classList.add('fx-focus');card.classList.add('card-active','command-pulse');card.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>card.classList.remove('command-pulse'),1300);activity('◎','Member spotlight','Focused '+(card.querySelector('h3')?.textContent||'member'));});}
-
-  // Hook interaction events into activity stream without noisy logging
-  document.addEventListener('click',e=>{const b=e.target.closest('#exportCsv,#resetView,#sortQuality,#sortAht,.profile-btn');if(!b)return;activity('•','Interface action',b.textContent.trim()||'Control triggered');},{passive:true});
+  /* ---- Matrix background (subtle, off by default, toggled from the menu) ---- */
+  const canvas=$('#matrixCanvas'), ctx=canvas?.getContext('2d');
+  let raf=0, running=false, drops=[];
+  function resizeMatrix(){ if(!canvas||!ctx) return; canvas.width=innerWidth; canvas.height=innerHeight; drops=Array(Math.ceil(innerWidth/18)).fill(0).map(()=>Math.random()*innerHeight/14); }
+  function drawMatrix(){
+    if(!running||!ctx) return;
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.font='10px monospace'; ctx.fillStyle='rgba(232,195,107,.8)';
+    for(let i=0;i<drops.length;i++){
+      const x=i*18, y=drops[i]*14;
+      ctx.fillText(Math.random()>0.5?'1':'0', x, y);
+      drops[i]+=0.5;
+      if(y>canvas.height && Math.random()>0.975) drops[i]=0;
+    }
+    raf=requestAnimationFrame(drawMatrix);
+  }
+  function toggleMatrix(){
+    document.body.classList.toggle('matrix-on');
+    running=document.body.classList.contains('matrix-on');
+    if(running && !REDUCE){ resizeMatrix(); cancelAnimationFrame(raf); drawMatrix(); }
+    else{ cancelAnimationFrame(raf); if(ctx) ctx.clearRect(0,0,canvas.width,canvas.height); }
+  }
+  window.addEventListener('resize',resizeMatrix,{passive:true});
+  $$('[data-fx-action="matrix"]').forEach(b=>b.addEventListener('click',()=>{ haptic(10); toggleMatrix(); }));
 })();
 </script>
 </body>
