@@ -158,6 +158,12 @@
       "qa": "Rasel Hossain", "trainer": "Md. Shahin Akter", "mtdScore": "96.06%", "attendance": "100.00%",
       "staffedTime": "9:02:01", "prodTime": "8:02:32", "breakTime": "0:59:28", "aht": "0:03:04",
       "fbBreak": "1:13:42", "trBreak": "0:11:23",
-      "bio": "Focused team player driving continuous customer engagement and thorough resolution." }
+      "bio": "Focused team player driving continuous customer engagement and thorough resolution." },
+
+    { "dgId": "20204", "name": "Bijoya Ray", "cubeId": "Bijoya_JSR", "role": "CSR", "rank": "CSR",
+      "qa": "Rasel Hossain", "trainer": "Md. Shahin Akter", "mtdScore": "97.39%", "attendance": "100.00%",
+      "staffedTime": "9:01:58", "prodTime": "8:05:33", "breakTime": "0:56:25", "aht": "0:03:28",
+      "fbBreak": "1:35:21", "trBreak": "0:46:42",
+      "bio": "Reliable member maintaining stellar attendance and consistent daily productivity." }
   ]
 }
