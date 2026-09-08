@@ -416,6 +416,26 @@ body.sound-on .dock-btn#soundBtn::after{
 .modal-bar-track{height:5px;background:#25232b;border-radius:99px;overflow:hidden;margin-top:5px}
 .modal-bar-track i{display:block;height:100%;width:var(--w);background:linear-gradient(90deg,var(--gold-deep),var(--gold-shine))}
 body.glow-off #spotlight,body.glow-off #sparkles{display:none}
+
+/* ---------- Futuristic telemetry HUD + JSON health ---------- */
+.data-status-detail{margin-top:5px;font:500 .56rem var(--util);letter-spacing:.08em;color:#777266}
+.data-stamp{margin-left:10px;color:#777266;font-size:.54rem;letter-spacing:.08em}
+.command-status[data-state="live"],#dataStatus[data-state="live"]{color:#b9ffcf}
+#dataStatus[data-state="cache"]{color:var(--gold)}
+#dataStatus[data-state="error"]{color:#ff9c9c}
+.data-error{grid-column:1/-1;border:1px solid rgba(255,130,130,.28);background:rgba(255,80,80,.035);padding:22px;border-radius:10px;display:grid;gap:7px;color:#d2cbc0;font:.8rem var(--util)}
+.data-error strong{color:#ffb1b1;font-size:.95rem}
+.data-error code{color:var(--gold)}
+.futures-hud{position:fixed;left:20px;bottom:20px;z-index:9190;display:flex;align-items:stretch;gap:1px;border:1px solid var(--line);background:rgba(10,9,14,.68);backdrop-filter:blur(16px) saturate(140%);border-radius:12px;overflow:hidden;box-shadow:0 16px 40px -22px #000}
+.hud-cell{min-width:84px;padding:9px 11px;border-left:1px solid var(--line);display:grid;gap:2px}
+.hud-cell:first-of-type{border-left:0}
+.hud-cell b{font:600 .74rem var(--util);color:var(--gold);letter-spacing:.08em}
+.hud-cell small{font:500 .5rem var(--util);letter-spacing:.14em;color:var(--muted)}
+.hud-scan{width:3px;align-self:stretch;background:linear-gradient(180deg,transparent,var(--gold),transparent);animation:hudScan 2.2s ease-in-out infinite}
+@keyframes hudScan{50%{opacity:.25;transform:translateY(3px)}}
+@media(max-width:860px){.futures-hud{left:12px;bottom:76px;right:12px;justify-content:center}.hud-cell{flex:1;min-width:0;text-align:center}.data-stamp{display:none}}
+@media(max-width:520px){.hud-cell{padding:7px 6px}.hud-cell b{font-size:.65rem}.hud-cell small{font-size:.44rem}}
+
 @media(max-width:800px){.command-grid{grid-template-columns:1fr}.filter-box{justify-content:flex-start}.intel-grid{grid-template-columns:repeat(2,1fr)}.rank-row{grid-template-columns:24px 1fr auto auto;gap:10px}.rank-row .rank-meta,.rank-row .rank-bar{display:none}}
 @media(max-width:500px){.command-panel{padding:13px}.intel-grid{grid-template-columns:1fr 1fr}.modal-card{padding:20px}.modal-metrics{grid-template-columns:1fr 1fr}.rank-row{gap:7px}.rank-name{font-size:.84rem}}
 
@@ -641,13 +661,15 @@ body.standalone-app .app-tabbar{padding-bottom:calc(10px + env(safe-area-inset-b
     <div class="command-panel reveal">
       <div class="command-top">
         <div>
-          <span class="live-dot"></span>
-          <span class="command-status">LIVE TEAM VIEW</span>
+          <div class="command-status"><span class="live-dot"></span><span id="dataStatus" data-state="loading">SYNCING</span><span id="dataUpdated" class="data-stamp">DATA · —</span></div>
+          <div class="data-status-detail" id="dataStatusDetail">Preparing data core…</div>
         </div>
         <div class="command-actions">
           <button class="mini-btn" id="sortQuality">Quality ↓</button>
           <button class="mini-btn" id="sortAht">AHT ↑</button>
           <button class="mini-btn" id="resetView">Reset</button>
+          <button class="mini-btn" id="refreshData">Refresh JSON</button>
+          <a class="mini-btn" id="openJson" href="data.json" target="_blank" rel="noopener">JSON</a>
           <button class="mini-btn" id="exportCsv" title="Download the current view as a CSV file">Export CSV</button>
         </div>
       </div>
@@ -677,6 +699,13 @@ body.standalone-app .app-tabbar{padding-bottom:calc(10px + env(safe-area-inset-b
     </div>
   </div>
 </section>
+
+<div class="futures-hud" aria-label="Live system status">
+  <span class="hud-scan"></span>
+  <span class="hud-cell"><b id="hudClock">--:--:--</b><small>LOCAL TIME</small></span>
+  <span class="hud-cell"><b id="hudMode">—</b><small>DISPLAY</small></span>
+  <span class="hud-cell"><b id="hudHealth">READY</b><small>DATA CORE</small></span>
+</div>
 
 <div class="quick-dock" id="quickDock" aria-label="Quick actions">
   <button class="dock-btn" id="soundBtn" aria-label="Toggle ambience" title="Sound">◒</button>
@@ -744,340 +773,16 @@ body.standalone-app .app-tabbar{padding-bottom:calc(10px + env(safe-area-inset-b
      e.g. when this file is opened directly instead of served from a web server).
      Editing data.json is the normal way to update content daily; this fallback is
      just a safety net so the page never renders blank. ---- */
-const FALLBACK_DATA = {
-  "meta": {
-    "lastUpdated": "2026-09-05",
-    "teamName": "Team Elite Star",
-    "orgTag": "Nagad · CSR"
-  },
-  "hero": {
-    "eyebrow": "Nagad · Customer Service Excellence",
-    "titleLine1": "Team Elite",
-    "titleLine2": "Star",
-    "lede": "Led by Team Leader Albina Jahan, our dedicated customer service squad delivers top-tier performance for Nagad — resolving queries with speed, maintaining high accuracy, and ensuring customer satisfaction."
-  },
-  "about": {
-    "eyebrow": "Who we are",
-    "headingPrefix": "Support, elevated to an",
-    "headingEmphasis": "art",
-    "headingSuffix": ".",
-    "paragraphs": [
-      "<strong>Team Elite Star</strong>, under the leadership of <strong>Albina Jahan</strong>, is the frontline of the Nagad customer experience. Every call and query is handled with complete dedication, precision, and efficiency.",
-      "Our team achieves an impressive average MTD Quality Score of <strong>98.06%</strong> and maintains <strong>100% On-time Login</strong> performance across operations. Supported by QA Rasel Hossain and dedicated trainers (Reduan Islam, Md. Mynul Islam, and Md. Shahin Akter), we strive for perfection every day.",
-      "Fast when it matters. Precise always. Human throughout."
-    ],
-    "pillars": [
-      {
-        "title": "Empathy first",
-        "desc": "We hear the person before the problem. Tone, patience, and respect on every contact.",
-        "icon": "<path d=\"M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z\"/>"
-      },
-      {
-        "title": "Speed with care",
-        "desc": "Avg. AHT of 0:02:50 with rapid first response without cutting corners.",
-        "icon": "<path d=\"M13 2 3 14h7l-1 8 10-12h-7z\"/>"
-      },
-      {
-        "title": "Accuracy",
-        "desc": "Maintaining a stellar 98.06% overall quality score with strict QA compliance.",
-        "icon": "<path d=\"m9 11 3 3L22 4\"/><path d=\"M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11\"/>"
-      },
-      {
-        "title": "Trust & Security",
-        "desc": "100% On-time Login rate reflecting ultimate operational discipline.",
-        "icon": "<path d=\"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z\"/>"
-      }
-    ]
-  },
-  "impact": {
-    "eyebrow": "By the numbers",
-    "heading": "Proof, not promises.",
-    "subheading": "Real performance data from our team metrics report.",
-    "stats": [
-      {
-        "value": 98.06,
-        "decimals": 2,
-        "suffix": "%",
-        "label": "MTD Quality Score"
-      },
-      {
-        "value": 100,
-        "decimals": 0,
-        "suffix": "%",
-        "label": "On-Time Login"
-      },
-      {
-        "value": 8.28,
-        "decimals": 2,
-        "suffix": "h",
-        "label": "Avg. Productivity / Day"
-      },
-      {
-        "value": 85.71,
-        "decimals": 2,
-        "suffix": "%",
-        "label": "Overall Attendance"
-      }
-    ],
-    "note": {
-      "tl": "Albina Jahan",
-      "qa": "Rasel Hossain",
-      "activeMembers": 12
-    }
-  },
-  "team": {
-    "eyebrow": "Our Squad",
-    "headingPrefix": "Meet the",
-    "headingEmphasis": "stars",
-    "headingSuffix": ".",
-    "subheading": "Driven professionals delivering excellence under the guidance of Albina Jahan."
-  },
-  "command": {
-    "eyebrow": "Command Center",
-    "headingPrefix": "Performance,",
-    "headingEmphasis": "decoded",
-    "headingSuffix": ".",
-    "subheading": "Explore the same Team Elite Star structure with live client-side filtering, ranking, metric intelligence and quick insights."
-  },
-  "marquee": [
-    "Albina Jahan Leadership",
-    "98.06% Quality Score",
-    "100% On-Time Login",
-    "Trust",
-    "Speed",
-    "Accuracy"
-  ],
-  "leader": {
-    "name": "Albina Jahan",
-    "role": "Team Leader",
-    "bio": "Leading Team Elite Star to operational excellence, driving high quality standards and top-tier customer satisfaction.",
-    "rank": "Team Leader",
-    "cubeId": "TL_ALBINA_JSR",
-    "qa": "Rasel Hossain"
-  },
-  "members": [
-    {
-      "dgId": "16546",
-      "name": "Suraya",
-      "cubeId": "Suraya46_JSR",
-      "role": "CSR",
-      "rank": "CSR",
-      "qa": "Rasel Hossain",
-      "trainer": "Reduan Islam",
-      "mtdScore": "97.09%",
-      "attendance": "100.00%",
-      "staffedTime": "9:00:03",
-      "prodTime": "7:41:14",
-      "breakTime": "1:18:49",
-      "aht": "0:02:39",
-      "fbBreak": "0:05:08",
-      "trBreak": "0:00:00",
-      "bio": "Consistent customer support provider with strong compliance and 100% attendance."
-    },
-    {
-      "dgId": "17174",
-      "name": "Sarmin Sultana Apon",
-      "cubeId": "Apon74_JSR",
-      "role": "CSR · Our Star",
-      "rank": "CSR · Star",
-      "qa": "Rasel Hossain",
-      "trainer": "Md. Mynul Islam",
-      "mtdScore": "98.81%",
-      "attendance": "100.00%",
-      "staffedTime": "10:08:14",
-      "prodTime": "9:10:03",
-      "breakTime": "0:58:10",
-      "aht": "0:02:43",
-      "fbBreak": "0:57:43",
-      "trBreak": "3:02:32",
-      "bio": "Top performer with excellent 98.81% quality score and over 9 hours avg. daily productivity."
-    },
-    {
-      "dgId": "17916",
-      "name": "Md.Sajman Basar",
-      "cubeId": "Sajman_JSR",
-      "role": "CSR",
-      "rank": "CSR",
-      "qa": "Rasel Hossain",
-      "trainer": "Reduan Islam",
-      "mtdScore": "97.91%",
-      "attendance": "100.00%",
-      "staffedTime": "8:56:55",
-      "prodTime": "7:54:50",
-      "breakTime": "1:02:05",
-      "aht": "0:02:52",
-      "fbBreak": "0:48:00",
-      "trBreak": "0:00:00",
-      "bio": "Dedicated specialist delivering steady handling times and high quality execution."
-    },
-    {
-      "dgId": "18314",
-      "name": "MD.shakibuzzaman shacho",
-      "cubeId": "Shacho_JSR",
-      "role": "CSR",
-      "rank": "CSR",
-      "qa": "Rasel Hossain",
-      "trainer": "Md. Mynul Islam",
-      "mtdScore": "99.20%",
-      "attendance": "100.00%",
-      "staffedTime": "8:57:50",
-      "prodTime": "8:07:30",
-      "breakTime": "0:50:19",
-      "aht": "0:02:59",
-      "fbBreak": "0:33:11",
-      "trBreak": "2:10:48",
-      "bio": "Outstanding performance featuring a stellar 99.20% quality score and low break durations."
-    },
-    {
-      "dgId": "18636",
-      "name": "Farjana Yesmin",
-      "cubeId": "Farjana36_JSR",
-      "role": "CSR",
-      "rank": "CSR",
-      "qa": "Rasel Hossain",
-      "trainer": "Reduan Islam",
-      "mtdScore": "98.62%",
-      "attendance": "25.00%",
-      "staffedTime": "9:00:39",
-      "prodTime": "7:55:33",
-      "breakTime": "1:05:06",
-      "aht": "0:02:35",
-      "fbBreak": "0:30:11",
-      "trBreak": "0:00:00",
-      "bio": "Fast AHT of 2m 35s with impressive 98.62% MTD performance rating."
-    },
-    {
-      "dgId": "19249",
-      "name": "Md. Arifuzzaman",
-      "cubeId": "Arifuzzaman_JSR",
-      "role": "CSR",
-      "rank": "CSR",
-      "qa": "Rasel Hossain",
-      "trainer": "Reduan Islam",
-      "mtdScore": "98.92%",
-      "attendance": "100.00%",
-      "staffedTime": "9:01:52",
-      "prodTime": "8:01:27",
-      "breakTime": "1:00:25",
-      "aht": "0:02:40",
-      "fbBreak": "0:27:27",
-      "trBreak": "0:00:00",
-      "bio": "High accuracy and reliable 8+ hours productivity time with 98.92% MTD score."
-    },
-    {
-      "dgId": "19266",
-      "name": "Shuly Khatun",
-      "cubeId": "Shulykhatun_JSR",
-      "role": "CSR · Our Star",
-      "rank": "CSR · Star",
-      "qa": "Rasel Hossain",
-      "trainer": "Reduan Islam",
-      "mtdScore": "99.28%",
-      "attendance": "100.00%",
-      "staffedTime": "9:42:03",
-      "prodTime": "8:47:14",
-      "breakTime": "0:54:49",
-      "aht": "0:02:31",
-      "fbBreak": "1:11:59",
-      "trBreak": "0:41:06",
-      "bio": "Elite squad member boasting an overall 99.28% MTD score and swift 2m 31s AHT."
-    },
-    {
-      "dgId": "19420",
-      "name": "Shekh Afsana mimi",
-      "cubeId": "Afsanamimi_JSR",
-      "role": "CSR",
-      "rank": "CSR",
-      "qa": "Rasel Hossain",
-      "trainer": "Md. Shahin Akter",
-      "mtdScore": "97.20%",
-      "attendance": "100.00%",
-      "staffedTime": "9:17:29",
-      "prodTime": "8:14:41",
-      "breakTime": "1:02:49",
-      "aht": "0:02:38",
-      "fbBreak": "1:38:57",
-      "trBreak": "0:46:40",
-      "bio": "Hardworking team member delivering over 9 hours staffed time daily with strong focus."
-    },
-    {
-      "dgId": "19667",
-      "name": "Al Tamim Hridoy",
-      "cubeId": "Tamim_JSR",
-      "role": "CSR",
-      "rank": "CSR",
-      "qa": "Rasel Hossain",
-      "trainer": "Md. Shahin Akter",
-      "mtdScore": "97.75%",
-      "attendance": "50.00%",
-      "staffedTime": "8:58:36",
-      "prodTime": "7:56:58",
-      "breakTime": "1:01:38",
-      "aht": "0:02:50",
-      "fbBreak": "0:00:00",
-      "trBreak": "0:56:13",
-      "bio": "Attentive support specialist with balanced AHT and active training development."
-    },
-    {
-      "dgId": "19672",
-      "name": "Rina Parvin",
-      "cubeId": "Parvin72_JSR",
-      "role": "CSR",
-      "rank": "CSR",
-      "qa": "Rasel Hossain",
-      "trainer": "Md. Shahin Akter",
-      "mtdScore": "97.19%",
-      "attendance": "100.00%",
-      "staffedTime": "9:17:26",
-      "prodTime": "8:18:29",
-      "breakTime": "0:58:58",
-      "aht": "0:02:58",
-      "fbBreak": "0:41:57",
-      "trBreak": "0:41:32",
-      "bio": "Dependable and disciplined, maintaining high staffed time and 100% login punctuality."
-    },
-    {
-      "dgId": "20071",
-      "name": "Abu Talha Raj",
-      "cubeId": "Talharaj_JSR",
-      "role": "CSR",
-      "rank": "CSR",
-      "qa": "Rasel Hossain",
-      "trainer": "Md. Shahin Akter",
-      "mtdScore": "96.06%",
-      "attendance": "100.00%",
-      "staffedTime": "9:02:01",
-      "prodTime": "8:02:32",
-      "breakTime": "0:59:28",
-      "aht": "0:03:04",
-      "fbBreak": "1:13:42",
-      "trBreak": "0:11:23",
-      "bio": "Focused team player driving continuous customer engagement and thorough resolution."
-    },
-    {
-      "dgId": "20204",
-      "name": "Bijoya Ray",
-      "cubeId": "Bijoya_JSR",
-      "role": "CSR",
-      "rank": "CSR",
-      "qa": "Rasel Hossain",
-      "trainer": "Md. Shahin Akter",
-      "mtdScore": "97.39%",
-      "attendance": "100.00%",
-      "staffedTime": "9:01:58",
-      "prodTime": "8:05:33",
-      "breakTime": "0:56:25",
-      "aht": "0:03:28",
-      "fbBreak": "1:35:21",
-      "trBreak": "0:46:42",
-      "bio": "Reliable member maintaining stellar attendance and consistent daily productivity."
-    }
-  ]
-};
-
-let CONTENT = FALLBACK_DATA;
-let TEAM_LEADER = FALLBACK_DATA.leader;
-let MEMBERS = FALLBACK_DATA.members;
+/* ---- External JSON data source ----
+   Keep data.json in the same folder as this HTML. The page is intentionally JSON-driven:
+   there is no embedded fallback dataset, so stale HTML data cannot silently override the JSON.
+   A validated last-known-good copy is stored locally as a resilience layer for temporary
+   network/server failures. ---- */
+const DATA_JSON_URL = 'data.json';
+const DATA_CACHE_KEY = 'tes_last_valid_json_v2';
+let CONTENT = null;
+let TEAM_LEADER = null;
+let MEMBERS = [];
  
 const REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const FINE   = window.matchMedia('(pointer:fine)').matches;
@@ -1205,25 +910,77 @@ function applyContentData(D){
 }
 applyContentData(CONTENT);
 
-/* ---- Load content from data.json (daily-editable) and re-render everything on success ---- */
+/* ---- Strict JSON loader: linked JSON first, validated local cache second ---- */
 (async function loadContentJSON(){
+  const statusEl=document.getElementById('dataStatus');
+  const detailEl=document.getElementById('dataStatusDetail');
+  const stampEl=document.getElementById('dataUpdated');
+  const setStatus=(state,label,detail='')=>{
+    if(statusEl){statusEl.dataset.state=state; statusEl.textContent=label;}
+    if(detailEl) detailEl.textContent=detail;
+  };
+  const isValid=(D)=>{
+    try{
+      return !!(D && typeof D==='object' && D.meta && D.hero && D.about && D.about.paragraphs && Array.isArray(D.about.paragraphs)
+        && Array.isArray(D.about.pillars) && D.impact && Array.isArray(D.impact.stats) && D.impact.note
+        && D.team && D.command && Array.isArray(D.marquee) && D.leader && D.leader.name
+        && Array.isArray(D.members) && D.members.every(m=>m && m.name));
+    }catch(_){ return false; }
+  };
+  const apply=(D,source)=>{
+    if(!isValid(D)) throw new Error('JSON structure validation failed');
+    CONTENT=D; TEAM_LEADER=D.leader; MEMBERS=D.members.slice();
+    applyContentData(CONTENT); buildMembers(); renderMarquee(CONTENT.marquee);
+    if(typeof refreshCommandCenter==='function') refreshCommandCenter();
+    if(stampEl) stampEl.textContent=D.meta.lastUpdated ? `DATA · ${D.meta.lastUpdated}` : 'DATA · LIVE';
+    setStatus('live', source==='network'?'JSON LINKED':'CACHE READY', source==='network'?'Live data loaded from data.json':'Using last validated JSON cache');
+  };
   try{
-    const res = await fetch('data.json', {cache:'no-store'});
+    setStatus('loading','SYNCING','Reading linked data.json…');
+    const controller=new AbortController();
+    const timer=setTimeout(()=>controller.abort(),7000);
+    const res=await fetch(DATA_JSON_URL,{cache:'no-store',signal:controller.signal});
+    clearTimeout(timer);
     if(!res.ok) throw new Error('HTTP '+res.status);
-    const fresh = await res.json();
-    CONTENT = fresh;
-    TEAM_LEADER = fresh.leader;
-    MEMBERS = fresh.members;
-    applyContentData(CONTENT);
-    buildMembers();
-    renderMarquee(CONTENT.marquee);
-    if(typeof refreshCommandCenter === 'function') refreshCommandCenter();
+    const fresh=await res.json();
+    apply(fresh,'network');
+    try{ localStorage.setItem(DATA_CACHE_KEY,JSON.stringify(fresh)); }catch(_){/* storage unavailable */}
   }catch(err){
-    /* Falls back to the embedded FALLBACK_DATA already rendered above — this is
-       expected if the page was opened directly as a file instead of being served
-       from a web server (fetch of local files is blocked by the browser). */
-    console.warn('data.json could not be loaded, using embedded fallback content:', err.message);
+    let cached=null;
+    try{ cached=JSON.parse(localStorage.getItem(DATA_CACHE_KEY)||'null'); }catch(_){ cached=null; }
+    if(cached && isValid(cached)){
+      apply(cached,'cache');
+      setStatus('cache','CACHE READY','Network unavailable; last validated JSON retained locally');
+      console.warn('data.json unavailable; loaded last validated JSON cache:',err.message);
+    }else{
+      setStatus('error','DATA OFFLINE','Place data.json beside this HTML and serve both from a web server');
+      const grid=document.getElementById('membersGrid'); if(grid) grid.innerHTML='<div class="data-error" role="status"><strong>Data source unavailable.</strong><span>Keep <code>data.json</code> in the same folder and open the site through a web server (GitHub Pages, localhost, etc.).</span></div>';
+      const rank=document.getElementById('rankList'); if(rank) rank.innerHTML='';
+      const empty=document.getElementById('emptyState'); if(empty) empty.hidden=false;
+      console.error('Unable to load and validate data.json:',err);
+    }
   }
+})();
+
+
+/* ---- Data refresh + live telemetry ---- */
+(function futuristicCore(){
+  const refresh=document.getElementById('refreshData');
+  if(refresh){
+    refresh.addEventListener('click',()=>{
+      refresh.disabled=true; refresh.textContent='Syncing…';
+      try{ localStorage.removeItem(DATA_CACHE_KEY); }catch(_){}
+      location.reload();
+    });
+  }
+  const clock=document.getElementById('hudClock'), mode=document.getElementById('hudMode'), health=document.getElementById('hudHealth');
+  function tick(){
+    const d=new Date();
+    if(clock) clock.textContent=d.toLocaleTimeString([], {hour12:false});
+    if(mode) mode.textContent=innerWidth<=860?'MOBILE':'DESKTOP';
+    if(health){ health.textContent = MEMBERS.length ? `${MEMBERS.length+1} ONLINE` : 'SYNC…'; }
+  }
+  tick(); setInterval(tick,1000);
 })();
 
 /* ---- Nav ---- */
@@ -1430,11 +1187,11 @@ if(!REDUCE){
   const empty = document.getElementById('emptyState');
   if(!panel || !search) return;
 
-  let all = MEMBERS.map(m=>({...m, leader:false}));
+  let all = (Array.isArray(MEMBERS)?MEMBERS:[]).map(m=>({...m, leader:false}));
   let data=[...all], filter='all';
 
   window.refreshCommandCenter = function(){
-    all = MEMBERS.map(m=>({...m, leader:false}));
+    all = (Array.isArray(MEMBERS)?MEMBERS:[]).map(m=>({...m, leader:false}));
     data=[...all]; filter='all'; search.value='';
     document.querySelectorAll('.filter-chip').forEach((x,i)=>x.classList.toggle('active',i===0));
     updateIntel(); draw();
@@ -1470,7 +1227,11 @@ if(!REDUCE){
   }
 
   function updateIntel(){
-    const active=MEMBERS;
+    const active=Array.isArray(MEMBERS)?MEMBERS:[];
+    if(!active.length){
+      ['topQuality','topQualityValue','fastestAht','fastestAhtValue','avgQuality','avgProd'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='—';});
+      document.getElementById('countAll').textContent='0'; document.getElementById('countStars').textContent='0'; document.getElementById('countPerfect').textContent='0'; return;
+    }
     const top=[...active].sort((a,b)=>quality(b)-quality(a))[0];
     const fast=[...active].sort((a,b)=>ahtSecs(a.aht)-ahtSecs(b.aht))[0];
     const avg=active.reduce((s,m)=>s+quality(m),0)/active.length;
