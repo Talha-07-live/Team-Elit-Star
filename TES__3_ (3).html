@@ -536,6 +536,64 @@ body.standalone-app .app-tabbar{padding-bottom:calc(10px + env(safe-area-inset-b
   a[href]::after{content:none;}
 }
 </style>
+<style id="next-gen-experience-css">
+/* ===== NEXT-GEN CARD + CONTROL LAYER ===== */
+.member-card{position:relative;isolation:isolate;transform-style:preserve-3d;perspective:1100px;transition:transform .16s cubic-bezier(.2,.8,.2,1),box-shadow .35s ease,border-color .35s ease,background .35s ease;}
+.member-card::before{content:"";position:absolute;inset:-1px;border-radius:12px;padding:1px;opacity:0;pointer-events:none;z-index:4;background:conic-gradient(from var(--card-angle,180deg),transparent 0 18%,rgba(252,231,184,.95) 23%,rgba(232,195,107,.15) 34%,transparent 46% 100%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;transition:opacity .35s ease;}
+.member-card::after{content:"";position:absolute;inset:0;border-radius:11px;pointer-events:none;z-index:1;background:radial-gradient(320px 220px at var(--card-x,50%) var(--card-y,20%),rgba(252,231,184,.19),transparent 58%),linear-gradient(120deg,transparent 0 45%,rgba(255,255,255,.055) 50%,transparent 55%);opacity:.0;mix-blend-mode:screen;transition:opacity .35s ease,background-position .25s ease;}
+.member-card>*{position:relative;z-index:3;transform:translateZ(0);transition:transform .18s ease-out;}
+.member-card:hover,.member-card.card-active{border-color:rgba(232,195,107,.55)!important;box-shadow:0 30px 80px -34px rgba(232,195,107,.42),0 0 0 1px rgba(252,231,184,.05) inset;}
+.member-card:hover::before,.member-card.card-active::before,.member-card:hover::after,.member-card.card-active::after{opacity:1;}
+.member-card:hover h3,.member-card.card-active h3{transform:translateZ(28px);}
+.member-card:hover .role,.member-card.card-active .role{transform:translateZ(20px);}
+.member-card:hover .avatar,.member-card.card-active .avatar{transform:translateZ(34px) scale(1.06);box-shadow:0 0 0 5px rgba(232,195,107,.07),0 0 34px rgba(232,195,107,.16),inset 0 0 20px rgba(232,195,107,.15);}
+.member-card .metrics-badge,.member-card .socials{transition:transform .2s ease-out;}
+.member-card:hover .metrics-badge{transform:translateZ(16px);}
+.member-card:hover .socials{transform:translateZ(10px);}
+.member-card.tl-card{box-shadow:0 20px 60px -40px rgba(232,195,107,.18);}
+.member-card .badge{transition:transform .25s ease,background .25s ease,border-color .25s ease;}
+.member-card:hover .badge{border-color:rgba(232,195,107,.35);background:rgba(232,195,107,.10);}
+.card-scan{position:absolute!important;left:10px;right:10px;top:0;height:1px!important;background:linear-gradient(90deg,transparent,rgba(252,231,184,.7),transparent);opacity:0;z-index:5!important;pointer-events:none;transform:translateZ(45px) translateY(-8px)!important;}
+.member-card:hover .card-scan,.member-card.card-active .card-scan{animation:cardScan 1.6s ease-in-out infinite;opacity:.8;}
+@keyframes cardScan{0%{top:4%}50%{top:94%}100%{top:4%}}
+.card-index{position:absolute!important;left:14px;top:12px;font:600 .55rem var(--util);letter-spacing:.16em;color:rgba(232,195,107,.48);z-index:5!important;pointer-events:none;}
+
+/* Desktop command menu */
+#fxMenu{position:fixed;inset:0;z-index:11000;display:grid;place-items:center;padding:24px;opacity:0;visibility:hidden;transition:opacity .25s ease,visibility .25s ease;}
+#fxMenu.open{opacity:1;visibility:visible;}
+.fx-backdrop{position:absolute;inset:0;background:rgba(3,3,6,.72);backdrop-filter:blur(14px) saturate(120%);}
+.fx-panel{position:relative;width:min(760px,100%);max-height:min(760px,88vh);overflow:auto;border:1px solid rgba(232,195,107,.32);border-radius:18px;background:linear-gradient(145deg,rgba(25,22,31,.96),rgba(7,6,11,.96));box-shadow:0 50px 140px -45px #000,0 0 70px -38px rgba(232,195,107,.42);padding:24px;transform:translateY(20px) scale(.97);transition:transform .35s cubic-bezier(.2,.8,.2,1);}
+#fxMenu.open .fx-panel{transform:none;}
+.fx-top{display:flex;align-items:center;justify-content:space-between;gap:18px;padding-bottom:16px;border-bottom:1px solid var(--line);}
+.fx-kicker{font:600 .62rem var(--util);letter-spacing:.22em;text-transform:uppercase;color:var(--gold);}
+.fx-title{font:600 clamp(1.6rem,4vw,2.35rem) var(--serif);margin:.25rem 0 0;}
+.fx-close{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.02);color:var(--muted);font-size:1.2rem;cursor:pointer;}
+.fx-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:18px;}
+.fx-option{position:relative;text-align:left;padding:15px 16px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.025);color:var(--ivory);cursor:pointer;overflow:hidden;transition:.25s ease;}
+.fx-option:hover,.fx-option.active{transform:translateY(-2px);border-color:var(--line-strong);background:rgba(232,195,107,.08);box-shadow:0 12px 35px -24px rgba(232,195,107,.55);}
+.fx-option b{display:block;font:600 .82rem var(--util);letter-spacing:.08em;text-transform:uppercase;color:var(--gold);}
+.fx-option span{display:block;color:var(--muted);font:.78rem var(--sans);margin-top:5px;line-height:1.45;}
+.fx-readout{margin-top:15px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;font:.68rem var(--util);color:var(--muted);letter-spacing:.05em;background:rgba(0,0,0,.15);}
+.fx-readout strong{color:var(--gold);}
+
+/* Modes */
+body.fx-focus header.nav,body.fx-focus .futures-hud,body.fx-focus .quick-dock{opacity:.15;pointer-events:none;transition:.4s ease;}
+body.fx-focus .member-card{filter:saturate(1.08);}
+body.fx-neon{--gold:#f6d77d;--gold-deep:#9f7c1e;--gold-shine:#fff6d8;--line:rgba(246,215,125,.28);--line-strong:rgba(255,238,176,.58);--glow:rgba(246,215,125,.45);}
+body.fx-neon::before{filter:saturate(1.15) contrast(1.02);}
+body.fx-minimal #spotlight,body.fx-minimal #sparkles{display:none!important;}
+body.fx-minimal .member-card::before,body.fx-minimal .member-card::after{display:none;}
+
+@media(max-width:860px){
+ .member-card{transition:transform .22s cubic-bezier(.2,.8,.2,1),box-shadow .3s ease,border-color .3s ease;}
+ .member-card.card-active{transform:scale(.985)!important;}
+ .member-card:active{box-shadow:0 20px 55px -30px rgba(232,195,107,.34);}
+ .fx-grid{grid-template-columns:1fr;}
+ #fxMenu{padding:10px;align-items:end;}
+ .fx-panel{width:100%;max-height:82vh;border-radius:18px 18px 10px 10px;padding:18px;}
+}
+@media(prefers-reduced-motion:reduce){.member-card::before,.member-card::after,.card-scan{display:none!important;}#fxMenu{transition:none}.fx-panel{transition:none}}
+</style>
 </head>
 <body>
  
@@ -730,6 +788,26 @@ body.standalone-app .app-tabbar{padding-bottom:calc(10px + env(safe-area-inset-b
   <button class="sheet-item" id="sheetTop" type="button"><span class="sheet-ic">↑</span> Back to Top</button>
   <button class="sheet-item" id="sheetInstall" type="button" hidden><span class="sheet-ic">⇩</span> Install App</button>
   <p class="sheet-ios-hint" id="sheetIosHint" hidden>iPhone/iPad এ অ্যাপ হিসেবে ইনস্টল করতে: নিচের Share বাটনে ট্যাপ করুন → "Add to Home Screen" নির্বাচন করুন।</p>
+</div>
+
+
+<div id="fxMenu" aria-hidden="true" aria-label="Experience controls">
+  <div class="fx-backdrop" data-fx-close></div>
+  <section class="fx-panel" role="dialog" aria-modal="true" aria-labelledby="fxMenuTitle">
+    <div class="fx-top">
+      <div><span class="fx-kicker">Elite Interface</span><h3 class="fx-title" id="fxMenuTitle">Control the experience.</h3></div>
+      <button class="fx-close" id="fxClose" type="button" aria-label="Close menu">×</button>
+    </div>
+    <div class="fx-grid">
+      <button class="fx-option" data-fx-mode="standard"><b>Standard</b><span>Full cinematic gold interface with normal interaction depth.</span></button>
+      <button class="fx-option" data-fx-mode="focus"><b>Focus Mode</b><span>Reduce interface chrome and put the spotlight on performance cards.</span></button>
+      <button class="fx-option" data-fx-mode="neon"><b>Pulse Gold</b><span>Increase glow, contrast and edge energy for a more futuristic look.</span></button>
+      <button class="fx-option" data-fx-mode="minimal"><b>Minimal</b><span>Keep the premium structure while reducing ambient visual effects.</span></button>
+      <button class="fx-option" id="fxRefresh" type="button"><b>Sync JSON</b><span>Reload the external data.json and rebuild every data-driven view.</span></button>
+      <button class="fx-option" id="fxFullscreen" type="button"><b>Immersive</b><span>Enter fullscreen for a presentation-style desktop or mobile view.</span></button>
+    </div>
+    <div class="fx-readout">SYSTEM MODE · <strong id="fxModeReadout">STANDARD</strong> · COMMAND <strong>CTRL/⌘ K</strong></div>
+  </section>
 </div>
 
 <div class="audio-hint" id="audioHint" role="status" aria-live="polite">
@@ -1731,5 +1809,69 @@ if(!REDUCE){
   });
 })();
 </script>
+
+<script>
+/* ===== Next-gen cards + experience menu ===== */
+(function nextGenExperience(){
+  const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+  const grid=$('#membersGrid');
+  if(grid){
+    const state=new WeakMap();
+    const activate=(card,e)=>{
+      if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const r=card.getBoundingClientRect();
+      const x=Math.max(0,Math.min(1,(e.clientX-r.left)/r.width)), y=Math.max(0,Math.min(1,(e.clientY-r.top)/r.height));
+      const rx=(.5-y)*10, ry=(x-.5)*12;
+      card.style.setProperty('--card-x',(x*100)+'%'); card.style.setProperty('--card-y',(y*100)+'%');
+      card.style.setProperty('--card-angle',(135+x*180)+'deg');
+      card.style.transform=`perspective(1100px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-7px) scale(1.012)`;
+      card.classList.add('card-active');
+    };
+    const reset=(card)=>{card.style.transform='';card.classList.remove('card-active');};
+    grid.addEventListener('pointermove',e=>{const c=e.target.closest('.member-card');if(c)activate(c,e);});
+    grid.addEventListener('pointerleave',e=>{const c=e.target.closest('.member-card');if(c)reset(c);},{capture:true});
+    grid.addEventListener('pointerdown',e=>{const c=e.target.closest('.member-card');if(c){c.classList.add('card-active');state.set(c,{pressed:true});}});
+    grid.addEventListener('pointerup',e=>{const c=e.target.closest('.member-card');if(c){state.delete(c);setTimeout(()=>{if(!c.matches(':hover'))reset(c);},80);}});
+    grid.addEventListener('click',e=>{const c=e.target.closest('.member-card');if(!c)return;if(e.target.closest('a,button'))return;c.classList.add('card-active');setTimeout(()=>{if(!c.matches(':hover'))reset(c)},180);});
+    const decorate=()=>$$('.member-card',grid).forEach((c,i)=>{if(!c.querySelector('.card-scan')){const s=document.createElement('i');s.className='card-scan';c.appendChild(s);}if(!c.querySelector('.card-index')){const n=document.createElement('span');n.className='card-index';n.textContent=String(i+1).padStart(2,'0');c.appendChild(n);}});
+    decorate(); new MutationObserver(decorate).observe(grid,{childList:true});
+  }
+
+  const menu=$('#fxMenu');
+  const open=()=>{if(!menu)return;menu.classList.add('open');menu.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';};
+  const close=()=>{if(!menu)return;menu.classList.remove('open');menu.setAttribute('aria-hidden','true');if(!document.querySelector('.member-modal.open'))document.body.style.overflow='';};
+  $('#fxClose')?.addEventListener('click',close); menu?.querySelector('[data-fx-close]')?.addEventListener('click',close);
+  document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'){e.preventDefault();menu?.classList.contains('open')?close():open();}if(e.key==='Escape'&&menu?.classList.contains('open'))close();});
+  const modeButtons=$$('[data-fx-mode]',menu); const readout=$('#fxModeReadout');
+  const setMode=mode=>{document.body.classList.remove('fx-focus','fx-neon','fx-minimal');if(mode!=='standard')document.body.classList.add('fx-'+mode);modeButtons.forEach(b=>b.classList.toggle('active',b.dataset.fxMode===mode));if(readout)readout.textContent=mode.toUpperCase();try{localStorage.setItem('tes_fx_mode',mode)}catch(_){}};
+  modeButtons.forEach(b=>b.addEventListener('click',()=>setMode(b.dataset.fxMode)));
+  try{setMode(localStorage.getItem('tes_fx_mode')||'standard')}catch(_){setMode('standard')}
+  $('#fxRefresh')?.addEventListener('click',()=>{ if(typeof window.reloadTeamJSON==='function'){window.reloadTeamJSON();} close(); });
+  $('#fxFullscreen')?.addEventListener('click',async()=>{try{if(!document.fullscreenElement)await document.documentElement.requestFullscreen();else await document.exitFullscreen();}catch(_){ } close();});
+
+  // Desktop launcher; mobile gets the same control from More.
+  const dock=$('#quickDock');
+  if(dock && !$('#fxMenuBtn')){const b=document.createElement('button');b.className='dock-btn';b.id='fxMenuBtn';b.type='button';b.textContent='⌘';b.title='Experience menu · Ctrl/⌘ K';b.setAttribute('aria-label','Open experience menu');dock.insertBefore(b,dock.firstChild);b.addEventListener('click',open);}
+  const sheet=$('#actionSheet');
+  if(sheet && !$('#sheetExperience')){const b=document.createElement('button');b.className='sheet-item';b.id='sheetExperience';b.type='button';b.innerHTML='<span class="sheet-ic">⌘</span> Experience Modes';sheet.insertBefore(b,sheet.firstChild);b.addEventListener('click',()=>{document.getElementById('moreTabBtn')?.click();open();});}
+  const tab=$('#moreTabBtn'); if(tab){tab.addEventListener('dblclick',open);}
+
+  // Public reload hook used by the menu; wraps the existing loader safely.
+  window.reloadTeamJSON = async function(){
+    const badge=$('#hudHealth');
+    try{
+      if(badge) badge.textContent='SYNCING';
+      const res=await fetch('data.json?ts='+Date.now(),{cache:'no-store'}); if(!res.ok) throw new Error('HTTP '+res.status);
+      const fresh=await res.json();
+      if(!fresh||!Array.isArray(fresh.members)||!fresh.leader) throw new Error('Invalid team JSON');
+      CONTENT=fresh; TEAM_LEADER=fresh.leader; MEMBERS=fresh.members;
+      applyContentData(CONTENT); buildMembers(); renderMarquee(CONTENT.marquee||[]); if(typeof refreshCommandCenter==='function')refreshCommandCenter();
+      if(badge) badge.textContent='SYNCED';
+      setTimeout(()=>{if(badge)badge.textContent='READY'},1400);
+    }catch(err){if(badge)badge.textContent='OFFLINE';console.warn('JSON refresh failed:',err);}
+  };
+})();
+</script>
+
 </body>
 </html>
