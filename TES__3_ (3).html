@@ -766,7 +766,7 @@ body.standalone-app .app-tabbar{padding-bottom:calc(10px + env(safe-area-inset-b
   </div>
 </footer>
  
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 
 /* ---- Fallback content (used instantly on load, and if data.json can't be fetched
@@ -851,6 +851,15 @@ function buildMembers(){
     </article>`).join('');
 
   grid.innerHTML = html;
+  /* Cards are created asynchronously after data.json arrives. The original reveal
+     observer only sees elements present during initial page parse, so explicitly
+     reveal the freshly-created cards here instead of leaving them at opacity:0. */
+  requestAnimationFrame(()=>{
+    grid.querySelectorAll('.reveal').forEach((el,i)=>{
+      el.style.transitionDelay=(i%4*80)+'ms';
+      el.classList.add('in');
+    });
+  });
 }
 /* Data is rendered only after JSON/cache validation succeeds. */
 
@@ -933,6 +942,7 @@ applyContentData(CONTENT);
     CONTENT=D; TEAM_LEADER=D.leader; MEMBERS=D.members.slice();
     applyContentData(CONTENT); buildMembers(); renderMarquee(CONTENT.marquee);
     if(typeof refreshCommandCenter==='function') refreshCommandCenter();
+    else window.__TES_PENDING_COMMAND_REFRESH = true;
     if(stampEl) stampEl.textContent=D.meta.lastUpdated ? `DATA · ${D.meta.lastUpdated}` : 'DATA · LIVE';
     setStatus('live', source==='network'?'JSON LINKED':'CACHE READY', source==='network'?'Live data loaded from data.json':'Using last validated JSON cache');
   };
@@ -1102,7 +1112,17 @@ if(!REDUCE){
 /* ---- 3D golden star hero ---- */
 (function hero3d(){
   const canvas=document.getElementById('star-canvas');
-  if(!canvas||typeof THREE==='undefined') return;
+  if(!canvas) return;
+  if(typeof THREE==='undefined'){
+    let tries=0;
+    const wait=setInterval(()=>{
+      if(typeof THREE!=='undefined'){ clearInterval(wait); init(); }
+      else if(++tries>120){ clearInterval(wait); }
+    },100);
+    return;
+  }
+  init();
+  function init(){
   let W=innerWidth,H=innerHeight;
   const lite = !window.matchMedia('(pointer:fine)').matches; /* touch device: lighten the scene */
   const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:!lite,powerPreference:'low-power'});
@@ -1178,6 +1198,7 @@ if(!REDUCE){
   },{passive:true});
 
   if(REDUCE){renderer.render(scene,camera);}else{loop();}
+  }
 })();
 </script>
 <script>
@@ -1331,6 +1352,10 @@ if(!REDUCE){
   });
 
   updateIntel();draw();
+  if(window.__TES_PENDING_COMMAND_REFRESH){
+    window.__TES_PENDING_COMMAND_REFRESH=false;
+    refreshCommandCenter();
+  }
 })();
 
 
