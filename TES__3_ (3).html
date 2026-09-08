@@ -744,7 +744,7 @@ body.standalone-app .app-tabbar{padding-bottom:calc(10px + env(safe-area-inset-b
      e.g. when this file is opened directly instead of served from a web server).
      Editing data.json is the normal way to update content daily; this fallback is
      just a safety net so the page never renders blank. ---- */
-/*const FALLBACK_DATA = {
+const FALLBACK_DATA = {
   "meta": {
     "lastUpdated": "2026-09-05",
     "teamName": "Team Elite Star",
@@ -766,7 +766,8 @@ body.standalone-app .app-tabbar{padding-bottom:calc(10px + env(safe-area-inset-b
       "Our team achieves an impressive average MTD Quality Score of <strong>98.06%</strong> and maintains <strong>100% On-time Login</strong> performance across operations. Supported by QA Rasel Hossain and dedicated trainers (Reduan Islam, Md. Mynul Islam, and Md. Shahin Akter), we strive for perfection every day.",
       "Fast when it matters. Precise always. Human throughout."
     ],
-    "pillars": [
+    
+   /*"pillars": [
       {
         "title": "Empathy first",
         "desc": "We hear the person before the problem. Tone, patience, and respect on every contact.",
