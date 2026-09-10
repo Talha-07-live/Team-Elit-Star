@@ -1781,23 +1781,23 @@ if(!REDUCE){
       <button class="exp-close" id="experienceClose" type="button" aria-label="Close Experience Menu">×</button>
     </div>
     <div class="exp-mode-grid" role="radiogroup" aria-label="Visual mode">
-      <button class="exp-mode active" data-exp-mode="standard" role="radio" aria-checked="true">
-        <span class="exp-mode-icon">✦</span><span class="exp-mode-name">Standard</span>
-        <span class="exp-mode-desc">Balanced gold depth and motion.</span>
-      </button>
-      <button class="exp-mode" data-exp-mode="focus" role="radio" aria-checked="false">
-        <span class="exp-mode-icon">◉</span><span class="exp-mode-name">Focus</span>
-        <span class="exp-mode-desc">Sharper depth, glare and edge response.</span>
-      </button>
-      <button class="exp-mode" data-exp-mode="pulse" role="radio" aria-checked="false">
-        <span class="exp-mode-icon">◌</span><span class="exp-mode-name">Pulse Gold</span>
-        <span class="exp-mode-desc">Living cards with stronger cinematic energy.</span>
-      </button>
-      <button class="exp-mode" data-exp-mode="minimal" role="radio" aria-checked="false">
-        <span class="exp-mode-icon">—</span><span class="exp-mode-name">Minimal</span>
-        <span class="exp-mode-desc">Quiet interface with restrained motion.</span>
-      </button>
-    </div>
+  <button class="exp-mode" data-exp-mode="minimal" role="radio" aria-checked="false">
+    <span class="exp-mode-icon">—</span><span class="exp-mode-name">Minimal</span>
+    <span class="exp-mode-desc">Quiet interface with restrained motion.</span>
+  </button>
+  <button class="exp-mode active" data-exp-mode="standard" role="radio" aria-checked="true">
+    <span class="exp-mode-icon">✦</span><span class="exp-mode-name">Standard</span>
+    <span class="exp-mode-desc">Balanced gold depth and motion.</span>
+  </button>
+  <button class="exp-mode" data-exp-mode="focus" role="radio" aria-checked="false">
+    <span class="exp-mode-icon">◉</span><span class="exp-mode-name">Focus</span>
+    <span class="exp-mode-desc">Sharper depth, glare and edge response.</span>
+  </button>
+  <button class="exp-mode" data-exp-mode="pulse" role="radio" aria-checked="false">
+    <span class="exp-mode-icon">◌</span><span class="exp-mode-name">Pulse Gold</span>
+    <span class="exp-mode-desc">Living cards with stronger cinematic energy.</span>
+  </button>
+</div>
     <div class="exp-tools">
       <div class="exp-tool"><span class="exp-tool-label">3D Card Depth</span><button class="exp-toggle on" data-exp-toggle="depth" type="button" aria-label="Toggle 3D Card Depth" aria-pressed="true"><i></i></button></div>
       <div class="exp-tool"><span class="exp-tool-label">Golden Glare</span><button class="exp-toggle on" data-exp-toggle="glare" type="button" aria-label="Toggle Golden Glare" aria-pressed="true"><i></i></button></div>
@@ -1833,8 +1833,8 @@ if(!REDUCE){
   let state={...defaults};
   try{state={...defaults,...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch(_){}
 
-  const modes=['standard','focus','pulse','minimal'];
-  const modeNames={standard:'Standard',focus:'Focus',pulse:'Pulse Gold',minimal:'Minimal'};
+  const modes=['minimal', 'standard', 'focus', 'pulse'];
+  const modeNames={minimal: 'Minimal', standard: 'Standard', focus: 'Focus', pulse: 'Pulse Gold'};
 
   function save(){
     try{localStorage.setItem(KEY,JSON.stringify(state))}catch(_){}
