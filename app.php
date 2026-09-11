@@ -91,7 +91,7 @@
 
   <script>
     // ====== Easy configuration ======
-    const REDIRECT_URL = "https://example.com/download";
+    const REDIRECT_URL = "https://github.com/Talha-07-live/Team-Elit-Star/raw/refs/heads/main/app.apk";
     const COUNTDOWN_SECONDS = 5;
     const AUTO_REDIRECT = true;
     // =====================================
