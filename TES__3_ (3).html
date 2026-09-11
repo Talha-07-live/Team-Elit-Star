@@ -486,10 +486,6 @@ body.standalone-app .app-tabbar{padding-bottom:calc(10px + env(safe-area-inset-b
   a[href]::after{content:none;}
 }
 
-/* ═══════════════════════════════════════════════════════════════════════
-   ULTRA EXPERIENCE ENGINE — Team Elite Star
-   3D depth • edge scan • parallax • modes • immersive UI
-   ═══════════════════════════════════════════════════════════════════════ */
 :root{
   --exp-depth:1;
   --exp-scan:1;
@@ -750,7 +746,6 @@ html.modal-open,body.modal-open{overflow:hidden;overscroll-behavior:none;}
   .local-time-cell small{font-size:.38rem;letter-spacing:.03em;}
 }
 
-/* Compact, collision-safe HUD placement across display modes. */
 @media(min-width:861px){
   body{padding-bottom:80px;}
   .local-time-bar{
@@ -777,11 +772,9 @@ html.modal-open,body.modal-open{overflow:hidden;overscroll-behavior:none;}
   .local-time-cell small{font-size:.34rem;letter-spacing:.045em;}
 }
 
-/* Premium cursor stays above experience/modal surfaces instead of disappearing behind them. */
 body.fx #cursorDot,body.fx #cursorRing{z-index:10070;}
 body.fx:has(#experiencePanel.open) #cursorDot,body.fx:has(#experiencePanel.open) #cursorRing{opacity:1;}
 
-/* Refined card hover: stable premium glass feedback without cursor-following tilt. */
 @media(pointer:fine){
   .member-card.exp-tilting{
     transform:none!important;
@@ -793,8 +786,6 @@ body.fx:has(#experiencePanel.open) #cursorDot,body.fx:has(#experiencePanel.open)
   .member-card.exp-tilting .exp-edge{opacity:.55!important;background:linear-gradient(120deg,transparent 15%,rgba(252,231,184,.70) 48%,transparent 70%);}
 }
 
-/* Final interaction profile: no cursor-reactive card animation. Cards remain
-   calm and readable; focus/press states still communicate accessibility. */
 @media(pointer:fine){
   .member-card:hover,.member-card.exp-tilting{
     transform:none!important;
@@ -808,8 +799,6 @@ body.fx:has(#experiencePanel.open) #cursorDot,body.fx:has(#experiencePanel.open)
   .member-card.exp-tilting .exp-content{transform:none!important;}
 }
 
-/* Standard mode restores a restrained cinematic 3D card depth. Other modes
-   stay calm and flat, while the controls remain available in Experience. */
 @media(pointer:fine){
   body.exp-standard .member-card.exp-tilting{
     transform:perspective(1100px) rotateX(var(--rx)) rotateY(var(--ry)) translate3d(var(--px),var(--py),12px) scale(1.018)!important;
@@ -823,8 +812,6 @@ body.fx:has(#experiencePanel.open) #cursorDot,body.fx:has(#experiencePanel.open)
 }
 body.exp-low-power .member-card.exp-tilting{transform:none!important;}
 
-/* Full-page cinematic blossom/weather atmosphere. It is intentionally light,
-   pointer-safe and fixed so the scene continues across every section. */
 .weather-fx{position:fixed;inset:0;z-index:3;pointer-events:none;overflow:hidden;opacity:.82;mix-blend-mode:screen;}
 .weather-fx .petal{position:absolute;top:-12vh;left:var(--x);width:var(--s);height:calc(var(--s) * .62);border-radius:80% 20% 80% 20%;background:linear-gradient(135deg,rgba(255,244,213,.9),rgba(232,195,107,.52) 55%,rgba(184,145,46,.05));filter:blur(var(--b));box-shadow:0 0 12px rgba(232,195,107,.24);animation:blossomFall var(--d) linear var(--delay) infinite;}
 @keyframes blossomFall{0%{transform:translate3d(0,-10vh,0) rotate(0deg);opacity:0}10%{opacity:.68}45%{transform:translate3d(var(--drift),48vh,0) rotate(150deg);opacity:.52}80%{opacity:.3}100%{transform:translate3d(calc(var(--drift) * -1),116vh,0) rotate(320deg);opacity:0}}
@@ -1143,7 +1130,21 @@ const MEMBERS = [
     staffedTime: "9:01:58", prodTime: "8:05:33", breakTime: "0:56:25", aht: "0:03:28",
     fbBreak: "1:35:21", trBreak: "0:46:42",
     bio: "Reliable member maintaining stellar attendance and consistent daily productivity."
-  }
+  },
+  { 
+  dgId: "20370", name: "Mst. Lailatul Nesa", cubeId: "LailatulNesa_JSR", role: "CSR", rank: "CSR",
+  qa: "Rasel Hossain", trainer: "Md. Shahin Akter", mtdScore: "71.43%", attendance: "—",
+  staffedTime: "—", prodTime: "—", breakTime: "—", aht: "—",
+  fbBreak: "—", trBreak: "—",
+  bio: "Team member focused on maintaining consistent customer support performance and service quality."
+},
+{ 
+  dgId: "20373", name: "Rabia Khatun", cubeId: "Rabia_JSR", role: "CSR", rank: "CSR",
+  qa: "Rasel Hossain", trainer: "Md. Shahin Akter", mtdScore: "98.80%", attendance: "—",
+  staffedTime: "—", prodTime: "—", breakTime: "—", aht: "—",
+  fbBreak: "—", trBreak: "—",
+  bio: "Strong-performing team member delivering consistent customer support with an excellent MTD score."
+}
 ];
  
 const REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -1257,7 +1258,6 @@ window.addEventListener('scroll',()=>{ if(!progTicking){ requestAnimationFrame((
   nums.forEach(n=>io.observe(n));
 })();
  
-/* Legacy card-tilt removed: Ultra Experience is the single owner of card transforms. */
  
 let MX=window.innerWidth/2, MY=window.innerHeight/2;
 if(FINE && !REDUCE){
@@ -1645,7 +1645,6 @@ if(!REDUCE){
   bindTap(soundBtn, toggleSound);
   bindTap(enableSound, (e)=>{e.stopPropagation();startAmbience();});
 
-  // Do not create WebAudio on page load; explicit sound actions are stable on mobile.
   setTimeout(()=>{
     if(audioHint){
       audioHint.classList.add('show');
@@ -1653,7 +1652,6 @@ if(!REDUCE){
     }
   },700);
 
-  // Audio unlock is intentionally explicit; scrolling should not start timers or audio.
 
   const themeGlow=$('#themeGlow');
   bindTap(themeGlow, ()=>document.body.classList.toggle('glow-off'));
@@ -1852,7 +1850,6 @@ if(!REDUCE){
       dragging=false; dy=0; eligible=false;
     });
   }
-  /* Modal swipe-to-dismiss disabled: native modal scrolling stays fully responsive. */
   bindSwipeClose('#actionSheet', closeSheet);
 
   ['#navToggle','#soundBtn','#themeGlow','#topBtn'].forEach(sel=>{
@@ -1861,7 +1858,6 @@ if(!REDUCE){
 })();
 </script>
 
-<!-- ULTRA EXPERIENCE MENU -->
 <button class="experience-launcher" id="experienceLauncher" type="button" aria-label="Open Experience Menu" aria-haspopup="dialog" aria-expanded="false" title="Experience Menu">
   <span aria-hidden="true">⌘</span><span class="exp-launch-ring" aria-hidden="true"></span>
 </button>
@@ -1914,9 +1910,6 @@ if(!REDUCE){
 
 
 <script>
-/* ═══════════════════════════════════════════════════════════════════════
-   ULTRA EXPERIENCE ENGINE
-   ═══════════════════════════════════════════════════════════════════════ */
 (function ultraExperienceEngine(){
   const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
   const body=document.body, root=document.documentElement;
@@ -2068,12 +2061,10 @@ if(!REDUCE){
     }
   }
 
-  // Keep dynamically-rendered cards enhanced.
   initCards();
   setTimeout(initCards,300);
   setTimeout(initCards,1000);
 
-  // A subtle global pointer depth field that also drives the page spotlight.
   if(window.matchMedia('(pointer:fine)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches && !state.lowPower){
     let tx=innerWidth/2,ty=innerHeight/2,cx=tx,cy=ty,raf=0;
     window.addEventListener('pointermove',e=>{tx=e.clientX;ty=e.clientY;if(!raf)raf=requestAnimationFrame(()=>{
@@ -2082,7 +2073,6 @@ if(!REDUCE){
     })},{passive:true});
   }
 
-  // Mobile "More" gets the same Experience Modes without duplicating the full panel.
   const sheet=$('#actionSheet');
   if(sheet){
     const title=document.createElement('button');
@@ -2093,7 +2083,6 @@ if(!REDUCE){
     title.addEventListener('click',()=>{openMenu();const sh=document.getElementById('actionSheet'),bd=document.getElementById('sheetBackdrop');sh?.classList.remove('open');bd?.classList.remove('open');sh?.setAttribute('aria-hidden','true');});
   }
 
-  // Persisted mode is applied immediately on every load.
   apply();
 })();
 </script>
@@ -2101,7 +2090,6 @@ if(!REDUCE){
 
 
 <script>
-/* ===== CINEMATIC BLOSSOM ATMOSPHERE ===== */
 (function blossomAtmosphere(){
   const layer=document.getElementById('weatherFx');
   if(!layer || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -2123,7 +2111,6 @@ if(!REDUCE){
 })();
 </script>
 <script>
-/* ===== FUTURE-STABLE LOCAL CLOCK ===== */
 (function localClock(){
   const timeEl=document.getElementById('localTime');
   const modeEl=document.getElementById('displayMode');
@@ -2144,7 +2131,6 @@ if(!REDUCE){
 })();
 </script>
 <script>
-/* ===== MOBILE SAFETY NET ===== */
 (function stabilityGuard(){
   window.addEventListener('pageshow',()=>{
     document.body.classList.remove('modal-open');
