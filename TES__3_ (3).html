@@ -488,22 +488,21 @@ body.standalone-app .app-tabbar{padding-bottom:calc(10px + env(safe-area-inset-b
 
 /* ═══════════════════════════════════════════════════════════════════════
    ULTRA EXPERIENCE ENGINE — Team Elite Star
-   3D depth • cursor glare • edge scan • parallax • modes • immersive UI
+   3D depth • edge scan • parallax • modes • immersive UI
    ═══════════════════════════════════════════════════════════════════════ */
 :root{
   --exp-depth:1;
-  --exp-glare:.18;
   --exp-scan:1;
   --exp-motion:1;
 }
 body.exp-focus{
-  --exp-depth:1.28; --exp-glare:.30; --exp-scan:1.35; --exp-motion:1.15;
+  --exp-depth:1.28; --exp-scan:1.35; --exp-motion:1.15;
 }
 body.exp-pulse{
-  --exp-depth:1.12; --exp-glare:.42; --exp-scan:1.55; --exp-motion:1.28;
+  --exp-depth:1.12; --exp-scan:1.55; --exp-motion:1.28;
 }
 body.exp-minimal{
-  --exp-depth:.45; --exp-glare:.07; --exp-scan:.25; --exp-motion:.55;
+  --exp-depth:.45; --exp-scan:.25; --exp-motion:.55;
 }
 body.exp-minimal #sparkles,body.exp-minimal #cursorRing{opacity:0!important}
 body.exp-minimal .member-card::after,body.exp-minimal .member-card::before{opacity:0!important}
@@ -540,16 +539,6 @@ html.immersive-scroll{scroll-behavior:smooth}
 }
 .member-card .avatar{transform:translateZ(calc(34px * var(--exp-depth)));transition:transform .35s cubic-bezier(.2,.72,.2,1)}
 .member-card .rank{transform:translateZ(calc(28px * var(--exp-depth)))}
-.member-card .exp-glare{
-  position:absolute;inset:-45%;z-index:1;pointer-events:none;opacity:0;
-  background:radial-gradient(circle at var(--gx,50%) var(--gy,50%),
-    rgba(255,246,218,calc(.55 * var(--exp-glare))) 0,
-    rgba(232,195,107,calc(.20 * var(--exp-glare))) 12%,
-    transparent 36%);
-  mix-blend-mode:screen;
-  transition:opacity .28s ease;
-}
-.member-card.exp-tilting .exp-glare{opacity:1}
 .member-card .exp-scan{
   position:absolute;inset:0;z-index:3;pointer-events:none;overflow:hidden;border-radius:inherit;opacity:0;
 }
@@ -674,7 +663,6 @@ html.immersive-scroll{scroll-behavior:smooth}
 }
 @keyframes expPulseDot{to{transform:translate(-50%,-50%) scale(4);opacity:0}}
 body.exp-low-power .member-card.exp-tilting{transform:none!important}
-body.exp-low-power .member-card .exp-glare{display:none}
 body.exp-low-power .member-card .exp-scan{display:none}
 body.hud-off #progress,body.hud-off .local-time-bar,body.hud-off .live-dot{opacity:0;visibility:hidden;}
 
@@ -715,7 +703,7 @@ html.modal-open,body.modal-open{overflow:hidden;overscroll-behavior:none;}
   .member-card:hover::before,.member-card:hover::after{opacity:0;}
   .member-card:hover .avatar,.member-card:hover h3{transform:none;}
   .member-card,.member-card.exp-tilting{transform:none!important;}
-  .member-card .exp-glare,.member-card .exp-scan,.member-card .exp-edge{display:none!important;}
+  .member-card .exp-scan,.member-card .exp-edge{display:none!important;}
 }
 @media(max-width:860px){
   .experience-launcher{right:12px;bottom:calc(92px + env(safe-area-inset-bottom));z-index:9401;}
@@ -726,9 +714,9 @@ html.modal-open,body.modal-open{overflow:hidden;overscroll-behavior:none;}
 }
 .local-time-bar{
   position:fixed;top:31px;left:24px;right:auto;z-index:48;transform:none;
-  display:grid;grid-template-columns:1fr 1fr 1fr;min-width:min(520px,calc(100vw - 40px));
+  display:grid;grid-template-columns:1fr 1fr;min-width:min(520px,calc(100vw - 40px));
   position:fixed;top:auto;left:24px;bottom:24px;right:auto;z-index:48;transform:none;
-  display:grid;grid-template-columns:repeat(3,max-content);width:max-content;min-width:0;max-width:calc(100vw - 48px);
+  display:grid;grid-template-columns:repeat(2,max-content);width:max-content;min-width:0;max-width:calc(100vw - 48px);
   border:1px solid rgba(232,195,107,.30);border-radius:25px;overflow:hidden;
   background:linear-gradient(180deg,rgba(25,23,25,.88),rgba(10,9,13,.86));
   backdrop-filter:blur(18px) saturate(145%);box-shadow:0 16px 45px -26px #000,0 0 32px -20px var(--glow);
@@ -741,8 +729,6 @@ html.modal-open,body.modal-open{overflow:hidden;overscroll-behavior:none;}
 .local-time-cell small{display:block;margin-top:5px;color:#938c80;font:500 .58rem/1 var(--util);letter-spacing:.16em;text-transform:uppercase;}
 .local-time-cell b{display:block;color:var(--gold-shine);font:600 clamp(.78rem,1.5vw,1.05rem)/1.1 var(--util);letter-spacing:.04em;font-variant-numeric:tabular-nums;}
 .local-time-cell small{display:block;margin-top:4px;color:#938c80;font:500 .48rem/1 var(--util);letter-spacing:.13em;text-transform:uppercase;}
-.local-time-cell.sync b{color:var(--gold);}
-.local-time-cell.sync small{color:var(--gold-deep);}
 .lt-dot{display:inline-block;width:6px;height:6px;margin-right:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px var(--gold);animation:livePulse 1.8s ease-in-out infinite;}
 @media(max-width:860px){
   .local-time-bar{top:calc(66px + env(safe-area-inset-top));left:12px;min-width:min(430px,calc(100vw - 24px));}
@@ -761,6 +747,33 @@ html.modal-open,body.modal-open{overflow:hidden;overscroll-behavior:none;}
   .local-time-cell small{font-size:.38rem;letter-spacing:.03em;}
 }
 
+/* Compact, collision-safe HUD placement across display modes. */
+@media(min-width:861px){
+  body{padding-bottom:80px;}
+  .local-time-bar{
+    top:auto;left:20px;bottom:20px;right:auto;transform:none;
+    width:max-content;min-width:0;max-width:calc(100vw - 100px);
+    grid-template-columns:repeat(2,minmax(100px,max-content));
+  }
+}
+@media(max-width:860px){
+  .local-time-bar{
+    top:auto;left:50%;right:auto;bottom:calc(80px + env(safe-area-inset-bottom));
+    transform:translateX(-50%);width:max-content;min-width:0;
+    max-width:calc(100vw - 24px);grid-template-columns:repeat(2,minmax(0,1fr));
+    border-radius:18px;
+  }
+  .local-time-cell{padding:7px 11px 6px;min-width:82px;}
+  .local-time-cell b{font-size:.75rem;letter-spacing:.025em;}
+  .local-time-cell small{margin-top:3px;font-size:.38rem;letter-spacing:.07em;}
+}
+@media(max-width:420px){
+  .local-time-bar{bottom:calc(76px + env(safe-area-inset-bottom));max-width:calc(100vw - 20px);}
+  .local-time-cell{padding:6px 9px 5px;min-width:74px;}
+  .local-time-cell b{font-size:.68rem;}
+  .local-time-cell small{font-size:.34rem;letter-spacing:.045em;}
+}
+
 /* Premium cursor stays above experience/modal surfaces instead of disappearing behind them. */
 body.fx #cursorDot,body.fx #cursorRing{z-index:10070;}
 body.fx:has(#experiencePanel.open) #cursorDot,body.fx:has(#experiencePanel.open) #cursorRing{opacity:1;}
@@ -773,7 +786,6 @@ body.fx:has(#experiencePanel.open) #cursorDot,body.fx:has(#experiencePanel.open)
     box-shadow:0 18px 48px -34px rgba(232,195,107,.55),inset 0 1px 0 rgba(252,231,184,.16)!important;
   }
   .member-card.exp-tilting .exp-content{transform:none!important;}
-  .member-card.exp-tilting .exp-glare{opacity:0!important;}
   .member-card.exp-tilting .exp-scan{opacity:0!important;}
   .member-card.exp-tilting .exp-edge{opacity:.55!important;background:linear-gradient(120deg,transparent 15%,rgba(252,231,184,.70) 48%,transparent 70%);}
 }
@@ -787,7 +799,6 @@ body.fx:has(#experiencePanel.open) #cursorDot,body.fx:has(#experiencePanel.open)
     box-shadow:none!important;
   }
   .member-card:hover::before,.member-card:hover::after,
-  .member-card.exp-tilting .exp-glare,
   .member-card.exp-tilting .exp-scan,
   .member-card.exp-tilting .exp-edge{opacity:0!important;}
   .member-card:hover .avatar,.member-card:hover h3,
@@ -804,7 +815,6 @@ body.fx:has(#experiencePanel.open) #cursorDot,body.fx:has(#experiencePanel.open)
   }
   body.exp-standard .member-card.exp-tilting .exp-content{transform:translateZ(24px)!important;}
   body.exp-standard .member-card.exp-tilting .avatar{transform:translateZ(34px) scale(1.035)!important;}
-  body.exp-standard .member-card.exp-tilting .exp-glare{opacity:.72!important;}
   body.exp-standard .member-card.exp-tilting .exp-edge{opacity:.9!important;}
   body.exp-standard .member-card.exp-tilting .exp-scan{opacity:.42!important;}
 }
@@ -855,7 +865,6 @@ body.weather-off #weatherFx{display:none!important;}
 <div class="local-time-bar" id="localTimeBar" aria-live="polite" aria-label="Local time">
   <div class="local-time-cell"><b><span class="lt-dot" aria-hidden="true"></span><time id="localTime">--:--:--</time></b><small>Local Time</small></div>
   <div class="local-time-cell"><b id="displayMode">DESKTOP</b><small>Display</small></div>
-  <div class="local-time-cell sync"><b><span id="syncState">SYNC…</span></b><small id="localZone">Data Core</small></div>
 </div>
 
 <main id="top">
@@ -1871,7 +1880,7 @@ if(!REDUCE){
       </button>
       <button class="exp-mode" data-exp-mode="focus" role="radio" aria-checked="false">
         <span class="exp-mode-icon">◉</span><span class="exp-mode-name">Focus</span>
-        <span class="exp-mode-desc">Sharper depth, glare and edge response.</span>
+        <span class="exp-mode-desc">Sharper depth and edge response.</span>
       </button>
       <button class="exp-mode" data-exp-mode="pulse" role="radio" aria-checked="false">
         <span class="exp-mode-icon">◌</span><span class="exp-mode-name">Pulse Gold</span>
@@ -1884,7 +1893,6 @@ if(!REDUCE){
     </div>
     <div class="exp-tools">
       <div class="exp-tool"><span class="exp-tool-label">3D Card Depth</span><button class="exp-toggle on" data-exp-toggle="depth" type="button" aria-label="Toggle 3D Card Depth" aria-pressed="true"><i></i></button></div>
-      <div class="exp-tool"><span class="exp-tool-label">Golden Glare</span><button class="exp-toggle on" data-exp-toggle="glare" type="button" aria-label="Toggle Golden Glare" aria-pressed="true"><i></i></button></div>
       <div class="exp-tool"><span class="exp-tool-label">Edge Scan</span><button class="exp-toggle on" data-exp-toggle="scan" type="button" aria-label="Toggle Edge Scan" aria-pressed="true"><i></i></button></div>
       <div class="exp-tool"><span class="exp-tool-label">Content Parallax</span><button class="exp-toggle on" data-exp-toggle="parallax" type="button" aria-label="Toggle Content Parallax" aria-pressed="true"><i></i></button></div>
       <div class="exp-tool"><span class="exp-tool-label">Touch Depth</span><button class="exp-toggle on" data-exp-toggle="touch" type="button" aria-label="Toggle Touch Depth" aria-pressed="true"><i></i></button></div>
@@ -1915,7 +1923,7 @@ if(!REDUCE){
   const KEY='tes_experience_v3';
   const defaults={
     mode:'standard',
-    depth:true, glare:true, scan:true, parallax:true, touch:true,
+    depth:true, scan:true, parallax:true, touch:true,
     immersive:false, lowPower:false, hud:true, blossom:true
   };
   let state={...defaults};
@@ -1939,7 +1947,6 @@ if(!REDUCE){
     body.classList.toggle('weather-off',!state.blossom);
     root.classList.toggle('immersive-scroll',!!state.immersive);
     root.style.setProperty('--exp-depth',state.depth?'1':'0');
-    root.style.setProperty('--exp-glare',state.glare?'1':'0');
     root.style.setProperty('--exp-scan',state.scan?'1':'0');
     $$('[data-exp-mode]').forEach(b=>{
       const active=b.dataset.expMode===state.mode;
@@ -1999,18 +2006,16 @@ if(!REDUCE){
     const content=document.createElement('div');content.className='exp-content';
     while(card.firstChild) content.appendChild(card.firstChild);
     card.appendChild(content);
-    const glare=document.createElement('div');glare.className='exp-glare';glare.setAttribute('aria-hidden','true');
     const scan=document.createElement('div');scan.className='exp-scan';scan.setAttribute('aria-hidden','true');
     const edge=document.createElement('div');edge.className='exp-edge';edge.setAttribute('aria-hidden','true');
     const corner=document.createElement('div');corner.className='exp-corner';corner.textContent='ELITE / LIVE';
-    card.append(glare,scan,edge,corner);
+    card.append(scan,edge,corner);
 
     let active=false, raf=0, lastX=0,lastY=0;
     const reset=()=>{
       active=false;card.classList.remove('exp-tilting');
       card.style.setProperty('--rx','0deg');card.style.setProperty('--ry','0deg');
       card.style.setProperty('--lift','0px');card.style.setProperty('--px','0px');card.style.setProperty('--py','0px');
-      card.style.setProperty('--gx','50%');card.style.setProperty('--gy','50%');
     };
     const update=(x,y)=>{
       if(state.lowPower || !state.depth){ reset(); return; }
@@ -2021,8 +2026,6 @@ if(!REDUCE){
       card.style.setProperty('--rx',rx.toFixed(2)+'deg');
       card.style.setProperty('--ry',ry.toFixed(2)+'deg');
       card.style.setProperty('--lift',state.depth?'6px':'0px');
-      card.style.setProperty('--gx',(px*100).toFixed(1)+'%');
-      card.style.setProperty('--gy',(py*100).toFixed(1)+'%');
       card.style.setProperty('--scan-h',r.height+'px');
       card.style.setProperty('--edge-angle',((px*360)+(py*90)).toFixed(1)+'deg');
       if(state.parallax){
@@ -2119,16 +2122,14 @@ if(!REDUCE){
 <script>
 /* ===== FUTURE-STABLE LOCAL CLOCK ===== */
 (function localClock(){
-  const timeEl=document.getElementById('localTime'),zoneEl=document.getElementById('localZone');
-  const modeEl=document.getElementById('displayMode'),syncEl=document.getElementById('syncState');
+  const timeEl=document.getElementById('localTime');
+  const modeEl=document.getElementById('displayMode');
   if(!timeEl)return;
   let timer=0;
   const fmt=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Dhaka',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
   const tick=()=>{
     timeEl.textContent=fmt.format(new Date());
-    if(zoneEl)zoneEl.textContent='Data Core';
     if(modeEl)modeEl.textContent=innerWidth<=860?'MOBILE':'DESKTOP';
-    if(syncEl){syncEl.textContent=navigator.onLine?'SYNC':'OFFLINE';syncEl.style.color=navigator.onLine?'var(--gold)':'#c77b68';}
   };
   const start=()=>{if(!timer){tick();timer=setInterval(tick,1000);}};
   const stop=()=>{if(timer){clearInterval(timer);timer=0;}};
