@@ -13,8 +13,8 @@
 <meta name="apple-mobile-web-app-title" content="Elite Star" />
 <meta name="format-detection" content="telephone=no" />
 <link rel="manifest" href="manifest.json" />
-<link rel="apple-touch-icon" href="icon.svg.jpg" />
-<link rel="icon" href="icon.svg.jpg" type="image/svg+xml" />
+<link rel="apple-touch-icon" href="icon.svg.png" />
+<link rel="icon" href="icon.svg.png" type="image/svg+xml" />
  
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -305,7 +305,7 @@ body.sound-on .dock-btn#soundBtn::after{
 .member-card,.pillar,.intel-card,.stat,.btn,.mini-btn,.filter-chip,.dock-btn,.profile-btn{
   -webkit-tap-highlight-color:transparent;
 }
-.member-card{will-change:transform,box-shadow}
+.member-card{will-change:transform,box-shadow;transition:transform .22s var(--ease-premium),box-shadow .35s ease,border-color .35s ease}
 .member-card:focus-visible{box-shadow:0 0 0 2px var(--gold),0 30px 60px -28px var(--glow)!important}
 .member-card .badge{transition:transform .3s ease,background .3s ease}
 .member-card:hover .badge{transform:translateY(-1px)}
@@ -485,6 +485,339 @@ body.standalone-app .app-tabbar{padding-bottom:calc(10px + env(safe-area-inset-b
   .profile-btn{display:none;}
   a[href]::after{content:none;}
 }
+
+:root{
+  --exp-depth:1;
+  --exp-scan:1;
+  --exp-motion:1;
+}
+body.exp-focus{
+  --exp-depth:1.28; --exp-scan:1.35; --exp-motion:1.15;
+}
+body.exp-pulse{
+  --exp-depth:1.12; --exp-scan:1.55; --exp-motion:1.28;
+}
+body.exp-minimal{
+  --exp-depth:.45; --exp-scan:.25; --exp-motion:.55;
+}
+body.exp-minimal #sparkles,body.exp-minimal #cursorRing{opacity:0!important}
+body.exp-minimal .member-card::after,body.exp-minimal .member-card::before{opacity:0!important}
+body.exp-pulse .member-card{animation:expPulseCard 3.2s ease-in-out infinite}
+@keyframes expPulseCard{
+  0%,100%{box-shadow:0 14px 35px -30px var(--glow)}
+  50%{box-shadow:0 24px 65px -28px rgba(232,195,107,.34)}
+}
+body.immersive header.nav{opacity:.15;transition:opacity .35s ease}
+body.immersive header.nav:hover{opacity:1}
+body.immersive .hero{min-height:100svh}
+body.immersive .experience-launcher{opacity:.5}
+body.immersive #experiencePanel{backdrop-filter:blur(28px) saturate(160%)}
+html.immersive-scroll{scroll-behavior:smooth}
+
+.member-card{
+  --rx:0deg;--ry:0deg;--lift:0px;--px:0px;--py:0px;
+  transform-style:preserve-3d;
+  isolation:isolate;
+}
+.member-card.exp-tilting{
+  transform:
+    perspective(1100px)
+    rotateX(var(--rx))
+    rotateY(var(--ry))
+    translate3d(var(--px),var(--py),var(--lift))
+    scale(1.012);
+  transition:transform .08s linear,box-shadow .35s ease,border-color .35s ease;
+}
+.member-card .exp-content{
+  position:relative;z-index:2;transform:translateZ(calc(18px * var(--exp-depth)));
+  transition:transform .35s cubic-bezier(.2,.72,.2,1);
+  will-change:transform;
+}
+.member-card .avatar{transform:translateZ(calc(34px * var(--exp-depth)));transition:transform .35s cubic-bezier(.2,.72,.2,1)}
+.member-card .rank{transform:translateZ(calc(28px * var(--exp-depth)))}
+.member-card .exp-scan{
+  position:absolute;inset:0;z-index:3;pointer-events:none;overflow:hidden;border-radius:inherit;opacity:0;
+}
+.member-card .exp-scan::after{
+  content:"";position:absolute;left:-20%;right:-20%;top:-20%;height:2px;
+  background:linear-gradient(90deg,transparent,rgba(252,231,184,.9),rgba(232,195,107,.28),transparent);
+  box-shadow:0 0 18px rgba(232,195,107,.5);
+  transform:translateY(-20px);
+}
+.member-card.exp-tilting .exp-scan{opacity:var(--exp-scan)}
+.member-card.exp-tilting .exp-scan::after{animation:expEdgeScan 1.8s linear infinite}
+@keyframes expEdgeScan{
+  0%{transform:translateY(-20px);opacity:0}
+  10%{opacity:.85}
+  90%{opacity:.85}
+  100%{transform:translateY(calc(var(--scan-h,420px) + 20px));opacity:0}
+}
+.member-card .exp-edge{
+  position:absolute;inset:0;z-index:4;pointer-events:none;border-radius:inherit;
+  border:1px solid transparent;
+  /* Border-only scan: never paint an opaque layer over the card content. */
+  background:conic-gradient(from var(--edge-angle,0deg),transparent 0 24%,var(--gold-shine) 31%,var(--gold) 35%,transparent 43% 100%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor;mask-composite:exclude;padding:1px;border:0;
+  opacity:0;transition:opacity .25s ease;
+}
+.member-card.exp-tilting .exp-edge{opacity:calc(.85 * var(--exp-scan))}
+.member-card .exp-corner{
+  position:absolute;right:14px;bottom:12px;z-index:5;font:500 .52rem var(--util);
+  letter-spacing:.12em;color:rgba(232,195,107,.35);opacity:0;transition:.3s ease;
+}
+.member-card.exp-tilting .exp-corner{opacity:1}
+.member-card.exp-pressed{
+  transform:perspective(900px) rotateX(1deg) rotateY(0deg) translateY(4px) scale(.975)!important;
+  transition:transform .12s ease!important;
+  box-shadow:0 8px 24px -20px var(--glow)!important;
+}
+.member-card.exp-pressed .exp-content{transform:translateZ(5px)}
+.member-card.exp-pressed .avatar{transform:translateZ(8px) scale(.98)}
+
+/* Keyboard users get the same depth language without requiring a mouse. */
+.member-card:focus-visible .exp-content{transform:translateZ(22px)}
+.member-card:focus-visible .avatar{transform:translateZ(34px) scale(1.035)}
+
+.experience-launcher{
+  position:fixed;right:20px;bottom:174px;z-index:9400;width:46px;height:46px;
+  border:1px solid var(--line-strong);border-radius:50%;background:rgba(12,11,18,.78);
+  color:var(--gold);backdrop-filter:blur(16px);box-shadow:0 14px 40px -20px #000,0 0 22px -12px var(--glow);
+  cursor:pointer;font:600 1rem var(--util);transition:.3s ease;
+  -webkit-appearance:none;appearance:none;-webkit-tap-highlight-color:transparent;tap-highlight-color:transparent;
+}
+.experience-launcher:hover{transform:translateY(-3px) rotate(8deg);background:rgba(232,195,107,.1);box-shadow:0 18px 48px -20px #000,0 0 28px -8px var(--glow)}
+.experience-launcher .exp-launch-ring{
+  position:absolute;inset:5px;border:1px solid rgba(232,195,107,.16);border-radius:50%;animation:expLauncherPulse 2.3s ease-in-out infinite;
+}
+@keyframes expLauncherPulse{50%{transform:scale(1.16);opacity:.3}}
+
+.experience-backdrop{
+  position:fixed;inset:0;z-index:10060;background:rgba(3,3,5,.55);backdrop-filter:blur(8px);
+  opacity:0;visibility:hidden;transition:.28s ease;
+}
+.experience-backdrop.open{opacity:1;visibility:visible}
+#experiencePanel{
+  position:fixed;top:50%;left:50%;z-index:10061;width:min(760px,calc(100vw - 30px));
+  max-height:min(82vh,760px);overflow:auto;transform:translate(-50%,-46%) scale(.96);
+  opacity:0;visibility:hidden;pointer-events:none;
+  background:linear-gradient(155deg,rgba(27,26,34,.96),rgba(8,7,12,.97));
+  border:1px solid var(--line-strong);border-radius:18px;
+  box-shadow:0 45px 130px -40px #000,0 0 70px -38px var(--glow);
+  transition:.32s cubic-bezier(.2,.72,.2,1);
+  -webkit-overflow-scrolling:touch;
+}
+#experiencePanel.open{transform:translate(-50%,-50%) scale(1);opacity:1;visibility:visible;pointer-events:auto}
+.exp-panel-inner{padding:20px}
+.exp-panel-head{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding-bottom:16px;border-bottom:1px solid var(--line)}
+.exp-panel-kicker{font:600 .58rem var(--util);letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+.exp-panel-title{font:600 clamp(1.7rem,4vw,2.45rem) var(--serif);margin:.25rem 0 0}
+.exp-panel-sub{color:var(--muted);font:300 .82rem var(--sans);margin:.35rem 0 0}
+.exp-close{
+  width:38px;height:38px;flex:0 0 auto;border:1px solid var(--line);border-radius:50%;
+  background:none;color:var(--muted);cursor:pointer;font-size:1.2rem;transition:.2s ease;
+  -webkit-appearance:none;appearance:none;-webkit-tap-highlight-color:transparent;tap-highlight-color:transparent;
+}
+.exp-close:hover{color:var(--gold);border-color:var(--gold);transform:rotate(8deg)}
+.experience-launcher:focus:not(:focus-visible),.exp-close:focus:not(:focus-visible){outline:none;}
+.exp-mode-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px;margin:18px 0}
+.exp-mode{
+  position:relative;min-height:92px;text-align:left;border:1px solid var(--line);border-radius:10px;
+  background:rgba(255,255,255,.018);color:var(--ivory);padding:12px;cursor:pointer;overflow:hidden;transition:.25s ease;
+}
+.exp-mode:hover{border-color:var(--line-strong);background:rgba(232,195,107,.045);transform:translateY(-2px)}
+.exp-mode.active{border-color:var(--gold);background:rgba(232,195,107,.075);box-shadow:0 12px 35px -25px var(--glow)}
+.exp-mode::after{content:"";position:absolute;inset:auto -30% -55% -30%;height:80px;background:radial-gradient(ellipse,rgba(232,195,107,.13),transparent 68%)}
+.exp-mode-icon{font-size:1.1rem;color:var(--gold);display:block;margin-bottom:7px}
+.exp-mode-name{font:600 .76rem var(--util);letter-spacing:.06em;text-transform:uppercase}
+.exp-mode-desc{display:block;color:var(--muted);font:400 .58rem var(--sans);margin-top:4px;line-height:1.35}
+.exp-tools{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.exp-tool{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 13px;
+  border:1px solid var(--line);border-radius:9px;background:rgba(255,255,255,.018)
+}
+.exp-tool-label{font:500 .68rem var(--util);letter-spacing:.07em;text-transform:uppercase}
+.exp-tool-value{font:500 .58rem var(--util);color:var(--gold)}
+.exp-toggle{
+  width:42px;height:24px;border:1px solid var(--line-strong);border-radius:99px;background:rgba(255,255,255,.04);
+  padding:2px;cursor:pointer;transition:.25s ease;flex:0 0 auto
+}
+.exp-toggle i{display:block;width:18px;height:18px;border-radius:50%;background:var(--muted);transition:.25s ease}
+.exp-toggle.on{background:rgba(232,195,107,.16);border-color:var(--gold)}
+.exp-toggle.on i{transform:translateX(18px);background:var(--gold-shine);box-shadow:0 0 12px var(--glow)}
+.exp-shortcuts{
+  margin-top:12px;padding:11px 12px;border:1px dashed var(--line);border-radius:8px;
+  color:var(--muted);font:500 .58rem var(--util);letter-spacing:.05em;line-height:1.7
+}
+.exp-shortcuts kbd{
+  color:var(--ivory);border:1px solid var(--line);padding:2px 5px;border-radius:4px;background:rgba(255,255,255,.035)
+}
+.exp-status{margin-top:12px;color:var(--muted);font:500 .58rem var(--util);letter-spacing:.08em;text-transform:uppercase}
+.exp-status b{color:var(--gold)}
+
+.exp-pulse-dot{
+  position:fixed;z-index:10059;pointer-events:none;width:9px;height:9px;border-radius:50%;
+  border:1px solid var(--gold-shine);box-shadow:0 0 20px var(--glow);
+  transform:translate(-50%,-50%) scale(.3);animation:expPulseDot .55s ease-out forwards
+}
+@keyframes expPulseDot{to{transform:translate(-50%,-50%) scale(4);opacity:0}}
+body.exp-low-power .member-card.exp-tilting{transform:none!important}
+body.exp-low-power .member-card .exp-scan{display:none}
+body.hud-off #progress,body.hud-off .local-time-bar,body.hud-off .live-dot{opacity:0;visibility:hidden;}
+
+@media(max-width:860px){
+  .experience-launcher{right:12px;bottom:calc(76px + env(safe-area-inset-bottom));width:42px;height:42px}
+  .exp-mode-grid{grid-template-columns:repeat(2,1fr)}
+  .exp-tools{grid-template-columns:1fr}
+  #experiencePanel{width:min(620px,calc(100vw - 18px));max-height:84vh;border-radius:16px}
+  .exp-panel-inner{padding:15px}
+  .member-card.exp-tilting{
+    transform:perspective(900px) rotateX(var(--rx)) rotateY(var(--ry)) translateY(var(--lift)) scale(.99);
+  }
+}
+@media(max-width:420px){
+  .exp-mode{min-height:86px;padding:10px}
+  .exp-mode-desc{font-size:.55rem}
+}
+@media(prefers-reduced-motion:reduce){
+  .experience-launcher,.exp-mode,#experiencePanel,.member-card,.member-card *{animation:none!important;transition:none!important}
+}
+
+
+
+/* ===== Stability + mobile interaction hardening ===== */
+html.modal-open,body.modal-open{overflow:hidden;overscroll-behavior:none;}
+.member-card,.member-card:hover,.member-card:active{
+  background:linear-gradient(180deg,var(--onyx),var(--obsidian-2));
+  -webkit-tap-highlight-color:transparent;
+}
+.member-card.tl-card,.member-card.tl-card:hover,.member-card.tl-card:active{
+  background:linear-gradient(180deg,#1e1b12,var(--obsidian-2));
+}
+.member-card:hover,.member-card:active{border-color:var(--line-strong);}
+.modal-backdrop{touch-action:none;}
+@media(pointer:coarse){
+  body::after{opacity:.025;}
+  .modal-backdrop,.experience-backdrop,.sheet-backdrop{backdrop-filter:none!important;}
+  .member-card:hover::before,.member-card:hover::after{opacity:0;}
+  .member-card:hover .avatar,.member-card:hover h3{transform:none;}
+  .member-card,.member-card.exp-tilting{transform:none!important;}
+  .member-card .exp-scan,.member-card .exp-edge{display:none!important;}
+}
+@media(max-width:860px){
+  .experience-launcher{right:12px;bottom:calc(92px + env(safe-area-inset-bottom));z-index:9401;}
+  .modal-card{overscroll-behavior:contain;touch-action:pan-y;max-height:calc(100dvh - 32px);}
+}
+@media(max-width:480px){
+  .experience-launcher{width:40px;height:40px;bottom:calc(94px + env(safe-area-inset-bottom));}
+}
+.local-time-bar{
+  position:fixed;top:31px;left:24px;right:auto;z-index:48;transform:none;
+  display:grid;grid-template-columns:1fr 1fr;min-width:min(520px,calc(100vw - 40px));
+  position:fixed;top:auto;left:24px;bottom:24px;right:auto;z-index:48;transform:none;
+  display:grid;grid-template-columns:repeat(2,max-content);width:max-content;min-width:0;max-width:calc(100vw - 48px);
+  border:1px solid rgba(232,195,107,.30);border-radius:25px;overflow:hidden;
+  background:linear-gradient(180deg,rgba(25,23,25,.88),rgba(10,9,13,.86));
+  backdrop-filter:blur(18px) saturate(145%);box-shadow:0 16px 45px -26px #000,0 0 32px -20px var(--glow);
+  color:var(--muted);pointer-events:none;white-space:nowrap;
+}
+.local-time-cell{min-width:0;padding:10px 20px 9px;border-left:1px solid rgba(232,195,107,.20);}
+.local-time-cell{min-width:0;padding:8px 14px 7px;border-left:1px solid rgba(232,195,107,.20);}
+.local-time-cell:first-child{border-left:0;}
+.local-time-cell b{display:block;color:var(--gold-shine);font:600 clamp(.95rem,2vw,1.35rem)/1.1 var(--util);letter-spacing:.04em;font-variant-numeric:tabular-nums;}
+.local-time-cell small{display:block;margin-top:5px;color:#938c80;font:500 .58rem/1 var(--util);letter-spacing:.16em;text-transform:uppercase;}
+.local-time-cell b{display:block;color:var(--gold-shine);font:600 clamp(.78rem,1.5vw,1.05rem)/1.1 var(--util);letter-spacing:.04em;font-variant-numeric:tabular-nums;}
+.local-time-cell small{display:block;margin-top:4px;color:#938c80;font:500 .48rem/1 var(--util);letter-spacing:.13em;text-transform:uppercase;}
+.lt-dot{display:inline-block;width:6px;height:6px;margin-right:6px;border-radius:50%;background:var(--gold);box-shadow:0 0 10px var(--gold);animation:livePulse 1.8s ease-in-out infinite;}
+@media(max-width:860px){
+  .local-time-bar{top:calc(66px + env(safe-area-inset-top));left:12px;min-width:min(430px,calc(100vw - 24px));}
+  .local-time-cell{padding:8px 12px 7px;}
+  .local-time-cell small{font-size:.49rem;letter-spacing:.10em;}
+  .local-time-bar{top:auto;left:12px;bottom:calc(76px + env(safe-area-inset-bottom));max-width:calc(100vw - 24px);}
+  .local-time-cell{padding:7px 10px 6px;}
+  .local-time-cell small{font-size:.43rem;letter-spacing:.08em;}
+}
+@media(max-width:420px){
+  .local-time-bar{top:calc(62px + env(safe-area-inset-top));left:8px;min-width:calc(100vw - 16px);}
+  .local-time-cell{padding-left:8px;padding-right:8px;}
+  .local-time-cell small{font-size:.43rem;letter-spacing:.04em;}
+  .local-time-bar{left:8px;bottom:calc(72px + env(safe-area-inset-bottom));max-width:calc(100vw - 16px);}
+  .local-time-cell{padding-left:7px;padding-right:7px;}
+  .local-time-cell small{font-size:.38rem;letter-spacing:.03em;}
+}
+
+@media(min-width:861px){
+  body{padding-bottom:80px;}
+  .local-time-bar{
+    top:auto;left:20px;bottom:20px;right:auto;transform:none;
+    width:max-content;min-width:0;max-width:calc(100vw - 100px);
+    grid-template-columns:repeat(2,minmax(100px,max-content));
+  }
+}
+@media(max-width:860px){
+  .local-time-bar{
+    top:auto;left:50%;right:auto;bottom:calc(80px + env(safe-area-inset-bottom));
+    transform:translateX(-50%);width:max-content;min-width:0;
+    max-width:calc(100vw - 24px);grid-template-columns:repeat(2,minmax(0,1fr));
+    border-radius:18px;
+  }
+  .local-time-cell{padding:7px 11px 6px;min-width:82px;}
+  .local-time-cell b{font-size:.75rem;letter-spacing:.025em;}
+  .local-time-cell small{margin-top:3px;font-size:.38rem;letter-spacing:.07em;}
+}
+@media(max-width:420px){
+  .local-time-bar{bottom:calc(76px + env(safe-area-inset-bottom));max-width:calc(100vw - 20px);}
+  .local-time-cell{padding:6px 9px 5px;min-width:74px;}
+  .local-time-cell b{font-size:.68rem;}
+  .local-time-cell small{font-size:.34rem;letter-spacing:.045em;}
+}
+
+body.fx #cursorDot,body.fx #cursorRing{z-index:10070;}
+body.fx:has(#experiencePanel.open) #cursorDot,body.fx:has(#experiencePanel.open) #cursorRing{opacity:1;}
+
+@media(pointer:fine){
+  .member-card.exp-tilting{
+    transform:none!important;
+    border-color:rgba(252,231,184,.62)!important;
+    box-shadow:0 18px 48px -34px rgba(232,195,107,.55),inset 0 1px 0 rgba(252,231,184,.16)!important;
+  }
+  .member-card.exp-tilting .exp-content{transform:none!important;}
+  .member-card.exp-tilting .exp-scan{opacity:0!important;}
+  .member-card.exp-tilting .exp-edge{opacity:.55!important;background:linear-gradient(120deg,transparent 15%,rgba(252,231,184,.70) 48%,transparent 70%);}
+}
+
+@media(pointer:fine){
+  .member-card:hover,.member-card.exp-tilting{
+    transform:none!important;
+    border-color:var(--line)!important;
+    box-shadow:none!important;
+  }
+  .member-card:hover::before,.member-card:hover::after,
+  .member-card.exp-tilting .exp-scan,
+  .member-card.exp-tilting .exp-edge{opacity:0!important;}
+  .member-card:hover .avatar,.member-card:hover h3,
+  .member-card.exp-tilting .exp-content{transform:none!important;}
+}
+
+@media(pointer:fine){
+  body.exp-standard .member-card.exp-tilting{
+    transform:perspective(1100px) rotateX(var(--rx)) rotateY(var(--ry)) translate3d(var(--px),var(--py),12px) scale(1.018)!important;
+    border-color:rgba(252,231,184,.72)!important;
+    box-shadow:0 30px 72px -34px rgba(232,195,107,.72),inset 0 1px 0 rgba(252,231,184,.22)!important;
+  }
+  body.exp-standard .member-card.exp-tilting .exp-content{transform:translateZ(24px)!important;}
+  body.exp-standard .member-card.exp-tilting .avatar{transform:translateZ(34px) scale(1.035)!important;}
+  body.exp-standard .member-card.exp-tilting .exp-edge{opacity:.9!important;}
+  body.exp-standard .member-card.exp-tilting .exp-scan{opacity:.42!important;}
+}
+body.exp-low-power .member-card.exp-tilting{transform:none!important;}
+
+.weather-fx{position:fixed;inset:0;z-index:3;pointer-events:none;overflow:hidden;opacity:.82;mix-blend-mode:screen;}
+.weather-fx .petal{position:absolute;top:-12vh;left:var(--x);width:var(--s);height:calc(var(--s) * .62);border-radius:80% 20% 80% 20%;background:linear-gradient(135deg,rgba(255,244,213,.9),rgba(232,195,107,.52) 55%,rgba(184,145,46,.05));filter:blur(var(--b));box-shadow:0 0 12px rgba(232,195,107,.24);animation:blossomFall var(--d) linear var(--delay) infinite;}
+@keyframes blossomFall{0%{transform:translate3d(0,-10vh,0) rotate(0deg);opacity:0}10%{opacity:.68}45%{transform:translate3d(var(--drift),48vh,0) rotate(150deg);opacity:.52}80%{opacity:.3}100%{transform:translate3d(calc(var(--drift) * -1),116vh,0) rotate(320deg);opacity:0}}
+body.weather-off #weatherFx{display:none!important;}
+@media(max-width:860px){.weather-fx{opacity:.52}.weather-fx .petal{filter:none;}}
+@media(prefers-reduced-motion:reduce){.weather-fx{display:none!important;}}
 </style>
 </head>
 <body>
@@ -500,12 +833,13 @@ body.standalone-app .app-tabbar{padding-bottom:calc(10px + env(safe-area-inset-b
 <div id="spotlight" aria-hidden="true"></div>
 <div id="progress" aria-hidden="true"></div>
 <div id="sparkles" aria-hidden="true"></div>
+<div id="weatherFx" class="weather-fx" aria-hidden="true"></div>
 <div id="cursorRing" aria-hidden="true"></div>
 <div id="cursorDot" aria-hidden="true"></div>
  
 <header class="nav" id="nav">
   <div class="nav-inner">
-    <a href="#top" class="brand magnet"><span class="mark" aria-hidden="true"></span>Team&nbsp;Elite&nbsp;Star</span></a>
+    <a href="#top" class="brand magnet"><span class="mark" aria-hidden="true"></span>Team&nbsp;Elite&nbsp;Star</a>
     <nav class="nav-links" aria-label="Primary">
       <a href="#about">About</a>
       <a href="#impact">Achievements</a>
@@ -517,7 +851,12 @@ body.standalone-app .app-tabbar{padding-bottom:calc(10px + env(safe-area-inset-b
     </button>
   </div>
 </header>
- 
+
+<div class="local-time-bar" id="localTimeBar" aria-live="polite" aria-label="Local time">
+  <div class="local-time-cell"><b><span class="lt-dot" aria-hidden="true"></span><time id="localTime">--:--:--</time></b><small>Local Time</small></div>
+  <div class="local-time-cell"><b id="displayMode">DESKTOP</b><small>Display</small></div>
+</div>
+
 <main id="top">
   <section class="hero" id="hero" aria-label="Introduction">
     <canvas id="star-canvas" aria-hidden="true"></canvas>
@@ -765,20 +1104,6 @@ const MEMBERS = [
     bio: "Hardworking team member delivering over 9 hours staffed time daily with strong focus."
   },
   { 
-    dgId: "19667", name: "Al Tamim Hridoy", cubeId: "Tamim_JSR", role: "CSR", rank: "CSR",
-    qa: "Rasel Hossain", trainer: "Md. Shahin Akter", mtdScore: "97.75%", attendance: "50.00%",
-    staffedTime: "8:58:36", prodTime: "7:56:58", breakTime: "1:01:38", aht: "0:02:50",
-    fbBreak: "0:00:00", trBreak: "0:56:13",
-    bio: "Attentive support specialist with balanced AHT and active training development."
-  },
-  { 
-    dgId: "19672", name: "Rina Parvin", cubeId: "Parvin72_JSR", role: "CSR", rank: "CSR",
-    qa: "Rasel Hossain", trainer: "Md. Shahin Akter", mtdScore: "97.19%", attendance: "100.00%",
-    staffedTime: "9:17:26", prodTime: "8:18:29", breakTime: "0:58:58", aht: "0:02:58",
-    fbBreak: "0:41:57", trBreak: "0:41:32",
-    bio: "Dependable and disciplined, maintaining high staffed time and 100% login punctuality."
-  },
-  { 
     dgId: "20071", name: "Abu Talha Raj", cubeId: "Talharaj_JSR", role: "CSR", rank: "CSR",
     qa: "Rasel Hossain", trainer: "Md. Shahin Akter", mtdScore: "96.06%", attendance: "100.00%",
     staffedTime: "9:02:01", prodTime: "8:02:32", breakTime: "0:59:28", aht: "0:03:04",
@@ -791,7 +1116,21 @@ const MEMBERS = [
     staffedTime: "9:01:58", prodTime: "8:05:33", breakTime: "0:56:25", aht: "0:03:28",
     fbBreak: "1:35:21", trBreak: "0:46:42",
     bio: "Reliable member maintaining stellar attendance and consistent daily productivity."
-  }
+  },
+  { 
+  dgId: "20370", name: "Mst. Lailatul Nesa", cubeId: "LailatulNesa_JSR", role: "CSR", rank: "CSR",
+  qa: "Rasel Hossain", trainer: "Md. Shahin Akter", mtdScore: "71.43%", attendance: "—",
+  staffedTime: "—", prodTime: "—", breakTime: "—", aht: "—",
+  fbBreak: "—", trBreak: "—",
+  bio: "Team member focused on maintaining consistent customer support performance and service quality."
+},
+{ 
+  dgId: "20373", name: "Rabia Khatun", cubeId: "Rabia_JSR", role: "CSR", rank: "CSR",
+  qa: "Rasel Hossain", trainer: "Md. Shahin Akter", mtdScore: "98.80%", attendance: "—",
+  staffedTime: "—", prodTime: "—", breakTime: "—", aht: "—",
+  fbBreak: "—", trBreak: "—",
+  bio: "Strong-performing team member delivering consistent customer support with an excellent MTD score."
+}
 ];
  
 const REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -905,18 +1244,6 @@ window.addEventListener('scroll',()=>{ if(!progTicking){ requestAnimationFrame((
   nums.forEach(n=>io.observe(n));
 })();
  
-(function tilt(){
-  if(REDUCE||!FINE) return;
-  document.querySelectorAll('.member-card').forEach(card=>{
-    card.addEventListener('pointermove',e=>{
-      const r=card.getBoundingClientRect(),px=(e.clientX-r.left)/r.width,py=(e.clientY-r.top)/r.height;
-      card.style.transform=`perspective(800px) rotateX(${(0.5-py)*11}deg) rotateY(${(px-0.5)*11}deg) translateY(-5px)`;
-      card.style.setProperty('--mx',(px*100)+'%'); card.style.setProperty('--my',(py*100)+'%');
-    });
-    const reset=()=>{card.style.transform='';};
-    card.addEventListener('pointerleave',reset); card.addEventListener('blur',reset);
-  });
-})();
  
 let MX=window.innerWidth/2, MY=window.innerHeight/2;
 if(FINE && !REDUCE){
@@ -979,7 +1306,7 @@ if(!REDUCE){
   let W=innerWidth,H=innerHeight;
   const lite = !window.matchMedia('(pointer:fine)').matches;
   const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:!lite,powerPreference:'low-power'});
-  renderer.setPixelRatio(Math.min(devicePixelRatio||1, lite?1.5:2)); renderer.setSize(W,H); renderer.setClearColor(0x000000,0);
+  renderer.setPixelRatio(Math.min(devicePixelRatio||1, lite?1:1.5)); renderer.setSize(W,H); renderer.setClearColor(0x000000,0);
   const scene=new THREE.Scene();
   const camera=new THREE.PerspectiveCamera(46,W/H,0.1,100); camera.position.set(0,0,6.2);
   const rig=new THREE.Group(); scene.add(rig);
@@ -987,23 +1314,23 @@ if(!REDUCE){
   function starShape(o,i2,p){const s=new THREE.Shape();const st=Math.PI/p;
     for(let i=0;i<p*2;i++){const r=i%2===0?o:i2,a=i*st-Math.PI/2,x=Math.cos(a)*r,y=Math.sin(a)*r;i===0?s.moveTo(x,y):s.lineTo(x,y);}
     s.closePath();return s;}
-  const geo=new THREE.ExtrudeGeometry(starShape(1.55,0.62,5),{depth:0.42,bevelEnabled:true,bevelThickness:0.14,bevelSize:0.12,bevelSegments:lite?2:4,curveSegments:lite?5:8});
+  const geo=new THREE.ExtrudeGeometry(starShape(1.55,0.62,5),{depth:0.42,bevelEnabled:true,bevelThickness:0.14,bevelSize:0.12,bevelSegments:lite?1:3,curveSegments:lite?4:7});
   geo.center();
-  const mat=new THREE.MeshStandardMaterial({color:0xE8C36B,metalness:0.95,roughness:0.28,emissive:0x3a2c0c,emissiveIntensity:0.5});
+  const mat=new THREE.MeshStandardMaterial({color:0xD9AA4A,metalness:0.72,roughness:0.38,emissive:0x2b2108,emissiveIntensity:0.3});
   const star=new THREE.Mesh(geo,mat); rig.add(star);
   const wire=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({color:0xFCE7B8,wireframe:true,transparent:true,opacity:0.06})); wire.scale.setScalar(1.02); rig.add(wire);
  
-  const COUNT=lite?400:1000,pos=new Float32Array(COUNT*3);
+  const COUNT=lite?140:700,pos=new Float32Array(COUNT*3);
   for(let i=0;i<COUNT;i++){const r=4+Math.random()*9,th=Math.random()*Math.PI*2,ph=Math.acos(2*Math.random()-1);
     pos[i*3]=r*Math.sin(ph)*Math.cos(th);pos[i*3+1]=r*Math.sin(ph)*Math.sin(th);pos[i*3+2]=r*Math.cos(ph)-2;}
   const pGeo=new THREE.BufferGeometry(); pGeo.setAttribute('position',new THREE.BufferAttribute(pos,3));
   const particles=new THREE.Points(pGeo,new THREE.PointsMaterial({color:0xE8C36B,size:0.045,transparent:true,opacity:0.75,sizeAttenuation:true,depthWrite:false}));
   scene.add(particles);
  
-  scene.add(new THREE.AmbientLight(0xffffff,0.42));
-  const key=new THREE.PointLight(0xffd98a,1.5,40); key.position.set(5,5,6); scene.add(key);
-  const fill=new THREE.PointLight(0xfff0cf,0.9,40); fill.position.set(-6,-3,4); scene.add(fill);
-  const rim=new THREE.DirectionalLight(0xffffff,0.5); rim.position.set(-2,4,-5); scene.add(rim);
+  scene.add(new THREE.AmbientLight(0xffffff,0.28));
+  const key=new THREE.PointLight(0xffd98a,0.95,40); key.position.set(5,5,6); scene.add(key);
+  const fill=new THREE.PointLight(0xffe6b0,0.42,40); fill.position.set(-6,-3,4); scene.add(fill);
+  const rim=new THREE.DirectionalLight(0xffffff,0.24); rim.position.set(-2,4,-5); scene.add(rim);
  
   let cx=0,cy=0,t=0,pageVisible=true,inView=true,contextLost=false;
   document.addEventListener('visibilitychange',()=>{pageVisible=!document.hidden; if(pageVisible)loop();});
@@ -1017,19 +1344,27 @@ if(!REDUCE){
   canvas.addEventListener('webglcontextlost',e=>{ e.preventDefault(); contextLost=true; },false);
   canvas.addEventListener('webglcontextrestored',()=>{ contextLost=false; loop(); },false);
 
-  function loop(){ if(!pageVisible||!inView||contextLost)return; requestAnimationFrame(loop); t+=0.01;
-    if(!REDUCE){
-      const tx=(MX/innerWidth-0.5), ty=(MY/innerHeight-0.5);
-      star.rotation.y+=0.006; star.rotation.x=Math.sin(t*0.6)*0.18; wire.rotation.copy(star.rotation);
-      const pulse=1+Math.sin(t*1.4)*0.03; star.scale.setScalar(pulse);
-      mat.emissiveIntensity=0.45+Math.sin(t*1.4)*0.18;
-      particles.rotation.y+=0.0006; particles.rotation.x+=0.0002;
-      cx+=(tx-cx)*0.05; cy+=(ty-cy)*0.05;
-      rig.rotation.y=cx*0.6; rig.rotation.x=cy*0.45;
-      particles.position.x=-cx*0.8; particles.position.y=cy*0.8;
-      camera.position.x=cx*0.7; camera.lookAt(0,0,0);
-    }
-    renderer.render(scene,camera);
+  let rafId=0,running=false;
+  function loop(){
+    if(running || !pageVisible || !inView || contextLost) return;
+    running=true;
+    const frame=()=>{
+      if(!pageVisible || !inView || contextLost){running=false;rafId=0;return;}
+      t+=0.01;
+       if(!REDUCE){
+        const tx=(MX/innerWidth-0.5),ty=(MY/innerHeight-0.5);
+        star.rotation.y+=0.004;star.rotation.x=Math.sin(t*0.6)*0.16;wire.rotation.copy(star.rotation);
+        const pulse=1+Math.sin(t*1.4)*0.025;star.scale.setScalar(pulse);
+         mat.emissiveIntensity=0.28+Math.sin(t*1.4)*0.05;
+        particles.rotation.y+=0.0004;particles.rotation.x+=0.00012;
+        cx+=(tx-cx)*0.04;cy+=(ty-cy)*0.04;
+        rig.rotation.y=cx*0.55;rig.rotation.x=cy*0.4;
+        particles.position.x=-cx*0.7;particles.position.y=cy*0.7;
+        camera.position.x=cx*0.65;camera.lookAt(0,0,0);
+      }
+      renderer.render(scene,camera);rafId=requestAnimationFrame(frame);
+    };
+    rafId=requestAnimationFrame(frame);
   }
 
   let resizeTimer=null;
@@ -1141,15 +1476,17 @@ if(!REDUCE){
     document.getElementById('modalBars').innerHTML=`
       <div><div class="modal-bar-head"><span>Quality Index</span><b>${m.mtdScore||'—'}</b></div><div class="modal-bar-track"><i style="--w:${Math.min(100,quality(m))}%"></i></div></div>
       <div><div class="modal-bar-head"><span>Attendance</span><b>${m.attendance||'—'}</b></div><div class="modal-bar-track"><i style="--w:${Math.min(100,parseFloat(m.attendance)||0)}%"></i></div></div>`;
-    modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden';
+    modal.classList.add('open');modal.setAttribute('aria-hidden','false');
+    document.documentElement.classList.add('modal-open');document.body.classList.add('modal-open');
   }
   function closeProfile(){
     try{
       currentProfile=null;
       const modal=document.getElementById('memberModal');
+      if(document.activeElement && modal.contains(document.activeElement)) document.activeElement.blur();
       modal.classList.remove('open');modal.setAttribute('aria-hidden','true');
+      document.documentElement.classList.remove('modal-open');document.body.classList.remove('modal-open');
     } finally {
-      document.body.style.overflow='';
     }
   }
   document.querySelectorAll('[data-close-modal]').forEach(x=>x.addEventListener('click',closeProfile));
@@ -1295,20 +1632,12 @@ if(!REDUCE){
   bindTap(enableSound, (e)=>{e.stopPropagation();startAmbience();});
 
   setTimeout(()=>{
-    const ok=startAmbience();
-    if(!ok && audioHint){
+    if(audioHint){
       audioHint.classList.add('show');
       setTimeout(()=>audioHint.classList.remove('show'),7000);
     }
-    primed=ok;
-  },450);
+  },700);
 
-  const unlockOnce=()=>{
-    if(soundOn) return;
-    if(startAmbience()) document.removeEventListener('pointerdown',unlockOnce);
-  };
-  document.addEventListener('pointerdown',unlockOnce,{passive:true});
-  document.addEventListener('keydown',unlockOnce,{passive:true});
 
   const themeGlow=$('#themeGlow');
   bindTap(themeGlow, ()=>document.body.classList.toggle('glow-off'));
@@ -1507,7 +1836,6 @@ if(!REDUCE){
       dragging=false; dy=0; eligible=false;
     });
   }
-  bindSwipeClose('.modal-card', ()=>{ $('[data-close-modal]')?.click(); });
   bindSwipeClose('#actionSheet', closeSheet);
 
   ['#navToggle','#soundBtn','#themeGlow','#topBtn'].forEach(sel=>{
@@ -1515,5 +1843,289 @@ if(!REDUCE){
   });
 })();
 </script>
+
+<button class="experience-launcher" id="experienceLauncher" type="button" aria-label="Open Experience Menu" aria-haspopup="dialog" aria-expanded="false" title="Experience Menu">
+  <span aria-hidden="true">⌘</span><span class="exp-launch-ring" aria-hidden="true"></span>
+</button>
+<div class="experience-backdrop" id="experienceBackdrop"></div>
+<section id="experiencePanel" role="dialog" aria-modal="true" aria-labelledby="experienceTitle" aria-hidden="true">
+  <div class="exp-panel-inner">
+    <div class="exp-panel-head">
+      <div>
+        <div class="exp-panel-kicker">⌘ Experience System</div>
+        <h2 class="exp-panel-title" id="experienceTitle">Shape the atmosphere.</h2>
+        <p class="exp-panel-sub">Live visual controls, interaction depth and immersive presentation.</p>
+      </div>
+      <button class="exp-close" id="experienceClose" type="button" aria-label="Close Experience Menu">×</button>
+    </div>
+    <div class="exp-mode-grid" role="radiogroup" aria-label="Visual mode">
+      <button class="exp-mode active" data-exp-mode="standard" role="radio" aria-checked="true">
+        <span class="exp-mode-icon">✦</span><span class="exp-mode-name">Standard</span>
+        <span class="exp-mode-desc">Balanced gold depth and motion.</span>
+      </button>
+      <button class="exp-mode" data-exp-mode="focus" role="radio" aria-checked="false">
+        <span class="exp-mode-icon">◉</span><span class="exp-mode-name">Focus</span>
+        <span class="exp-mode-desc">Sharper depth and edge response.</span>
+      </button>
+      <button class="exp-mode" data-exp-mode="pulse" role="radio" aria-checked="false">
+        <span class="exp-mode-icon">◌</span><span class="exp-mode-name">Pulse Gold</span>
+        <span class="exp-mode-desc">Living cards with stronger cinematic energy.</span>
+      </button>
+      <button class="exp-mode" data-exp-mode="minimal" role="radio" aria-checked="false">
+        <span class="exp-mode-icon">—</span><span class="exp-mode-name">Minimal</span>
+        <span class="exp-mode-desc">Quiet interface with restrained motion.</span>
+      </button>
+    </div>
+    <div class="exp-tools">
+      <div class="exp-tool"><span class="exp-tool-label">3D Card Depth</span><button class="exp-toggle on" data-exp-toggle="depth" type="button" aria-label="Toggle 3D Card Depth" aria-pressed="true"><i></i></button></div>
+      <div class="exp-tool"><span class="exp-tool-label">Edge Scan</span><button class="exp-toggle on" data-exp-toggle="scan" type="button" aria-label="Toggle Edge Scan" aria-pressed="true"><i></i></button></div>
+      <div class="exp-tool"><span class="exp-tool-label">Content Parallax</span><button class="exp-toggle on" data-exp-toggle="parallax" type="button" aria-label="Toggle Content Parallax" aria-pressed="true"><i></i></button></div>
+      <div class="exp-tool"><span class="exp-tool-label">Touch Depth</span><button class="exp-toggle on" data-exp-toggle="touch" type="button" aria-label="Toggle Touch Depth" aria-pressed="true"><i></i></button></div>
+      <div class="exp-tool"><span class="exp-tool-label">Immersive Mode</span><button class="exp-toggle" data-exp-toggle="immersive" type="button" aria-label="Toggle Immersive Mode" aria-pressed="false"><i></i></button></div>
+      <div class="exp-tool"><span class="exp-tool-label">Performance Guard</span><button class="exp-toggle" data-exp-toggle="lowPower" type="button" aria-label="Toggle Performance Guard" aria-pressed="false"><i></i></button></div>
+      <div class="exp-tool"><span class="exp-tool-label">Live HUD</span><button class="exp-toggle on" data-exp-toggle="hud" type="button" aria-label="Toggle Live HUD" aria-pressed="true"><i></i></button></div>
+      <div class="exp-tool"><span class="exp-tool-label">Blossom Atmosphere</span><button class="exp-toggle on" data-exp-toggle="blossom" type="button" aria-label="Toggle Blossom Atmosphere" aria-pressed="true"><i></i></button></div>
+    </div>
+    <div class="exp-shortcuts">
+      <kbd>Ctrl</kbd> + <kbd>K</kbd> / <kbd>⌘</kbd> + <kbd>K</kbd> — open menu ·
+      <kbd>Esc</kbd> — close · <kbd>I</kbd> — immersive · <kbd>1–4</kbd> — visual modes
+    </div>
+    <div class="exp-status">Current profile: <b id="experienceStatus">Standard</b> · saved locally</div>
+  </div>
+</section>
+
+
+<script>
+(function ultraExperienceEngine(){
+  const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+  const body=document.body, root=document.documentElement;
+  const launcher=$('#experienceLauncher'), panel=$('#experiencePanel'), backdrop=$('#experienceBackdrop'), closeBtn=$('#experienceClose');
+  if(!launcher||!panel) return;
+
+  const KEY='tes_experience_v3';
+  const defaults={
+    mode:'standard',
+    depth:true, scan:true, parallax:true, touch:true,
+    immersive:false, lowPower:false, hud:true, blossom:true
+  };
+  let state={...defaults};
+  try{state={...defaults,...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch(_){}
+
+  const modes=['standard','focus','pulse','minimal'];
+  const modeNames={standard:'Standard',focus:'Focus',pulse:'Pulse Gold',minimal:'Minimal'};
+  if(!modes.includes(state.mode)) state.mode=defaults.mode;
+
+  function save(){
+    try{localStorage.setItem(KEY,JSON.stringify(state))}catch(_){}
+  }
+  function haptic(ms=7){
+    try{if('vibrate' in navigator) navigator.vibrate(ms)}catch(_){}
+  }
+  function apply(){
+    modes.forEach(m=>body.classList.toggle('exp-'+m,m===state.mode));
+    body.classList.toggle('immersive',!!state.immersive);
+    body.classList.toggle('exp-low-power',!!state.lowPower);
+    body.classList.toggle('hud-off',!state.hud);
+    body.classList.toggle('weather-off',!state.blossom);
+    root.classList.toggle('immersive-scroll',!!state.immersive);
+    root.style.setProperty('--exp-depth',state.depth?'1':'0');
+    root.style.setProperty('--exp-scan',state.scan?'1':'0');
+    $$('[data-exp-mode]').forEach(b=>{
+      const active=b.dataset.expMode===state.mode;
+      b.classList.toggle('active',active);b.setAttribute('aria-checked',String(active));
+    });
+    $$('[data-exp-toggle]').forEach(b=>{
+      const on=!!state[b.dataset.expToggle];
+      b.classList.toggle('on',on);b.setAttribute('aria-pressed',String(on));
+    });
+    const status=$('#experienceStatus'); if(status) status.textContent=modeNames[state.mode];
+    $$('.member-card').forEach(prepareCard);
+    save();
+  }
+
+  function openMenu(){
+    panel.classList.add('open');backdrop.classList.add('open');
+    panel.setAttribute('aria-hidden','false');launcher.setAttribute('aria-expanded','true');
+    haptic(9);
+  }
+  function closeMenu(){
+    panel.classList.remove('open');backdrop.classList.remove('open');
+    panel.setAttribute('aria-hidden','true');launcher.setAttribute('aria-expanded','false');
+    launcher.focus({preventScroll:true});
+  }
+  launcher.addEventListener('click',()=>panel.classList.contains('open')?closeMenu():openMenu());
+  closeBtn?.addEventListener('click',closeMenu);
+  backdrop.addEventListener('click',closeMenu);
+
+  $$('[data-exp-mode]').forEach(btn=>btn.addEventListener('click',()=>{
+    state.mode=btn.dataset.expMode; apply(); haptic(8);
+  }));
+  $$('[data-exp-toggle]').forEach(btn=>btn.addEventListener('click',()=>{
+    const k=btn.dataset.expToggle; state[k]=!state[k]; apply(); haptic(7);
+  }));
+
+  document.addEventListener('keydown',e=>{
+    const key=e.key.toLowerCase();
+    if((e.ctrlKey||e.metaKey)&&key==='k'){
+      e.preventDefault(); panel.classList.contains('open')?closeMenu():openMenu(); return;
+    }
+    if(key==='escape'&&panel.classList.contains('open')){closeMenu();return}
+    const tag=(e.target?.tagName||'').toLowerCase();
+    if(tag==='input'||tag==='textarea'||e.target?.isContentEditable) return;
+    if(key==='i'){state.immersive=!state.immersive;apply();haptic(8)}
+    if(['1','2','3','4'].includes(key)){state.mode=modes[+key-1];apply();haptic(6)}
+  });
+
+  function addPulse(x,y){
+    if(!Number.isFinite(x)||!Number.isFinite(y))return;
+    const p=document.createElement('span');p.className='exp-pulse-dot';
+    p.style.left=x+'px';p.style.top=y+'px';document.body.appendChild(p);setTimeout(()=>p.remove(),600);
+  }
+
+  function prepareCard(card){
+    if(card.dataset.expReady==='1') return;
+    card.dataset.expReady='1';
+    const content=document.createElement('div');content.className='exp-content';
+    while(card.firstChild) content.appendChild(card.firstChild);
+    card.appendChild(content);
+    const scan=document.createElement('div');scan.className='exp-scan';scan.setAttribute('aria-hidden','true');
+    const edge=document.createElement('div');edge.className='exp-edge';edge.setAttribute('aria-hidden','true');
+    const corner=document.createElement('div');corner.className='exp-corner';corner.textContent='ELITE / LIVE';
+    card.append(scan,edge,corner);
+
+    let active=false, raf=0, lastX=0,lastY=0;
+    const reset=()=>{
+      active=false;card.classList.remove('exp-tilting');
+      card.style.setProperty('--rx','0deg');card.style.setProperty('--ry','0deg');
+      card.style.setProperty('--lift','0px');card.style.setProperty('--px','0px');card.style.setProperty('--py','0px');
+    };
+    const update=(x,y)=>{
+      if(state.lowPower || !state.depth){ reset(); return; }
+      const r=card.getBoundingClientRect(), px=(x-r.left)/r.width, py=(y-r.top)/r.height;
+      const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+      const maxX=state.depth?9:0, maxY=state.depth?11:0;
+      const rx=clamp((.5-py)*maxX,-maxX,maxX), ry=clamp((px-.5)*maxY,-maxY,maxY);
+      card.style.setProperty('--rx',rx.toFixed(2)+'deg');
+      card.style.setProperty('--ry',ry.toFixed(2)+'deg');
+      card.style.setProperty('--lift',state.depth?'6px':'0px');
+      card.style.setProperty('--scan-h',r.height+'px');
+      card.style.setProperty('--edge-angle',((px*360)+(py*90)).toFixed(1)+'deg');
+      if(state.parallax){
+        card.style.setProperty('--px',((px-.5)*3).toFixed(2)+'px');
+        card.style.setProperty('--py',((py-.5)*3).toFixed(2)+'px');
+      }else{
+        card.style.setProperty('--px','0px');card.style.setProperty('--py','0px');
+      }
+      card.classList.add('exp-tilting');
+    };
+
+    card.addEventListener('pointerenter',()=>{active=true},{passive:true});
+    card.addEventListener('pointermove',e=>{
+      if(e.pointerType==='touch')return;
+      lastX=e.clientX;lastY=e.clientY;
+      if(!raf){raf=requestAnimationFrame(()=>{raf=0;if(active)update(lastX,lastY)})}
+    },{passive:true});
+    card.addEventListener('pointerleave',reset,{passive:true});
+
+    card.addEventListener('pointerdown',e=>{
+      if(state.touch){
+        card.classList.add('exp-pressed');haptic(9);addPulse(e.clientX,e.clientY);
+        if(e.pointerType==='touch') update(e.clientX,e.clientY);
+      }
+    },{passive:true});
+    const release=()=>card.classList.remove('exp-pressed');
+    card.addEventListener('pointerup',release,{passive:true});
+    card.addEventListener('pointercancel',release,{passive:true});
+    card.addEventListener('touchend',release,{passive:true});
+  }
+
+  function initCards(){
+    $$('.member-card').forEach(prepareCard);
+    const grid=$('#membersGrid');
+    if(grid && 'MutationObserver' in window){
+      new MutationObserver(()=>$$('.member-card',grid).forEach(prepareCard)).observe(grid,{childList:true,subtree:true});
+    }
+  }
+
+  initCards();
+  setTimeout(initCards,300);
+  setTimeout(initCards,1000);
+
+  if(window.matchMedia('(pointer:fine)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches && !state.lowPower){
+    let tx=innerWidth/2,ty=innerHeight/2,cx=tx,cy=ty,raf=0;
+    window.addEventListener('pointermove',e=>{tx=e.clientX;ty=e.clientY;if(!raf)raf=requestAnimationFrame(()=>{
+      raf=0;cx+=(tx-cx)*.16;cy+=(ty-cy)*.16;
+      root.style.setProperty('--gx',cx+'px');root.style.setProperty('--gy',cy+'px');
+    })},{passive:true});
+  }
+
+  const sheet=$('#actionSheet');
+  if(sheet){
+    const title=document.createElement('button');
+    title.className='sheet-item';title.id='sheetExperience';
+    title.innerHTML='<span class="sheet-ic">⌘</span> Experience Modes <span style="margin-left:auto;color:var(--gold);font-size:.65rem">OPEN</span>';
+    const anchor=$('#sheetSound');
+    sheet.insertBefore(title,anchor||sheet.firstChild);
+    title.addEventListener('click',()=>{openMenu();const sh=document.getElementById('actionSheet'),bd=document.getElementById('sheetBackdrop');sh?.classList.remove('open');bd?.classList.remove('open');sh?.setAttribute('aria-hidden','true');});
+  }
+
+  apply();
+})();
+</script>
+
+
+
+<script>
+(function blossomAtmosphere(){
+  const layer=document.getElementById('weatherFx');
+  if(!layer || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const mobile=window.matchMedia('(max-width:860px)').matches;
+  const count=mobile?10:20;
+  const frag=document.createDocumentFragment();
+  for(let i=0;i<count;i++){
+    const petal=document.createElement('i');
+    petal.className='petal';
+    petal.style.setProperty('--x',(Math.random()*100).toFixed(2)+'%');
+    petal.style.setProperty('--s',(5+Math.random()*8).toFixed(1)+'px');
+    petal.style.setProperty('--d',(13+Math.random()*16).toFixed(2)+'s');
+    petal.style.setProperty('--delay',(-Math.random()*20).toFixed(2)+'s');
+    petal.style.setProperty('--drift',(-90+Math.random()*180).toFixed(1)+'px');
+    petal.style.setProperty('--b',(Math.random()>.7?'1px':'0px'));
+    frag.appendChild(petal);
+  }
+  layer.appendChild(frag);
+})();
+</script>
+<script>
+(function localClock(){
+  const timeEl=document.getElementById('localTime');
+  const modeEl=document.getElementById('displayMode');
+  if(!timeEl)return;
+  let timer=0;
+  const fmt=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Dhaka',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
+  const tick=()=>{
+    timeEl.textContent=fmt.format(new Date());
+    if(modeEl)modeEl.textContent=innerWidth<=860?'MOBILE':'DESKTOP';
+  };
+  const start=()=>{if(!timer){tick();timer=setInterval(tick,1000);}};
+  const stop=()=>{if(timer){clearInterval(timer);timer=0;}};
+  window.addEventListener('online',tick,{passive:true});
+  window.addEventListener('offline',tick,{passive:true});
+  window.addEventListener('resize',tick,{passive:true});
+  document.addEventListener('visibilitychange',()=>document.hidden?stop():start());
+  start();
+})();
+</script>
+<script>
+(function stabilityGuard(){
+  window.addEventListener('pageshow',()=>{
+    document.body.classList.remove('modal-open');
+    document.documentElement.classList.remove('modal-open');
+    const m=document.getElementById('memberModal');
+    if(m&&!m.classList.contains('open'))m.setAttribute('aria-hidden','true');
+  });
+})();
+</script>
+
 </body>
 </html>
