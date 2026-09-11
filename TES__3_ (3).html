@@ -305,7 +305,7 @@ body.sound-on .dock-btn#soundBtn::after{
 .member-card,.pillar,.intel-card,.stat,.btn,.mini-btn,.filter-chip,.dock-btn,.profile-btn{
   -webkit-tap-highlight-color:transparent;
 }
-.member-card{will-change:transform,box-shadow}
+.member-card{will-change:transform,box-shadow;transition:transform .22s var(--ease-premium),box-shadow .35s ease,border-color .35s ease}
 .member-card:focus-visible{box-shadow:0 0 0 2px var(--gold),0 30px 60px -28px var(--glow)!important}
 .member-card .badge{transition:transform .3s ease,background .3s ease}
 .member-card:hover .badge{transform:translateY(-1px)}
@@ -531,7 +531,7 @@ html.immersive-scroll{scroll-behavior:smooth}
     rotateY(var(--ry))
     translate3d(var(--px),var(--py),var(--lift))
     scale(1.012);
-  transition:box-shadow .35s ease,border-color .35s ease;
+  transition:transform .08s linear,box-shadow .35s ease,border-color .35s ease;
 }
 .member-card .exp-content{
   position:relative;z-index:2;transform:translateZ(calc(18px * var(--exp-depth)));
@@ -589,6 +589,10 @@ html.immersive-scroll{scroll-behavior:smooth}
 }
 .member-card.exp-pressed .exp-content{transform:translateZ(5px)}
 .member-card.exp-pressed .avatar{transform:translateZ(8px) scale(.98)}
+
+/* Keyboard users get the same depth language without requiring a mouse. */
+.member-card:focus-visible .exp-content{transform:translateZ(22px)}
+.member-card:focus-visible .avatar{transform:translateZ(34px) scale(1.035)}
 
 .experience-launcher{
   position:fixed;right:20px;bottom:174px;z-index:9400;width:46px;height:46px;
@@ -789,6 +793,31 @@ body.fx:has(#experiencePanel.open) #cursorDot,body.fx:has(#experiencePanel.open)
   .member-card:hover .avatar,.member-card:hover h3,
   .member-card.exp-tilting .exp-content{transform:none!important;}
 }
+
+/* Standard mode restores a restrained cinematic 3D card depth. Other modes
+   stay calm and flat, while the controls remain available in Experience. */
+@media(pointer:fine){
+  body.exp-standard .member-card.exp-tilting{
+    transform:perspective(1100px) rotateX(var(--rx)) rotateY(var(--ry)) translate3d(var(--px),var(--py),12px) scale(1.018)!important;
+    border-color:rgba(252,231,184,.72)!important;
+    box-shadow:0 30px 72px -34px rgba(232,195,107,.72),inset 0 1px 0 rgba(252,231,184,.22)!important;
+  }
+  body.exp-standard .member-card.exp-tilting .exp-content{transform:translateZ(24px)!important;}
+  body.exp-standard .member-card.exp-tilting .avatar{transform:translateZ(34px) scale(1.035)!important;}
+  body.exp-standard .member-card.exp-tilting .exp-glare{opacity:.72!important;}
+  body.exp-standard .member-card.exp-tilting .exp-edge{opacity:.9!important;}
+  body.exp-standard .member-card.exp-tilting .exp-scan{opacity:.42!important;}
+}
+body.exp-low-power .member-card.exp-tilting{transform:none!important;}
+
+/* Full-page cinematic blossom/weather atmosphere. It is intentionally light,
+   pointer-safe and fixed so the scene continues across every section. */
+.weather-fx{position:fixed;inset:0;z-index:3;pointer-events:none;overflow:hidden;opacity:.82;mix-blend-mode:screen;}
+.weather-fx .petal{position:absolute;top:-12vh;left:var(--x);width:var(--s);height:calc(var(--s) * .62);border-radius:80% 20% 80% 20%;background:linear-gradient(135deg,rgba(255,244,213,.9),rgba(232,195,107,.52) 55%,rgba(184,145,46,.05));filter:blur(var(--b));box-shadow:0 0 12px rgba(232,195,107,.24);animation:blossomFall var(--d) linear var(--delay) infinite;}
+@keyframes blossomFall{0%{transform:translate3d(0,-10vh,0) rotate(0deg);opacity:0}10%{opacity:.68}45%{transform:translate3d(var(--drift),48vh,0) rotate(150deg);opacity:.52}80%{opacity:.3}100%{transform:translate3d(calc(var(--drift) * -1),116vh,0) rotate(320deg);opacity:0}}
+body.weather-off #weatherFx{display:none!important;}
+@media(max-width:860px){.weather-fx{opacity:.52}.weather-fx .petal{filter:none;}}
+@media(prefers-reduced-motion:reduce){.weather-fx{display:none!important;}}
 </style>
 </head>
 <body>
@@ -804,6 +833,7 @@ body.fx:has(#experiencePanel.open) #cursorDot,body.fx:has(#experiencePanel.open)
 <div id="spotlight" aria-hidden="true"></div>
 <div id="progress" aria-hidden="true"></div>
 <div id="sparkles" aria-hidden="true"></div>
+<div id="weatherFx" class="weather-fx" aria-hidden="true"></div>
 <div id="cursorRing" aria-hidden="true"></div>
 <div id="cursorDot" aria-hidden="true"></div>
  
@@ -1861,6 +1891,7 @@ if(!REDUCE){
       <div class="exp-tool"><span class="exp-tool-label">Immersive Mode</span><button class="exp-toggle" data-exp-toggle="immersive" type="button" aria-label="Toggle Immersive Mode" aria-pressed="false"><i></i></button></div>
       <div class="exp-tool"><span class="exp-tool-label">Performance Guard</span><button class="exp-toggle" data-exp-toggle="lowPower" type="button" aria-label="Toggle Performance Guard" aria-pressed="false"><i></i></button></div>
       <div class="exp-tool"><span class="exp-tool-label">Live HUD</span><button class="exp-toggle on" data-exp-toggle="hud" type="button" aria-label="Toggle Live HUD" aria-pressed="true"><i></i></button></div>
+      <div class="exp-tool"><span class="exp-tool-label">Blossom Atmosphere</span><button class="exp-toggle on" data-exp-toggle="blossom" type="button" aria-label="Toggle Blossom Atmosphere" aria-pressed="true"><i></i></button></div>
     </div>
     <div class="exp-shortcuts">
       <kbd>Ctrl</kbd> + <kbd>K</kbd> / <kbd>⌘</kbd> + <kbd>K</kbd> — open menu ·
@@ -1884,13 +1915,15 @@ if(!REDUCE){
   const KEY='tes_experience_v3';
   const defaults={
     mode:'standard',
-     depth:true, glare:true, scan:true, parallax:true, touch:true, immersive:false, lowPower:false, hud:true
+    depth:true, glare:true, scan:true, parallax:true, touch:true,
+    immersive:false, lowPower:false, hud:true, blossom:true
   };
   let state={...defaults};
   try{state={...defaults,...JSON.parse(localStorage.getItem(KEY)||'{}')}}catch(_){}
 
   const modes=['standard','focus','pulse','minimal'];
   const modeNames={standard:'Standard',focus:'Focus',pulse:'Pulse Gold',minimal:'Minimal'};
+  if(!modes.includes(state.mode)) state.mode=defaults.mode;
 
   function save(){
     try{localStorage.setItem(KEY,JSON.stringify(state))}catch(_){}
@@ -1903,6 +1936,7 @@ if(!REDUCE){
     body.classList.toggle('immersive',!!state.immersive);
     body.classList.toggle('exp-low-power',!!state.lowPower);
     body.classList.toggle('hud-off',!state.hud);
+    body.classList.toggle('weather-off',!state.blossom);
     root.classList.toggle('immersive-scroll',!!state.immersive);
     root.style.setProperty('--exp-depth',state.depth?'1':'0');
     root.style.setProperty('--exp-glare',state.glare?'1':'0');
@@ -1928,6 +1962,7 @@ if(!REDUCE){
   function closeMenu(){
     panel.classList.remove('open');backdrop.classList.remove('open');
     panel.setAttribute('aria-hidden','true');launcher.setAttribute('aria-expanded','false');
+    launcher.focus({preventScroll:true});
   }
   launcher.addEventListener('click',()=>panel.classList.contains('open')?closeMenu():openMenu());
   closeBtn?.addEventListener('click',closeMenu);
@@ -1978,6 +2013,7 @@ if(!REDUCE){
       card.style.setProperty('--gx','50%');card.style.setProperty('--gy','50%');
     };
     const update=(x,y)=>{
+      if(state.lowPower || !state.depth){ reset(); return; }
       const r=card.getBoundingClientRect(), px=(x-r.left)/r.width, py=(y-r.top)/r.height;
       const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
       const maxX=state.depth?9:0, maxY=state.depth?11:0;
@@ -2032,7 +2068,7 @@ if(!REDUCE){
   setTimeout(initCards,1000);
 
   // A subtle global pointer depth field that also drives the page spotlight.
-  if(window.matchMedia('(pointer:fine)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+  if(window.matchMedia('(pointer:fine)').matches && !window.matchMedia('(prefers-reduced-motion: reduce)').matches && !state.lowPower){
     let tx=innerWidth/2,ty=innerHeight/2,cx=tx,cy=ty,raf=0;
     window.addEventListener('pointermove',e=>{tx=e.clientX;ty=e.clientY;if(!raf)raf=requestAnimationFrame(()=>{
       raf=0;cx+=(tx-cx)*.16;cy+=(ty-cy)*.16;
@@ -2058,6 +2094,28 @@ if(!REDUCE){
 
 
 
+<script>
+/* ===== CINEMATIC BLOSSOM ATMOSPHERE ===== */
+(function blossomAtmosphere(){
+  const layer=document.getElementById('weatherFx');
+  if(!layer || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const mobile=window.matchMedia('(max-width:860px)').matches;
+  const count=mobile?10:20;
+  const frag=document.createDocumentFragment();
+  for(let i=0;i<count;i++){
+    const petal=document.createElement('i');
+    petal.className='petal';
+    petal.style.setProperty('--x',(Math.random()*100).toFixed(2)+'%');
+    petal.style.setProperty('--s',(5+Math.random()*8).toFixed(1)+'px');
+    petal.style.setProperty('--d',(13+Math.random()*16).toFixed(2)+'s');
+    petal.style.setProperty('--delay',(-Math.random()*20).toFixed(2)+'s');
+    petal.style.setProperty('--drift',(-90+Math.random()*180).toFixed(1)+'px');
+    petal.style.setProperty('--b',(Math.random()>.7?'1px':'0px'));
+    frag.appendChild(petal);
+  }
+  layer.appendChild(frag);
+})();
+</script>
 <script>
 /* ===== FUTURE-STABLE LOCAL CLOCK ===== */
 (function localClock(){
