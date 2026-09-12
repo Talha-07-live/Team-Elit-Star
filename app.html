@@ -2,10 +2,14 @@
 <html lang="bn">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+  />
   <meta name="theme-color" content="#0b1020" />
   <meta name="color-scheme" content="dark" />
-  <title>Elite Star App</title>
+
+  <title>Team Elite Star</title>
 
   <link rel="apple-touch-icon" href="icon.svg.png" />
   <link rel="icon" href="icon.svg.png" type="image/svg+xml" />
@@ -38,14 +42,18 @@
       width: 100%;
       min-height: 100svh;
       min-height: 100dvh;
+
       display: grid;
       place-items: center;
+
       padding:
         max(20px, env(safe-area-inset-top))
         max(16px, env(safe-area-inset-right))
         max(20px, env(safe-area-inset-bottom))
         max(16px, env(safe-area-inset-left));
+
       color: var(--text);
+
       font-family:
         Inter,
         ui-sans-serif,
@@ -80,10 +88,14 @@
     .brand {
       width: 100%;
       text-align: center;
+
       margin: 0 0 18px;
+
       color: var(--muted);
+
       font-size: clamp(10px, 2.5vw, 13px);
       line-height: 1.4;
+
       letter-spacing: .16em;
       text-transform: uppercase;
     }
@@ -115,14 +127,21 @@
 
     .card::before {
       content: "";
+
       position: absolute;
+
       width: 180px;
       height: 180px;
+
       right: -80px;
       top: -80px;
+
       border-radius: 50%;
+
       background: rgba(124,92,255,.28);
+
       filter: blur(25px);
+
       pointer-events: none;
     }
 
@@ -172,7 +191,9 @@
       width: 100%;
       max-width: 410px;
 
-      margin: 0 auto clamp(22px, 6vw, 28px);
+      margin:
+        0 auto
+        clamp(22px, 6vw, 28px);
 
       color: var(--muted);
 
@@ -286,6 +307,7 @@
 
     .count {
       flex: 0 0 auto;
+
       color: var(--text);
       font-weight: 800;
     }
@@ -300,8 +322,7 @@
       margin-top: clamp(22px, 6vw, 28px);
     }
 
-    button,
-    .button {
+    button {
       appearance: none;
       -webkit-appearance: none;
 
@@ -322,7 +343,6 @@
       cursor: pointer;
 
       text-align: center;
-      text-decoration: none;
 
       transition:
         transform .2s ease,
@@ -330,18 +350,15 @@
         box-shadow .2s ease;
     }
 
-    button:hover,
-    .button:hover {
+    button:hover {
       transform: translateY(-2px);
     }
 
-    button:active,
-    .button:active {
+    button:active {
       transform: translateY(0) scale(.98);
     }
 
-    button:focus-visible,
-    .button:focus-visible {
+    button:focus-visible {
       outline: 2px solid rgba(255,255,255,.7);
       outline-offset: 3px;
     }
@@ -370,36 +387,81 @@
 
     button:disabled {
       opacity: .5;
+
       cursor: not-allowed;
+
       transform: none;
+
       box-shadow: none;
     }
 
-    .destination {
+    /* FILE INFORMATION
+       Destination URL is intentionally hidden.
+    */
+
+    .file-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
       width: 100%;
 
       margin-top: 25px;
-      padding: 13px 15px;
+      padding: 14px 15px;
 
       border: 1px solid var(--border);
       border-radius: 12px;
 
+      background: rgba(255,255,255,.035);
+
       color: var(--muted);
 
-      font-size: clamp(10px, 2.8vw, 12px);
-      line-height: 1.5;
+      font-size: clamp(11px, 3vw, 13px);
 
       overflow: hidden;
     }
 
-    .destination strong {
-      color: var(--text);
+    .file-icon {
+      flex: 0 0 auto;
+
+      width: 34px;
+      height: 34px;
+
+      display: grid;
+      place-items: center;
+
+      border-radius: 10px;
+
+      background: rgba(124,92,255,.16);
+
+      font-size: 17px;
     }
 
-    #destinationText {
-      display: inline;
-      overflow-wrap: anywhere;
-      word-break: break-word;
+    .file-details {
+      min-width: 0;
+      overflow: hidden;
+    }
+
+    .file-label {
+      display: block;
+
+      margin-bottom: 2px;
+
+      color: var(--muted);
+
+      font-size: 11px;
+    }
+
+    .file-name {
+      display: block;
+
+      color: var(--text);
+
+      font-weight: 800;
+
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .footer {
@@ -420,7 +482,7 @@
     }
 
     /* =========================
-       SMALL MOBILE
+       MOBILE
        ========================= */
 
     @media (max-width: 430px) {
@@ -446,13 +508,12 @@
         flex-direction: column;
       }
 
-      button,
-      .button {
+      button {
         width: 100%;
         flex: none;
       }
 
-      .destination {
+      .file-info {
         margin-top: 20px;
       }
     }
@@ -494,6 +555,7 @@
 
       body {
         display: block;
+
         padding-top: 14px;
         padding-bottom: 14px;
       }
@@ -513,8 +575,11 @@
       .icon {
         width: 52px;
         height: 52px;
+
         margin-bottom: 12px;
+
         border-radius: 16px;
+
         font-size: 25px;
       }
 
@@ -536,7 +601,7 @@
         margin-top: 18px;
       }
 
-      .destination {
+      .file-info {
         margin-top: 15px;
       }
 
@@ -575,6 +640,7 @@
         scroll-behavior: auto !important;
       }
     }
+
   </style>
 </head>
 
@@ -586,70 +652,132 @@
       Secure download gateway
     </div>
 
-    <section class="card" aria-live="polite">
+    <section
+      class="card"
+      aria-live="polite"
+    >
 
-      <div class="icon" id="icon">↓</div>
+      <!-- ICON -->
+
+      <div
+        class="icon"
+        id="icon"
+      >
+        ↓
+      </div>
+
+
+      <!-- TITLE -->
 
       <h1 id="title">
         Your download is ready
       </h1>
 
-      <p class="subtitle" id="subtitle">
-        You will be securely redirected to the destination page.
+
+      <!-- DESCRIPTION -->
+
+      <p
+        class="subtitle"
+        id="subtitle"
+      >
+        You will be securely redirected to the download page.
         Please wait a few seconds.
       </p>
 
-      <div class="status" id="status">
+
+      <!-- STATUS -->
+
+      <div
+        class="status"
+        id="status"
+      >
+
         <span class="dot"></span>
+
         <span id="statusText">
           Verifying your link...
         </span>
+
       </div>
+
+
+      <!-- PROGRESS -->
 
       <div class="progress-wrap">
+
         <div
           class="progress"
-          id="progress">
-        </div>
+          id="progress"
+        ></div>
+
       </div>
 
+
+      <!-- META -->
+
       <div class="meta">
+
         <span id="progressText">
           Preparing download
         </span>
 
         <span
           class="count"
-          id="count">
+          id="count"
+        >
           03s
         </span>
+
       </div>
+
+
+      <!-- ACTIONS -->
 
       <div class="actions">
 
         <button
           class="primary"
           id="continueBtn"
-          disabled>
+          disabled
+        >
           Continue now
         </button>
 
         <button
           class="secondary"
-          id="cancelBtn">
+          id="cancelBtn"
+        >
           Cancel
         </button>
 
       </div>
 
-      <div class="destination">
-        <strong>Destination:</strong>
-        <span id="destinationText">
-          https://example.com/download
-        </span>
+
+      <!-- FILE NAME ONLY
+           Destination URL is NOT displayed -->
+
+      <div class="file-info">
+
+        <div class="file-icon">
+          ↓
+        </div>
+
+        <div class="file-details">
+
+          <span class="file-label">
+            File name
+          </span>
+
+          <span class="file-name">
+            Team Elite Star Official App
+          </span>
+
+        </div>
+
       </div>
 
     </section>
+
 
     <div class="footer">
       Your data is not being stored • SSL secured connection
@@ -661,7 +789,7 @@
   <script>
 
     // ==========================================
-    // EASY CONFIGURATION
+    // CONFIGURATION
     // ==========================================
 
     const REDIRECT_URL =
@@ -671,31 +799,37 @@
 
     const AUTO_REDIRECT = true;
 
+
     // ==========================================
-    // CORE
+    // ELEMENT HELPER
     // ==========================================
 
     const $ = (id) =>
       document.getElementById(id);
 
+
+    // ==========================================
+    // STATE
+    // ==========================================
+
     const state = {
-      remaining: COUNTDOWN_SECONDS,
-      cancelled: false,
-      finished: false,
-      timer: null,
-      redirectTimer: null
+
+      remaining:
+        COUNTDOWN_SECONDS,
+
+      cancelled:
+        false,
+
+      finished:
+        false,
+
+      timer:
+        null,
+
+      redirectTimer:
+        null
+
     };
-
-
-    // ==========================================
-    // INITIAL UI
-    // ==========================================
-
-    $("destinationText").textContent =
-      REDIRECT_URL;
-
-    $("count").textContent =
-      String(state.remaining).padStart(2, "0") + "s";
 
 
     // ==========================================
@@ -704,17 +838,17 @@
 
     function goToDestination() {
 
-      if (state.finished && state.cancelled) {
-        // "Continue anyway" explicitly allows redirect
-        state.cancelled = false;
-      }
-
-      if (state.cancelled) return;
-
-      state.finished = true;
-
       clearTimeout(state.timer);
       clearTimeout(state.redirectTimer);
+
+      /*
+        If user cancelled first and then clicks
+        "Continue anyway", allow the redirect.
+      */
+
+      if (state.cancelled) {
+        state.cancelled = false;
+      }
 
       $("statusText").textContent =
         "Redirecting now...";
@@ -722,10 +856,17 @@
       $("progressText").textContent =
         "Complete";
 
+      $("count").textContent =
+        "00s";
+
       $("progress").style.width =
         "100%";
 
-      window.location.assign(REDIRECT_URL);
+      state.finished = true;
+
+      window.location.assign(
+        REDIRECT_URL
+      );
     }
 
 
@@ -735,11 +876,14 @@
 
     function finish() {
 
-      if (state.cancelled) return;
+      if (state.cancelled) {
+        return;
+      }
 
       state.finished = true;
 
-      $("continueBtn").disabled = false;
+      $("continueBtn").disabled =
+        false;
 
       $("statusText").textContent =
         "Ready to continue";
@@ -753,6 +897,7 @@
       $("progress").style.width =
         "100%";
 
+
       if (AUTO_REDIRECT) {
 
         state.redirectTimer =
@@ -760,7 +905,9 @@
             goToDestination,
             450
           );
+
       }
+
     }
 
 
@@ -770,20 +917,26 @@
 
     function tick() {
 
-      if (state.cancelled) return;
+      if (state.cancelled) {
+        return;
+      }
 
       const elapsed =
         COUNTDOWN_SECONDS -
         state.remaining;
+
 
       const percent =
         Math.min(
           100,
           Math.max(
             0,
-            (elapsed / COUNTDOWN_SECONDS) * 100
+            (elapsed /
+              COUNTDOWN_SECONDS) *
+              100
           )
         );
+
 
       $("progress").style.width =
         percent + "%";
@@ -792,15 +945,19 @@
       if (state.remaining <= 0) {
 
         finish();
+
         return;
+
       }
 
 
       state.remaining -= 1;
 
+
       $("count").textContent =
-        String(state.remaining)
-          .padStart(2, "0") + "s";
+        String(
+          state.remaining
+        ).padStart(2, "0") + "s";
 
 
       state.timer =
@@ -808,11 +965,12 @@
           tick,
           1000
         );
+
     }
 
 
     // ==========================================
-    // CONTINUE
+    // CONTINUE BUTTON
     // ==========================================
 
     $("continueBtn")
@@ -823,7 +981,7 @@
 
 
     // ==========================================
-    // CANCEL
+    // CANCEL BUTTON
     // ==========================================
 
     $("cancelBtn")
@@ -831,32 +989,46 @@
         "click",
         () => {
 
-          state.cancelled = true;
+          state.cancelled =
+            true;
 
-          clearTimeout(state.timer);
-          clearTimeout(state.redirectTimer);
+          clearTimeout(
+            state.timer
+          );
+
+          clearTimeout(
+            state.redirectTimer
+          );
+
 
           $("status")
             .classList
             .add("error");
 
+
           $("statusText").textContent =
             "Redirect cancelled";
+
 
           $("progressText").textContent =
             "Cancelled";
 
+
           $("icon").textContent =
             "×";
+
 
           $("progress").style.width =
             "0%";
 
+
           $("continueBtn").disabled =
             false;
 
+
           $("continueBtn").textContent =
             "Continue anyway";
+
         }
       );
 
