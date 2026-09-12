@@ -395,10 +395,6 @@
       box-shadow: none;
     }
 
-    /* FILE INFORMATION
-       Destination URL is intentionally hidden.
-    */
-
     .file-info {
       display: flex;
       align-items: center;
@@ -481,10 +477,6 @@
       color: var(--danger) !important;
     }
 
-    /* =========================
-       MOBILE
-       ========================= */
-
     @media (max-width: 430px) {
 
       body {
@@ -518,9 +510,6 @@
       }
     }
 
-    /* =========================
-       VERY SMALL PHONES
-       ========================= */
 
     @media (max-width: 360px) {
 
@@ -547,9 +536,6 @@
       }
     }
 
-    /* =========================
-       LANDSCAPE MOBILE
-       ========================= */
 
     @media (max-height: 560px) and (orientation: landscape) {
 
@@ -610,9 +596,6 @@
       }
     }
 
-    /* =========================
-       TABLET / DESKTOP
-       ========================= */
 
     @media (min-width: 768px) {
 
@@ -625,9 +608,6 @@
       }
     }
 
-    /* =========================
-       REDUCE MOTION
-       ========================= */
 
     @media (prefers-reduced-motion: reduce) {
 
@@ -657,8 +637,6 @@
       aria-live="polite"
     >
 
-      <!-- ICON -->
-
       <div
         class="icon"
         id="icon"
@@ -667,14 +645,12 @@
       </div>
 
 
-      <!-- TITLE -->
 
       <h1 id="title">
         Your download is ready
       </h1>
 
 
-      <!-- DESCRIPTION -->
 
       <p
         class="subtitle"
@@ -685,7 +661,6 @@
       </p>
 
 
-      <!-- STATUS -->
 
       <div
         class="status"
@@ -701,7 +676,6 @@
       </div>
 
 
-      <!-- PROGRESS -->
 
       <div class="progress-wrap">
 
@@ -713,8 +687,6 @@
       </div>
 
 
-      <!-- META -->
-
       <div class="meta">
 
         <span id="progressText">
@@ -725,13 +697,12 @@
           class="count"
           id="count"
         >
-          03s
+          5s
         </span>
 
       </div>
 
 
-      <!-- ACTIONS -->
 
       <div class="actions">
 
@@ -753,8 +724,6 @@
       </div>
 
 
-      <!-- FILE NAME ONLY
-           Destination URL is NOT displayed -->
 
       <div class="file-info">
 
@@ -788,29 +757,20 @@
 
   <script>
 
-    // ==========================================
-    // CONFIGURATION
-    // ==========================================
 
     const REDIRECT_URL =
       "https://av-f2l-bot.avbotz26.workers.dev/72017?hash=AgADFC";
 
-    const COUNTDOWN_SECONDS = 3;
+    const COUNTDOWN_SECONDS = 5;
 
     const AUTO_REDIRECT = true;
 
 
-    // ==========================================
-    // ELEMENT HELPER
-    // ==========================================
 
     const $ = (id) =>
       document.getElementById(id);
 
 
-    // ==========================================
-    // STATE
-    // ==========================================
 
     const state = {
 
@@ -832,19 +792,12 @@
     };
 
 
-    // ==========================================
-    // REDIRECT
-    // ==========================================
 
     function goToDestination() {
 
       clearTimeout(state.timer);
       clearTimeout(state.redirectTimer);
 
-      /*
-        If user cancelled first and then clicks
-        "Continue anyway", allow the redirect.
-      */
 
       if (state.cancelled) {
         state.cancelled = false;
@@ -870,9 +823,6 @@
     }
 
 
-    // ==========================================
-    // FINISH COUNTDOWN
-    // ==========================================
 
     function finish() {
 
@@ -911,9 +861,6 @@
     }
 
 
-    // ==========================================
-    // COUNTDOWN
-    // ==========================================
 
     function tick() {
 
@@ -969,9 +916,6 @@
     }
 
 
-    // ==========================================
-    // CONTINUE BUTTON
-    // ==========================================
 
     $("continueBtn")
       .addEventListener(
@@ -980,9 +924,6 @@
       );
 
 
-    // ==========================================
-    // CANCEL BUTTON
-    // ==========================================
 
     $("cancelBtn")
       .addEventListener(
@@ -1033,9 +974,6 @@
       );
 
 
-    // ==========================================
-    // START
-    // ==========================================
 
     tick();
 
