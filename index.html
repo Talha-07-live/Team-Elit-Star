@@ -1143,8 +1143,16 @@ const FINE   = window.matchMedia('(pointer:fine)').matches;
   el.innerHTML = txt.split('').map((c,i)=>`<span style="animation-delay:${0.3+i*0.045}s">${c===' '?'&nbsp;':c}</span>`).join('');
 })();
 function hidePreloader(){ const p=document.getElementById('preloader'); if(p) p.classList.add('done'); }
-if(REDUCE){ hidePreloader(); }
-else{ window.addEventListener('load', ()=>setTimeout(hidePreloader,1400)); setTimeout(hidePreloader,3200); }
+if(REDUCE){
+  hidePreloader();
+}else{
+  const PRELOADER_MIN_MS = 3200;
+  const preloaderStartedAt = performance.now();
+  window.addEventListener('load', ()=>{
+    const remaining = Math.max(0, PRELOADER_MIN_MS - (performance.now() - preloaderStartedAt));
+    setTimeout(hidePreloader, remaining);
+  }, {once:true});
+}
  
 (function buildMembers(){
   const grid = document.getElementById('membersGrid'); if(!grid) return;
@@ -1728,15 +1736,6 @@ if(!REDUCE){
 
   const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
   if(isStandalone) document.body.classList.add('standalone-app');
-
-  try{
-    if(sessionStorage.getItem('tes_visited')){
-      const p=document.getElementById('preloader');
-      if(p) requestAnimationFrame(()=>p.classList.add('done'));
-    }else{
-      sessionStorage.setItem('tes_visited','1');
-    }
-  }catch(_){/* Team Elite Star */}
 
   const tabbar=$('#appTabbar');
   if(tabbar){
