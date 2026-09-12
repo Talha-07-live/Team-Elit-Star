@@ -867,6 +867,8 @@
         return;
       }
 
+      state.remaining -= 1;
+
       const elapsed =
         COUNTDOWN_SECONDS -
         state.remaining;
@@ -895,10 +897,6 @@
         return;
 
       }
-
-
-      state.remaining -= 1;
-
 
       $("count").textContent =
         String(
@@ -972,9 +970,10 @@
         }
       );
 
-
-
-    tick();
+    $("progress").style.width = "0%";
+    $("count").textContent =
+      String(COUNTDOWN_SECONDS).padStart(2, "0") + "s";
+    state.timer = setTimeout(tick, 1000);
 
   </script>
 
