@@ -1062,91 +1062,194 @@ const TEAM_LEADER = {
   cubeId: "TL_ALBINA_JSR"
 };
 
-const MEMBERS = [
-  { 
-    dgId: "16546", name: "Suraya", cubeId: "Suraya46_JSR", role: "CSR", rank: "CSR",
-    qa: "Rasel Hossain", trainer: "Reduan Islam", mtdScore: "97.09%", attendance: "100.00%",
-    staffedTime: "9:00:03", prodTime: "7:41:14", breakTime: "1:18:49", aht: "0:02:39",
-    fbBreak: "0:05:08", trBreak: "0:00:00",
+ const teamData = [
+  {
+    dgId: "16546",
+    name: "Suraya",
+    cubeId: "Suraya46_JSR",
+    role: "CSR",
+    rank: "CSR",
+    qa: "Rasel Hossain",
+    trainer: "Reduan Islam",
+    mtdScore: "99.32%",
+    attendance: "100.00%",
+    staffedTime: "9:01:22",
+    prodTime: "8:01:10",
+    breakTime: "1:00:12",
+    aht: "0:03:07",
+    onTimeLogin: "100.00%",
     bio: "Consistent customer support provider with strong compliance and 100% attendance."
   },
-  { 
-    dgId: "17174", name: "Sarmin Sultana Apon", cubeId: "Apon74_JSR", role: "CSR · Our Star", rank: "CSR · Star",
-    qa: "Rasel Hossain", trainer: "Md. Mynul Islam", mtdScore: "98.81%", attendance: "100.00%",
-    staffedTime: "10:08:14", prodTime: "9:10:03", breakTime: "0:58:10", aht: "0:02:43",
-    fbBreak: "0:57:43", trBreak: "3:02:32",
-    bio: "Top performer with excellent 98.81% quality score and over 9 hours avg. daily productivity."
+  {
+    dgId: "17174",
+    name: "Sarmin Sultana Apon",
+    cubeId: "Apon74_JSR",
+    role: "CSR · Our Star",
+    rank: "CSR · Star",
+    qa: "Rasel Hossain",
+    trainer: "Md. Mynul Islam",
+    mtdScore: "99.65%",
+    attendance: "100.00%",
+    staffedTime: "10:33:20",
+    prodTime: "9:35:54",
+    breakTime: "0:57:26",
+    aht: "0:02:45",
+    onTimeLogin: "100.00%",
+    bio: "Top performer with excellent quality performance and over 9 hours average daily productivity."
   },
-  { 
-    dgId: "17916", name: "Md.Sajman Basar", cubeId: "Sajman_JSR", role: "CSR", rank: "CSR",
-    qa: "Rasel Hossain", trainer: "Reduan Islam", mtdScore: "97.91%", attendance: "100.00%",
-    staffedTime: "8:56:55", prodTime: "7:54:50", breakTime: "1:02:05", aht: "0:02:52",
-    fbBreak: "0:48:00", trBreak: "0:00:00",
+  {
+    dgId: "17916",
+    name: "Md.Sajman Basar",
+    cubeId: "Sajman_JSR",
+    role: "CSR",
+    rank: "CSR",
+    qa: "Rasel Hossain",
+    trainer: "Reduan Islam",
+    mtdScore: "93.97%",
+    attendance: "90.00%",
+    staffedTime: "9:01:40",
+    prodTime: "8:05:45",
+    breakTime: "0:55:55",
+    aht: "0:03:15",
+    onTimeLogin: "100.00%",
     bio: "Focused on efficient handling, consistent performance, and delivering quality service with every interaction."
   },
-  { 
-    dgId: "18314", name: "MD.shakibuzzaman shacho", cubeId: "Shacho_JSR", role: "CSR", rank: "CSR",
-    qa: "Rasel Hossain", trainer: "Md. Mynul Islam", mtdScore: "99.20%", attendance: "100.00%",
-    staffedTime: "8:57:50", prodTime: "8:07:30", breakTime: "0:50:19", aht: "0:02:59",
-    fbBreak: "0:33:11", trBreak: "2:10:48",
-    bio: "Outstanding performance featuring a stellar 99.20% quality score and low break durations."
+  {
+    dgId: "18314",
+    name: "MD.shakibuzzaman shacho",
+    cubeId: "Shacho_JSR",
+    role: "CSR",
+    rank: "CSR",
+    qa: "Rasel Hossain",
+    trainer: "Md. Mynul Islam",
+    mtdScore: "97.75%",
+    attendance: "100.00%",
+    staffedTime: "9:00:54",
+    prodTime: "7:59:06",
+    breakTime: "1:01:48",
+    aht: "0:03:03",
+    onTimeLogin: "100.00%",
+    bio: "Outstanding performance featuring strong quality results and consistent daily productivity."
   },
-  { 
-    dgId: "18636", name: "Farjana Yesmin", cubeId: "Farjana36_JSR", role: "CSR", rank: "CSR",
-    qa: "Rasel Hossain", trainer: "Reduan Islam", mtdScore: "98.62%", attendance: "25.00%",
-    staffedTime: "9:00:39", prodTime: "7:55:33", breakTime: "1:05:06", aht: "0:02:35",
-    fbBreak: "0:30:11", trBreak: "0:00:00",
-    bio: "Fast AHT of 2m 35s with impressive 98.62% MTD performance rating."
+  {
+    dgId: "19249",
+    name: "Md. Arifuzzaman",
+    cubeId: "Arifuzzaman_JSR",
+    role: "CSR",
+    rank: "CSR",
+    qa: "Rasel Hossain",
+    trainer: "Reduan Islam",
+    mtdScore: "96.73%",
+    attendance: "90.00%",
+    staffedTime: "8:59:37",
+    prodTime: "7:54:07",
+    breakTime: "1:05:30",
+    aht: "0:02:43",
+    onTimeLogin: "100.00%",
+    bio: "High accuracy and reliable daily productivity with consistent service performance."
   },
-  { 
-    dgId: "19249", name: "Md. Arifuzzaman", cubeId: "Arifuzzaman_JSR", role: "CSR", rank: "CSR",
-    qa: "Rasel Hossain", trainer: "Reduan Islam", mtdScore: "98.92%", attendance: "100.00%",
-    staffedTime: "9:01:52", prodTime: "8:01:27", breakTime: "1:00:25", aht: "0:02:40",
-    fbBreak: "0:27:27", trBreak: "0:00:00",
-    bio: "High accuracy and reliable 8+ hours productivity time with 98.92% MTD score."
+  {
+    dgId: "19266",
+    name: "Shuly Khatun",
+    cubeId: "Shulykhatun_JSR",
+    role: "CSR · Our Star",
+    rank: "CSR · Star",
+    qa: "Rasel Hossain",
+    trainer: "Reduan Islam",
+    mtdScore: "99.80%",
+    attendance: "100.00%",
+    staffedTime: "9:21:01",
+    prodTime: "8:22:47",
+    breakTime: "0:58:14",
+    aht: "0:02:59",
+    onTimeLogin: "100.00%",
+    bio: "Elite squad member boasting an excellent MTD score and swift handling performance."
   },
-  { 
-    dgId: "19266", name: "Shuly Khatun", cubeId: "Shulykhatun_JSR", role: "CSR · Our Star", rank: "CSR · Star",
-    Qa: "Rasel Hossain", trainer: "Reduan Islam", mtdScore: "99.28%", attendance: "100.00%",
-    staffedTime: "9:42:03", prodTime: "8:47:14", breakTime: "0:54:49", aht: "0:02:31",
-    fbBreak: "1:11:59", trBreak: "0:41:06",
-    bio: "Elite squad member boasting an overall 99.28% MTD score and swift 2m 31s AHT."
+  {
+    dgId: "19420",
+    name: "Shekh Afsana mimi",
+    cubeId: "Afsanamimi_JSR",
+    role: "CSR",
+    rank: "CSR",
+    qa: "Rasel Hossain",
+    trainer: "Md. Shahin Akter",
+    mtdScore: "97.87%",
+    attendance: "100.00%",
+    staffedTime: "9:02:52",
+    prodTime: "7:55:14",
+    breakTime: "1:07:38",
+    aht: "0:02:48",
+    onTimeLogin: "100.00%",
+    bio: "Hardworking team member delivering strong staffed time with consistent service quality."
   },
-  { 
-    dgId: "19420", name: "Shekh Afsana mimi", cubeId: "Afsanamimi_JSR", role: "CSR", rank: "CSR",
-    qa: "Rasel Hossain", trainer: "Md. Shahin Akter", mtdScore: "97.20%", attendance: "100.00%",
-    staffedTime: "9:17:29", prodTime: "8:14:41", breakTime: "1:02:49", aht: "0:02:38",
-    fbBreak: "1:38:57", trBreak: "0:46:40",
-    bio: "Hardworking team member delivering over 9 hours staffed time daily with strong focus."
-  },
-  { 
-    dgId: "20071", name: "Abu Talha Raj", cubeId: "Talharaj_JSR", role: "CSR", rank: "CSR",
-    qa: "Rasel Hossain", trainer: "Md. Shahin Akter", mtdScore: "96.06%", attendance: "100.00%",
-    staffedTime: "9:02:01", prodTime: "8:02:32", breakTime: "0:59:28", aht: "0:03:04",
-    fbBreak: "1:13:42", trBreak: "0:11:23",
+  {
+    dgId: "20071",
+    name: "Abu Talha Raj",
+    cubeId: "Talharaj_JSR",
+    role: "CSR",
+    rank: "CSR",
+    qa: "Rasel Hossain",
+    trainer: "Md. Shahin Akter",
+    mtdScore: "99.41%",
+    attendance: "100.00%",
+    staffedTime: "9:02:44",
+    prodTime: "8:00:18",
+    breakTime: "1:02:26",
+    aht: "0:03:20",
+    onTimeLogin: "100.00%",
     bio: "Focused team player driving continuous customer engagement and thorough resolution."
   },
-  { 
-    dgId: "20204", name: "Bijoya Ray", cubeId: "Bijoya_JSR", role: "CSR", rank: "CSR",
-    qa: "Rasel Hossain", trainer: "Md. Shahin Akter", mtdScore: "97.39%", attendance: "100.00%",
-    staffedTime: "9:01:58", prodTime: "8:05:33", breakTime: "0:56:25", aht: "0:03:28",
-    fbBreak: "1:35:21", trBreak: "0:46:42",
-    bio: "Reliable member maintaining stellar attendance and consistent daily productivity."
+  {
+    dgId: "20204",
+    name: "Bijoya Ray",
+    cubeId: "Bijoya_JSR",
+    role: "CSR",
+    rank: "CSR",
+    qa: "Rasel Hossain",
+    trainer: "Md. Shahin Akter",
+    mtdScore: "94.56%",
+    attendance: "88.89%",
+    staffedTime: "8:57:10",
+    prodTime: "7:40:58",
+    breakTime: "1:16:12",
+    aht: "0:02:45",
+    onTimeLogin: "100.00%",
+    bio: "Reliable member maintaining strong customer service performance and consistent productivity."
   },
-  { 
-  dgId: "20370", name: "Mst. Lailatul Nesa", cubeId: "LailatulNesa_JSR", role: "CSR", rank: "CSR",
-  qa: "Rasel Hossain", trainer: "Md. Shahin Akter", mtdScore: "71.43%", attendance: "—",
-  staffedTime: "—", prodTime: "—", breakTime: "—", aht: "—",
-  fbBreak: "—", trBreak: "—",
-  bio: "Team member focused on maintaining consistent customer support performance and service quality."
-},
-{ 
-  dgId: "20373", name: "Rabia Khatun", cubeId: "Rabia_JSR", role: "CSR", rank: "CSR",
-  qa: "Rasel Hossain", trainer: "Md. Shahin Akter", mtdScore: "98.80%", attendance: "—",
-  staffedTime: "—", prodTime: "—", breakTime: "—", aht: "—",
-  fbBreak: "—", trBreak: "—",
-  bio: "Strong-performing team member delivering consistent customer support with an excellent MTD score."
-}
+  {
+    dgId: "20370",
+    name: "Mst. Lailatul Nesa",
+    cubeId: "LailatulNesa_JSR",
+    role: "CSR",
+    rank: "CSR",
+    qa: "Rasel Hossain",
+    trainer: "Md. Shahin Akter",
+    mtdScore: "71.43%",
+    attendance: "100.00%",
+    staffedTime: "8:59:52",
+    prodTime: "8:12:33",
+    breakTime: "0:47:19",
+    aht: "0:05:36",
+    onTimeLogin: "100.00%",
+    bio: "Team member focused on maintaining consistent customer support performance and service quality."
+  },
+  {
+    dgId: "20373",
+    name: "Rabia Khatun",
+    cubeId: "Rabia_JSR",
+    role: "CSR",
+    rank: "CSR",
+    qa: "Rasel Hossain",
+    trainer: "Md. Shahin Akter",
+    mtdScore: "98.80%",
+    attendance: "100.00%",
+    staffedTime: "9:02:07",
+    prodTime: "7:59:16",
+    breakTime: "1:02:51",
+    aht: "0:02:56",
+    onTimeLogin: "100.00%",
+    bio: "Strong-performing team member delivering consistent customer support with excellent MTD performance."
+  }
 ];
  
 const REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
