@@ -2330,15 +2330,17 @@ if(!REDUCE){
 </script>
 
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./team-elite-star-supabase-config.js"></script><script>window.TEAM_ELITE_SUPABASE=window.TEAM_ELITE_SUPABASE_CONFIG||{url:"YOUR_SUPABASE_PROJECT_URL",key:"YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY"};</script>
 <script id="report-sections-script">
 (()=>{
   const $=s=>document.querySelector(s);
   const $$=s=>[...document.querySelectorAll(s)];
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const archive=[{
+  let archive=[{
     id:'19249',name:'Md. Arifuzzaman',location:'Jashore',cube:'Arifuzzaman_JSR',role:'CSR',qa:'Rasel Hossain',trainer:'Reduan Islam',quality:'96.73%',attendance:'90.00%',staffed:'8:59:37',productive:'7:54:07',breakTime:'1:05:30',aht:'0:02:43',onTimeLogin:'100.00%',note:'Archived roster entry from the previous website version.'
   }];
-  const srRows=[
+  let srRows=[
     {id:'20429',name:'Mahfuja Alam Joty',location:'Jashore',right:2,wrong:3,accuracy:40.00},
     {id:'20414',name:'Aysha Sidika Tisha',location:'Jashore',right:5,wrong:1,accuracy:83.33},
     {id:'17916',name:'Md.Sajman Basar',location:'Jashore',right:6,wrong:1,accuracy:85.71},
@@ -2352,7 +2354,7 @@ if(!REDUCE){
     {id:'16546',name:'Suraya',location:'Jashore',right:22,wrong:0,accuracy:100.00},
     {id:'19420',name:'Shekh Afsana mimi',location:'Jashore',right:22,wrong:0,accuracy:100.00}
   ];
-  const callRows=[
+  let callRows=[
     {service:'••••••3389',caller:'••••••3389',category:'Bill Pay Dispute General',date:'2-Oct-26',id:'18314',name:'MD.shakibuzzaman shacho',status:'Wrong',remarks:'Wrong nagad account number.'},
     {service:'••••••5003',caller:'••••••5003',category:'Merchant Pay Dispute General',date:'3-Oct-26',id:'19266',name:'Shuly Khatun',status:'Wrong',remarks:'Did not provide actual problem details.'},
     {service:'••••••2079',caller:'••••••5382',category:'Bill Pay Dispute General',date:'4-Oct-26',id:'20204',name:'Bijoya Ray',status:'Wrong',remarks:'Unnecessary (Biller Account Number or Customer Number).'},
@@ -2411,6 +2413,36 @@ if(!REDUCE){
   $('#exportCallData')?.addEventListener('click',()=>exportCsv('team-elite-star-call-data.csv',['Service Mobile No. (masked)','Caller Mobile No. (masked)','Sub Service Category','Date','ID','Name','Training Status','Training Remarks'],callRows.map(r=>[r.service,r.caller,r.category,r.date,r.id,r.name,r.status,r.remarks])));
   $$('[data-nav-target]').forEach(b=>b.addEventListener('click',()=>{const target=$(b.dataset.navTarget);if(target){target.scrollIntoView({behavior:'smooth',block:'start'});$('#actionSheet')?.classList.remove('open');$('#sheetBackdrop')?.classList.remove('open');$('#actionSheet')?.setAttribute('aria-hidden','true');$('#moreTabBtn')?.setAttribute('aria-expanded','false')}}));
   renderArchive();renderSr();renderCalls();
+
+  function reportDateLabel(value){
+    if(!value)return '';
+    const m=String(value).match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if(!m)return String(value);
+    const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return `${Number(m[3])}-${months[Number(m[2])-1]}-${m[1].slice(2)}`;
+  }
+  async function syncReportDataFromDatabase(){
+    const cfg=window.TEAM_ELITE_SUPABASE;
+    if(!cfg||!cfg.url||cfg.url.includes('YOUR_SUPABASE')||!cfg.key||cfg.key.includes('YOUR_SUPABASE')||!window.supabase)return;
+    const client=window.supabase.createClient(cfg.url,cfg.key);
+    const [p,s,c]=await Promise.all([
+      client.from('previous_members').select('*').order('archived_date',{ascending:false}),
+      client.from('sr_records').select('*').order('accuracy',{ascending:true}),
+      client.from('call_records').select('*').order('call_date',{ascending:true})
+    ]);
+    if(p.error)throw p.error;if(s.error)throw s.error;if(c.error)throw c.error;
+    archive=(p.data||[]).map(r=>({id:r.agent_id||'',name:r.name||'',location:r.location||'',cube:r.cube_id||'',role:r.role||'CSR',qa:r.qa||'',trainer:r.trainer||'',quality:r.quality==null?'—':Number(r.quality).toFixed(2)+'%',attendance:r.attendance==null?'—':Number(r.attendance).toFixed(2)+'%',staffed:r.staffed_time||'—',productive:r.productive_time||'—',breakTime:r.break_time||'—',aht:r.aht||'—',onTimeLogin:r.on_time_login==null?'—':Number(r.on_time_login).toFixed(2)+'%',note:r.notes||'Archived member record.',archivedDate:r.archived_date||''}));
+    srRows=(s.data||[]).map(r=>({id:r.agent_id||'',name:r.agent_name||'',location:r.location||'',right:Number(r.right_count)||0,wrong:Number(r.wrong_count)||0,accuracy:Number(r.accuracy)||0,reportDate:r.report_date||''}));
+    callRows=(c.data||[]).map(r=>({service:r.service_mobile_masked||'••••••',caller:r.caller_mobile_masked||'••••••',category:r.category||'',date:reportDateLabel(r.call_date),id:r.agent_id||'',name:r.agent_name||'',status:r.training_status||'Unknown',remarks:r.training_remarks||''}));
+    renderArchive();renderSr();renderCalls();
+    const prevNote=document.querySelector('#previous-members .report-panel > .report-note');
+    if(prevNote)prevNote.textContent='Archived profiles are loaded from the protected Team Elite Star database.';
+    const srNote=document.querySelector('#sr-data .report-panel > .report-note');
+    if(srNote)srNote.textContent='Values are loaded from the Team Elite Star report database. Accuracy is calculated from the stored right/wrong counts when a report is imported.';
+    const callNote=document.querySelector('#call-data .report-panel > .report-note');
+    if(callNote)callNote.textContent='Call-training records are loaded from the database. Service and caller numbers are stored in masked form only.';
+  }
+  syncReportDataFromDatabase().catch(err=>console.warn('Team Elite Star report sync unavailable; showing embedded report data.',err));
 })();
 </script>
 

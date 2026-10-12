@@ -1,0 +1,1184 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#08070C">
+<meta name="color-scheme" content="dark">
+<title>Team Elite Star — Super Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./team-elite-star-supabase-config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<style>
+:root{
+  color-scheme:dark;
+  --bg:#07060a;
+  --bg2:#0b0a10;
+  --panel:#111016;
+  --panel2:#17151d;
+  --panel3:#1c1922;
+  --gold:#e8c36b;
+  --gold2:#fce7b8;
+  --gold3:#b8912e;
+  --text:#f3ecdc;
+  --muted:#948e82;
+  --line:rgba(232,195,107,.18);
+  --line2:rgba(232,195,107,.38);
+  --danger:#ff6f78;
+  --success:#83e3ae;
+  --info:#7fc9ff;
+  --shadow:0 35px 90px -55px rgba(232,195,107,.32);
+  --sans:"Inter",system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  --util:"Space Grotesk",ui-monospace,monospace;
+  --serif:"Cormorant Garamond",Georgia,serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(1000px 600px at 80% -5%,rgba(232,195,107,.09),transparent 65%),linear-gradient(180deg,var(--bg),var(--bg2) 60%,var(--bg));color:var(--text);font:400 14px/1.55 var(--sans)}
+button,input,textarea,select{font:inherit}
+button{touch-action:manipulation}
+.hidden{display:none!important}
+.screen{min-height:100svh}
+#loginScreen{display:grid;place-items:center;padding:28px}
+.login-card{width:min(470px,100%);padding:34px;border:1px solid var(--line2);border-radius:18px;background:linear-gradient(155deg,rgba(27,25,33,.96),rgba(9,8,12,.98));box-shadow:0 45px 120px -55px #000,var(--shadow)}
+.brand{display:flex;align-items:center;gap:12px}
+.brand-mark{width:42px;height:42px;background:linear-gradient(145deg,var(--gold2),var(--gold3));clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);flex:0 0 auto}
+.brand-text b{display:block;font:700 1.5rem var(--serif)}
+.brand-text span{display:block;color:var(--gold);font:600 .63rem var(--util);letter-spacing:.18em;text-transform:uppercase}
+.login-head{margin:34px 0 24px}
+.eyebrow{font:600 .63rem var(--util);letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+.login-head h1{font:600 clamp(2rem,7vw,3.1rem) var(--serif);line-height:1;margin:.45rem 0 0}
+.login-head p{margin:.8rem 0 0;color:var(--muted)}
+.field{display:grid;gap:7px;margin-bottom:14px}
+.field label{font:600 .63rem var(--util);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.field input,.field select,.field textarea{width:100%;border:1px solid var(--line);background:rgba(255,255,255,.025);color:var(--text);outline:none;border-radius:8px;padding:12px 13px;transition:.22s ease}
+.field textarea{min-height:104px;resize:vertical}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(232,195,107,.08)}
+.password-wrap{position:relative}
+.password-wrap input{padding-right:82px}
+.pass-toggle{position:absolute;right:7px;top:7px;height:34px;padding:0 10px;border:1px solid var(--line);border-radius:6px;background:rgba(232,195,107,.05);color:var(--muted);cursor:pointer;font:600 .6rem var(--util)}
+.btn{border:1px solid transparent;background:none;color:var(--text);border-radius:8px;padding:11px 15px;cursor:pointer;transition:.22s ease;font:600 .67rem var(--util);letter-spacing:.08em;text-transform:uppercase;display:inline-flex;align-items:center;justify-content:center;gap:8px}
+.btn-primary{background:linear-gradient(180deg,var(--gold2),var(--gold) 55%,var(--gold3));color:#1a1508;box-shadow:0 14px 30px -18px rgba(232,195,107,.6)}
+.btn-ghost{border-color:var(--line);background:rgba(255,255,255,.02)}
+.btn-ghost:hover{border-color:var(--line2);color:var(--gold);background:rgba(232,195,107,.05)}
+.btn-danger{border-color:rgba(255,111,120,.3);color:#ff9ba1;background:rgba(255,111,120,.06)}
+.btn-success{border-color:rgba(131,227,174,.25);color:var(--success);background:rgba(131,227,174,.05)}
+.btn-sm{padding:8px 10px;font-size:.6rem;border-radius:6px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.login-note{margin-top:16px;padding:11px 12px;border:1px dashed var(--line);border-radius:8px;color:var(--muted);font-size:.76rem}
+.alert{padding:11px 12px;border-radius:8px;margin:10px 0;border:1px solid rgba(255,111,120,.3);background:rgba(255,111,120,.06);color:#ffb1b5;font-size:.78rem}
+#adminApp{display:none;min-height:100svh}
+#adminApp.ready{display:flex}
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:250px;border-right:1px solid var(--line);background:rgba(10,9,14,.92);backdrop-filter:blur(20px);padding:20px 14px;z-index:40}
+.side-brand{padding:6px 10px 22px;border-bottom:1px solid var(--line);margin-bottom:14px}
+.side-nav{display:grid;gap:6px}
+.nav-btn{width:100%;border:1px solid transparent;background:none;color:var(--muted);text-align:left;border-radius:8px;padding:11px 12px;cursor:pointer;display:flex;align-items:center;gap:11px;font:600 .68rem var(--util);letter-spacing:.07em;text-transform:uppercase}
+.nav-btn:hover,.nav-btn.active{color:var(--gold);border-color:var(--line);background:rgba(232,195,107,.055)}
+.nav-icon{width:22px;text-align:center;font-size:1rem}
+.side-foot{position:absolute;left:14px;right:14px;bottom:18px;padding:12px;border-top:1px solid var(--line);color:var(--muted);font-size:.72rem}
+.side-user{color:var(--text);font-weight:600;word-break:break-word}
+.main{margin-left:250px;min-width:0;width:calc(100% - 250px)}
+.topbar{height:74px;position:sticky;top:0;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:14px;padding:0 25px;border-bottom:1px solid var(--line);background:rgba(7,6,10,.82);backdrop-filter:blur(18px)}
+.top-title{min-width:0}
+.top-title strong{display:block;font:600 1.28rem var(--serif)}
+.top-title span{display:block;color:var(--muted);font:.58rem var(--util);letter-spacing:.14em;text-transform:uppercase}
+.top-actions{display:flex;align-items:center;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+.content{padding:25px;max-width:1700px;margin:0 auto}
+.view{display:none}
+.view.active{display:block}
+.page-head{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;margin-bottom:18px;flex-wrap:wrap}
+.page-head h2{margin:0;font:600 clamp(1.8rem,4vw,2.7rem) var(--serif)}
+.page-head p{margin:5px 0 0;color:var(--muted)}
+.page-actions{display:flex;gap:7px;flex-wrap:wrap}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px}
+.kpi{border:1px solid var(--line);background:linear-gradient(180deg,rgba(27,26,34,.88),rgba(8,7,12,.92));border-radius:12px;padding:16px;box-shadow:0 22px 55px -48px #000}
+.kpi-label{font:600 .59rem var(--util);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.kpi-value{font:600 clamp(1.5rem,4vw,2.3rem) var(--serif);margin-top:3px}
+.kpi-sub{font-size:.68rem;color:var(--gold);margin-top:4px}
+.grid-2{display:grid;grid-template-columns:1.2fr .8fr;gap:12px}
+.panel{border:1px solid var(--line);background:linear-gradient(180deg,rgba(18,17,23,.95),rgba(10,9,14,.95));border-radius:12px;overflow:hidden}
+.panel-head{padding:14px 15px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;gap:10px}
+.panel-title{font:600 .69rem var(--util);letter-spacing:.13em;text-transform:uppercase;color:var(--gold)}
+.panel-body{padding:15px}
+.stat-list{display:grid;gap:8px}
+.stat-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 11px;border:1px solid var(--line);border-radius:7px;background:rgba(255,255,255,.018)}
+.stat-row span{color:var(--muted);font-size:.76rem}
+.stat-row b{font:600 .74rem var(--util)}
+.toolbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.search{flex:1;min-width:220px}
+.search input{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:8px;background:rgba(0,0,0,.18);color:var(--text);outline:none}
+.search input:focus{border-color:var(--gold)}
+.table-wrap{overflow:auto;border-top:1px solid var(--line)}
+.table{width:100%;border-collapse:collapse;min-width:930px}
+.table th,.table td{padding:11px 12px;text-align:left;border-bottom:1px solid rgba(232,195,107,.08);vertical-align:middle}
+.table th{font:600 .59rem var(--util);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);position:sticky;top:0;background:#111016}
+.table td{font-size:.76rem}
+.table tr:hover td{background:rgba(232,195,107,.025)}
+.badge{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:999px;padding:4px 7px;font:600 .57rem var(--util);text-transform:uppercase;color:var(--muted)}
+.badge.success{color:var(--success);border-color:rgba(131,227,174,.25);background:rgba(131,227,174,.045)}
+.badge.warn{color:var(--gold);border-color:var(--line2);background:rgba(232,195,107,.05)}
+.badge.danger{color:#ff9ba1;border-color:rgba(255,111,120,.25);background:rgba(255,111,120,.045)}
+.actions{display:flex;gap:5px;flex-wrap:wrap}
+.empty{padding:45px 20px;text-align:center;color:var(--muted)}
+.modal{position:fixed;inset:0;z-index:100;display:none;place-items:center;padding:18px;background:rgba(0,0,0,.72);backdrop-filter:blur(10px)}
+.modal.open{display:grid}
+.modal-card{width:min(780px,100%);max-height:92svh;overflow:auto;border:1px solid var(--line2);border-radius:14px;background:linear-gradient(155deg,#1a1820,#09080d);box-shadow:0 45px 120px -45px #000}
+.modal-head{position:sticky;top:0;z-index:2;display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:18px 20px;border-bottom:1px solid var(--line);background:rgba(10,9,14,.92);backdrop-filter:blur(16px)}
+.modal-head h3{margin:0;font:600 1.55rem var(--serif)}
+.modal-head p{margin:3px 0 0;color:var(--muted);font-size:.76rem}
+.modal-close{width:35px;height:35px;border:1px solid var(--line);background:none;color:var(--muted);border-radius:50%;cursor:pointer}
+.form-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;padding:18px 20px}
+.span-2{grid-column:1/-1}
+.check{display:flex;align-items:center;gap:9px;color:var(--muted);font-size:.76rem}
+.check input{width:18px;height:18px;accent-color:var(--gold)}
+.modal-foot{display:flex;justify-content:flex-end;gap:7px;padding:14px 20px;border-top:1px solid var(--line);position:sticky;bottom:0;background:rgba(10,9,14,.94);backdrop-filter:blur(16px)}
+.toast{position:fixed;right:18px;bottom:18px;z-index:200;min-width:240px;max-width:390px;padding:12px 14px;border:1px solid var(--line2);border-radius:9px;background:rgba(17,16,22,.96);box-shadow:0 22px 60px -30px #000;transform:translateY(20px);opacity:0;pointer-events:none;transition:.25s ease}
+.toast.show{transform:none;opacity:1}
+.toast.success{border-color:rgba(131,227,174,.3)}
+.toast.error{border-color:rgba(255,111,120,.3)}
+.toast-title{font:600 .64rem var(--util);letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+.toast-msg{font-size:.76rem;color:var(--text);margin-top:3px}
+.profile-line{display:flex;align-items:center;gap:10px}
+.avatar{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;border:1px solid var(--line2);background:radial-gradient(circle,#30291d,#131018);color:var(--gold2);font:600 .76rem var(--serif)}
+.small-muted{font-size:.65rem;color:var(--muted)}
+.info-box{padding:12px 13px;border:1px dashed var(--line);border-radius:8px;color:var(--muted);font-size:.74rem;background:rgba(255,255,255,.012)}
+.danger-box{padding:14px;border:1px solid rgba(255,111,120,.24);border-radius:10px;background:rgba(255,111,120,.035)}
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.audit-json{max-width:370px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--muted);font-family:var(--util);font-size:.62rem}
+.mobile-menu{display:none}
+@media(max-width:1100px){
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  .grid-2{grid-template-columns:1fr}
+}
+@media(max-width:860px){
+  .sidebar{transform:translateX(-101%);transition:.25s ease;box-shadow:25px 0 60px -40px #000}
+  .sidebar.open{transform:none}
+  .main{margin-left:0;width:100%}
+  .mobile-menu{display:inline-flex}
+  .topbar{padding:0 15px}
+  .content{padding:18px 14px}
+}
+@media(max-width:560px){
+  .kpi-grid{grid-template-columns:1fr 1fr;gap:7px}
+  .kpi{padding:12px}
+  .top-title{display:none}
+  .top-actions{width:100%}
+  .top-actions .btn{flex:1}
+  .form-grid,.settings-grid{grid-template-columns:1fr}
+  .span-2{grid-column:auto}
+  .page-head{align-items:flex-start}
+  .toolbar .btn{flex:1}
+}
+</style>
+
+<style id="auto-import-admin-css">
+.dropzone{border:1px dashed var(--line2);border-radius:14px;padding:28px 18px;text-align:center;background:radial-gradient(600px 200px at 50% 0%,rgba(232,195,107,.08),transparent 70%),rgba(255,255,255,.012);cursor:pointer;transition:.2s ease}
+.dropzone:hover,.dropzone.dragover{border-color:var(--gold);background:rgba(232,195,107,.06)}
+.drop-icon{font-size:2rem;color:var(--gold);line-height:1.3}.drop-title{font:600 1.3rem var(--serif);margin:6px 0}.drop-sub{color:var(--muted);font-size:.76rem}.import-options{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:14px 0}.progress-shell{height:7px;border-radius:99px;background:#24212a;overflow:hidden;margin:10px 0}.progress-shell progress{width:100%;height:100%;display:block;appearance:none;border:0;background:transparent}.progress-shell progress::-webkit-progress-bar{background:#24212a}.progress-shell progress::-webkit-progress-value{background:linear-gradient(90deg,var(--gold3),var(--gold2));transition:width .2s ease}.progress-shell progress::-moz-progress-bar{background:linear-gradient(90deg,var(--gold3),var(--gold2))}.import-status{color:var(--muted);font-size:.75rem;min-height:20px}.preview-group{margin-top:16px}.preview-title{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--line);font:600 .65rem var(--util);letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}.preview-wrap{overflow:auto}.preview-table{border-collapse:collapse;width:100%;min-width:850px}.preview-table th,.preview-table td{border-bottom:1px solid rgba(232,195,107,.1);padding:7px;text-align:left;vertical-align:top}.preview-table th{font:600 .55rem var(--util);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:#111016;position:sticky;top:0}.preview-table input,.preview-table textarea{width:100%;min-width:90px;border:1px solid var(--line);border-radius:5px;background:rgba(0,0,0,.2);color:var(--text);padding:7px;font-size:.7rem;outline:none}.preview-table textarea{min-width:180px;min-height:44px;resize:vertical}.preview-table input:focus,.preview-table textarea:focus{border-color:var(--gold)}.preview-table .source-cell{min-width:125px;color:var(--muted);font-size:.65rem;overflow-wrap:anywhere}.ocr-note{font-size:.75rem;color:var(--muted);line-height:1.7}.ocr-note b{color:var(--gold)}.record-edit-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:18px 20px}.record-edit-grid .field.wide{grid-column:1/-1}.record-table td{white-space:normal}.record-table .record-long{min-width:240px;max-width:420px}.record-table .record-actions{min-width:140px}@media(max-width:700px){.import-options,.record-edit-grid{grid-template-columns:1fr}.record-edit-grid .field.wide{grid-column:auto}.dropzone{padding:24px 12px}}
+</style>
+
+</head>
+<body>
+<section id="loginScreen" class="screen">
+  <div class="login-card">
+    <div class="brand">
+      <div class="brand-mark"></div>
+      <div class="brand-text">
+        <b>Team Elite Star</b>
+        <span>Super Admin Console</span>
+      </div>
+    </div>
+    <div class="login-head">
+      <div class="eyebrow">Restricted Access</div>
+      <h1>Command the team.</h1>
+      <p>Supabase Auth + database-level role enforcement for your admin workspace.</p>
+    </div>
+    <div id="loginAlert" class="alert hidden"></div>
+    <form id="loginForm">
+      <div class="field">
+        <label>Email</label>
+        <input id="loginEmail" type="email" autocomplete="username" required placeholder="admin@example.com">
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <div class="password-wrap">
+          <input id="loginPassword" type="password" autocomplete="current-password" required placeholder="••••••••">
+          <button id="togglePassword" class="pass-toggle" type="button">SHOW</button>
+        </div>
+      </div>
+      <button id="loginBtn" class="btn btn-primary" style="width:100%" type="submit">Enter Super Admin</button>
+    </form>
+    <div class="login-note">This panel must use your Supabase project URL and publishable/anon key. Never place a Supabase service-role or secret key in this file.</div>
+  </div>
+</section>
+
+<div id="adminApp">
+  <aside id="sidebar" class="sidebar">
+    <div class="side-brand">
+      <div class="brand">
+        <div class="brand-mark" style="width:34px;height:34px"></div>
+        <div class="brand-text">
+          <b style="font-size:1.25rem">Elite Star</b>
+          <span>Admin Command</span>
+        </div>
+      </div>
+    </div>
+    <nav class="side-nav">
+      <button class="nav-btn active" data-view="dashboard"><span class="nav-icon">◈</span>Dashboard</button>
+      <button class="nav-btn" data-view="agents"><span class="nav-icon">♙</span>Agents</button>
+      <button class="nav-btn" data-view="cards"><span class="nav-icon">▣</span>Test Cards</button>
+      <button class="nav-btn" data-view="import"><span class="nav-icon">▧</span>Image Import</button>
+      <button class="nav-btn" data-view="previous"><span class="nav-icon">◷</span>Previous Members</button>
+      <button class="nav-btn" data-view="sr"><span class="nav-icon">▤</span>SR Data</button>
+      <button class="nav-btn" data-view="calls"><span class="nav-icon">☎</span>Call Data</button>
+      <button class="nav-btn" data-view="settings"><span class="nav-icon">⚙</span>Settings</button>
+      <button class="nav-btn" data-view="audit"><span class="nav-icon">◌</span>Audit Log</button>
+    </nav>
+    <div class="side-foot">
+      <div class="small-muted">SIGNED IN AS</div>
+      <div id="sideUser" class="side-user">—</div>
+      <div class="small-muted" style="margin-top:7px">ROLE: SUPER ADMIN</div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div class="top-title">
+        <strong>Super Admin Control</strong>
+        <span id="topStatus">Database ready</span>
+      </div>
+      <div class="top-actions">
+        <button id="mobileMenu" class="btn btn-ghost mobile-menu" type="button">MENU</button>
+        <button id="refreshBtn" class="btn btn-ghost" type="button">↻ Refresh</button>
+        <button id="backupBtn" class="btn btn-ghost" type="button">↓ Backup JSON</button>
+        <button id="logoutBtn" class="btn btn-danger" type="button">Logout</button>
+      </div>
+    </header>
+
+    <div class="content">
+      <section id="view-dashboard" class="view active">
+        <div class="page-head">
+          <div><div class="eyebrow">Command Center</div><h2>Everything under control.</h2><p>Live database overview for Team Elite Star.</p></div>
+          <div class="page-actions"><button class="btn btn-primary" data-jump="agents">+ Add Agent</button><button class="btn btn-ghost" data-jump="cards">+ Add Test Card</button></div>
+        </div>
+        <div class="kpi-grid">
+          <div class="kpi"><div class="kpi-label">Total Agents</div><div id="kAgents" class="kpi-value">0</div><div id="kAgentsSub" class="kpi-sub">0 active</div></div>
+          <div class="kpi"><div class="kpi-label">Test Cards</div><div id="kCards" class="kpi-value">0</div><div id="kCardsSub" class="kpi-sub">0 active</div></div>
+          <div class="kpi"><div class="kpi-label">Average Quality</div><div id="kQuality" class="kpi-value">0%</div><div class="kpi-sub">MTD team score</div></div>
+          <div class="kpi"><div class="kpi-label">Perfect Attendance</div><div id="kAttendance" class="kpi-value">0%</div><div class="kpi-sub">active agent rate</div></div>
+        </div>
+        <div class="grid-2">
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">Top Quality</div><span class="badge success">LIVE</span></div>
+            <div class="panel-body"><div id="topAgents" class="stat-list"></div></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><div class="panel-title">System State</div><span class="badge warn">SUPABASE</span></div>
+            <div class="panel-body">
+              <div class="stat-list">
+                <div class="stat-row"><span>Authenticated session</span><b id="sessionState">—</b></div>
+                <div class="stat-row"><span>Public agents visible</span><b id="publicAgents">—</b></div>
+                <div class="stat-row"><span>Last refresh</span><b id="lastRefresh">—</b></div>
+                <div class="stat-row"><span>Database role</span><b>SUPER ADMIN</b></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-agents" class="view">
+        <div class="page-head">
+          <div><div class="eyebrow">People</div><h2>Agent Management.</h2><p>Add, edit, activate, deactivate or remove any team member.</p></div>
+          <div class="page-actions"><button id="addAgentBtn" class="btn btn-primary" type="button">+ Add Agent</button><button id="exportAgentsBtn" class="btn btn-ghost" type="button">Export CSV</button></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">All Agents</div><span id="agentCountBadge" class="badge">0</span></div>
+          <div class="panel-body">
+            <div class="toolbar"><div class="search"><input id="agentSearch" placeholder="Search name, DG ID, Cube ID, trainer, role..."></div><button id="agentActiveFilter" class="btn btn-ghost btn-sm" type="button">ALL STATUS</button></div>
+            <div class="table-wrap"><table class="table"><thead><tr><th>Agent</th><th>Role</th><th>DG / Cube</th><th>Quality</th><th>AHT</th><th>Attendance</th><th>State</th><th>Actions</th></tr></thead><tbody id="agentsBody"></tbody></table></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-cards" class="view">
+        <div class="page-head">
+          <div><div class="eyebrow">QA Lab</div><h2>Test Card Control.</h2><p>Manage safe test-card metadata, assignments and QA scenarios.</p></div>
+          <div class="page-actions"><button id="addCardBtn" class="btn btn-primary" type="button">+ Add Test Card</button><button id="exportCardsBtn" class="btn btn-ghost" type="button">Export CSV</button></div>
+        </div>
+        <div class="info-box" style="margin-bottom:12px">Only masked/tokenized test-card metadata is supported here. Do not store full PANs or CVVs in Supabase or this admin panel.</div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">All Test Cards</div><span id="cardCountBadge" class="badge">0</span></div>
+          <div class="panel-body">
+            <div class="toolbar"><div class="search"><input id="cardSearch" placeholder="Search label, provider, scenario, last4, reference..."></div><button id="cardStatusFilter" class="btn btn-ghost btn-sm" type="button">ALL STATUS</button></div>
+            <div class="table-wrap"><table class="table"><thead><tr><th>Card</th><th>Provider</th><th>Scenario</th><th>Masked</th><th>Expiry</th><th>Agent</th><th>Status</th><th>Actions</th></tr></thead><tbody id="cardsBody"></tbody></table></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="view-settings" class="view">
+        <div class="page-head">
+          <div><div class="eyebrow">Configuration</div><h2>Site Settings.</h2><p>Control the public Team Elite Star presentation from the database.</p></div>
+          <div class="page-actions"><button id="saveSettingsBtn" class="btn btn-primary" type="button">Save Settings</button></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Public Content</div><span class="badge success">DATABASE CONTROLLED</span></div>
+          <div class="panel-body">
+            <div class="settings-grid">
+              <div class="field"><label>Site Name</label><input id="set_site_name"></div>
+              <div class="field"><label>Tagline</label><input id="set_tagline"></div>
+              <div class="field"><label>Team Leader</label><input id="set_team_leader"></div>
+              <div class="field"><label>QA Manager</label><input id="set_qa_manager"></div>
+              <div class="field span-2"><label>Hero Description</label><textarea id="set_hero_description"></textarea></div>
+              <div class="field span-2"><label>About Description</label><textarea id="set_about_description"></textarea></div>
+              <div class="field span-2"><label>Announcement / Marquee</label><textarea id="set_announcement"></textarea></div>
+              <div class="field span-2"><label>Footer Text</label><input id="set_footer_text"></div>
+              <div class="field"><label>Maintenance Mode</label><label class="check"><input id="set_maintenance" type="checkbox"> Temporarily hide public content</label></div>
+              <div class="field"><label>Public Notice</label><input id="set_public_notice"></div>
+            </div>
+          </div>
+        </div>
+        <div class="danger-box" style="margin-top:12px">
+          <strong style="display:block;color:#ffb1b5;font-family:var(--serif);font-size:1.1rem">Danger Zone</strong>
+          <span style="display:block;color:var(--muted);font-size:.75rem;margin:.3rem 0 .7rem">Destructive database operations are intentionally not exposed in the browser. Use the Supabase dashboard or SQL migrations for emergency resets.</span>
+        </div>
+      </section>
+
+      <section id="view-audit" class="view">
+        <div class="page-head">
+          <div><div class="eyebrow">Security</div><h2>Audit Trail.</h2><p>Database-side change history for agents, cards and settings.</p></div>
+          <div class="page-actions"><button id="refreshAuditBtn" class="btn btn-ghost" type="button">↻ Refresh Audit</button></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Recent Activity</div><span class="badge">LAST 200</span></div>
+          <div class="table-wrap"><table class="table"><thead><tr><th>Time</th><th>Action</th><th>Entity</th><th>Actor</th><th>Changes</th></tr></thead><tbody id="auditBody"></tbody></table></div>
+        </div>
+      </section>
+
+      <section id="view-import" class="view">
+        <div class="page-head">
+          <div><div class="eyebrow">Auto Import Engine</div><h2>Upload a picture. Extract the table.</h2><p>Images are OCR-scanned in your browser; detected rows are previewed before being saved to Supabase.</p></div>
+        </div>
+        <div class="panel">
+          <div class="panel-head"><div class="panel-title">Screenshot Import</div><span class="badge warn">OCR + REVIEW</span></div>
+          <div class="panel-body">
+            <input id="importFiles" type="file" accept="image/*" multiple hidden>
+            <div id="dropZone" class="dropzone" role="button" tabindex="0" aria-label="Choose images to import">
+              <div class="drop-icon">⇧</div><div class="drop-title">Drop report screenshots here</div>
+              <div class="drop-sub">or click to choose one or multiple JPG, PNG or WebP images</div>
+              <div id="selectedFilesLabel" class="small-muted" style="margin-top:10px">No images selected</div>
+            </div>
+            <div class="import-options">
+              <div class="field"><label>Table Type</label><select id="importType"><option value="auto">Auto-detect from image</option><option value="previous_members">Previous Members</option><option value="sr_records">SR Data</option><option value="call_records">Call Data</option></select></div>
+              <div class="field"><label>Report / Archive Date (optional)</label><input id="importReportDate" type="date"></div>
+              <div class="field"><label>OCR Language</label><input value="English (table labels + names)" disabled></div>
+            </div>
+            <div class="toolbar"><button id="processImagesBtn" class="btn btn-primary" type="button" disabled>◎ Detect & Extract</button><button id="clearImportBtn" class="btn btn-ghost" type="button">Clear</button><button id="saveImportBtn" class="btn btn-success" type="button" disabled>Save All Rows to Database</button></div>
+            <div class="progress-shell"><progress id="ocrProgress" max="100" value="0"></progress></div>
+            <div id="ocrStatus" class="import-status" aria-live="polite">Choose screenshots to start.</div>
+            <div class="info-box ocr-note" style="margin-top:12px"><b>How it works:</b> the panel recognises SR / call / previous-member reports, maps table columns and lets you correct OCR output. Saving happens only after you review the preview. Original screenshots are not uploaded or stored; only extracted fields and the source filename are saved. Call/customer phone numbers are masked before database insertion.</div>
+            <details style="margin-top:14px"><summary style="cursor:pointer;color:var(--muted);font-size:.75rem">Show raw OCR text (for troubleshooting)</summary><textarea id="ocrRaw" rows="8" style="width:100%;margin-top:8px;border:1px solid var(--line);border-radius:8px;background:#08070c;color:var(--text);padding:12px;font-size:.72rem" readonly></textarea></details>
+          </div>
+        </div>
+        <div id="importPreview" class="panel" style="margin-top:14px"><div class="panel-head"><div class="panel-title">Extracted Row Preview</div><span id="importRowCount" class="badge">0 rows</span></div><div id="importPreviewBody" class="panel-body"><div class="empty">Your extracted table rows will appear here for review.</div></div></div>
+      </section>
+
+      <section id="view-previous" class="view">
+        <div class="page-head"><div><div class="eyebrow">Historical Roster</div><h2>Previous Members.</h2><p>Archived profiles extracted from uploaded pictures or added manually.</p></div><div class="page-actions"><button class="btn btn-primary" data-add-record="previous_members">+ Add Previous Member</button><button class="btn btn-ghost" data-export-records="previous_members">Export CSV</button></div></div>
+        <div class="panel"><div class="panel-head"><div class="panel-title">Archived Member Records</div><span id="previousRowsCount" class="badge">0</span></div><div class="panel-body"><div class="toolbar"><div class="search"><input id="previousRowsSearch" placeholder="Search name, ID, Cube, trainer…"></div></div><div class="table-wrap"><table class="table record-table"><thead><tr><th>Name</th><th>ID / Cube</th><th>Role</th><th>Quality</th><th>Attendance</th><th>AHT</th><th>Archived</th><th>Actions</th></tr></thead><tbody id="previousRowsBody"></tbody></table></div></div></div>
+      </section>
+
+      <section id="view-sr" class="view">
+        <div class="page-head"><div><div class="eyebrow">Service Report</div><h2>SR Data.</h2><p>Accuracy records extracted from report screenshots.</p></div><div class="page-actions"><button class="btn btn-primary" data-add-record="sr_records">+ Add SR Row</button><button class="btn btn-ghost" data-export-records="sr_records">Export CSV</button></div></div>
+        <div class="kpi-grid"><div class="kpi"><div class="kpi-label">SR Records</div><div id="srRowsTotal" class="kpi-value">0</div></div><div class="kpi"><div class="kpi-label">Total Right</div><div id="srRowsRight" class="kpi-value">0</div></div><div class="kpi"><div class="kpi-label">Total Wrong</div><div id="srRowsWrong" class="kpi-value">0</div></div><div class="kpi"><div class="kpi-label">Overall Accuracy</div><div id="srRowsAccuracy" class="kpi-value">0%</div></div></div>
+        <div class="panel"><div class="panel-head"><div class="panel-title">SR Report Records</div><span id="srRowsCount" class="badge">0</span></div><div class="panel-body"><div class="toolbar"><div class="search"><input id="srRowsSearch" placeholder="Search ID, name or location…"></div></div><div class="table-wrap"><table class="table record-table"><thead><tr><th>ID</th><th>Name</th><th>Location</th><th>Right</th><th>Wrong</th><th>Accuracy</th><th>Report Date</th><th>Actions</th></tr></thead><tbody id="srRowsBody"></tbody></table></div></div></div>
+      </section>
+
+      <section id="view-calls" class="view">
+        <div class="page-head"><div><div class="eyebrow">Training Review</div><h2>Call Data.</h2><p>Training mistakes, call categories and remarks extracted from report screenshots.</p></div><div class="page-actions"><button class="btn btn-primary" data-add-record="call_records">+ Add Call Row</button><button class="btn btn-ghost" data-export-records="call_records">Export CSV</button></div></div>
+        <div class="panel"><div class="panel-head"><div class="panel-title">Call Training Records</div><span id="callRowsCount" class="badge">0</span></div><div class="panel-body"><div class="toolbar"><div class="search"><input id="callRowsSearch" placeholder="Search name, category, status, remarks…"></div><button id="callWrongFilter" class="btn btn-ghost btn-sm" type="button">ALL STATUS</button></div><div class="table-wrap"><table class="table record-table"><thead><tr><th>Date</th><th>ID</th><th>Name</th><th>Category</th><th>Phone (masked)</th><th>Status</th><th>Remarks</th><th>Actions</th></tr></thead><tbody id="callRowsBody"></tbody></table></div></div></div>
+      </section>
+    </div>
+  </main>
+</div>
+
+<div id="recordEditorModal" class="modal" aria-hidden="true"><div class="modal-card"><div class="modal-head"><div><h3 id="recordEditorTitle">Edit Record</h3><p>All edits are validated and stored in the protected database.</p></div><button class="modal-close" data-close="recordEditorModal" type="button">×</button></div><form id="recordEditorForm"><div id="recordEditorFields" class="record-edit-grid"></div><div class="modal-foot"><button class="btn btn-ghost" data-close="recordEditorModal" type="button">Cancel</button><button class="btn btn-primary" type="submit">Save Record</button></div></form></div></div>
+
+<div id="agentModal" class="modal" aria-hidden="true">
+  <div class="modal-card">
+    <div class="modal-head"><div><h3 id="agentModalTitle">Add Agent</h3><p>All fields are editable from Super Admin.</p></div><button class="modal-close" data-close="agentModal" type="button">×</button></div>
+    <form id="agentForm">
+      <input id="agent_id" type="hidden">
+      <div class="form-grid">
+        <div class="field"><label>Name</label><input id="agent_name" required></div>
+        <div class="field"><label>DG ID</label><input id="agent_dg_id"></div>
+        <div class="field"><label>Cube ID</label><input id="agent_cube_id" required></div>
+        <div class="field"><label>Role</label><input id="agent_role" value="CSR"></div>
+        <div class="field"><label>Rank</label><input id="agent_rank" value="CSR"></div>
+        <div class="field"><label>QA Manager</label><input id="agent_qa"></div>
+        <div class="field"><label>Trainer</label><input id="agent_trainer"></div>
+        <div class="field"><label>Avatar URL</label><input id="agent_avatar_url" placeholder="https://..."></div>
+        <div class="field"><label>MTD Quality %</label><input id="agent_mtd_score" type="number" step="0.01" min="0" max="100"></div>
+        <div class="field"><label>Attendance %</label><input id="agent_attendance" type="number" step="0.01" min="0" max="100"></div>
+        <div class="field"><label>Staffed Time</label><input id="agent_staffed_time" placeholder="9:01:22"></div>
+        <div class="field"><label>Productive Time</label><input id="agent_prod_time" placeholder="8:01:10"></div>
+        <div class="field"><label>Break Time</label><input id="agent_break_time" placeholder="1:00:12"></div>
+        <div class="field"><label>AHT</label><input id="agent_aht" placeholder="0:03:07"></div>
+        <div class="field"><label>On-Time Login %</label><input id="agent_on_time_login" type="number" step="0.01" min="0" max="100"></div>
+        <div class="field"><label>Display Order</label><input id="agent_sort_order" type="number" step="1" value="100"></div>
+        <div class="field span-2"><label>Bio</label><textarea id="agent_bio"></textarea></div>
+        <div class="field"><label>Facebook URL</label><input id="agent_facebook_url"></div>
+        <div class="field"><label>LinkedIn URL</label><input id="agent_linkedin_url"></div>
+        <div class="field"><label>Email</label><input id="agent_email" type="email"></div>
+        <div class="field"><label>State</label><label class="check"><input id="agent_active" type="checkbox" checked> Active agent</label></div>
+        <div class="field"><label>Team Leader</label><label class="check"><input id="agent_is_leader" type="checkbox"> Mark as team leader</label></div>
+      </div>
+      <div class="modal-foot"><button class="btn btn-ghost" data-close="agentModal" type="button">Cancel</button><button class="btn btn-primary" type="submit">Save Agent</button></div>
+    </form>
+  </div>
+</div>
+
+<div id="cardModal" class="modal" aria-hidden="true">
+  <div class="modal-card">
+    <div class="modal-head"><div><h3 id="cardModalTitle">Add Test Card</h3><p>Masked/tokenized QA card metadata only.</p></div><button class="modal-close" data-close="cardModal" type="button">×</button></div>
+    <form id="cardForm">
+      <input id="card_id" type="hidden">
+      <div class="form-grid">
+        <div class="field"><label>Label</label><input id="card_label" required placeholder="Visa Success Case"></div>
+        <div class="field"><label>Provider / Brand</label><input id="card_provider" placeholder="Visa / Mastercard / Nagad QA"></div>
+        <div class="field"><label>Scenario</label><input id="card_scenario" placeholder="Approved / Declined / 3DS"></div>
+        <div class="field"><label>Environment</label><select id="card_environment"><option value="sandbox">Sandbox</option><option value="staging">Staging</option><option value="test">Test</option></select></div>
+        <div class="field"><label>Last 4</label><input id="card_last4" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" placeholder="4242"></div>
+        <div class="field"><label>Token / Reference</label><input id="card_reference" placeholder="tok_xxx or QA-0001"></div>
+        <div class="field"><label>Expiry Month</label><input id="card_exp_month" type="number" min="1" max="12"></div>
+        <div class="field"><label>Expiry Year</label><input id="card_exp_year" type="number" min="2020" max="2100"></div>
+        <div class="field"><label>Assigned Agent</label><select id="card_agent"></select></div>
+        <div class="field"><label>Status</label><select id="card_status"><option value="active">Active</option><option value="reserved">Reserved</option><option value="disabled">Disabled</option><option value="expired">Expired</option></select></div>
+        <div class="field"><label>Priority</label><select id="card_priority"><option value="normal">Normal</option><option value="high">High</option><option value="critical">Critical</option></select></div>
+        <div class="field"><label>Active</label><label class="check"><input id="card_active" type="checkbox" checked> Card available for QA</label></div>
+        <div class="field span-2"><label>Notes</label><textarea id="card_notes" placeholder="QA notes, expected result, setup details..."></textarea></div>
+      </div>
+      <div class="modal-foot"><button class="btn btn-ghost" data-close="cardModal" type="button">Cancel</button><button class="btn btn-primary" type="submit">Save Test Card</button></div>
+    </form>
+  </div>
+</div>
+
+<div id="toast" class="toast"><div id="toastTitle" class="toast-title">Done</div><div id="toastMsg" class="toast-msg"></div></div>
+
+<script>
+const SUPABASE_URL=window.TEAM_ELITE_SUPABASE_CONFIG?.url||"YOUR_SUPABASE_PROJECT_URL";
+const SUPABASE_ANON_KEY=window.TEAM_ELITE_SUPABASE_CONFIG?.key||"YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY";
+const {createClient}=supabase;
+const db=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+
+const state={agents:[],cards:[],settings:{},audit:[],previousMembers:[],srRecords:[],callRecords:[],importRows:[],session:null,profile:null,agentStatus:"all",cardStatus:"all",callStatus:"all",recordEditor:null,selectedFiles:[]};
+const $=s=>document.querySelector(s);
+const $$=s=>[...document.querySelectorAll(s)];
+
+function toast(title,msg,type="success"){
+  const el=$("#toast");
+  $("#toastTitle").textContent=title;
+  $("#toastMsg").textContent=msg;
+  el.className="toast show "+type;
+  clearTimeout(toast.timer);
+  toast.timer=setTimeout(()=>el.classList.remove("show"),3200);
+}
+
+function showLoginError(msg){
+  const el=$("#loginAlert");
+  el.textContent=msg;
+  el.classList.remove("hidden");
+}
+
+function initials(name=""){
+  return name.trim().split(/\s+/).slice(0,2).map(x=>x[0]||"").join("").toUpperCase()||"??";
+}
+
+function esc(v=""){
+  return String(v??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+}
+
+function openModal(id){$("#"+id).classList.add("open");$("#"+id).setAttribute("aria-hidden","false")}
+function closeModal(id){$("#"+id).classList.remove("open");$("#"+id).setAttribute("aria-hidden","true")}
+
+function go(view){
+  $$(".view").forEach(v=>v.classList.toggle("active",v.id==="view-"+view));
+  $$(".nav-btn").forEach(b=>b.classList.toggle("active",b.dataset.view===view));
+  $("#sidebar").classList.remove("open");
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function val(id){return $("#"+id).value.trim()}
+
+async function ensureAdmin(){
+  if(SUPABASE_URL.includes("YOUR_SUPABASE")||SUPABASE_ANON_KEY.includes("YOUR_SUPABASE")){
+    throw new Error("Set SUPABASE_URL and SUPABASE_ANON_KEY in admin.html first.");
+  }
+  const {data:{session},error}=await db.auth.getSession();
+  if(error) throw error;
+  if(!session){$("#loginScreen").classList.remove("hidden");return false}
+  const {data:profile,error:pe}=await db.from("admin_profiles").select("user_id,email,full_name,role").eq("user_id",session.user.id).maybeSingle();
+  if(pe) throw pe;
+  if(!profile||profile.role!=="super_admin"){
+    await db.auth.signOut();
+    throw new Error("This account is not authorized as a Super Admin.");
+  }
+  state.session=session;
+  state.profile=profile;
+  $("#loginScreen").classList.add("hidden");
+  $("#adminApp").classList.add("ready");
+  $("#sideUser").textContent=profile.full_name||profile.email||session.user.email;
+  $("#sessionState").textContent="AUTHENTICATED";
+  return true;
+}
+
+async function loadAll(){
+  $("#topStatus").textContent="Refreshing database…";
+  const [a,c,s,l,pm,sr,cr]=await Promise.all([
+    db.from("agents").select("*").order("is_leader",{ascending:false}).order("sort_order",{ascending:true}).order("name",{ascending:true}),
+    db.from("test_cards").select("*,agents(name,cube_id)").order("created_at",{ascending:false}),
+    db.from("app_settings").select("*").order("key"),
+    db.from("audit_logs").select("*").order("created_at",{ascending:false}).limit(200),
+    db.from("previous_members").select("*").order("archived_date",{ascending:false}),
+    db.from("sr_records").select("*").order("report_date",{ascending:false}).order("agent_name"),
+    db.from("call_records").select("*").order("call_date",{ascending:false}).order("created_at",{ascending:false})
+  ]);
+  for(const x of [a,c,s,l,pm,sr,cr]) if(x.error) throw x.error;
+  state.agents=a.data||[];
+  state.cards=c.data||[];
+  state.settings=Object.fromEntries((s.data||[]).map(x=>[x.key,x.value]));
+  state.audit=l.data||[];
+  state.previousMembers=pm.data||[];
+  state.srRecords=sr.data||[];
+  state.callRecords=cr.data||[];
+  $("#lastRefresh").textContent=new Date().toLocaleTimeString();
+  $("#topStatus").textContent=`Synced · ${state.agents.length} agents · ${state.cards.length} cards · ${state.callRecords.length} calls`;
+  renderAll();
+}
+
+function activeAgents(){
+  return state.agents.filter(x=>x.active);
+}
+
+function renderDashboard(){
+  const ag=activeAgents();
+  const cards=state.cards.filter(x=>x.active);
+  const q=ag.filter(x=>Number.isFinite(Number(x.mtd_score)));
+  const quality=q.length?q.reduce((s,x)=>s+Number(x.mtd_score),0)/q.length:0;
+  const perfect=ag.length?ag.filter(x=>Number(x.attendance)>=100).length/ag.length*100:0;
+  $("#kAgents").textContent=state.agents.length;
+  $("#kAgentsSub").textContent=`${ag.length} active`;
+  $("#kCards").textContent=state.cards.length;
+  $("#kCardsSub").textContent=`${cards.length} active`;
+  $("#kQuality").textContent=quality.toFixed(2)+"%";
+  $("#kAttendance").textContent=perfect.toFixed(0)+"%";
+  $("#publicAgents").textContent=ag.length;
+  const top=[...q].sort((a,b)=>Number(b.mtd_score)-Number(a.mtd_score)).slice(0,6);
+  $("#topAgents").innerHTML=top.length?top.map((x,i)=>`<div class="stat-row"><span><b style="color:var(--text);margin-right:7px">${i+1}</b>${esc(x.name)}</span><b style="color:var(--gold)">${Number(x.mtd_score).toFixed(2)}%</b></div>`).join(""):`<div class="empty">No quality data yet.</div>`;
+}
+
+function renderAgents(){
+  const q=$("#agentSearch").value.trim().toLowerCase();
+  let rows=state.agents.filter(a=>{
+    const match=!q||[a.name,a.dg_id,a.cube_id,a.role,a.rank,a.trainer,a.qa].filter(Boolean).join(" ").toLowerCase().includes(q);
+    const status=state.agentStatus==="all"||(state.agentStatus==="active"&&a.active)||(state.agentStatus==="inactive"&&!a.active);
+    return match&&status;
+  });
+  $("#agentCountBadge").textContent=rows.length;
+  $("#agentsBody").innerHTML=rows.length?rows.map(a=>`
+    <tr>
+      <td><div class="profile-line"><div class="avatar">${esc(initials(a.name))}</div><div><strong>${esc(a.name)}</strong><div class="small-muted">${esc(a.rank||a.role||"")}${a.is_leader?" · TEAM LEADER":""}</div></div></div></td>
+      <td>${esc(a.role||"—")}</td>
+      <td><div>${esc(a.dg_id||"—")}</div><div class="small-muted">${esc(a.cube_id||"—")}</div></td>
+      <td>${a.mtd_score==null?"—":Number(a.mtd_score).toFixed(2)+"%"}</td>
+      <td>${esc(a.aht||"—")}</td>
+      <td>${a.attendance==null?"—":Number(a.attendance).toFixed(2)+"%"}</td>
+      <td>${a.active?'<span class="badge success">Active</span>':'<span class="badge danger">Inactive</span>'}</td>
+      <td><div class="actions"><button class="btn btn-ghost btn-sm" data-edit-agent="${a.id}">Edit</button><button class="btn btn-ghost btn-sm" data-toggle-agent="${a.id}">${a.active?"Disable":"Enable"}</button><button class="btn btn-danger btn-sm" data-delete-agent="${a.id}">Delete</button></div></td>
+    </tr>`).join(""):`<tr><td colspan="8"><div class="empty">No agents match your filter.</div></td></tr>`;
+}
+
+function renderCards(){
+  const q=$("#cardSearch").value.trim().toLowerCase();
+  let rows=state.cards.filter(c=>{
+    const match=!q||[c.label,c.provider,c.scenario,c.last4,c.reference,c.environment,c.status,c.notes,c.agents?.name].filter(Boolean).join(" ").toLowerCase().includes(q);
+    const status=state.cardStatus==="all"||(state.cardStatus===c.status);
+    return match&&status;
+  });
+  $("#cardCountBadge").textContent=rows.length;
+  $("#cardsBody").innerHTML=rows.length?rows.map(c=>`
+    <tr>
+      <td><strong>${esc(c.label)}</strong><div class="small-muted">${esc(c.reference||"")}</div></td>
+      <td>${esc(c.provider||"—")}</td>
+      <td>${esc(c.scenario||"—")} <span class="badge" style="margin-left:4px">${esc(c.environment||"test")}</span></td>
+      <td>•••• ${esc(c.last4||"—")}</td>
+      <td>${c.exp_month&&c.exp_year?String(c.exp_month).padStart(2,"0")+"/"+esc(c.exp_year):"—"}</td>
+      <td>${esc(c.agents?.name||"Unassigned")}</td>
+      <td>${cardBadge(c.status,c.active)}</td>
+      <td><div class="actions"><button class="btn btn-ghost btn-sm" data-edit-card="${c.id}">Edit</button><button class="btn btn-danger btn-sm" data-delete-card="${c.id}">Delete</button></div></td>
+    </tr>`).join(""):`<tr><td colspan="8"><div class="empty">No test cards match your filter.</div></td></tr>`;
+}
+
+function cardBadge(status,active){
+  if(!active) return '<span class="badge danger">Unavailable</span>';
+  if(status==="active") return '<span class="badge success">Active</span>';
+  if(status==="reserved") return '<span class="badge warn">Reserved</span>';
+  if(status==="expired") return '<span class="badge danger">Expired</span>';
+  return '<span class="badge">Disabled</span>';
+}
+
+function renderSettings(){
+  const map={site_name:"set_site_name",tagline:"set_tagline",team_leader:"set_team_leader",qa_manager:"set_qa_manager",hero_description:"set_hero_description",about_description:"set_about_description",announcement:"set_announcement",footer_text:"set_footer_text",public_notice:"set_public_notice"};
+  Object.entries(map).forEach(([key,id])=>$("#"+id).value=state.settings[key]||"");
+  $("#set_maintenance").checked=state.settings.maintenance==="true";
+}
+
+function renderAudit(){
+  $("#auditBody").innerHTML=state.audit.length?state.audit.map(x=>`
+    <tr>
+      <td><div>${new Date(x.created_at).toLocaleString()}</div></td>
+      <td><span class="badge ${x.action==="DELETE"?"danger":x.action==="INSERT"?"success":"warn"}">${esc(x.action)}</span></td>
+      <td>${esc(x.entity_type)}<div class="small-muted">${esc(x.entity_id||"")}</div></td>
+      <td>${esc(x.actor_email||x.actor_id||"—")}</td>
+      <td><div class="audit-json">${esc(JSON.stringify(x.new_data||x.old_data||{}))}</div></td>
+    </tr>`).join(""):`<tr><td colspan="5"><div class="empty">No audit entries yet.</div></td></tr>`;
+}
+
+function renderAll(){renderDashboard();renderAgents();renderCards();renderSettings();renderAudit();renderReportRecords();renderImportPreview()}
+
+const RECORD_CONFIG={
+  previous_members:{table:"previous_members",label:"Previous Members",fields:[
+    ["agent_id","Agent ID","text"],["name","Name","text",true],["location","Location","text"],["cube_id","Cube ID","text"],["role","Role","text"],["qa","QA Manager","text"],["trainer","Trainer","text"],["quality","Quality %","number"],["attendance","Attendance %","number"],["staffed_time","Staffed Time","text"],["productive_time","Productivity Time","text"],["break_time","Break Time","text"],["aht","AHT","text"],["on_time_login","On-Time Login %","number"],["archived_date","Archived Date","date"],["notes","Notes","textarea"]]},
+  sr_records:{table:"sr_records",label:"SR Data",fields:[
+    ["agent_id","ID","text"],["agent_name","Name","text",true],["location","Location","text"],["right_count","Right","number"],["wrong_count","Wrong","number"],["accuracy","Accuracy %","number"],["report_date","Report Date","date"],["source_image","Source Image","text"]]},
+  call_records:{table:"call_records",label:"Call Data",fields:[
+    ["call_date","Date","date"],["agent_id","Agent ID","text"],["agent_name","Agent Name","text",true],["category","Sub Service Category","text"],["service_mobile_masked","Service Mobile (masked)","text"],["caller_mobile_masked","Caller Mobile (masked)","text"],["training_status","Training Status","text"],["training_remarks","Training Remarks","textarea",true],["source_image","Source Image","text"]]}
+};
+
+function reportCell(v){return v===null||v===undefined||v===""?"—":esc(v)}
+function renderRecordActions(table,id){return `<div class="actions record-actions"><button class="btn btn-ghost btn-sm" data-record-edit="${esc(table)}" data-record-id="${esc(id)}">Edit</button><button class="btn btn-danger btn-sm" data-record-delete="${esc(table)}" data-record-id="${esc(id)}">Delete</button></div>`}
+function renderReportRecords(){
+  const prevQ=( $("#previousRowsSearch")?.value||"").trim().toLowerCase();
+  const prev=state.previousMembers.filter(r=>!prevQ||[r.name,r.agent_id,r.cube_id,r.role,r.qa,r.trainer,r.location].join(" ").toLowerCase().includes(prevQ));
+  $("#previousRowsCount").textContent=prev.length;
+  $("#previousRowsBody").innerHTML=prev.length?prev.map(r=>`<tr><td><strong>${reportCell(r.name)}</strong><div class="small-muted">${reportCell(r.location)}</div></td><td>${reportCell(r.agent_id)}<div class="small-muted">${reportCell(r.cube_id)}</div></td><td>${reportCell(r.role)}</td><td>${r.quality==null?"—":Number(r.quality).toFixed(2)+"%"}</td><td>${r.attendance==null?"—":Number(r.attendance).toFixed(2)+"%"}</td><td>${reportCell(r.aht)}</td><td>${reportCell(r.archived_date)}</td><td>${renderRecordActions("previous_members",r.id)}</td></tr>`).join(""):`<tr><td colspan="8"><div class="empty">No previous members found.</div></td></tr>`;
+
+  const srQ=($("#srRowsSearch")?.value||"").trim().toLowerCase();
+  const sr=state.srRecords.filter(r=>!srQ||[r.agent_id,r.agent_name,r.location,r.report_date].join(" ").toLowerCase().includes(srQ));
+  $("#srRowsCount").textContent=sr.length;
+  $("#srRowsBody").innerHTML=sr.length?sr.map(r=>`<tr><td>${reportCell(r.agent_id)}</td><td><strong>${reportCell(r.agent_name)}</strong></td><td>${reportCell(r.location)}</td><td>${Number(r.right_count)||0}</td><td>${Number(r.wrong_count)||0}</td><td><span class="badge ${(Number(r.accuracy)||0)>=95?"success":(Number(r.accuracy)||0)>=70?"warn":"danger"}">${r.accuracy==null?"—":Number(r.accuracy).toFixed(2)+"%"}</span></td><td>${reportCell(r.report_date)}</td><td>${renderRecordActions("sr_records",r.id)}</td></tr>`).join(""):`<tr><td colspan="8"><div class="empty">No SR records found.</div></td></tr>`;
+  const right=state.srRecords.reduce((n,r)=>n+(Number(r.right_count)||0),0),wrong=state.srRecords.reduce((n,r)=>n+(Number(r.wrong_count)||0),0);
+  $("#srRowsTotal").textContent=state.srRecords.length;$("#srRowsRight").textContent=right;$("#srRowsWrong").textContent=wrong;$("#srRowsAccuracy").textContent=right+wrong?((right/(right+wrong))*100).toFixed(2)+"%":"0%";
+
+  const callQ=($("#callRowsSearch")?.value||"").trim().toLowerCase();
+  const calls=state.callRecords.filter(r=>(state.callStatus==="all"||String(r.training_status||"").toLowerCase()===state.callStatus)&&(!callQ||[r.call_date,r.agent_id,r.agent_name,r.category,r.training_status,r.training_remarks,r.service_mobile_masked,r.caller_mobile_masked].join(" ").toLowerCase().includes(callQ)));
+  $("#callRowsCount").textContent=state.callRecords.length;
+  $("#callRowsBody").innerHTML=calls.length?calls.map(r=>`<tr><td>${reportCell(r.call_date)}</td><td>${reportCell(r.agent_id)}</td><td><strong>${reportCell(r.agent_name)}</strong></td><td>${reportCell(r.category)}</td><td>${reportCell(r.service_mobile_masked)}<div class="small-muted">Caller: ${reportCell(r.caller_mobile_masked)}</div></td><td><span class="badge ${String(r.training_status||"").toLowerCase()==="wrong"?"danger":"warn"}">${reportCell(r.training_status)}</span></td><td class="record-long">${reportCell(r.training_remarks)}</td><td>${renderRecordActions("call_records",r.id)}</td></tr>`).join(""):`<tr><td colspan="8"><div class="empty">No call records found.</div></td></tr>`;
+  if($("#callWrongFilter")) $("#callWrongFilter").textContent=state.callStatus==="all"?"ALL STATUS":state.callStatus.toUpperCase()+" ONLY";
+}
+
+function openRecordEditor(table,id=null){
+  const cfg=RECORD_CONFIG[table];if(!cfg)return;
+  const list=table==="previous_members"?state.previousMembers:table==="sr_records"?state.srRecords:state.callRecords;
+  const record=id?list.find(x=>x.id===id):{};
+  if(id&&!record)return;
+  state.recordEditor={table,id};
+  $("#recordEditorTitle").textContent=(id?"Edit ":"Add ")+cfg.label+" Record";
+  $("#recordEditorFields").innerHTML=cfg.fields.map(([key,label,type,wide])=>{
+    const v=record?.[key]??(type==="date"?new Date().toISOString().slice(0,10):key==="location"?"Jashore":key==="training_status"?"Wrong":"");
+    const cls=wide?"field wide":"field";
+    if(type==="textarea")return `<div class="${cls}"><label>${esc(label)}</label><textarea data-rec-key="${esc(key)}" data-rec-type="${type}">${esc(v)}</textarea></div>`;
+    return `<div class="${cls}"><label>${esc(label)}</label><input data-rec-key="${esc(key)}" data-rec-type="${type}" type="${type==="number"?"number":type==="date"?"date":"text"}" ${key==="name"||key==="agent_name"?"required":""} value="${esc(v)}"></div>`;
+  }).join("");
+  openModal("recordEditorModal");
+}
+
+function maskMobile(value){
+  const raw=String(value??"").trim();if(!raw)return null;
+  if(/[•*xX]{2,}/.test(raw))return raw;
+  const digits=raw.replace(/\D/g,"");
+  if(digits.length<7)return raw;
+  return "••••••"+digits.slice(-4);
+}
+
+function recordPayloadFromForm(){
+  const {table}=state.recordEditor;const cfg=RECORD_CONFIG[table];const payload={};
+  cfg.fields.forEach(([key,label,type])=>{
+    const el=$( `[data-rec-key="${key}"]` );let v=el?el.value.trim():"";
+    if(type==="number")v=v===""?null:Number(v);
+    else v=v===""?null:v;
+    payload[key]=v;
+  });
+  if(table==="call_records"){
+    payload.service_mobile_masked=maskMobile(payload.service_mobile_masked);
+    payload.caller_mobile_masked=maskMobile(payload.caller_mobile_masked);
+  }
+  if(table==="sr_records"&&payload.accuracy==null&&payload.right_count!=null&&payload.wrong_count!=null){const den=payload.right_count+payload.wrong_count;payload.accuracy=den?Math.round(payload.right_count/den*10000)/100:null}
+  return payload;
+}
+
+async function saveRecordEditor(e){
+  e.preventDefault();if(!state.recordEditor)return;
+  const {table,id}=state.recordEditor;const payload=recordPayloadFromForm();
+  if(table==="previous_members"&&!payload.name||table==="sr_records"&&!payload.agent_name||table==="call_records"&&!payload.agent_name){toast("Missing required field","Please provide the member/agent name.","error");return}
+  const result=id?await db.from(table).update(payload).eq("id",id):await db.from(table).insert(payload);
+  if(result.error){toast("Save failed",result.error.message,"error");return}
+  closeModal("recordEditorModal");toast("Record saved",`${RECORD_CONFIG[table].label} updated.`);await loadAll();
+}
+
+async function deleteReportRecord(table,id){
+  const cfg=RECORD_CONFIG[table];if(!cfg||!confirm(`Delete this ${cfg.label} record?`))return;
+  const {error}=await db.from(table).delete().eq("id",id);
+  if(error){toast("Delete failed",error.message,"error");return}
+  toast("Record deleted",`${cfg.label} record removed.`);await loadAll();
+}
+
+function exportRecordTable(table){
+  const cfg=RECORD_CONFIG[table];if(!cfg)return;
+  const rows=table==="previous_members"?state.previousMembers:table==="sr_records"?state.srRecords:state.callRecords;
+  if(!rows.length){toast("Nothing to export","There are no rows in this table.","error");return}
+  const fields=cfg.fields.filter(f=>f[0]!=="source_image");
+  const quote=v=>`"${String(v??"").replace(/"/g,'""')}"`;
+  const csv=[fields.map(f=>quote(f[1])).join(","),...rows.map(r=>fields.map(f=>quote(r[f[0]])).join(","))].join("\r\n");
+  const blob=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=`team-elite-star-${table}-${new Date().toISOString().slice(0,10)}.csv`;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),800);
+}
+
+const IMPORT_FIELDS={
+  previous_members:["agent_id","name","location","cube_id","role","qa","trainer","quality","attendance","staffed_time","productive_time","break_time","aht","on_time_login","archived_date","notes"],
+  sr_records:["agent_id","agent_name","location","right_count","wrong_count","accuracy","report_date"],
+  call_records:["service_mobile_masked","caller_mobile_masked","category","call_date","agent_id","agent_name","training_status","training_remarks"]
+};
+const IMPORT_LABELS={agent_id:"ID",name:"Name",location:"Location",cube_id:"Cube ID",role:"Role",qa:"QA",trainer:"Trainer",quality:"Quality",attendance:"Attendance",staffed_time:"Staffed Time",productive_time:"Productivity",break_time:"Break",aht:"AHT",on_time_login:"On-Time Login",archived_date:"Archived Date",notes:"Notes",agent_name:"Name",right_count:"Right",wrong_count:"Wrong",accuracy:"Accuracy %",report_date:"Report Date",service_mobile_masked:"Service No. (masked)",caller_mobile_masked:"Caller No. (masked)",category:"Sub Service Category",call_date:"Date",training_status:"Training Status",training_remarks:"Training Remarks"};
+function normText(v){return String(v||"").toLowerCase().replace(/[^a-z0-9]+/g,"")}
+function detectImportType(text){const n=normText(text);if((n.includes("servicemobileno")||n.includes("callermobileno")||n.includes("trainingremarks"))&& (n.includes("trainingstatus")||n.includes("subservicecategory")))return "call_records";if(n.includes("right")&&n.includes("wrong")&&n.includes("accuracy"))return "sr_records";if((n.includes("cubeid")||n.includes("trainer"))&&(n.includes("attendance")||n.includes("quality")||n.includes("mtdscore")))return "previous_members";return null}
+function wordBox(w){const b=w.bbox||w;return {text:String(w.text||"").trim(),x0:b.x0??w.x0??0,x1:b.x1??w.x1??0,y0:b.y0??w.y0??0,y1:b.y1??w.y1??0,confidence:Number(w.confidence??100)}}
+function groupOcrRows(words){
+  const a=words.map(wordBox).filter(w=>w.text&&w.text.length&&w.confidence>15).sort((a,b)=>((a.y0+a.y1)/2)-((b.y0+b.y1)/2));
+  if(!a.length)return [];
+  const heights=a.map(w=>Math.max(1,w.y1-w.y0)).sort((x,y)=>x-y);const threshold=Math.max(7,(heights[Math.floor(heights.length/2)]||12)*.72);
+  const rows=[];
+  for(const w of a){const cy=(w.y0+w.y1)/2;let target=rows[rows.length-1];if(!target||Math.abs(cy-target.cy)>threshold){target={cy,words:[]};rows.push(target)}target.words.push(w);target.cy=target.words.reduce((sum,z)=>sum+(z.y0+z.y1)/2,0)/target.words.length}
+  return rows.map(r=>({y:r.cy,words:r.words.sort((a,b)=>a.x0-b.x0),text:r.words.map(w=>w.text).join(" ")}));
+}
+async function preprocessForOcr(file){
+  const bitmap=await createImageBitmap(file);
+  const scale=bitmap.width<1800?2:1.5;
+  const canvas=document.createElement("canvas");canvas.width=Math.round(bitmap.width*scale);canvas.height=Math.round(bitmap.height*scale);
+  const ctx=canvas.getContext("2d",{willReadFrequently:true});ctx.fillStyle="#fff";ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.filter="grayscale(1) contrast(1.55)";ctx.drawImage(bitmap,0,0,canvas.width,canvas.height);ctx.filter="none";bitmap.close?.();return canvas;
+}
+function detectGridBounds(canvas){
+  try{
+    const ctx=canvas.getContext("2d",{willReadFrequently:true});const {width:w,height:h}=canvas;const px=ctx.getImageData(0,0,w,h).data;const y0=Math.floor(h*.015),y1=Math.ceil(h*.985),span=y1-y0;const candid=[];
+    for(let x=0;x<w;x++){
+      let dark=0;for(let y=y0;y<y1;y+=1){const i=(y*w+x)*4;const lum=(px[i]*.299+px[i+1]*.587+px[i+2]*.114);if(lum<105)dark++}
+      if(dark/Math.max(1,span)>.48)candid.push(x)
+    }
+    const clusters=[];for(const x of candid){const last=clusters[clusters.length-1];if(!last||x-last[last.length-1]>5)clusters.push([x]);else last.push(x)}
+    let bounds=clusters.map(c=>Math.round(c.reduce((a,b)=>a+b,0)/c.length));
+    const filtered=[];for(const x of bounds){if(!filtered.length||x-filtered[filtered.length-1]>24)filtered.push(x)}
+    if(filtered.length>=4&&filtered.length<=14)return filtered;
+    return null;
+  }catch(e){return null}
+}
+function headerField(cell,type){
+  const n=normText(cell);
+  if(type==="call_records"){
+    if(n.includes("servicemobile")||n==="serviceno"||n==="service")return "service_mobile_masked";
+    if(n.includes("callermobile")||n.includes("callerphone"))return "caller_mobile_masked";
+    if(n.includes("subservice")||n==="category")return "category";
+    if(n==="date"||n.includes("calldate"))return "call_date";
+    if(n==="id"||n.includes("agentid")||n==="dgid")return "agent_id";
+    if(n==="name"||n.includes("agentname"))return "agent_name";
+    if(n.includes("trainingstatus")||n==="status")return "training_status";
+    if(n.includes("trainingremarks")||n.includes("remarks")||n.includes("remark"))return "training_remarks";
+  }
+  if(type==="sr_records"){
+    if(n==="id"||n==="dgid"||n.includes("agentid"))return "agent_id";
+    if(n==="name"||n.includes("agentname"))return "agent_name";
+    if(n.includes("location"))return "location";
+    if(n==="right"||n.includes("rightcount"))return "right_count";
+    if(n==="wrong"||n.includes("wrongcount"))return "wrong_count";
+    if(n.includes("accuracy"))return "accuracy";
+    if(n.includes("date"))return "report_date";
+  }
+  if(type==="previous_members"){
+    if(n==="id"||n==="dgid"||n.includes("agentid"))return "agent_id";
+    if(n==="name"||n.includes("membername")||n.includes("agentname"))return "name";
+    if(n.includes("location"))return "location";
+    if(n.includes("cube"))return "cube_id";
+    if(n.includes("role"))return "role";
+    if(n==="qa"||n.includes("qamanager"))return "qa";
+    if(n.includes("trainer"))return "trainer";
+    if(n.includes("quality")||n.includes("mtdscore")||n==="score")return "quality";
+    if(n.includes("attendance"))return "attendance";
+    if(n.includes("staffed"))return "staffed_time";
+    if(n.includes("productivity")||n.includes("productive"))return "productive_time";
+    if(n.includes("break"))return "break_time";
+    if(n==="aht"||n.includes("averagethandle"))return "aht";
+    if(n.includes("ontimelogin"))return "on_time_login";
+    if(n.includes("archivedate")||n.includes("previousdate"))return "archived_date";
+    if(n.includes("note"))return "notes";
+  }
+  return null;
+}
+function parseDateValue(v, fallback=null){
+  const s=String(v||"").trim();if(!s)return fallback;
+  const iso=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);if(iso)return `${iso[1]}-${String(iso[2]).padStart(2,"0")}-${String(iso[3]).padStart(2,"0")}`;
+  const m=s.match(/(\d{1,2})[-\s/]([A-Za-z]{3,})[-\s/](\d{2,4})/);if(m){const months={jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};const mo=months[m[2].slice(0,3).toLowerCase()];let yr=Number(m[3]);if(yr<100)yr+=2000;if(mo)return `${yr}-${String(mo).padStart(2,"0")}-${String(Number(m[1])).padStart(2,"0")}`}
+  const d=new Date(s);return Number.isNaN(d.getTime())?fallback:d.toISOString().slice(0,10);
+}
+function maskPhone(value){const raw=String(value??"").trim();if(!raw)return null;if(/[•*xX]{2,}/.test(raw))return raw;const digits=raw.replace(/\D/g,"");if(digits.length<7)return raw;return "••••••"+digits.slice(-4)}
+function maskTextMobileNumbers(text){return String(text||"").replace(/(?:\+?88\s?)?01[3-9]\d(?:[\s-]?\d){7}/g,m=>maskPhone(m));}
+function parseCellData(cells,fields,type,fileName,reportDate){
+  const raw={};fields.forEach((field,i)=>{if(field)raw[field]=String(cells[i]||"").trim()});
+  const pick=(...keys)=>{for(const k of keys)if(raw[k]!=null&&raw[k]!=="")return raw[k];return ""};
+  const num=v=>{const m=String(v||"").replace(/,/g,"").match(/-?\d+(?:\.\d+)?/);return m?Number(m[0]):null};
+  let out;
+  if(type==="sr_records"){
+    if(!pick("agent_id","agent_name")||normText(pick("agent_name"))==="grandtotal")return null;
+    const right=num(pick("right_count")),wrong=num(pick("wrong_count"));let accuracy=num(pick("accuracy"));if(accuracy==null&&right!=null&&wrong!=null&&right+wrong>0)accuracy=Math.round(right/(right+wrong)*10000)/100;
+    out={agent_id:pick("agent_id")||null,agent_name:pick("agent_name")||"Needs review",location:pick("location")||"Jashore",right_count:right,wrong_count:wrong,accuracy,report_date:parseDateValue(pick("report_date"),reportDate||new Date().toISOString().slice(0,10)),source_image:fileName};
+  }else if(type==="call_records"){
+    if(!pick("agent_id","agent_name","category")||normText(pick("agent_name"))==="grandtotal")return null;
+    out={service_mobile_masked:maskPhone(pick("service_mobile_masked")),caller_mobile_masked:maskPhone(pick("caller_mobile_masked")),category:pick("category")||null,call_date:parseDateValue(pick("call_date"),reportDate||new Date().toISOString().slice(0,10)),agent_id:pick("agent_id")||null,agent_name:pick("agent_name")||"Needs review",training_status:pick("training_status")||"Unknown",training_remarks:pick("training_remarks")||null,source_image:fileName};
+  }else{
+    if(!pick("name","agent_id")||normText(pick("name"))==="grandtotal")return null;
+    out={agent_id:pick("agent_id")||null,name:pick("name")||"Needs review",location:pick("location")||"Jashore",cube_id:pick("cube_id")||null,role:pick("role")||"CSR",qa:pick("qa")||null,trainer:pick("trainer")||null,quality:num(pick("quality")),attendance:num(pick("attendance")),staffed_time:pick("staffed_time")||null,productive_time:pick("productive_time")||null,break_time:pick("break_time")||null,aht:pick("aht")||null,on_time_login:num(pick("on_time_login")),archived_date:parseDateValue(pick("archived_date"),reportDate||new Date().toISOString().slice(0,10)),notes:pick("notes")||`Imported from ${fileName}`,source_image:fileName};
+  }
+  return out;
+}
+async function extractTableRows(file,data,type,ocrCanvas){
+  const words=(data.words&&data.words.length)?data.words:(data.blocks||[]).flatMap(b=>(b.paragraphs||[]).flatMap(p=>(p.lines||[]).flatMap(l=>l.words||[])));const rows=groupOcrRows(words);if(!rows.length)return [];
+  const headerTokens=type==="call_records"?["servicemobile","callermobile","subservice","trainingstatus","trainingremarks"]:type==="sr_records"?["right","wrong","accuracy","location"]:["cube","trainer","quality","attendance","name"];
+  let hi=-1,best=-1;
+  rows.forEach((r,i)=>{const n=normText(r.text);let score=headerTokens.reduce((sum,t)=>sum+(n.includes(t)?1:0),0);if(n.includes("grandtotal"))score-=10;if(score>best){best=score;hi=i}});
+  if(hi<0||best<2)throw new Error("Couldn't find a clear table header. Try a sharper/full screenshot or choose the type manually.");
+  const header=rows[hi];const bounds=detectGridBounds(ocrCanvas);let cellBounds=null;
+  if(bounds&&bounds.length>=3&&bounds.length<=14){cellBounds=bounds}
+  let cellTexts=[];
+  if(cellBounds){const count=cellBounds.length-1;cellTexts=Array.from({length:count},()=>[]);for(const w of header.words){const cx=(w.x0+w.x1)/2;let idx=cellBounds.findIndex((b,i)=>i<cellBounds.length-1&&cx>=b&&cx<=cellBounds[i+1]);if(idx>=0)cellTexts[idx].push(w.text)}}
+  else{
+    const grouped=[];for(const w of header.words){const last=grouped[grouped.length-1];const gap=last?w.x0-last[last.length-1].x1:0;const threshold=Math.max(12,((ocrCanvas?.width||1200)*.015));if(!last||gap>threshold)grouped.push([w]);else last.push(w)}
+    cellTexts=grouped;
+    const centers=cellTexts.map(c=>c.reduce((a,w)=>a+(w.x0+w.x1)/2,0)/Math.max(1,c.length));cellBounds=[0];for(let i=0;i<centers.length-1;i++)cellBounds.push((centers[i]+centers[i+1])/2);cellBounds.push(1000000);
+  }
+  let mapped=cellTexts.map(c=>headerField(c.join(" "),type));
+  const expected=IMPORT_FIELDS[type];
+  if(mapped.filter(Boolean).length<Math.min(3,expected.length)){
+    const ordered=type==="call_records"?["service_mobile_masked","caller_mobile_masked","category","call_date","agent_id","agent_name","training_status","training_remarks"]:type==="sr_records"?["agent_id","agent_name","location","right_count","wrong_count","accuracy"]:[];
+    if(ordered.length&&cellTexts.length===ordered.length)mapped=ordered;
+  }
+  const output=[];
+  for(let ri=hi+1;ri<rows.length;ri++){
+    const r=rows[ri];if(normText(r.text).includes("grandtotal"))continue;
+    const cells=Array.from({length:mapped.length},()=>[]);
+    for(const w of r.words){const cx=(w.x0+w.x1)/2;let idx=-1;if(bounds&&cellBounds===bounds){idx=cellBounds.findIndex((b,i)=>i<cellBounds.length-1&&cx>=b&&cx<=cellBounds[i+1])}else{let bestD=Infinity;const centers=cellTexts.map(c=>c.reduce((a,z)=>a+(z.x0+z.x1)/2,0)/Math.max(1,c.length));centers.forEach((center,i)=>{const d=Math.abs(cx-center);if(d<bestD){bestD=d;idx=i}})}if(idx>=0&&idx<cells.length)cells[idx].push(w.text)}
+    const values=cells.map(c=>c.join(" ").trim());const row=parseCellData(values,mapped,type,file.name,$("#importReportDate").value||null);if(row)output.push({type,data:row,source:file.name});
+  }
+  return output;
+}
+function renderImportPreview(){
+  const total=state.importRows.length;$("#importRowCount").textContent=`${total} row${total===1?"":"s"}`;$("#saveImportBtn").disabled=!total;
+  if(!total){$("#importPreviewBody").innerHTML='<div class="empty">Your extracted table rows will appear here for review.</div>';return}
+  const groups=["previous_members","sr_records","call_records"].filter(t=>state.importRows.some(r=>r.type===t));
+  $("#importPreviewBody").innerHTML=groups.map(type=>{
+    const indexes=state.importRows.map((r,i)=>({r,i})).filter(x=>x.r.type===type);const fields=IMPORT_FIELDS[type];
+    return `<div class="preview-group"><div class="preview-title"><span>${RECORD_CONFIG[type].label}</span><span>${indexes.length} rows</span></div><div class="preview-wrap"><table class="preview-table"><thead><tr><th>Source</th>${fields.map(f=>`<th>${esc(IMPORT_LABELS[f]||f)}</th>`).join("")}<th>Remove</th></tr></thead><tbody>${indexes.map(({r,i})=>`<tr><td class="source-cell">${esc(r.source)}</td>${fields.map(f=>{const v=r.data[f]??"";const long=["training_remarks","notes"].includes(f);return `<td>${long?`<textarea data-import-row="${i}" data-import-field="${f}">${esc(v)}</textarea>`:`<input type="${["call_date","report_date","archived_date"].includes(f)?"date":"text"}" data-import-row="${i}" data-import-field="${f}" value="${esc(v)}">`}</td>`}).join("")}<td><button class="btn btn-danger btn-sm" data-import-remove="${i}">Remove</button></td></tr>`).join("")}</tbody></table></div></div>`;
+  }).join("");
+}
+async function processImportFiles(){
+  const files=state.selectedFiles;if(!files.length)return;
+  if(!window.Tesseract){toast("OCR unavailable","Tesseract could not load. Check internet/CDN access.","error");return}
+  $("#processImagesBtn").disabled=true;$("#clearImportBtn").disabled=true;$("#saveImportBtn").disabled=true;$("#ocrProgress").value=0;$("#ocrRaw").value="";
+  const override=$("#importType").value;let worker=null;const added=[];let raw=[];
+  try{
+    worker=await Tesseract.createWorker("eng",1,{logger:m=>{if(m.status){$("#ocrStatus").textContent=m.status+(m.progress!=null?` · ${Math.round(m.progress*100)}%`:"");if(m.progress!=null)$("#ocrProgress").value=Math.max(Number($("#ocrProgress").value),m.progress*100/Math.max(1,files.length))}}});
+    await worker.setParameters({preserve_interword_spaces:"1",tessedit_pageseg_mode:"6"});
+    for(let i=0;i<files.length;i++){
+      const file=files[i];$("#ocrStatus").textContent=`Scanning ${i+1}/${files.length}: ${file.name}`;
+      const ocrCanvas=await preprocessForOcr(file);const result=await worker.recognize(ocrCanvas,{}, {text:true,blocks:true,tsv:true});const data=result.data||result;raw.push(`=== ${file.name} ===\n${maskTextMobileNumbers(data.text||"")}`);
+      let type=override==="auto"?detectImportType(data.text||""):override;
+      if(!type)throw new Error(`Auto-detect couldn't recognise the table type in ${file.name}. Choose Previous Members, SR Data or Call Data and try again.`);
+      const parsed=await extractTableRows(file,data,type,ocrCanvas);if(!parsed.length)throw new Error(`No data rows were detected in ${file.name}. Use a clearer screenshot or choose the type manually.`);
+      added.push(...parsed);$("#ocrProgress").value=Math.round((i+1)/files.length*100);$("#ocrStatus").textContent=`Detected ${type.replace("_"," ")} · ${parsed.length} rows from ${file.name}`;
+    }
+    state.importRows.push(...added);$("#ocrRaw").value=raw.join("\n\n");renderImportPreview();$("#ocrStatus").textContent=`Extraction complete: ${added.length} rows ready to review. Nothing has been saved yet.`;toast("Extraction complete",`${added.length} rows extracted from ${files.length} image(s). Review before saving.`);
+  }catch(err){$("#ocrStatus").textContent=err.message||"OCR failed.";toast("Import failed",err.message||"OCR failed.","error");$("#ocrRaw").value=raw.join("\n\n")}
+  finally{if(worker)await worker.terminate();$("#processImagesBtn").disabled=!state.selectedFiles.length;$("#clearImportBtn").disabled=false;$("#saveImportBtn").disabled=!state.importRows.length}
+}
+async function saveImportRows(){
+  if(!state.importRows.length)return;
+  $("#saveImportBtn").disabled=true;$("#ocrStatus").textContent="Saving reviewed rows to Supabase…";
+  const sets={previous_members:[],sr_records:[],call_records:[]};
+  state.importRows.forEach(({type,data,source})=>{
+    const row={...data,source_image:source};
+    if(type==="call_records"){
+      row.service_mobile_masked=maskPhone(row.service_mobile_masked);row.caller_mobile_masked=maskPhone(row.caller_mobile_masked);
+      row.service_mobile_masked=row.service_mobile_masked||null;row.caller_mobile_masked=row.caller_mobile_masked||null;
+    }
+    sets[type].push(row);
+  });
+  try{
+    let saved=0;
+    for(const [table,rows] of Object.entries(sets))if(rows.length){
+      const {error}=await db.from(table).upsert(rows,{onConflict:"record_hash",ignoreDuplicates:true});if(error)throw new Error(`${RECORD_CONFIG[table].label}: ${error.message}`);saved+=rows.length;
+    }
+    state.importRows=[];renderImportPreview();$("#importFiles").value="";state.selectedFiles=[];$("#selectedFilesLabel").textContent="No images selected";$("#processImagesBtn").disabled=true;$("#ocrProgress").value=100;$("#ocrStatus").textContent=`Upload complete. ${saved} parsed row(s) submitted; exact duplicates are ignored by the database.`;await loadAll();toast("Data uploaded","Reviewed rows are now stored in Supabase.");
+  }catch(err){$("#ocrStatus").textContent=err.message||"Database upload failed.";toast("Upload failed",err.message||"Database upload failed.","error")}
+  finally{$("#saveImportBtn").disabled=!state.importRows.length}
+}
+
+function resetAgentForm(){
+  $("#agentForm").reset();
+  $("#agent_id").value="";
+  $("#agent_active").checked=true;
+  $("#agent_sort_order").value="100";
+  $("#agentModalTitle").textContent="Add Agent";
+}
+
+function editAgent(id){
+  const a=state.agents.find(x=>x.id===id);
+  if(!a)return;
+  const m={
+    agent_id:a.id,agent_name:a.name,agent_dg_id:a.dg_id,agent_cube_id:a.cube_id,agent_role:a.role,agent_rank:a.rank,
+    agent_qa:a.qa,agent_trainer:a.trainer,agent_avatar_url:a.avatar_url,agent_mtd_score:a.mtd_score,agent_attendance:a.attendance,
+    agent_staffed_time:a.staffed_time,agent_prod_time:a.prod_time,agent_break_time:a.break_time,agent_aht:a.aht,agent_on_time_login:a.on_time_login,
+    agent_sort_order:a.sort_order,agent_bio:a.bio,agent_facebook_url:a.facebook_url,agent_linkedin_url:a.linkedin_url,agent_email:a.email
+  };
+  Object.entries(m).forEach(([id,v])=>$("#"+id).value=v??"");
+  $("#agent_active").checked=!!a.active;
+  $("#agent_is_leader").checked=!!a.is_leader;
+  $("#agentModalTitle").textContent="Edit Agent";
+  openModal("agentModal");
+}
+
+function resetCardForm(){
+  $("#cardForm").reset();
+  $("#card_id").value="";
+  $("#card_active").checked=true;
+  $("#card_environment").value="sandbox";
+  $("#card_status").value="active";
+  $("#card_priority").value="normal";
+  fillAgentSelect("");
+  $("#cardModalTitle").textContent="Add Test Card";
+}
+
+function fillAgentSelect(selected){
+  $("#card_agent").innerHTML='<option value="">Unassigned</option>'+state.agents.filter(a=>a.active).map(a=>`<option value="${a.id}">${esc(a.name)} · ${esc(a.cube_id||a.dg_id||"")}</option>`).join("");
+  $("#card_agent").value=selected||"";
+}
+
+function editCard(id){
+  const c=state.cards.find(x=>x.id===id);
+  if(!c)return;
+  const m={
+    card_id:c.id,card_label:c.label,card_provider:c.provider,card_scenario:c.scenario,card_environment:c.environment,
+    card_last4:c.last4,card_reference:c.reference,card_exp_month:c.exp_month,card_exp_year:c.exp_year,card_notes:c.notes,card_priority:c.priority
+  };
+  Object.entries(m).forEach(([id,v])=>$("#"+id).value=v??"");
+  $("#card_status").value=c.status||"active";
+  $("#card_active").checked=!!c.active;
+  fillAgentSelect(c.assigned_agent_id||"");
+  $("#cardModalTitle").textContent="Edit Test Card";
+  openModal("cardModal");
+}
+
+async function saveAgent(e){
+  e.preventDefault();
+  const id=val("agent_id");
+  const payload={
+    name:val("agent_name"),dg_id:val("agent_dg_id")||null,cube_id:val("agent_cube_id"),role:val("agent_role")||"CSR",rank:val("agent_rank")||"CSR",
+    qa:val("agent_qa")||null,trainer:val("agent_trainer")||null,avatar_url:val("agent_avatar_url")||null,
+    mtd_score:$("#agent_mtd_score").value===""?null:Number($("#agent_mtd_score").value),
+    attendance:$("#agent_attendance").value===""?null:Number($("#agent_attendance").value),
+    staffed_time:val("agent_staffed_time")||null,prod_time:val("agent_prod_time")||null,break_time:val("agent_break_time")||null,aht:val("agent_aht")||null,
+    on_time_login:$("#agent_on_time_login").value===""?null:Number($("#agent_on_time_login").value),
+    sort_order:Number($("#agent_sort_order").value)||100,bio:val("agent_bio")||null,facebook_url:val("agent_facebook_url")||null,
+    linkedin_url:val("agent_linkedin_url")||null,email:val("agent_email")||null,active:$("#agent_active").checked,is_leader:$("#agent_is_leader").checked
+  };
+  if(!payload.name||!payload.cube_id){toast("Validation","Name and Cube ID are required.","error");return}
+  const op=id?db.from("agents").update(payload).eq("id",id):db.from("agents").insert(payload);
+  const {error}=await op;
+  if(error){toast("Save failed",error.message,"error");return}
+  closeModal("agentModal");toast("Agent saved",id?"Agent updated successfully.":"Agent added successfully.");await loadAll();
+}
+
+async function saveCard(e){
+  e.preventDefault();
+  const id=val("card_id");
+  const last4=val("card_last4");
+  if(last4&&(!/^\d{4}$/.test(last4))){toast("Validation","Last 4 must contain exactly 4 digits.","error");return}
+  const payload={
+    label:val("card_label"),provider:val("card_provider")||null,scenario:val("card_scenario")||null,environment:$("#card_environment").value,
+    last4:last4||null,reference:val("card_reference")||null,exp_month:$("#card_exp_month").value===""?null:Number($("#card_exp_month").value),
+    exp_year:$("#card_exp_year").value===""?null:Number($("#card_exp_year").value),assigned_agent_id:$("#card_agent").value||null,
+    status:$("#card_status").value,priority:$("#card_priority").value,active:$("#card_active").checked,notes:val("card_notes")||null
+  };
+  if(!payload.label){toast("Validation","Card label is required.","error");return}
+  const op=id?db.from("test_cards").update(payload).eq("id",id):db.from("test_cards").insert(payload);
+  const {error}=await op;
+  if(error){toast("Save failed",error.message,"error");return}
+  closeModal("cardModal");toast("Test card saved",id?"Test card updated successfully.":"Test card added successfully.");await loadAll();
+}
+
+async function removeAgent(id){
+  const a=state.agents.find(x=>x.id===id);
+  if(!a)return;
+  const used=state.cards.some(c=>c.assigned_agent_id===id);
+  if(used){
+    toast("Delete blocked","This agent has assigned test cards. Reassign them first.","error");return;
+  }
+  if(!confirm(`Delete ${a.name}? This cannot be undone from the admin panel.`))return;
+  const {error}=await db.from("agents").delete().eq("id",id);
+  if(error){toast("Delete failed",error.message,"error");return}
+  toast("Agent deleted",`${a.name} was removed.`);await loadAll();
+}
+
+async function toggleAgent(id){
+  const a=state.agents.find(x=>x.id===id);
+  if(!a)return;
+  const {error}=await db.from("agents").update({active:!a.active}).eq("id",id);
+  if(error){toast("Update failed",error.message,"error");return}
+  toast("Agent status updated",`${a.name} is now ${!a.active?"active":"inactive"}.`);await loadAll();
+}
+
+async function removeCard(id){
+  const c=state.cards.find(x=>x.id===id);
+  if(!c)return;
+  if(!confirm(`Delete test card "${c.label}"?`))return;
+  const {error}=await db.from("test_cards").delete().eq("id",id);
+  if(error){toast("Delete failed",error.message,"error");return}
+  toast("Test card deleted","The test-card record was removed.");await loadAll();
+}
+
+function csvDownload(filename,headers,rows){
+  const q=v=>`"${String(v??"").replace(/"/g,'""')}"`;
+  const csv=[headers.map(q).join(","),...rows.map(r=>r.map(q).join(","))].join("\r\n");
+  const blob=new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"});
+  const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+}
+
+function exportAgents(){
+  csvDownload("team-elite-star-agents-"+new Date().toISOString().slice(0,10)+".csv",
+  ["Name","DG ID","Cube ID","Role","Rank","QA","Trainer","Quality","Attendance","Staffed","Productivity","Break","AHT","On-Time Login","Active","Leader"],
+  state.agents.map(a=>[a.name,a.dg_id,a.cube_id,a.role,a.rank,a.qa,a.trainer,a.mtd_score,a.attendance,a.staffed_time,a.prod_time,a.break_time,a.aht,a.on_time_login,a.active,a.is_leader]));
+}
+
+function exportCards(){
+  csvDownload("team-elite-star-test-cards-"+new Date().toISOString().slice(0,10)+".csv",
+  ["Label","Provider","Scenario","Environment","Last4","Reference","Expiry Month","Expiry Year","Assigned Agent","Status","Priority","Active","Notes"],
+  state.cards.map(c=>[c.label,c.provider,c.scenario,c.environment,c.last4,c.reference,c.exp_month,c.exp_year,c.agents?.name,c.status,c.priority,c.active,c.notes]));
+}
+
+function downloadBackup(){
+  const data={exported_at:new Date().toISOString(),agents:state.agents,cards:state.cards.map(({agents,...x})=>x),settings:state.settings};
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"});
+  const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="team-elite-star-backup-"+new Date().toISOString().replace(/[:.]/g,"-")+".json";document.body.appendChild(a);a.click();a.remove();URL.revokeObjectURL(url);
+}
+
+async function saveSettings(){
+  const pairs={
+    site_name:val("set_site_name"),tagline:val("set_tagline"),team_leader:val("set_team_leader"),qa_manager:val("set_qa_manager"),
+    hero_description:val("set_hero_description"),about_description:val("set_about_description"),announcement:val("set_announcement"),
+    footer_text:val("set_footer_text"),maintenance:$("#set_maintenance").checked?"true":"false",public_notice:val("set_public_notice")
+  };
+  const rows=Object.entries(pairs).map(([key,value])=>({key,value,is_public:true}));
+  const {error}=await db.from("app_settings").upsert(rows,{onConflict:"key"});
+  if(error){toast("Settings failed",error.message,"error");return}
+  toast("Settings saved","Public configuration updated.");await loadAll();
+}
+
+$("#togglePassword").addEventListener("click",()=>{
+  const el=$("#loginPassword");const show=el.type==="password";el.type=show?"text":"password";$("#togglePassword").textContent=show?"HIDE":"SHOW";
+});
+$("#loginForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  $("#loginAlert").classList.add("hidden");
+  $("#loginBtn").disabled=true;
+  try{
+    if(SUPABASE_URL.includes("YOUR_SUPABASE")||SUPABASE_ANON_KEY.includes("YOUR_SUPABASE"))throw new Error("Set your Supabase URL and publishable/anon key in admin.html.");
+    const {error}=await db.auth.signInWithPassword({email:val("loginEmail"),password:$("#loginPassword").value});
+    if(error)throw error;
+    await boot();
+  }catch(err){showLoginError(err.message||"Login failed.")}finally{$("#loginBtn").disabled=false}
+});
+
+async function boot(){
+  try{
+    const ok=await ensureAdmin();
+    if(ok) await loadAll();
+  }catch(err){
+    $("#adminApp").classList.remove("ready");
+    $("#loginScreen").classList.remove("hidden");
+    showLoginError(err.message||"Unable to initialize admin panel.");
+  }
+}
+
+$$(".nav-btn").forEach(b=>b.addEventListener("click",()=>go(b.dataset.view)));
+$$("[data-jump]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.jump)));
+$("#mobileMenu").addEventListener("click",()=>$("#sidebar").classList.toggle("open"));
+$("#refreshBtn").addEventListener("click",async()=>{try{await loadAll();toast("Refreshed","Latest data loaded.")}catch(e){toast("Refresh failed",e.message,"error")}});
+$("#backupBtn").addEventListener("click",downloadBackup);
+$("#logoutBtn").addEventListener("click",async()=>{await db.auth.signOut();location.reload()});
+$("#addAgentBtn").addEventListener("click",()=>{resetAgentForm();openModal("agentModal")});
+$("#addCardBtn").addEventListener("click",()=>{resetCardForm();openModal("cardModal")});
+$("#exportAgentsBtn").addEventListener("click",exportAgents);
+$("#exportCardsBtn").addEventListener("click",exportCards);
+$("#saveSettingsBtn").addEventListener("click",saveSettings);
+$("#refreshAuditBtn").addEventListener("click",async()=>{try{await loadAll();toast("Audit refreshed","Recent activity is up to date.")}catch(e){toast("Audit failed",e.message,"error")}});
+$("#agentSearch").addEventListener("input",renderAgents);
+$("#cardSearch").addEventListener("input",renderCards);
+$("#agentActiveFilter").addEventListener("click",()=>{state.agentStatus=state.agentStatus==="all"?"active":state.agentStatus==="active"?"inactive":"all";$("#agentActiveFilter").textContent=state.agentStatus==="all"?"ALL STATUS":state.agentStatus==="active"?"ACTIVE ONLY":"INACTIVE ONLY";renderAgents()});
+$("#cardStatusFilter").addEventListener("click",()=>{const order=["all","active","reserved","disabled","expired"];state.cardStatus=order[(order.indexOf(state.cardStatus)+1)%order.length];$("#cardStatusFilter").textContent=state.cardStatus==="all"?"ALL STATUS":state.cardStatus.toUpperCase();renderCards()});
+$("#agentForm").addEventListener("submit",saveAgent);
+$("#cardForm").addEventListener("submit",saveCard);
+$("#recordEditorForm").addEventListener("submit",saveRecordEditor);
+["previousRowsSearch","srRowsSearch","callRowsSearch"].forEach(id=>$("#"+id).addEventListener("input",renderReportRecords));
+$("#callWrongFilter").addEventListener("click",()=>{state.callStatus=state.callStatus==="all"?"wrong":"all";renderReportRecords()});
+$("#processImagesBtn").addEventListener("click",processImportFiles);
+$("#saveImportBtn").addEventListener("click",saveImportRows);
+$("#clearImportBtn").addEventListener("click",()=>{state.selectedFiles=[];state.importRows=[];$("#importFiles").value="";$("#selectedFilesLabel").textContent="No images selected";$("#ocrRaw").value="";$("#ocrProgress").value=0;$("#ocrStatus").textContent="Choose screenshots to start.";$("#processImagesBtn").disabled=true;renderImportPreview()});
+$("#importFiles").addEventListener("change",e=>{state.selectedFiles=[...(e.target.files||[])];$("#selectedFilesLabel").textContent=state.selectedFiles.length?state.selectedFiles.map(f=>f.name).join(" · "):"No images selected";$("#processImagesBtn").disabled=!state.selectedFiles.length;});
+$("#dropZone").addEventListener("click",()=>$("#importFiles").click());
+$("#dropZone").addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();$("#importFiles").click()}});
+$("#dropZone").addEventListener("dragover",e=>{e.preventDefault();$("#dropZone").classList.add("dragover")});
+$("#dropZone").addEventListener("dragleave",()=>$("#dropZone").classList.remove("dragover"));
+$("#dropZone").addEventListener("drop",e=>{e.preventDefault();$("#dropZone").classList.remove("dragover");state.selectedFiles=[...e.dataTransfer.files].filter(f=>f.type.startsWith("image/"));$("#importFiles").value="";$("#selectedFilesLabel").textContent=state.selectedFiles.length?state.selectedFiles.map(f=>f.name).join(" · "):"No images selected";$("#processImagesBtn").disabled=!state.selectedFiles.length});
+
+$$("[data-add-record]").forEach(b=>b.addEventListener("click",()=>openRecordEditor(b.dataset.addRecord)));
+$$("[data-export-records]").forEach(b=>b.addEventListener("click",()=>exportRecordTable(b.dataset.exportRecords)));
+
+ document.addEventListener("click",e=>{
+  const b=e.target.closest("[data-close]");if(b){closeModal(b.dataset.close);return}
+  const ea=e.target.closest("[data-edit-agent]");if(ea){editAgent(ea.dataset.editAgent);return}
+  const da=e.target.closest("[data-delete-agent]");if(da){removeAgent(da.dataset.deleteAgent);return}
+  const ta=e.target.closest("[data-toggle-agent]");if(ta){toggleAgent(ta.dataset.toggleAgent);return}
+  const ec=e.target.closest("[data-edit-card]");if(ec){editCard(ec.dataset.editCard);return}
+  const dc=e.target.closest("[data-delete-card]");if(dc){removeCard(dc.dataset.deleteCard);return}
+  const re=e.target.closest("[data-record-edit]");if(re){openRecordEditor(re.dataset.recordEdit,re.dataset.recordId);return}
+  const rd=e.target.closest("[data-record-delete]");if(rd){deleteReportRecord(rd.dataset.recordDelete,rd.dataset.recordId);return}
+  const ad=e.target.closest("[data-import-remove]");if(ad){state.importRows.splice(Number(ad.dataset.importRemove),1);renderImportPreview();return}
+  if(e.target.classList.contains("modal"))closeModal(e.target.id);
+});
+
+document.addEventListener("input",e=>{
+  const el=e.target.closest("[data-import-row][data-import-field]");if(!el)return;
+  const i=Number(el.dataset.importRow),field=el.dataset.importField;if(state.importRows[i])state.importRows[i].data[field]=el.value;
+});
+
+window.addEventListener("keydown",e=>{
+  if(e.key==="Escape") $$(".modal.open").forEach(m=>closeModal(m.id));
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k"){e.preventDefault();$("#agentSearch")?.focus()}
+});
+
+db.auth.onAuthStateChange((event)=>{
+  if(event==="SIGNED_OUT"){state.session=null;state.profile=null;$("#adminApp").classList.remove("ready");$("#loginScreen").classList.remove("hidden")}
+});
+
+boot();
+</script>
+</body>
+</html>
