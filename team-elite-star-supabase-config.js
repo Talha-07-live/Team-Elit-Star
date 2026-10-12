@@ -1,4 +1,4 @@
 window.TEAM_ELITE_SUPABASE_CONFIG = {
-  url: "YOUR_SUPABASE_PROJECT_URL",
-  key: "YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY"
+  url: "https://bfdaljexpirvjisyabdz.supabase.co",
+  key: "sb_publishable_9a6aKpbdb8QdkglMDkCzOw_sPxnPy93"
 };
