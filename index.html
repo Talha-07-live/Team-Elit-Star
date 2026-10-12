@@ -835,6 +835,57 @@ body.weather-off #weatherFx{display:none!important;}
 @media(max-width:860px){.weather-fx{opacity:.72}.weather-fx .petal{filter:none;}.weather-fx::before{filter:blur(12px);}}
 @media(prefers-reduced-motion:reduce){.weather-fx{display:none!important;}}
 </style>
+<style id="report-sections-css">
+.report-section{padding-top:clamp(64px,9vh,112px)}
+.report-panel{position:relative;overflow:hidden;border:1px solid var(--line);background:linear-gradient(180deg,rgba(27,26,34,.86),rgba(8,7,12,.94));border-radius:14px;padding:20px;box-shadow:0 35px 90px -55px var(--glow);backdrop-filter:blur(18px)}
+.report-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-bottom:15px;border-bottom:1px solid var(--line)}
+.report-kicker{font:600 .65rem var(--util);letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
+.report-actions{display:flex;gap:7px;flex-wrap:wrap}
+.report-btn{border:1px solid var(--line);background:rgba(255,255,255,.025);color:var(--muted);font:600 .63rem var(--util);letter-spacing:.06em;text-transform:uppercase;padding:9px 11px;border-radius:5px;cursor:pointer;transition:.22s ease}
+.report-btn:hover,.report-btn.active{color:var(--gold);border-color:var(--line-strong);background:rgba(232,195,107,.07)}
+.report-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden;margin:14px 0}
+.report-stat{background:rgba(8,7,12,.8);padding:13px}
+.report-stat span{display:block;font:600 .57rem var(--util);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.report-stat strong{display:block;margin-top:4px;font:600 clamp(1.4rem,3vw,2rem) var(--serif);color:var(--ivory)}
+.report-tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:13px 0}
+.report-search{flex:1;min-width:220px}
+.report-search input{width:100%;border:1px solid var(--line);background:rgba(0,0,0,.18);color:var(--ivory);border-radius:6px;padding:12px 13px;font:400 .85rem var(--sans);outline:none}
+.report-search input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(232,195,107,.07)}
+.report-table-wrap{overflow:auto;border:1px solid var(--line);border-radius:8px;max-width:100%}
+.report-table{width:100%;border-collapse:collapse;min-width:780px;font-size:.76rem}
+.report-table th,.report-table td{padding:11px 12px;text-align:left;border-bottom:1px solid rgba(232,195,107,.09);vertical-align:top}
+.report-table th{position:sticky;top:0;z-index:1;background:#17151d;color:var(--muted);font:600 .59rem var(--util);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.report-table tr:last-child td{border-bottom:0}
+.report-table tbody tr:hover td{background:rgba(232,195,107,.035)}
+.report-table td{color:#d8d1c2}
+.report-name{color:var(--ivory);font-weight:600;white-space:nowrap}
+.report-muted{display:block;color:var(--muted);font-size:.65rem;margin-top:3px}
+.report-badge{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:99px;padding:4px 7px;font:600 .57rem var(--util);letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+.report-badge.good{color:#9ce7b8;border-color:rgba(131,227,174,.26);background:rgba(131,227,174,.06)}
+.report-badge.bad{color:#ff9ba1;border-color:rgba(255,111,120,.27);background:rgba(255,111,120,.06)}
+.report-badge.warn{color:var(--gold);border-color:var(--line-strong);background:rgba(232,195,107,.06)}
+.accuracy-cell{font-weight:700;white-space:nowrap}
+.accuracy-low{background:rgba(255,111,120,.15)!important;color:#ff9ba1!important}
+.accuracy-mid{background:rgba(232,195,107,.13)!important;color:#f5d88f!important}
+.accuracy-high{background:rgba(131,227,174,.13)!important;color:#a3e9bb!important}
+.report-total td{font-weight:700;color:var(--gold-shine);background:rgba(232,195,107,.055)}
+.report-empty{padding:28px 15px;text-align:center;color:var(--muted);font:.75rem var(--util)}
+.report-note{margin:12px 0 0;color:var(--muted);font-size:.73rem;line-height:1.55}
+.previous-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:15px}
+.previous-card{border:1px solid var(--line);background:linear-gradient(180deg,var(--onyx),var(--obsidian-2));border-radius:10px;padding:19px;min-width:0}
+.previous-card .prev-head{display:flex;align-items:center;gap:11px}
+.previous-card .prev-avatar{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 30% 25%,#2a2620,#141219);border:1px solid var(--line-strong);color:var(--gold-shine);font:600 1.1rem var(--serif);flex:0 0 auto}
+.previous-card h3{font:600 1.2rem var(--serif);margin:0;line-height:1.15;overflow-wrap:anywhere}
+.previous-card .prev-role{font:600 .57rem var(--util);color:var(--gold);text-transform:uppercase;letter-spacing:.09em;margin-top:4px}
+.prev-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:15px}
+.prev-metric{border:1px solid var(--line);border-radius:6px;padding:8px;min-width:0}
+.prev-metric span{display:block;color:var(--muted);font:600 .53rem var(--util);text-transform:uppercase;letter-spacing:.05em}
+.prev-metric strong{display:block;color:var(--ivory);font:600 .83rem var(--util);margin-top:3px;overflow-wrap:anywhere}
+@media(max-width:900px){.previous-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.report-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.report-panel{padding:14px}}
+@media(max-width:540px){.previous-grid{grid-template-columns:1fr}.report-stat{padding:11px}.report-table{min-width:700px}.report-top{align-items:flex-start}.report-actions{width:100%}.report-btn{flex:1}}
+@media(max-width:1080px){.nav-links{gap:1rem}.nav-links a{font-size:.68rem}.nav-tag{font-size:.58rem}}
+</style>
+
 </head>
 <body>
  
@@ -859,7 +910,7 @@ body.weather-off #weatherFx{display:none!important;}
     <nav class="nav-links" aria-label="Primary">
       <a href="#about">About</a>
       <a href="#impact">Achievements</a>
-      <a href="#team">Members</a><a href="#command">Command</a>
+      <a href="#team">Members</a><a href="#command">Command</a><a href="#previous-members">Previous</a><a href="#sr-data">SR Data</a><a href="#call-data">Call Data</a>
       <span class="nav-tag">Nagad&nbsp;·&nbsp;CSR</span>
     </nav>
     <button class="nav-toggle" id="navToggle" aria-label="Jump to members">
@@ -928,7 +979,7 @@ body.weather-off #weatherFx{display:none!important;}
         <div class="stat"><div class="num" data-count="8.28" data-suffix="h" data-dec="2">0</div><div class="lbl">Avg. Productivity / Day</div></div>
         <div class="stat"><div class="num" data-count="85.71" data-suffix="%" data-dec="2">0</div><div class="lbl">Overall Attendance</div></div>
       </div>
-      <div class="stats-note reveal"><span>TL: Albina Jahan</span><span>QA: Rasel Hossain</span><span>12 Active Team Members</span></div>
+      <div class="stats-note reveal"><span>TL: Albina Jahan</span><span>QA: Rasel Hossain</span><span>8 Active CSR Profiles</span></div>
     </div>
   </section>
  
@@ -993,6 +1044,75 @@ body.weather-off #weatherFx{display:none!important;}
   </div>
 </section>
 
+<section id="previous-members" class="report-section" aria-label="Previous members">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Historical Roster</span>
+      <h2>Previous <span class="gold-text">members</span>.</h2>
+      <p>Archived team profile information retained from the earlier roster.</p>
+    </div>
+    <div class="report-panel reveal">
+      <div class="report-top">
+        <div><span class="report-kicker">Archived Profiles</span><div class="report-note" style="margin-top:5px">Past roster records are kept separate from the active team view.</div></div>
+        <div class="report-actions"><button class="report-btn" id="exportPreviousMembers" type="button">Export CSV</button></div>
+      </div>
+      <div class="report-tools"><div class="report-search"><input id="previousMemberSearch" type="search" placeholder="Search archived member, ID, cube or trainer…" autocomplete="off"></div><span class="report-badge warn" id="previousMemberCount">1 archived profile</span></div>
+      <div id="previousMembersGrid" class="previous-grid"></div>
+      <p class="report-note">This archived record was present in the earlier website roster but does not appear in the supplied SR accuracy sheet. Confirm the membership status before treating this as a final HR archive.</p>
+    </div>
+  </div>
+</section>
+
+<section id="sr-data" class="report-section" aria-label="SR accuracy data">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Service Report</span>
+      <h2>SR <span class="gold-text">data</span>.</h2>
+      <p>Team accuracy report from the supplied Jashore sheet, with right/wrong counts and accuracy percentage.</p>
+    </div>
+    <div class="report-panel reveal">
+      <div class="report-top">
+        <div><span class="live-dot"></span><span class="report-kicker">SR Accuracy Report · Jashore</span></div>
+        <div class="report-actions"><button class="report-btn" id="srSortAccuracy" type="button">Accuracy ↑</button><button class="report-btn" id="exportSrData" type="button">Export CSV</button></div>
+      </div>
+      <div class="report-stats">
+        <div class="report-stat"><span>Total Agents</span><strong id="srTotalAgents">12</strong></div>
+        <div class="report-stat"><span>Right</span><strong id="srTotalRight">205</strong></div>
+        <div class="report-stat"><span>Wrong</span><strong id="srTotalWrong">11</strong></div>
+        <div class="report-stat"><span>Accuracy</span><strong id="srOverallAccuracy">94.91%</strong></div>
+      </div>
+      <div class="report-tools"><div class="report-search"><input id="srSearch" type="search" placeholder="Search ID, name, location…" autocomplete="off"></div><button class="report-btn active" id="srReset" type="button">Reset</button></div>
+      <div class="report-table-wrap"><table class="report-table"><thead><tr><th>ID</th><th>Name</th><th>Location</th><th>Right</th><th>Wrong</th><th>Accuracy %age</th></tr></thead><tbody id="srTableBody"></tbody><tfoot id="srTableFoot"></tfoot></table></div>
+      <p class="report-note">Totals and individual accuracy values are reproduced from the supplied sheet. Overall accuracy is 205 ÷ (205 + 11) = 94.91%.</p>
+    </div>
+  </div>
+</section>
+
+<section id="call-data" class="report-section" aria-label="Call training data">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Training Review</span>
+      <h2>Call <span class="gold-text">data</span>.</h2>
+      <p>Call review entries and training remarks from 2–7 October 2026.</p>
+    </div>
+    <div class="report-panel reveal">
+      <div class="report-top">
+        <div><span class="live-dot"></span><span class="report-kicker">Call Training Records</span></div>
+        <div class="report-actions"><button class="report-btn active" data-call-filter="all" type="button">All <b id="callCountAll">11</b></button><button class="report-btn" data-call-filter="wrong" type="button">Wrong only</button><button class="report-btn" id="exportCallData" type="button">Export CSV</button></div>
+      </div>
+      <div class="report-stats">
+        <div class="report-stat"><span>Total Records</span><strong id="callTotal">11</strong></div>
+        <div class="report-stat"><span>Wrong Training</span><strong id="callWrong">11</strong></div>
+        <div class="report-stat"><span>Unique Agents</span><strong id="callAgents">7</strong></div>
+        <div class="report-stat"><span>Date Range</span><strong style="font-size:1.25rem">2–7 Oct</strong></div>
+      </div>
+      <div class="report-tools"><div class="report-search"><input id="callSearch" type="search" placeholder="Search ID, name, category, remark, masked number…" autocomplete="off"></div><span class="report-badge warn">Customer numbers masked</span></div>
+      <div class="report-table-wrap"><table class="report-table"><thead><tr><th>Service Mobile No.</th><th>Caller Mobile No.</th><th>Sub Service Category</th><th>Date</th><th>ID</th><th>Name</th><th>Training Status</th><th>Training Remarks</th></tr></thead><tbody id="callTableBody"></tbody></table></div>
+      <p class="report-note">Customer/caller mobile numbers are masked to their last four digits for privacy. The unmasked numbers are not embedded in this page.</p>
+    </div>
+  </div>
+</section>
+
 <div class="quick-dock" id="quickDock" aria-label="Quick actions">
   <button class="dock-btn" id="soundBtn" aria-label="Toggle ambience" title="Sound">◒</button>
   <button class="dock-btn" id="themeGlow" aria-label="Toggle ambient glow" title="Ambient glow">◈</button>
@@ -1013,6 +1133,9 @@ body.weather-off #weatherFx{display:none!important;}
   <button class="sheet-item" id="sheetSound" type="button"><span class="sheet-ic">◒</span> Toggle Ambience</button>
   <button class="sheet-item" id="sheetGlow" type="button"><span class="sheet-ic">◈</span> Toggle Ambient Glow</button>
   <button class="sheet-item" id="sheetTop" type="button"><span class="sheet-ic">↑</span> Back to Top</button>
+  <button class="sheet-item" data-nav-target="#previous-members" type="button"><span class="sheet-ic">◷</span> Previous Members</button>
+  <button class="sheet-item" data-nav-target="#sr-data" type="button"><span class="sheet-ic">▤</span> SR Data</button>
+  <button class="sheet-item" data-nav-target="#call-data" type="button"><span class="sheet-ic">☎</span> Call Data</button>
   <button class="sheet-item" id="sheetInstall" type="button" hidden><span class="sheet-ic">⇩</span> Install App</button>
   <p class="sheet-ios-hint" id="sheetIosHint" hidden>To install as an app on iPhone/iPad: Tap the Share button below → select 'Add to Home Screen'.</p>
 </div>
@@ -1130,23 +1253,6 @@ const MEMBERS = [
     aht: "0:03:03",
     onTimeLogin: "100.00%",
     bio: "Outstanding performance featuring strong quality results and consistent daily productivity."
-  },
-  {
-    dgId: "19249",
-    name: "Md. Arifuzzaman",
-    cubeId: "Arifuzzaman_JSR",
-    role: "CSR",
-    rank: "CSR",
-    qa: "Rasel Hossain",
-    trainer: "Reduan Islam",
-    mtdScore: "96.73%",
-    attendance: "90.00%",
-    staffedTime: "8:59:37",
-    prodTime: "7:54:07",
-    breakTime: "1:05:30",
-    aht: "0:02:43",
-    onTimeLogin: "100.00%",
-    bio: "High accuracy and reliable daily productivity with consistent service performance."
   },
   {
     dgId: "19266",
@@ -2220,6 +2326,123 @@ if(!REDUCE){
     const m=document.getElementById('memberModal');
     if(m&&!m.classList.contains('open'))m.setAttribute('aria-hidden','true');
   });
+})();
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./team-elite-star-supabase-config.js"></script><script>window.TEAM_ELITE_SUPABASE=window.TEAM_ELITE_SUPABASE_CONFIG||{url:"YOUR_SUPABASE_PROJECT_URL",key:"YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY"};</script>
+<script id="report-sections-script">
+(()=>{
+  const $=s=>document.querySelector(s);
+  const $$=s=>[...document.querySelectorAll(s)];
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  let archive=[{
+    id:'19249',name:'Md. Arifuzzaman',location:'Jashore',cube:'Arifuzzaman_JSR',role:'CSR',qa:'Rasel Hossain',trainer:'Reduan Islam',quality:'96.73%',attendance:'90.00%',staffed:'8:59:37',productive:'7:54:07',breakTime:'1:05:30',aht:'0:02:43',onTimeLogin:'100.00%',note:'Archived roster entry from the previous website version.'
+  }];
+  let srRows=[
+    {id:'20429',name:'Mahfuja Alam Joty',location:'Jashore',right:2,wrong:3,accuracy:40.00},
+    {id:'20414',name:'Aysha Sidika Tisha',location:'Jashore',right:5,wrong:1,accuracy:83.33},
+    {id:'17916',name:'Md.Sajman Basar',location:'Jashore',right:6,wrong:1,accuracy:85.71},
+    {id:'20071',name:'Abu Talha Raj',location:'Jashore',right:24,wrong:2,accuracy:92.31},
+    {id:'18314',name:'MD.shakibuzzaman shacho',location:'Jashore',right:13,wrong:1,accuracy:92.86},
+    {id:'20204',name:'Bijoya Ray',location:'Jashore',right:38,wrong:2,accuracy:95.00},
+    {id:'19266',name:'Shuly Khatun',location:'Jashore',right:25,wrong:1,accuracy:96.15},
+    {id:'17174',name:'Sarmin Sultana Apon',location:'Jashore',right:35,wrong:0,accuracy:100.00},
+    {id:'15508',name:'Bristi rani das',location:'Jashore',right:3,wrong:0,accuracy:100.00},
+    {id:'20413',name:'Abida Sultana',location:'Jashore',right:10,wrong:0,accuracy:100.00},
+    {id:'16546',name:'Suraya',location:'Jashore',right:22,wrong:0,accuracy:100.00},
+    {id:'19420',name:'Shekh Afsana mimi',location:'Jashore',right:22,wrong:0,accuracy:100.00}
+  ];
+  let callRows=[
+    {service:'••••••3389',caller:'••••••3389',category:'Bill Pay Dispute General',date:'2-Oct-26',id:'18314',name:'MD.shakibuzzaman shacho',status:'Wrong',remarks:'Wrong nagad account number.'},
+    {service:'••••••5003',caller:'••••••5003',category:'Merchant Pay Dispute General',date:'3-Oct-26',id:'19266',name:'Shuly Khatun',status:'Wrong',remarks:'Did not provide actual problem details.'},
+    {service:'••••••2079',caller:'••••••5382',category:'Bill Pay Dispute General',date:'4-Oct-26',id:'20204',name:'Bijoya Ray',status:'Wrong',remarks:'Unnecessary (Biller Account Number or Customer Number).'},
+    {service:'••••••0663',caller:'••••••0663',category:'Call Back Request',date:'4-Oct-26',id:'20071',name:'Abu Talha Raj',status:'Wrong',remarks:'Unnecessary Ticket.'},
+    {service:'••••••0838',caller:'••••••0838',category:'SMTAP Issue',date:'4-Oct-26',id:'20071',name:'Abu Talha Raj',status:'Wrong',remarks:'Unnecessary Ticket.'},
+    {service:'••••••9807',caller:'••••••9807',category:'Call Back Request',date:'6-Oct-26',id:'20204',name:'Bijoya Ray',status:'Wrong',remarks:'Unnecessary Ticket.'},
+    {service:'••••••0520',caller:'••••••0520',category:'Bill Pay Dispute General',date:'7-Oct-26',id:'20429',name:'Mahfuja Alam Joty',status:'Wrong',remarks:'Wrong Biller Account Number or Customer Number and Payment Channel.'},
+    {service:'••••••0348',caller:'••••••0348',category:'Bill Pay Dispute General',date:'7-Oct-26',id:'20429',name:'Mahfuja Alam Joty',status:'Wrong',remarks:'Wrong Payment Channel.'},
+    {service:'••••••9979',caller:'••••••4536',category:'NPSB MFS Dispute',date:'7-Oct-26',id:'17916',name:'Md.Sajman Basar',status:'Wrong',remarks:'Unnecessary Ticket.'},
+    {service:'••••••2986',caller:'••••••2986',category:'Bill Pay Dispute General',date:'7-Oct-26',id:'20414',name:'Aysha Sidika Tisha',status:'Wrong',remarks:'Unnecessary information.'},
+    {service:'••••••2030',caller:'••••••2030',category:'Mobile Recharge Dispute',date:'7-Oct-26',id:'20429',name:'Mahfuja Alam Joty',status:'Wrong',remarks:'Wrong Receiver Number.'}
+  ];
+
+  function exportCsv(filename,headers,rows){
+    const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
+    const csv=[headers.map(q).join(','),...rows.map(row=>row.map(q).join(','))].join('\r\n');
+    const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});
+    const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),800);
+  }
+
+  function renderArchive(){
+    const q=($('#previousMemberSearch')?.value||'').trim().toLowerCase();
+    const rows=archive.filter(a=>[a.id,a.name,a.location,a.cube,a.role,a.qa,a.trainer,a.note].join(' ').toLowerCase().includes(q));
+    $('#previousMemberCount').textContent=`${rows.length} archived profile${rows.length===1?'':'s'}`;
+    $('#previousMembersGrid').innerHTML=rows.length?rows.map(a=>`<article class="previous-card"><div class="prev-head"><div class="prev-avatar">${esc(a.name.split(/\s+/).slice(0,2).map(x=>x[0]).join('').toUpperCase())}</div><div><h3>${esc(a.name)}</h3><div class="prev-role">${esc(a.role)} · Archived profile</div></div></div><div class="report-note"><b>ID:</b> ${esc(a.id)} · <b>Cube:</b> ${esc(a.cube)}<br><b>Trainer:</b> ${esc(a.trainer)}<br><b>QA:</b> ${esc(a.qa)}</div><div class="prev-metrics"><div class="prev-metric"><span>Quality</span><strong>${esc(a.quality)}</strong></div><div class="prev-metric"><span>Attendance</span><strong>${esc(a.attendance)}</strong></div><div class="prev-metric"><span>AHT</span><strong>${esc(a.aht)}</strong></div><div class="prev-metric"><span>Productivity</span><strong>${esc(a.productive)}</strong></div></div><p class="report-note">${esc(a.note)}</p></article>`).join(''):'<div class="report-empty">No previous member matches your search.</div>';
+  }
+
+  let srSorted=false;
+  function renderSr(){
+    const q=($('#srSearch')?.value||'').trim().toLowerCase();
+    let rows=srRows.filter(r=>[r.id,r.name,r.location].join(' ').toLowerCase().includes(q));
+    if(srSorted) rows=[...rows].sort((a,b)=>a.accuracy-b.accuracy);
+    $('#srTableBody').innerHTML=rows.map(r=>`<tr><td>${esc(r.id)}</td><td><span class="report-name">${esc(r.name)}</span></td><td>${esc(r.location)}</td><td>${r.right}</td><td>${r.wrong}</td><td class="accuracy-cell ${r.accuracy<70?'accuracy-low':r.accuracy<95?'accuracy-mid':'accuracy-high'}">${r.accuracy.toFixed(2)}%</td></tr>`).join('')||'<tr><td colspan="6"><div class="report-empty">No matching SR record.</div></td></tr>';
+    const right=srRows.reduce((s,r)=>s+r.right,0),wrong=srRows.reduce((s,r)=>s+r.wrong,0);
+    $('#srTotalAgents').textContent=srRows.length;$('#srTotalRight').textContent=right;$('#srTotalWrong').textContent=wrong;$('#srOverallAccuracy').textContent=(right/(right+wrong)*100).toFixed(2)+'%';
+    $('#srTableFoot').innerHTML=`<tr class="report-total"><td colspan="3">Grand Total</td><td>${right}</td><td>${wrong}</td><td>${(right/(right+wrong)*100).toFixed(2)}%</td></tr>`;
+  }
+
+  let callFilter='all';
+  function renderCalls(){
+    const q=($('#callSearch')?.value||'').trim().toLowerCase();
+    const rows=callRows.filter(r=>(callFilter==='all'||r.status.toLowerCase()===callFilter)&&[r.service,r.caller,r.category,r.date,r.id,r.name,r.status,r.remarks].join(' ').toLowerCase().includes(q));
+    $('#callCountAll').textContent=callRows.length;$('#callTotal').textContent=callRows.length;$('#callWrong').textContent=callRows.filter(r=>r.status==='Wrong').length;$('#callAgents').textContent=new Set(callRows.map(r=>r.id)).size;
+    $('#callTableBody').innerHTML=rows.map(r=>`<tr><td>${esc(r.service)}</td><td>${esc(r.caller)}</td><td>${esc(r.category)}</td><td>${esc(r.date)}</td><td>${esc(r.id)}</td><td><span class="report-name">${esc(r.name)}</span></td><td><span class="report-badge bad">${esc(r.status)}</span></td><td>${esc(r.remarks)}</td></tr>`).join('')||'<tr><td colspan="8"><div class="report-empty">No matching call record.</div></td></tr>';
+    $$('[data-call-filter]').forEach(b=>b.classList.toggle('active',b.dataset.callFilter===callFilter));
+  }
+
+  $('#previousMemberSearch')?.addEventListener('input',renderArchive);
+  $('#srSearch')?.addEventListener('input',renderSr);
+  $('#callSearch')?.addEventListener('input',renderCalls);
+  $('#srSortAccuracy')?.addEventListener('click',()=>{srSorted=!srSorted;$('#srSortAccuracy').textContent=srSorted?'Accuracy ↓':'Accuracy ↑';renderSr()});
+  $('#srReset')?.addEventListener('click',()=>{$('#srSearch').value='';srSorted=false;$('#srSortAccuracy').textContent='Accuracy ↑';renderSr()});
+  $$('[data-call-filter]').forEach(b=>b.addEventListener('click',()=>{callFilter=b.dataset.callFilter;renderCalls()}));
+  $('#exportPreviousMembers')?.addEventListener('click',()=>exportCsv('team-elite-star-previous-members.csv',['ID','Name','Location','Cube','Role','QA','Trainer','Quality','Attendance','Staffed','Productivity','Break','AHT','On-Time Login'],archive.map(a=>[a.id,a.name,a.location,a.cube,a.role,a.qa,a.trainer,a.quality,a.attendance,a.staffed,a.productive,a.breakTime,a.aht,a.onTimeLogin])));
+  $('#exportSrData')?.addEventListener('click',()=>exportCsv('team-elite-star-sr-data.csv',['ID','Name','Location','Right','Wrong','Accuracy %'],srRows.map(r=>[r.id,r.name,r.location,r.right,r.wrong,r.accuracy.toFixed(2)+'%'])));
+  $('#exportCallData')?.addEventListener('click',()=>exportCsv('team-elite-star-call-data.csv',['Service Mobile No. (masked)','Caller Mobile No. (masked)','Sub Service Category','Date','ID','Name','Training Status','Training Remarks'],callRows.map(r=>[r.service,r.caller,r.category,r.date,r.id,r.name,r.status,r.remarks])));
+  $$('[data-nav-target]').forEach(b=>b.addEventListener('click',()=>{const target=$(b.dataset.navTarget);if(target){target.scrollIntoView({behavior:'smooth',block:'start'});$('#actionSheet')?.classList.remove('open');$('#sheetBackdrop')?.classList.remove('open');$('#actionSheet')?.setAttribute('aria-hidden','true');$('#moreTabBtn')?.setAttribute('aria-expanded','false')}}));
+  renderArchive();renderSr();renderCalls();
+
+  function reportDateLabel(value){
+    if(!value)return '';
+    const m=String(value).match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if(!m)return String(value);
+    const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return `${Number(m[3])}-${months[Number(m[2])-1]}-${m[1].slice(2)}`;
+  }
+  async function syncReportDataFromDatabase(){
+    const cfg=window.TEAM_ELITE_SUPABASE;
+    if(!cfg||!cfg.url||cfg.url.includes('YOUR_SUPABASE')||!cfg.key||cfg.key.includes('YOUR_SUPABASE')||!window.supabase)return;
+    const client=window.supabase.createClient(cfg.url,cfg.key);
+    const [p,s,c]=await Promise.all([
+      client.from('previous_members').select('*').order('archived_date',{ascending:false}),
+      client.from('sr_records').select('*').order('accuracy',{ascending:true}),
+      client.from('call_records').select('*').order('call_date',{ascending:true})
+    ]);
+    if(p.error)throw p.error;if(s.error)throw s.error;if(c.error)throw c.error;
+    archive=(p.data||[]).map(r=>({id:r.agent_id||'',name:r.name||'',location:r.location||'',cube:r.cube_id||'',role:r.role||'CSR',qa:r.qa||'',trainer:r.trainer||'',quality:r.quality==null?'—':Number(r.quality).toFixed(2)+'%',attendance:r.attendance==null?'—':Number(r.attendance).toFixed(2)+'%',staffed:r.staffed_time||'—',productive:r.productive_time||'—',breakTime:r.break_time||'—',aht:r.aht||'—',onTimeLogin:r.on_time_login==null?'—':Number(r.on_time_login).toFixed(2)+'%',note:r.notes||'Archived member record.',archivedDate:r.archived_date||''}));
+    srRows=(s.data||[]).map(r=>({id:r.agent_id||'',name:r.agent_name||'',location:r.location||'',right:Number(r.right_count)||0,wrong:Number(r.wrong_count)||0,accuracy:Number(r.accuracy)||0,reportDate:r.report_date||''}));
+    callRows=(c.data||[]).map(r=>({service:r.service_mobile_masked||'••••••',caller:r.caller_mobile_masked||'••••••',category:r.category||'',date:reportDateLabel(r.call_date),id:r.agent_id||'',name:r.agent_name||'',status:r.training_status||'Unknown',remarks:r.training_remarks||''}));
+    renderArchive();renderSr();renderCalls();
+    const prevNote=document.querySelector('#previous-members .report-panel > .report-note');
+    if(prevNote)prevNote.textContent='Archived profiles are loaded from the protected Team Elite Star database.';
+    const srNote=document.querySelector('#sr-data .report-panel > .report-note');
+    if(srNote)srNote.textContent='Values are loaded from the Team Elite Star report database. Accuracy is calculated from the stored right/wrong counts when a report is imported.';
+    const callNote=document.querySelector('#call-data .report-panel > .report-note');
+    if(callNote)callNote.textContent='Call-training records are loaded from the database. Service and caller numbers are stored in masked form only.';
+  }
+  syncReportDataFromDatabase().catch(err=>console.warn('Team Elite Star report sync unavailable; showing embedded report data.',err));
 })();
 </script>
 
