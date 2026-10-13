@@ -926,9 +926,8 @@ body.weather-off #weatherFx{display:none!important;}
 </header>
 
 <div class="local-time-bar" id="localTimeBar" aria-live="polite" aria-label="Local time">
-  <div class="local-time-cell"><b><span class="lt-dot" aria-hidden="true"></span><time id="localTime">--:--:--</time></b><small>Local Time</small></div>
+  <div class="local-time-cell"><b><span class="lt-dot" aria-hidden="true"></span><time id="localTime">--:--:--</time></b><small>Bangladesh Time</small></div>
   <div class="local-time-cell"><b id="displayMode">DESKTOP</b><small>Display</small></div>
-  <div class="local-time-cell db-sync-cell"><b id="dbLiveStatus" class="db-status-wait">CHECKING</b><small>Supabase Sync</small></div>
 </div>
 
 <main id="top">
@@ -1184,155 +1183,10 @@ body.weather-off #weatherFx{display:none!important;}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 
-const STATIC_TEAM_LEADER = {
-  name: "Albina Jahan",
-  role: "Team Leader",
-  bio: "Leading Team Elite Star to operational excellence, driving high quality standards and top-tier customer satisfaction.",
-  rank: "Team Leader",
-  cubeId: "TL_ALBINA_JSR"
-};
-
-const STATIC_MEMBERS = [
-  {
-    dgId: "16546",
-    name: "Suraya",
-    cubeId: "Suraya46_JSR",
-    role: "CSR",
-    rank: "CSR",
-    qa: "Rasel Hossain",
-    trainer: "Reduan Islam",
-    mtdScore: "99.32%",
-    attendance: "100.00%",
-    staffedTime: "9:01:22",
-    prodTime: "8:01:10",
-    breakTime: "1:00:12",
-    aht: "0:03:07",
-    onTimeLogin: "100.00%",
-    bio: "Consistent customer support provider with strong compliance and 100% attendance."
-  },
-  {
-    dgId: "17174",
-    name: "Sarmin Sultana Apon",
-    cubeId: "Apon74_JSR",
-    role: "CSR · Our Star",
-    rank: "CSR · Star",
-    qa: "Rasel Hossain",
-    trainer: "Md. Mynul Islam",
-    mtdScore: "99.65%",
-    attendance: "100.00%",
-    staffedTime: "10:33:20",
-    prodTime: "9:35:54",
-    breakTime: "0:57:26",
-    aht: "0:02:45",
-    onTimeLogin: "100.00%",
-    bio: "Top performer with excellent quality performance and over 9 hours average daily productivity."
-  },
-  {
-    dgId: "17916",
-    name: "Md.Sajman Basar",
-    cubeId: "Sajman_JSR",
-    role: "CSR",
-    rank: "CSR",
-    qa: "Rasel Hossain",
-    trainer: "Reduan Islam",
-    mtdScore: "93.97%",
-    attendance: "90.00%",
-    staffedTime: "9:01:40",
-    prodTime: "8:05:45",
-    breakTime: "0:55:55",
-    aht: "0:03:15",
-    onTimeLogin: "100.00%",
-    bio: "Focused on efficient handling, consistent performance, and delivering quality service with every interaction."
-  },
-  {
-    dgId: "18314",
-    name: "MD.shakibuzzaman shacho",
-    cubeId: "Shacho_JSR",
-    role: "CSR",
-    rank: "CSR",
-    qa: "Rasel Hossain",
-    trainer: "Md. Mynul Islam",
-    mtdScore: "97.75%",
-    attendance: "100.00%",
-    staffedTime: "9:00:54",
-    prodTime: "7:59:06",
-    breakTime: "1:01:48",
-    aht: "0:03:03",
-    onTimeLogin: "100.00%",
-    bio: "Outstanding performance featuring strong quality results and consistent daily productivity."
-  },
-  {
-    dgId: "19266",
-    name: "Shuly Khatun",
-    cubeId: "Shulykhatun_JSR",
-    role: "CSR · Our Star",
-    rank: "CSR · Star",
-    qa: "Rasel Hossain",
-    trainer: "Reduan Islam",
-    mtdScore: "99.80%",
-    attendance: "100.00%",
-    staffedTime: "9:21:01",
-    prodTime: "8:22:47",
-    breakTime: "0:58:14",
-    aht: "0:02:59",
-    onTimeLogin: "100.00%",
-    bio: "Elite squad member boasting an excellent MTD score and swift handling performance."
-  },
-  {
-    dgId: "19420",
-    name: "Shekh Afsana mimi",
-    cubeId: "Afsanamimi_JSR",
-    role: "CSR",
-    rank: "CSR",
-    qa: "Rasel Hossain",
-    trainer: "Md. Shahin Akter",
-    mtdScore: "97.87%",
-    attendance: "100.00%",
-    staffedTime: "9:02:52",
-    prodTime: "7:55:14",
-    breakTime: "1:07:38",
-    aht: "0:02:48",
-    onTimeLogin: "100.00%",
-    bio: "Hardworking team member delivering strong staffed time with consistent service quality."
-  },
-  {
-    dgId: "20071",
-    name: "Abu Talha Raj",
-    cubeId: "Talharaj_JSR",
-    role: "CSR",
-    rank: "CSR",
-    qa: "Rasel Hossain",
-    trainer: "Md. Shahin Akter",
-    mtdScore: "99.41%",
-    attendance: "100.00%",
-    staffedTime: "9:02:44",
-    prodTime: "8:00:18",
-    breakTime: "1:02:26",
-    aht: "0:03:20",
-    onTimeLogin: "100.00%",
-    bio: "Focused team player driving continuous customer engagement and thorough resolution."
-  },
-  {
-    dgId: "20204",
-    name: "Bijoya Ray",
-    cubeId: "Bijoya_JSR",
-    role: "CSR",
-    rank: "CSR",
-    qa: "Rasel Hossain",
-    trainer: "Md. Shahin Akter",
-    mtdScore: "94.56%",
-    attendance: "88.89%",
-    staffedTime: "8:57:10",
-    prodTime: "7:40:58",
-    breakTime: "1:16:12",
-    aht: "0:02:45",
-    onTimeLogin: "100.00%",
-    bio: "Reliable member maintaining strong customer service performance and consistent productivity."
-  }
-];
-
-let TEAM_LEADER = {...STATIC_TEAM_LEADER};
-let MEMBERS = [...STATIC_MEMBERS];
+const STATIC_TEAM_LEADER = null;
+const STATIC_MEMBERS = [];
+let TEAM_LEADER = null;
+let MEMBERS = [];
 
 const REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const FINE   = window.matchMedia('(pointer:fine)').matches;
@@ -1363,8 +1217,9 @@ window.renderTeamMembers = function renderTeamMembers(){
   const fb='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.2c-1.2 0-1.6.8-1.6 1.5V12h2.7l-.4 2.9h-2.3v7A10 10 0 0 0 22 12z"/></svg>';
   const li='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5A2.5 2.5 0 1 1 5 8.5a2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM10 9h3.8v1.7h.1c.5-.9 1.8-1.9 3.6-1.9 3.9 0 4.6 2.5 4.6 5.8V21h-4v-5.2c0-1.2 0-2.8-1.7-2.8s-2 1.3-2 2.7V21h-4z"/></svg>';
   const mail='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>';
-  const leader = TEAM_LEADER || STATIC_TEAM_LEADER;
-  let html = `
+  const leader = TEAM_LEADER;
+  if(!leader && !MEMBERS.length){grid.innerHTML = '<div class="report-empty">Team data is temporarily unavailable.</div>';return;}
+  const leaderMarkup = leader ? `
     <article class="member-card tl-card reveal" tabindex="0">
       <span class="rank">${esc(leader.rank||'Team Leader')}</span>
       <div class="avatar" aria-hidden="true">${esc(initials(leader.name))}</div>
@@ -1380,7 +1235,8 @@ window.renderTeamMembers = function renderTeamMembers(){
         <a href="#" class="magnet" aria-label="${esc(leader.name)} on LinkedIn">${li}</a>
         <a href="#" class="magnet" aria-label="Email ${esc(leader.name)}">${mail}</a>
       </div>
-    </article>`;
+    </article>` : '';
+  html = leaderMarkup;
   html += (Array.isArray(MEMBERS)?MEMBERS:[]).map(m=>`
     <article class="member-card reveal" tabindex="0">
       <span class="rank">${esc(m.rank||m.role||'CSR')}</span>
@@ -2347,42 +2203,15 @@ if(!REDUCE){
 
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="./team-elite-star-supabase-config.js?v=3"></script><script>window.TEAM_ELITE_SUPABASE=window.TEAM_ELITE_SUPABASE_CONFIG||null;</script>
+<script src="./team-elite-star-supabase-config.js?v=4"></script><script>window.TEAM_ELITE_SUPABASE=window.TEAM_ELITE_SUPABASE_CONFIG||null;</script>
 <script id="report-sections-script">
 (()=>{
   const $=s=>document.querySelector(s);
   const $$=s=>[...document.querySelectorAll(s)];
   const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  let archive=[{
-    id:'19249',name:'Md. Arifuzzaman',location:'Jashore',cube:'Arifuzzaman_JSR',role:'CSR',qa:'Rasel Hossain',trainer:'Reduan Islam',quality:'96.73%',attendance:'90.00%',staffed:'8:59:37',productive:'7:54:07',breakTime:'1:05:30',aht:'0:02:43',onTimeLogin:'100.00%',note:'Archived roster entry from the previous website version.'
-  }];
-  let srRows=[
-    {id:'20429',name:'Mahfuja Alam Joty',location:'Jashore',right:2,wrong:3,accuracy:40.00},
-    {id:'20414',name:'Aysha Sidika Tisha',location:'Jashore',right:5,wrong:1,accuracy:83.33},
-    {id:'17916',name:'Md.Sajman Basar',location:'Jashore',right:6,wrong:1,accuracy:85.71},
-    {id:'20071',name:'Abu Talha Raj',location:'Jashore',right:24,wrong:2,accuracy:92.31},
-    {id:'18314',name:'MD.shakibuzzaman shacho',location:'Jashore',right:13,wrong:1,accuracy:92.86},
-    {id:'20204',name:'Bijoya Ray',location:'Jashore',right:38,wrong:2,accuracy:95.00},
-    {id:'19266',name:'Shuly Khatun',location:'Jashore',right:25,wrong:1,accuracy:96.15},
-    {id:'17174',name:'Sarmin Sultana Apon',location:'Jashore',right:35,wrong:0,accuracy:100.00},
-    {id:'15508',name:'Bristi rani das',location:'Jashore',right:3,wrong:0,accuracy:100.00},
-    {id:'20413',name:'Abida Sultana',location:'Jashore',right:10,wrong:0,accuracy:100.00},
-    {id:'16546',name:'Suraya',location:'Jashore',right:22,wrong:0,accuracy:100.00},
-    {id:'19420',name:'Shekh Afsana mimi',location:'Jashore',right:22,wrong:0,accuracy:100.00}
-  ];
-  let callRows=[
-    {service:'••••••3389',caller:'••••••3389',category:'Bill Pay Dispute General',date:'2-Oct-26',id:'18314',name:'MD.shakibuzzaman shacho',status:'Wrong',remarks:'Wrong nagad account number.'},
-    {service:'••••••5003',caller:'••••••5003',category:'Merchant Pay Dispute General',date:'3-Oct-26',id:'19266',name:'Shuly Khatun',status:'Wrong',remarks:'Did not provide actual problem details.'},
-    {service:'••••••2079',caller:'••••••5382',category:'Bill Pay Dispute General',date:'4-Oct-26',id:'20204',name:'Bijoya Ray',status:'Wrong',remarks:'Unnecessary (Biller Account Number or Customer Number).'},
-    {service:'••••••0663',caller:'••••••0663',category:'Call Back Request',date:'4-Oct-26',id:'20071',name:'Abu Talha Raj',status:'Wrong',remarks:'Unnecessary Ticket.'},
-    {service:'••••••0838',caller:'••••••0838',category:'SMTAP Issue',date:'4-Oct-26',id:'20071',name:'Abu Talha Raj',status:'Wrong',remarks:'Unnecessary Ticket.'},
-    {service:'••••••9807',caller:'••••••9807',category:'Call Back Request',date:'6-Oct-26',id:'20204',name:'Bijoya Ray',status:'Wrong',remarks:'Unnecessary Ticket.'},
-    {service:'••••••0520',caller:'••••••0520',category:'Bill Pay Dispute General',date:'7-Oct-26',id:'20429',name:'Mahfuja Alam Joty',status:'Wrong',remarks:'Wrong Biller Account Number or Customer Number and Payment Channel.'},
-    {service:'••••••0348',caller:'••••••0348',category:'Bill Pay Dispute General',date:'7-Oct-26',id:'20429',name:'Mahfuja Alam Joty',status:'Wrong',remarks:'Wrong Payment Channel.'},
-    {service:'••••••9979',caller:'••••••4536',category:'NPSB MFS Dispute',date:'7-Oct-26',id:'17916',name:'Md.Sajman Basar',status:'Wrong',remarks:'Unnecessary Ticket.'},
-    {service:'••••••2986',caller:'••••••2986',category:'Bill Pay Dispute General',date:'7-Oct-26',id:'20414',name:'Aysha Sidika Tisha',status:'Wrong',remarks:'Unnecessary information.'},
-    {service:'••••••2030',caller:'••••••2030',category:'Mobile Recharge Dispute',date:'7-Oct-26',id:'20429',name:'Mahfuja Alam Joty',status:'Wrong',remarks:'Wrong Receiver Number.'}
-  ];
+  let archive=[];
+  let srRows=[];
+  let callRows=[];
 
   function exportCsv(filename,headers,rows){
     const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
@@ -2428,7 +2257,6 @@ if(!REDUCE){
   $('#exportSrData')?.addEventListener('click',()=>exportCsv('team-elite-star-sr-data.csv',['ID','Name','Location','Right','Wrong','Accuracy %'],srRows.map(r=>[r.id,r.name,r.location,r.right,r.wrong,r.accuracy.toFixed(2)+'%'])));
   $('#exportCallData')?.addEventListener('click',()=>exportCsv('team-elite-star-call-data.csv',['Service Mobile No. (masked)','Caller Mobile No. (masked)','Sub Service Category','Date','ID','Name','Training Status','Training Remarks'],callRows.map(r=>[r.service,r.caller,r.category,r.date,r.id,r.name,r.status,r.remarks])));
   $$('[data-nav-target]').forEach(b=>b.addEventListener('click',()=>{const target=$(b.dataset.navTarget);if(target){target.scrollIntoView({behavior:'smooth',block:'start'});$('#actionSheet')?.classList.remove('open');$('#sheetBackdrop')?.classList.remove('open');$('#actionSheet')?.setAttribute('aria-hidden','true');$('#moreTabBtn')?.setAttribute('aria-expanded','false')}}));
-  renderArchive();renderSr();renderCalls();
 
   function reportDateLabel(value){
     if(!value)return '';
@@ -2437,9 +2265,15 @@ if(!REDUCE){
     const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     return `${Number(m[3])}-${months[Number(m[2])-1]}-${m[1].slice(2)}`;
   }
-  const liveStatus=$('#dbLiveStatus');
+  const liveStatus=null;
   let liveClient=null, liveChannel=null, realtimeReady=false, refreshTimer=0, pollTimer=0, busy=false, again=false, lastQueryErrors=false;
   const signatures={agents:'',settings:'',previous:'',sr:'',calls:''};
+  const CACHE_KEY='teamEliteStarSupabaseLastSnapshotV1';
+  function readCache(){try{const x=JSON.parse(localStorage.getItem(CACHE_KEY)||'null');return x&&x.tables?x.tables:null;}catch(_){return null;}}
+  function writeCache(tables){try{localStorage.setItem(CACHE_KEY,JSON.stringify({savedAt:Date.now(),tables}));}catch(e){console.warn('[Team Elite Star] Last-data cache could not be saved.',e);}}
+  function applyCachedSnapshot(tables){if(!tables)return; if(tables.agents)applyLiveAgents(tables.agents);if(tables.settings)applyLiveSettings(tables.settings);if(tables.previous)applyPrevious(tables.previous);if(tables.sr)applySr(tables.sr);if(tables.calls)applyCalls(tables.calls);}
+  const lastGood=readCache();
+  if(lastGood)applyCachedSnapshot(lastGood);
   function setDbStatus(mode,text,detail=''){
     if(!liveStatus)return;
     liveStatus.className=mode==='live'?'db-status-live':mode==='poll'?'db-status-poll':mode==='error'?'db-status-error':'db-status-wait';
@@ -2453,7 +2287,7 @@ if(!REDUCE){
     TEAM_LEADER=leader?{
       name:leader.name||'Team Leader',role:leader.role||'Team Leader',rank:leader.rank||leader.role||'Team Leader',
       cubeId:leader.cube_id||'',bio:leader.bio||'',qa:leader.qa||'Rasel Hossain'
-    }:{...STATIC_TEAM_LEADER};
+    }:null;
     MEMBERS=list.filter(r=>!r.is_leader&&r.active!==false).map(r=>({
       dgId:r.dg_id||'',name:r.name||'',cubeId:r.cube_id||'',role:r.role||'CSR',rank:r.rank||r.role||'CSR',
       qa:r.qa||'',trainer:r.trainer||'',mtdScore:pct(r.mtd_score),attendance:pct(r.attendance),
@@ -2464,7 +2298,7 @@ if(!REDUCE){
     window.refreshTeamCommand?.();
     const hero=document.querySelector('.hero .lede');
     const leadBadge=document.querySelector('.stats-note span');
-    if(leadBadge)leadBadge.textContent=`TL: ${TEAM_LEADER.name}`;
+    if(leadBadge)leadBadge.textContent=TEAM_LEADER?`TL: ${TEAM_LEADER.name}`:'Team Leader';
   }
   function applyLiveSettings(rows){
     const settings=Object.fromEntries((rows||[]).map(r=>[r.key,r.value]));
@@ -2513,13 +2347,16 @@ if(!REDUCE){
         liveClient.from('sr_records').select('*').order('report_date',{ascending:false}).order('agent_name'),
         liveClient.from('call_records').select('*').order('call_date',{ascending:false}).order('created_at',{ascending:false})
       ]);
-      if(a.error)errors.push(`agents: ${a.error.message}`);else{const sig=signature(a.data);if(sig!==signatures.agents){signatures.agents=sig;applyLiveAgents(a.data||[]);}}
-      if(s.error)errors.push(`settings: ${s.error.message}`);else{const sig=signature(s.data);if(sig!==signatures.settings){signatures.settings=sig;applyLiveSettings(s.data||[]);}}
-      if(p.error)errors.push(`previous members: ${p.error.message}`);else{const sig=signature(p.data);if(sig!==signatures.previous){signatures.previous=sig;applyPrevious(p.data||[]);}}
-      if(sr.error)errors.push(`SR data: ${sr.error.message}`);else{const sig=signature(sr.data);if(sig!==signatures.sr){signatures.sr=sig;applySr(sr.data||[]);}}
-      if(c.error)errors.push(`call data: ${c.error.message}`);else{const sig=signature(c.data);if(sig!==signatures.calls){signatures.calls=sig;applyCalls(c.data||[]);}}
-      if(errors.length){lastQueryErrors=true;console.warn('[Team Elite Star] Some Supabase queries failed:',errors);setDbStatus('error','DB PARTIAL',errors.join('\n'));}
-      else{lastQueryErrors=false;setDbStatus(realtimeReady?'live':'poll',realtimeReady?'DB LIVE':'DB SYNC OK',`Updated at ${new Date().toLocaleTimeString()}; source=${source}`);}
+      const results={agents:a,settings:s,previous:p,sr,calls:c};
+      const cached=readCache()||{}; let cacheChanged=false;
+      for(const [key,res] of Object.entries(results)){
+        if(res.error){errors.push(`${key}: ${res.error.message}`);if(cached[key]){const sig=signature(cached[key]);if(key==='agents'&&sig!==signatures.agents){signatures.agents=sig;applyLiveAgents(cached[key]);}else if(key==='settings'&&sig!==signatures.settings){signatures.settings=sig;applyLiveSettings(cached[key]);}else if(key==='previous'&&sig!==signatures.previous){signatures.previous=sig;applyPrevious(cached[key]);}else if(key==='sr'&&sig!==signatures.sr){signatures.sr=sig;applySr(cached[key]);}else if(key==='calls'&&sig!==signatures.calls){signatures.calls=sig;applyCalls(cached[key]);}}continue;}
+        const rows=res.data||[];cached[key]=rows;cacheChanged=true;const sig=signature(rows);
+        if(sig!==signatures[key]){signatures[key]=sig;if(key==='agents')applyLiveAgents(rows);else if(key==='settings')applyLiveSettings(rows);else if(key==='previous')applyPrevious(rows);else if(key==='sr')applySr(rows);else if(key==='calls')applyCalls(rows);}
+      }
+      if(cacheChanged)writeCache(cached);
+      if(errors.length){lastQueryErrors=true;console.warn('[Team Elite Star] Supabase read failed; cached last successful rows are used where available:',errors);}
+      else{lastQueryErrors=false;}
     }catch(err){console.error('[Team Elite Star] Supabase load failed:',err);setDbStatus('error','DB ERROR',err?.message||String(err));}
     finally{busy=false;if(again){again=false;scheduleRefresh('queued');}}
   }
@@ -2561,7 +2398,6 @@ if(!REDUCE){
   window.addEventListener('focus',()=>scheduleRefresh('focus'),{passive:true});
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)scheduleRefresh('resume');});
   window.addEventListener('online',()=>scheduleRefresh('online'),{passive:true});
-  renderArchive();renderSr();renderCalls();
   startLiveData();
 })();
 </script>
