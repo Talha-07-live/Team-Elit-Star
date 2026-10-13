@@ -11,7 +11,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="team-elite-star-supabase-config.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 <style>
 :root{
   color-scheme:dark;
@@ -172,6 +171,25 @@ button{touch-action:manipulation}
   .page-head{align-items:flex-start}
   .toolbar .btn{flex:1}
 }
+
+:root{--electric:#66e3ff;--violet:#9c8bff;--glass:rgba(13,12,19,.78)}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.22;background-image:linear-gradient(rgba(232,195,107,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(232,195,107,.035) 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(to bottom,black,transparent 80%)}
+.panel,.kpi,.login-card,.modal-card{box-shadow:0 24px 80px -54px rgba(0,0,0,.9),0 0 0 1px rgba(255,255,255,.012) inset;transition:border-color .2s ease,transform .2s ease,box-shadow .2s ease}
+.panel:hover{border-color:rgba(232,195,107,.29)}
+.btn{position:relative;overflow:hidden}
+.btn:focus-visible,.nav-btn:focus-visible,.dropzone:focus-visible{outline:2px solid var(--electric);outline-offset:3px}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 16px 35px -17px rgba(232,195,107,.72)}
+.kpi{position:relative;isolation:isolate}.kpi:after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:linear-gradient(115deg,transparent 10%,rgba(255,255,255,.035),transparent 55%);opacity:.65;z-index:-1}
+.nav-btn.active{box-shadow:inset 3px 0 0 var(--gold),0 8px 24px -20px var(--gold)}
+.dropzone{position:relative;overflow:hidden}.dropzone:after{content:"";position:absolute;top:0;bottom:0;width:22%;left:-35%;background:linear-gradient(90deg,transparent,rgba(232,195,107,.09),transparent);transform:skewX(-18deg);transition:left .65s ease}.dropzone:hover:after{left:120%}
+.ai-status{display:flex;align-items:center;gap:9px;padding:11px 13px;border:1px solid rgba(102,227,255,.22);border-radius:9px;background:linear-gradient(105deg,rgba(102,227,255,.055),rgba(156,139,255,.035));font-size:.75rem;color:var(--muted)}
+.ai-led{width:8px;height:8px;flex:0 0 auto;border-radius:50%;background:var(--electric);box-shadow:0 0 14px rgba(102,227,255,.75)}
+.ai-status strong{color:var(--electric);font-family:var(--util);font-size:.65rem;letter-spacing:.06em}
+.ai-consent{display:flex;gap:10px;align-items:flex-start;margin:12px 0;padding:12px;border:1px solid rgba(255,197,91,.2);border-radius:9px;background:rgba(255,197,91,.035);color:var(--muted);font-size:.73rem}
+.ai-consent input{accent-color:var(--gold);margin-top:3px;flex:0 0 auto}
+.ai-consent b{color:var(--gold2)}
+.btn:disabled{filter:saturate(.35)}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 </style>
 
 <style id="auto-import-admin-css">
@@ -359,30 +377,32 @@ button{touch-action:manipulation}
 
       <section id="view-import" class="view">
         <div class="page-head">
-          <div><div class="eyebrow">Auto Import Engine</div><h2>Upload a picture. Extract the table.</h2><p>Images are OCR-scanned in your browser; detected rows are previewed before being saved to Supabase.</p></div>
+          <div><div class="eyebrow">AI Vision Import Engine</div><h2>Read once. Review once. Save once.</h2><p>Gemini reads report screenshots, identifies the table, structures the rows and checks duplicates before they reach Supabase.</p></div>
         </div>
         <div class="panel">
-          <div class="panel-head"><div class="panel-title">Screenshot Import</div><span class="badge warn">OCR + REVIEW</span></div>
+          <div class="panel-head"><div class="panel-title">AI Screenshot Intelligence</div><span class="badge success">GEMINI AI · DEDUPE</span></div>
           <div class="panel-body">
-            <input id="importFiles" type="file" accept="image/*" multiple hidden>
-            <div id="dropZone" class="dropzone" role="button" tabindex="0" aria-label="Choose images to import">
-              <div class="drop-icon">⇧</div><div class="drop-title">Drop report screenshots here</div>
-              <div class="drop-sub">or click to choose one or multiple JPG, PNG or WebP images</div>
+            <div class="ai-status" style="margin-bottom:14px"><span class="ai-led"></span><div><strong>VISION ENGINE · GEMINI 3.8 FLASH</strong><div>Runs through an authenticated Supabase Edge Function. The API key stays server-side.</div></div></div>
+            <input id="importFiles" type="file" accept="image/png,image/jpeg,image/webp" multiple hidden>
+            <div id="dropZone" class="dropzone" role="button" tabindex="0" aria-label="Choose report screenshots to read with AI">
+              <div class="drop-icon">✧</div><div class="drop-title">Drop report screenshots here</div>
+              <div class="drop-sub">or choose multiple JPG, PNG or WebP images for one batch</div>
               <div id="selectedFilesLabel" class="small-muted" style="margin-top:10px">No images selected</div>
             </div>
             <div class="import-options">
               <div class="field"><label>Table Type</label><select id="importType"><option value="auto">Auto-detect from image</option><option value="previous_members">Previous Members</option><option value="sr_records">SR Data</option><option value="call_records">Call Data</option></select></div>
               <div class="field"><label>Report / Archive Date (optional)</label><input id="importReportDate" type="date"></div>
-              <div class="field"><label>OCR Language</label><input value="English (table labels + names)" disabled></div>
+              <div class="field"><label>AI Model</label><input value="Gemini 3.8 Flash · Server-side" disabled></div>
             </div>
-            <div class="toolbar"><button id="processImagesBtn" class="btn btn-primary" type="button" disabled>◎ Detect & Extract</button><button id="clearImportBtn" class="btn btn-ghost" type="button">Clear</button><button id="saveImportBtn" class="btn btn-success" type="button" disabled>Save All Rows to Database</button></div>
+            <label class="ai-consent"><input id="aiConsent" type="checkbox"><span><b>I have permission to process these screenshots with Gemini AI.</b> The image is sent to Google for analysis through the protected Edge Function. Do not upload confidential/customer data unless your workplace permits this. Google may handle submitted content under the selected account tier terms. The panel does not store the original image in Supabase; customer phone numbers are masked in the extracted rows before database save.</span></label>
+            <div class="toolbar"><button id="processImagesBtn" class="btn btn-primary" type="button" disabled>✧ AI Read & Extract</button><button id="clearImportBtn" class="btn btn-ghost" type="button">Clear Batch</button><button id="saveImportBtn" class="btn btn-success" type="button" disabled>Save Unique Rows</button></div>
             <div class="progress-shell"><progress id="ocrProgress" max="100" value="0"></progress></div>
-            <div id="ocrStatus" class="import-status" aria-live="polite">Choose screenshots to start.</div>
-            <div class="info-box ocr-note" style="margin-top:12px"><b>How it works:</b> the panel recognises SR / call / previous-member reports, maps table columns and lets you correct OCR output. Saving happens only after you review the preview. Original screenshots are not uploaded or stored; only extracted fields and the source filename are saved. Call/customer phone numbers are masked before database insertion.</div>
-            <details style="margin-top:14px"><summary style="cursor:pointer;color:var(--muted);font-size:.75rem">Show raw OCR text (for troubleshooting)</summary><textarea id="ocrRaw" rows="8" style="width:100%;margin-top:8px;border:1px solid var(--line);border-radius:8px;background:#08070c;color:var(--text);padding:12px;font-size:.72rem" readonly></textarea></details>
+            <div id="ocrStatus" class="import-status" aria-live="polite">Choose screenshots and approve AI processing to start.</div>
+            <div class="info-box ocr-note" style="margin-top:12px"><b>One-pass workflow:</b> AI detects the report type and extracts structured fields. Known duplicate records and duplicates across the selected images are skipped automatically. Review/edit the preview once, then save once; the database's unique record hash remains the final duplicate guard. Free-tier availability and quotas depend on Google's account/model limits.</div>
+            <details style="margin-top:14px"><summary style="cursor:pointer;color:var(--muted);font-size:.75rem">Show sanitized AI extraction output</summary><textarea id="ocrRaw" rows="8" style="width:100%;margin-top:8px;border:1px solid var(--line);border-radius:8px;background:#08070c;color:var(--text);padding:12px;font-size:.72rem" readonly></textarea></details>
           </div>
         </div>
-        <div id="importPreview" class="panel" style="margin-top:14px"><div class="panel-head"><div class="panel-title">Extracted Row Preview</div><span id="importRowCount" class="badge">0 rows</span></div><div id="importPreviewBody" class="panel-body"><div class="empty">Your extracted table rows will appear here for review.</div></div></div>
+        <div id="importPreview" class="panel" style="margin-top:14px"><div class="panel-head"><div class="panel-title">Review Queue · Only New Rows</div><span id="importRowCount" class="badge">0 rows</span></div><div id="importPreviewBody" class="panel-body"><div class="empty">Your AI-extracted rows will appear here for review.</div></div></div>
       </section>
 
       <section id="view-previous" class="view">
@@ -473,7 +493,7 @@ const SUPABASE_ANON_KEY=window.TEAM_ELITE_SUPABASE_CONFIG?.key||"YOUR_SUPABASE_P
 const {createClient}=supabase;
 const db=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 
-const state={agents:[],cards:[],settings:{},audit:[],previousMembers:[],srRecords:[],callRecords:[],importRows:[],session:null,profile:null,agentStatus:"all",cardStatus:"all",callStatus:"all",recordEditor:null,selectedFiles:[]};
+const state={agents:[],cards:[],settings:{},audit:[],previousMembers:[],srRecords:[],callRecords:[],importRows:[],session:null,profile:null,agentStatus:"all",cardStatus:"all",callStatus:"all",recordEditor:null,selectedFiles:[],importProcessing:false,importSaving:false};
 const $=s=>document.querySelector(s);
 const $$=s=>[...document.querySelectorAll(s)];
 
@@ -752,79 +772,7 @@ const IMPORT_FIELDS={
 };
 const IMPORT_LABELS={agent_id:"ID",name:"Name",location:"Location",cube_id:"Cube ID",role:"Role",qa:"QA",trainer:"Trainer",quality:"Quality",attendance:"Attendance",staffed_time:"Staffed Time",productive_time:"Productivity",break_time:"Break",aht:"AHT",on_time_login:"On-Time Login",archived_date:"Archived Date",notes:"Notes",agent_name:"Name",right_count:"Right",wrong_count:"Wrong",accuracy:"Accuracy %",report_date:"Report Date",service_mobile_masked:"Service No. (masked)",caller_mobile_masked:"Caller No. (masked)",category:"Sub Service Category",call_date:"Date",training_status:"Training Status",training_remarks:"Training Remarks"};
 function normText(v){return String(v||"").toLowerCase().replace(/[^a-z0-9]+/g,"")}
-function detectImportType(text){const n=normText(text);if((n.includes("servicemobileno")||n.includes("callermobileno")||n.includes("trainingremarks"))&& (n.includes("trainingstatus")||n.includes("subservicecategory")))return "call_records";if(n.includes("right")&&n.includes("wrong")&&n.includes("accuracy"))return "sr_records";if((n.includes("cubeid")||n.includes("trainer"))&&(n.includes("attendance")||n.includes("quality")||n.includes("mtdscore")))return "previous_members";return null}
-function wordBox(w){const b=w.bbox||w;return {text:String(w.text||"").trim(),x0:b.x0??w.x0??0,x1:b.x1??w.x1??0,y0:b.y0??w.y0??0,y1:b.y1??w.y1??0,confidence:Number(w.confidence??100)}}
-function groupOcrRows(words){
-  const a=words.map(wordBox).filter(w=>w.text&&w.text.length&&w.confidence>15).sort((a,b)=>((a.y0+a.y1)/2)-((b.y0+b.y1)/2));
-  if(!a.length)return [];
-  const heights=a.map(w=>Math.max(1,w.y1-w.y0)).sort((x,y)=>x-y);const threshold=Math.max(7,(heights[Math.floor(heights.length/2)]||12)*.72);
-  const rows=[];
-  for(const w of a){const cy=(w.y0+w.y1)/2;let target=rows[rows.length-1];if(!target||Math.abs(cy-target.cy)>threshold){target={cy,words:[]};rows.push(target)}target.words.push(w);target.cy=target.words.reduce((sum,z)=>sum+(z.y0+z.y1)/2,0)/target.words.length}
-  return rows.map(r=>({y:r.cy,words:r.words.sort((a,b)=>a.x0-b.x0),text:r.words.map(w=>w.text).join(" ")}));
-}
-async function preprocessForOcr(file){
-  const bitmap=await createImageBitmap(file);
-  const scale=bitmap.width<1800?2:1.5;
-  const canvas=document.createElement("canvas");canvas.width=Math.round(bitmap.width*scale);canvas.height=Math.round(bitmap.height*scale);
-  const ctx=canvas.getContext("2d",{willReadFrequently:true});ctx.fillStyle="#fff";ctx.fillRect(0,0,canvas.width,canvas.height);
-  ctx.filter="grayscale(1) contrast(1.55)";ctx.drawImage(bitmap,0,0,canvas.width,canvas.height);ctx.filter="none";bitmap.close?.();return canvas;
-}
-function detectGridBounds(canvas){
-  try{
-    const ctx=canvas.getContext("2d",{willReadFrequently:true});const {width:w,height:h}=canvas;const px=ctx.getImageData(0,0,w,h).data;const y0=Math.floor(h*.015),y1=Math.ceil(h*.985),span=y1-y0;const candid=[];
-    for(let x=0;x<w;x++){
-      let dark=0;for(let y=y0;y<y1;y+=1){const i=(y*w+x)*4;const lum=(px[i]*.299+px[i+1]*.587+px[i+2]*.114);if(lum<105)dark++}
-      if(dark/Math.max(1,span)>.48)candid.push(x)
-    }
-    const clusters=[];for(const x of candid){const last=clusters[clusters.length-1];if(!last||x-last[last.length-1]>5)clusters.push([x]);else last.push(x)}
-    let bounds=clusters.map(c=>Math.round(c.reduce((a,b)=>a+b,0)/c.length));
-    const filtered=[];for(const x of bounds){if(!filtered.length||x-filtered[filtered.length-1]>24)filtered.push(x)}
-    if(filtered.length>=4&&filtered.length<=14)return filtered;
-    return null;
-  }catch(e){return null}
-}
-function headerField(cell,type){
-  const n=normText(cell);
-  if(type==="call_records"){
-    if(n.includes("servicemobile")||n==="serviceno"||n==="service")return "service_mobile_masked";
-    if(n.includes("callermobile")||n.includes("callerphone"))return "caller_mobile_masked";
-    if(n.includes("subservice")||n==="category")return "category";
-    if(n==="date"||n.includes("calldate"))return "call_date";
-    if(n==="id"||n.includes("agentid")||n==="dgid")return "agent_id";
-    if(n==="name"||n.includes("agentname"))return "agent_name";
-    if(n.includes("trainingstatus")||n==="status")return "training_status";
-    if(n.includes("trainingremarks")||n.includes("remarks")||n.includes("remark"))return "training_remarks";
-  }
-  if(type==="sr_records"){
-    if(n==="id"||n==="dgid"||n.includes("agentid"))return "agent_id";
-    if(n==="name"||n.includes("agentname"))return "agent_name";
-    if(n.includes("location"))return "location";
-    if(n==="right"||n.includes("rightcount"))return "right_count";
-    if(n==="wrong"||n.includes("wrongcount"))return "wrong_count";
-    if(n.includes("accuracy"))return "accuracy";
-    if(n.includes("date"))return "report_date";
-  }
-  if(type==="previous_members"){
-    if(n==="id"||n==="dgid"||n.includes("agentid"))return "agent_id";
-    if(n==="name"||n.includes("membername")||n.includes("agentname"))return "name";
-    if(n.includes("location"))return "location";
-    if(n.includes("cube"))return "cube_id";
-    if(n.includes("role"))return "role";
-    if(n==="qa"||n.includes("qamanager"))return "qa";
-    if(n.includes("trainer"))return "trainer";
-    if(n.includes("quality")||n.includes("mtdscore")||n==="score")return "quality";
-    if(n.includes("attendance"))return "attendance";
-    if(n.includes("staffed"))return "staffed_time";
-    if(n.includes("productivity")||n.includes("productive"))return "productive_time";
-    if(n.includes("break"))return "break_time";
-    if(n==="aht"||n.includes("averagethandle"))return "aht";
-    if(n.includes("ontimelogin"))return "on_time_login";
-    if(n.includes("archivedate")||n.includes("previousdate"))return "archived_date";
-    if(n.includes("note"))return "notes";
-  }
-  return null;
-}
-function parseDateValue(v, fallback=null){
+function parseDateValue(v,fallback=null){
   const s=String(v||"").trim();if(!s)return fallback;
   const iso=s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/);if(iso)return `${iso[1]}-${String(iso[2]).padStart(2,"0")}-${String(iso[3]).padStart(2,"0")}`;
   const m=s.match(/(\d{1,2})[-\s/]([A-Za-z]{3,})[-\s/](\d{2,4})/);if(m){const months={jan:1,feb:2,mar:3,apr:4,may:5,jun:6,jul:7,aug:8,sep:9,oct:10,nov:11,dec:12};const mo=months[m[2].slice(0,3).toLowerCase()];let yr=Number(m[3]);if(yr<100)yr+=2000;if(mo)return `${yr}-${String(mo).padStart(2,"0")}-${String(Number(m[1])).padStart(2,"0")}`}
@@ -832,53 +780,64 @@ function parseDateValue(v, fallback=null){
 }
 function maskPhone(value){const raw=String(value??"").trim();if(!raw)return null;if(/[•*xX]{2,}/.test(raw))return raw;const digits=raw.replace(/\D/g,"");if(digits.length<7)return raw;return "••••••"+digits.slice(-4)}
 function maskTextMobileNumbers(text){return String(text||"").replace(/(?:\+?88\s?)?01[3-9]\d(?:[\s-]?\d){7}/g,m=>maskPhone(m));}
-function parseCellData(cells,fields,type,fileName,reportDate){
-  const raw={};fields.forEach((field,i)=>{if(field)raw[field]=String(cells[i]||"").trim()});
-  const pick=(...keys)=>{for(const k of keys)if(raw[k]!=null&&raw[k]!=="")return raw[k];return ""};
-  const num=v=>{const m=String(v||"").replace(/,/g,"").match(/-?\d+(?:\.\d+)?/);return m?Number(m[0]):null};
-  let out;
+function aiText(v){if(v===null||v===undefined)return "";if(typeof v==="string")return v.trim();return String(v)}
+function aiNumber(v){if(v===null||v===undefined||v==="")return null;const n=typeof v==="number"?v:Number(String(v).replace(/,/g,"").replace(/%/g,""));return Number.isFinite(n)?n:null}
+function rowValue(o,...keys){for(const k of keys){const v=o?.[k];if(v!==null&&v!==undefined&&String(v).trim()!=="")return v}return null}
+function normalizeAIRecord(type,raw,fileName,reportDate){
+  if(!raw||typeof raw!=="object"||Array.isArray(raw))return null;
+  const t=(...keys)=>{const v=rowValue(raw,...keys);return v===null?null:aiText(v)||null};
+  const n=(...keys)=>aiNumber(rowValue(raw,...keys));
+  const fallback=reportDate||new Date().toISOString().slice(0,10);
+  if(type==="previous_members"){
+    const agentId=t("agent_id","id","dg_id"),name=t("name","agent_name","member_name"),cube=t("cube_id","cube");
+    if(!agentId&&!name&&!cube)return null;
+    return {agent_id:agentId,name:name||"Needs review",location:t("location")||"Jashore",cube_id:cube,role:t("role")||"CSR",qa:t("qa","qa_manager"),trainer:t("trainer"),quality:n("quality","mtd_score","score"),attendance:n("attendance"),staffed_time:t("staffed_time"),productive_time:t("productive_time","productivity_time"),break_time:t("break_time"),aht:t("aht"),on_time_login:n("on_time_login","on_time_login_pct"),archived_date:parseDateValue(t("archived_date","report_date","date"),fallback),notes:t("notes"),source_image:fileName};
+  }
   if(type==="sr_records"){
-    if(!pick("agent_id","agent_name")||normText(pick("agent_name"))==="grandtotal")return null;
-    const right=num(pick("right_count")),wrong=num(pick("wrong_count"));let accuracy=num(pick("accuracy"));if(accuracy==null&&right!=null&&wrong!=null&&right+wrong>0)accuracy=Math.round(right/(right+wrong)*10000)/100;
-    out={agent_id:pick("agent_id")||null,agent_name:pick("agent_name")||"Needs review",location:pick("location")||"Jashore",right_count:right,wrong_count:wrong,accuracy,report_date:parseDateValue(pick("report_date"),reportDate||new Date().toISOString().slice(0,10)),source_image:fileName};
-  }else if(type==="call_records"){
-    if(!pick("agent_id","agent_name","category")||normText(pick("agent_name"))==="grandtotal")return null;
-    out={service_mobile_masked:maskPhone(pick("service_mobile_masked")),caller_mobile_masked:maskPhone(pick("caller_mobile_masked")),category:pick("category")||null,call_date:parseDateValue(pick("call_date"),reportDate||new Date().toISOString().slice(0,10)),agent_id:pick("agent_id")||null,agent_name:pick("agent_name")||"Needs review",training_status:pick("training_status")||"Unknown",training_remarks:pick("training_remarks")||null,source_image:fileName};
-  }else{
-    if(!pick("name","agent_id")||normText(pick("name"))==="grandtotal")return null;
-    out={agent_id:pick("agent_id")||null,name:pick("name")||"Needs review",location:pick("location")||"Jashore",cube_id:pick("cube_id")||null,role:pick("role")||"CSR",qa:pick("qa")||null,trainer:pick("trainer")||null,quality:num(pick("quality")),attendance:num(pick("attendance")),staffed_time:pick("staffed_time")||null,productive_time:pick("productive_time")||null,break_time:pick("break_time")||null,aht:pick("aht")||null,on_time_login:num(pick("on_time_login")),archived_date:parseDateValue(pick("archived_date"),reportDate||new Date().toISOString().slice(0,10)),notes:pick("notes")||`Imported from ${fileName}`,source_image:fileName};
+    const agentId=t("agent_id","id","dg_id"),name=t("agent_name","name");
+    if(!agentId&&!name)return null;
+    const right=n("right_count","right"),wrong=n("wrong_count","wrong");let accuracy=n("accuracy","accuracy_pct");
+    if(accuracy===null&&right!==null&&wrong!==null&&right+wrong>0)accuracy=Math.round(right/(right+wrong)*10000)/100;
+    return {agent_id:agentId,agent_name:name||"Needs review",location:t("location")||"Jashore",right_count:right,wrong_count:wrong,accuracy,report_date:parseDateValue(t("report_date","date"),fallback),source_image:fileName};
   }
-  return out;
+  if(type==="call_records"){
+    const agentId=t("agent_id","id","dg_id"),name=t("agent_name","name"),category=t("category","sub_service_category");
+    if(!agentId&&!name&&!category)return null;
+    return {service_mobile_masked:maskPhone(t("service_mobile_masked","service_mobile","service_no")),caller_mobile_masked:maskPhone(t("caller_mobile_masked","caller_mobile","caller_no")),category,call_date:parseDateValue(t("call_date","date","report_date"),fallback),agent_id:agentId,agent_name:name||"Needs review",training_status:t("training_status","status")||"Unknown",training_remarks:t("training_remarks","remarks","remark"),source_image:fileName};
+  }
+  return null;
 }
-async function extractTableRows(file,data,type,ocrCanvas){
-  const words=(data.words&&data.words.length)?data.words:(data.blocks||[]).flatMap(b=>(b.paragraphs||[]).flatMap(p=>(p.lines||[]).flatMap(l=>l.words||[])));const rows=groupOcrRows(words);if(!rows.length)return [];
-  const headerTokens=type==="call_records"?["servicemobile","callermobile","subservice","trainingstatus","trainingremarks"]:type==="sr_records"?["right","wrong","accuracy","location"]:["cube","trainer","quality","attendance","name"];
-  let hi=-1,best=-1;
-  rows.forEach((r,i)=>{const n=normText(r.text);let score=headerTokens.reduce((sum,t)=>sum+(n.includes(t)?1:0),0);if(n.includes("grandtotal"))score-=10;if(score>best){best=score;hi=i}});
-  if(hi<0||best<2)throw new Error("Couldn't find a clear table header. Try a sharper/full screenshot or choose the type manually.");
-  const header=rows[hi];const bounds=detectGridBounds(ocrCanvas);let cellBounds=null;
-  if(bounds&&bounds.length>=3&&bounds.length<=14){cellBounds=bounds}
-  let cellTexts=[];
-  if(cellBounds){const count=cellBounds.length-1;cellTexts=Array.from({length:count},()=>[]);for(const w of header.words){const cx=(w.x0+w.x1)/2;let idx=cellBounds.findIndex((b,i)=>i<cellBounds.length-1&&cx>=b&&cx<=cellBounds[i+1]);if(idx>=0)cellTexts[idx].push(w.text)}}
-  else{
-    const grouped=[];for(const w of header.words){const last=grouped[grouped.length-1];const gap=last?w.x0-last[last.length-1].x1:0;const threshold=Math.max(12,((ocrCanvas?.width||1200)*.015));if(!last||gap>threshold)grouped.push([w]);else last.push(w)}
-    cellTexts=grouped;
-    const centers=cellTexts.map(c=>c.reduce((a,w)=>a+(w.x0+w.x1)/2,0)/Math.max(1,c.length));cellBounds=[0];for(let i=0;i<centers.length-1;i++)cellBounds.push((centers[i]+centers[i+1])/2);cellBounds.push(1000000);
-  }
-  let mapped=cellTexts.map(c=>headerField(c.join(" "),type));
-  const expected=IMPORT_FIELDS[type];
-  if(mapped.filter(Boolean).length<Math.min(3,expected.length)){
-    const ordered=type==="call_records"?["service_mobile_masked","caller_mobile_masked","category","call_date","agent_id","agent_name","training_status","training_remarks"]:type==="sr_records"?["agent_id","agent_name","location","right_count","wrong_count","accuracy"]:[];
-    if(ordered.length&&cellTexts.length===ordered.length)mapped=ordered;
-  }
-  const output=[];
-  for(let ri=hi+1;ri<rows.length;ri++){
-    const r=rows[ri];if(normText(r.text).includes("grandtotal"))continue;
-    const cells=Array.from({length:mapped.length},()=>[]);
-    for(const w of r.words){const cx=(w.x0+w.x1)/2;let idx=-1;if(bounds&&cellBounds===bounds){idx=cellBounds.findIndex((b,i)=>i<cellBounds.length-1&&cx>=b&&cx<=cellBounds[i+1])}else{let bestD=Infinity;const centers=cellTexts.map(c=>c.reduce((a,z)=>a+(z.x0+z.x1)/2,0)/Math.max(1,c.length));centers.forEach((center,i)=>{const d=Math.abs(cx-center);if(d<bestD){bestD=d;idx=i}})}if(idx>=0&&idx<cells.length)cells[idx].push(w.text)}
-    const values=cells.map(c=>c.join(" ").trim());const row=parseCellData(values,mapped,type,file.name,$("#importReportDate").value||null);if(row)output.push({type,data:row,source:file.name});
-  }
-  return output;
+function importIdentity(type,d){
+  const v=x=>String(x??"").trim().toLowerCase().replace(/\s+/g," ");
+  if(type==="previous_members")return [type,v(d.agent_id||d.cube_id||d.name),v(d.cube_id),v(d.archived_date)].join("¦");
+  if(type==="sr_records")return [type,v(d.agent_id||d.agent_name),v(d.report_date)].join("¦");
+  if(type==="call_records")return [type,v(d.call_date),v(d.agent_id||d.agent_name),v(d.category),v(d.service_mobile_masked),v(d.caller_mobile_masked),v(d.training_status),v(d.training_remarks)].join("¦");
+  return [type,JSON.stringify(d)].join("¦");
+}
+function existingImportRows(type){return type==="previous_members"?state.previousMembers:type==="sr_records"?state.srRecords:state.callRecords}
+function existingImportKeys(includeStaged=true){
+  const keys=new Set();
+  for(const type of ["previous_members","sr_records","call_records"]){for(const row of existingImportRows(type))keys.add(importIdentity(type,row))}
+  if(includeStaged)for(const item of state.importRows)keys.add(importIdentity(item.type,item.data));
+  return keys;
+}
+async function prepareAIImage(file){
+  if(!file||!/^image\/(png|jpeg|webp)$/i.test(file.type))throw new Error(`${file?.name||"Image"}: use JPG, PNG or WebP.`);
+  const bitmap=await createImageBitmap(file);const max=2300;const scale=Math.min(1,max/Math.max(bitmap.width,bitmap.height));
+  const canvas=document.createElement("canvas");canvas.width=Math.max(1,Math.round(bitmap.width*scale));canvas.height=Math.max(1,Math.round(bitmap.height*scale));
+  const ctx=canvas.getContext("2d");ctx.fillStyle="#fff";ctx.fillRect(0,0,canvas.width,canvas.height);ctx.drawImage(bitmap,0,0,canvas.width,canvas.height);bitmap.close?.();
+  const blob=await new Promise((resolve,reject)=>canvas.toBlob(b=>b?resolve(b):reject(new Error("Could not prepare image for AI processing.")),"image/jpeg",.88));
+  const buffer=await blob.arrayBuffer();const bytes=new Uint8Array(buffer);let binary="";const step=0x8000;for(let i=0;i<bytes.length;i+=step)binary+=String.fromCharCode(...bytes.subarray(i,Math.min(i+step,bytes.length)));
+  const imageBase64=btoa(binary);if(imageBase64.length>6500000)throw new Error(`${file.name} is too large after compression. Crop the screenshot and try again.`);
+  return {imageBase64,mimeType:"image/jpeg"};
+}
+async function requestAIExtraction(file,preferredType,reportDate){
+  const prepared=await prepareAIImage(file);
+  const {data,error}=await db.functions.invoke("ai-image-reader",{body:{...prepared,fileName:file.name,preferredType,reportDate:reportDate||null}});
+  if(error){let message=error.message||"AI reader function failed.";try{const context=error.context;if(context&&typeof context.json==="function"){const body=await context.json();message=body.error||body.message||message}}catch{}throw new Error(message)}
+  if(data?.error)throw new Error(data.error);
+  if(!data||!Array.isArray(data.rows))throw new Error("The AI returned an invalid table. Try a clearer screenshot or select the table type manually.");
+  return data;
 }
 function renderImportPreview(){
   const total=state.importRows.length;$("#importRowCount").textContent=`${total} row${total===1?"":"s"}`;$("#saveImportBtn").disabled=!total;
@@ -890,45 +849,53 @@ function renderImportPreview(){
   }).join("");
 }
 async function processImportFiles(){
-  const files=state.selectedFiles;if(!files.length)return;
-  if(!window.Tesseract){toast("OCR unavailable","Tesseract could not load. Check internet/CDN access.","error");return}
-  $("#processImagesBtn").disabled=true;$("#clearImportBtn").disabled=true;$("#saveImportBtn").disabled=true;$("#ocrProgress").value=0;$("#ocrRaw").value="";
-  const override=$("#importType").value;let worker=null;const added=[];let raw=[];
+  const files=state.selectedFiles;
+  if(state.importProcessing||state.importSaving||!files.length)return;
+  if(!$("#aiConsent").checked){toast("Permission required","Confirm that you are allowed to send these screenshots to Gemini AI.","error");return}
+  if(!state.session?.access_token){toast("Session expired","Sign in again before using AI import.","error");return}
+  state.importProcessing=true;$("#processImagesBtn").disabled=true;$("#clearImportBtn").disabled=true;$("#saveImportBtn").disabled=true;$("#ocrProgress").value=0;$("#ocrRaw").value="";
+  const override=$("#importType").value,reportDate=$("#importReportDate").value||null;const added=[];const skipped={existing:0,batch:0};const raw=[];const keys=existingImportKeys();
   try{
-    worker=await Tesseract.createWorker("eng",1,{logger:m=>{if(m.status){$("#ocrStatus").textContent=m.status+(m.progress!=null?` · ${Math.round(m.progress*100)}%`:"");if(m.progress!=null)$("#ocrProgress").value=Math.max(Number($("#ocrProgress").value),m.progress*100/Math.max(1,files.length))}}});
-    await worker.setParameters({preserve_interword_spaces:"1",tessedit_pageseg_mode:"6"});
     for(let i=0;i<files.length;i++){
-      const file=files[i];$("#ocrStatus").textContent=`Scanning ${i+1}/${files.length}: ${file.name}`;
-      const ocrCanvas=await preprocessForOcr(file);const result=await worker.recognize(ocrCanvas,{}, {text:true,blocks:true,tsv:true});const data=result.data||result;raw.push(`=== ${file.name} ===\n${maskTextMobileNumbers(data.text||"")}`);
-      let type=override==="auto"?detectImportType(data.text||""):override;
-      if(!type)throw new Error(`Auto-detect couldn't recognise the table type in ${file.name}. Choose Previous Members, SR Data or Call Data and try again.`);
-      const parsed=await extractTableRows(file,data,type,ocrCanvas);if(!parsed.length)throw new Error(`No data rows were detected in ${file.name}. Use a clearer screenshot or choose the type manually.`);
-      added.push(...parsed);$("#ocrProgress").value=Math.round((i+1)/files.length*100);$("#ocrStatus").textContent=`Detected ${type.replace("_"," ")} · ${parsed.length} rows from ${file.name}`;
+      const file=files[i];$("#ocrStatus").textContent=`AI reading ${i+1}/${files.length}: ${file.name}`;
+      const ai=await requestAIExtraction(file,override,reportDate);const type=override==="auto"?ai.table_type:override;
+      if(!["previous_members","sr_records","call_records"].includes(type))throw new Error(`AI could not identify the table in ${file.name}. Choose the correct table type manually.`);
+      const sourceRows=ai.rows.filter(x=>x&&typeof x==="object").map(x=>normalizeAIRecord(type,x,file.name,reportDate)).filter(Boolean);
+      if(!sourceRows.length)throw new Error(`No usable data rows were found in ${file.name}. Use a clearer/full screenshot or select the table type manually.`);
+      let fileNew=0;
+      for(const data of sourceRows){
+        const key=importIdentity(type,data);
+        if(keys.has(key)){
+          const wasInDB=existingImportRows(type).some(r=>importIdentity(type,r)===key);
+          if(wasInDB)skipped.existing++;else skipped.batch++;
+          continue;
+        }
+        keys.add(key);added.push({type,data,source:file.name});fileNew++;
+      }
+      raw.push(`=== ${file.name} · ${type} · ${fileNew} new rows ===\n${maskTextMobileNumbers(JSON.stringify(sourceRows.map(({source_image,...r})=>r),null,2))}`);
+      $("#ocrProgress").value=Math.round((i+1)/files.length*100);$("#ocrStatus").textContent=`Read ${file.name}: ${sourceRows.length} detected · ${fileNew} new · ${sourceRows.length-fileNew} duplicates skipped`;
     }
-    state.importRows.push(...added);$("#ocrRaw").value=raw.join("\n\n");renderImportPreview();$("#ocrStatus").textContent=`Extraction complete: ${added.length} rows ready to review. Nothing has been saved yet.`;toast("Extraction complete",`${added.length} rows extracted from ${files.length} image(s). Review before saving.`);
-  }catch(err){$("#ocrStatus").textContent=err.message||"OCR failed.";toast("Import failed",err.message||"OCR failed.","error");$("#ocrRaw").value=raw.join("\n\n")}
-  finally{if(worker)await worker.terminate();$("#processImagesBtn").disabled=!state.selectedFiles.length;$("#clearImportBtn").disabled=false;$("#saveImportBtn").disabled=!state.importRows.length}
+    state.importRows.push(...added);$("#ocrRaw").value=raw.join("\n\n");renderImportPreview();
+    const totalSkipped=skipped.existing+skipped.batch;
+    $("#ocrStatus").textContent=`AI extraction complete: ${added.length} new row(s) staged; ${totalSkipped} duplicate(s) skipped. Review before saving.`;
+    toast("AI extraction complete",`${added.length} new row(s) staged; ${totalSkipped} duplicate(s) skipped.`);
+  }catch(err){$("#ocrStatus").textContent=err.message||"AI extraction failed.";toast("AI import failed",err.message||"AI extraction failed.","error");$("#ocrRaw").value=raw.join("\n\n")}
+  finally{state.importProcessing=false;updateImportControls();$("#saveImportBtn").disabled=!state.importRows.length}
 }
 async function saveImportRows(){
-  if(!state.importRows.length)return;
-  $("#saveImportBtn").disabled=true;$("#ocrStatus").textContent="Saving reviewed rows to Supabase…";
-  const sets={previous_members:[],sr_records:[],call_records:[]};
-  state.importRows.forEach(({type,data,source})=>{
-    const row={...data,source_image:source};
-    if(type==="call_records"){
-      row.service_mobile_masked=maskPhone(row.service_mobile_masked);row.caller_mobile_masked=maskPhone(row.caller_mobile_masked);
-      row.service_mobile_masked=row.service_mobile_masked||null;row.caller_mobile_masked=row.caller_mobile_masked||null;
-    }
-    sets[type].push(row);
-  });
+  if(state.importSaving||state.importProcessing||!state.importRows.length)return;
+  state.importSaving=true;$("#saveImportBtn").disabled=true;$("#processImagesBtn").disabled=true;$("#clearImportBtn").disabled=true;$("#ocrStatus").textContent="Checking duplicates and saving reviewed rows…";
   try{
-    let saved=0;
+    const keys=existingImportKeys(false),sets={previous_members:[],sr_records:[],call_records:[]};let skipped=0;
+    for(const item of state.importRows){const key=importIdentity(item.type,item.data);if(keys.has(key)){skipped++;continue}keys.add(key);const row={...item.data,source_image:item.source};if(item.type==="call_records"){row.service_mobile_masked=maskPhone(row.service_mobile_masked);row.caller_mobile_masked=maskPhone(row.caller_mobile_masked);row.service_mobile_masked=row.service_mobile_masked||null;row.caller_mobile_masked=row.caller_mobile_masked||null}sets[item.type].push(row)}
+    const total=Object.values(sets).reduce((n,rows)=>n+rows.length,0);if(!total){state.importRows=[];renderImportPreview();$("#ocrStatus").textContent=`Nothing new to save. ${skipped} duplicate row(s) were skipped.`;toast("Already imported","All staged rows already exist; no duplicate records were added.");return}
+    let submitted=0;
     for(const [table,rows] of Object.entries(sets))if(rows.length){
-      const {error}=await db.from(table).upsert(rows,{onConflict:"record_hash",ignoreDuplicates:true});if(error)throw new Error(`${RECORD_CONFIG[table].label}: ${error.message}`);saved+=rows.length;
+      const {error}=await db.from(table).upsert(rows,{onConflict:"record_hash",ignoreDuplicates:true});if(error)throw new Error(`${RECORD_CONFIG[table].label}: ${error.message}`);submitted+=rows.length;
     }
-    state.importRows=[];renderImportPreview();$("#importFiles").value="";state.selectedFiles=[];$("#selectedFilesLabel").textContent="No images selected";$("#processImagesBtn").disabled=true;$("#ocrProgress").value=100;$("#ocrStatus").textContent=`Upload complete. ${saved} parsed row(s) submitted; exact duplicates are ignored by the database.`;await loadAll();toast("Data uploaded","Reviewed rows are now stored in Supabase.");
+    state.importRows=[];renderImportPreview();$("#importFiles").value="";state.selectedFiles=[];$("#selectedFilesLabel").textContent="No images selected";$("#aiConsent").checked=false;$("#ocrProgress").value=100;$("#ocrStatus").textContent=`Submitted ${submitted} unique row(s). The database record hash also ignores exact duplicates. ${skipped} duplicate(s) were removed before saving.`;await loadAll();toast("Unique rows saved",`${submitted} row(s) submitted; duplicate protection stayed enabled.`);
   }catch(err){$("#ocrStatus").textContent=err.message||"Database upload failed.";toast("Upload failed",err.message||"Database upload failed.","error")}
-  finally{$("#saveImportBtn").disabled=!state.importRows.length}
+  finally{state.importSaving=false;updateImportControls();$("#saveImportBtn").disabled=!state.importRows.length}
 }
 
 function resetAgentForm(){
@@ -1140,13 +1107,15 @@ $("#recordEditorForm").addEventListener("submit",saveRecordEditor);
 $("#callWrongFilter").addEventListener("click",()=>{state.callStatus=state.callStatus==="all"?"wrong":"all";renderReportRecords()});
 $("#processImagesBtn").addEventListener("click",processImportFiles);
 $("#saveImportBtn").addEventListener("click",saveImportRows);
-$("#clearImportBtn").addEventListener("click",()=>{state.selectedFiles=[];state.importRows=[];$("#importFiles").value="";$("#selectedFilesLabel").textContent="No images selected";$("#ocrRaw").value="";$("#ocrProgress").value=0;$("#ocrStatus").textContent="Choose screenshots to start.";$("#processImagesBtn").disabled=true;renderImportPreview()});
-$("#importFiles").addEventListener("change",e=>{state.selectedFiles=[...(e.target.files||[])];$("#selectedFilesLabel").textContent=state.selectedFiles.length?state.selectedFiles.map(f=>f.name).join(" · "):"No images selected";$("#processImagesBtn").disabled=!state.selectedFiles.length;});
+function updateImportControls(){const hasFiles=state.selectedFiles.length>0;$("#processImagesBtn").disabled=!hasFiles||!$("#aiConsent").checked||state.importProcessing||state.importSaving;$("#clearImportBtn").disabled=state.importProcessing||state.importSaving;}
+$("#aiConsent").addEventListener("change",updateImportControls);
+$("#clearImportBtn").addEventListener("click",()=>{if(state.importProcessing||state.importSaving)return;state.selectedFiles=[];state.importRows=[];$("#importFiles").value="";$("#selectedFilesLabel").textContent="No images selected";$("#ocrRaw").value="";$("#ocrProgress").value=0;$("#ocrStatus").textContent="Choose screenshots and approve AI processing to start.";$("#aiConsent").checked=false;updateImportControls();renderImportPreview()});
+$("#importFiles").addEventListener("change",e=>{state.selectedFiles=[...(e.target.files||[])].filter(f=>/^image\/(png|jpeg|webp)$/i.test(f.type));$("#selectedFilesLabel").textContent=state.selectedFiles.length?state.selectedFiles.map(f=>f.name).join(" · "):"No supported images selected";updateImportControls()});
 $("#dropZone").addEventListener("click",()=>$("#importFiles").click());
 $("#dropZone").addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();$("#importFiles").click()}});
 $("#dropZone").addEventListener("dragover",e=>{e.preventDefault();$("#dropZone").classList.add("dragover")});
 $("#dropZone").addEventListener("dragleave",()=>$("#dropZone").classList.remove("dragover"));
-$("#dropZone").addEventListener("drop",e=>{e.preventDefault();$("#dropZone").classList.remove("dragover");state.selectedFiles=[...e.dataTransfer.files].filter(f=>f.type.startsWith("image/"));$("#importFiles").value="";$("#selectedFilesLabel").textContent=state.selectedFiles.length?state.selectedFiles.map(f=>f.name).join(" · "):"No images selected";$("#processImagesBtn").disabled=!state.selectedFiles.length});
+$("#dropZone").addEventListener("drop",e=>{e.preventDefault();$("#dropZone").classList.remove("dragover");if(state.importProcessing||state.importSaving)return;state.selectedFiles=[...e.dataTransfer.files].filter(f=>/^image\/(png|jpeg|webp)$/i.test(f.type));$("#importFiles").value="";$("#selectedFilesLabel").textContent=state.selectedFiles.length?state.selectedFiles.map(f=>f.name).join(" · "):"No supported images selected";updateImportControls()});
 
 $$("[data-add-record]").forEach(b=>b.addEventListener("click",()=>openRecordEditor(b.dataset.addRecord)));
 $$("[data-export-records]").forEach(b=>b.addEventListener("click",()=>exportRecordTable(b.dataset.exportRecords)));
@@ -1178,6 +1147,7 @@ db.auth.onAuthStateChange((event)=>{
   if(event==="SIGNED_OUT"){state.session=null;state.profile=null;$("#adminApp").classList.remove("ready");$("#loginScreen").classList.remove("hidden")}
 });
 
+updateImportControls();
 boot();
 </script>
 </body>
