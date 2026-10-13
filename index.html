@@ -21,6 +21,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
  
 <style>
+.db-sync-cell b{font-size:clamp(.56rem,1.15vw,.86rem);letter-spacing:.02em;white-space:nowrap}
+.db-sync-cell .db-status-live{color:#83e3ae!important}
+.db-sync-cell .db-status-poll{color:#ffd166!important}
+.db-sync-cell .db-status-error{color:#ff8d9a!important}
+.db-sync-cell .db-status-wait{color:#9aa4b2!important}
+@media(max-width:600px){.db-sync-cell{padding-left:6px!important;padding-right:6px!important}.db-sync-cell b{font-size:.48rem!important;letter-spacing:0!important}.db-sync-cell small{font-size:.32rem!important;letter-spacing:.01em!important}}
 :root{
   color-scheme: dark;
   --obsidian:#08070C; --obsidian-2:#0C0B12; --onyx:#14131A; --onyx-2:#1B1A22;
@@ -922,6 +928,7 @@ body.weather-off #weatherFx{display:none!important;}
 <div class="local-time-bar" id="localTimeBar" aria-live="polite" aria-label="Local time">
   <div class="local-time-cell"><b><span class="lt-dot" aria-hidden="true"></span><time id="localTime">--:--:--</time></b><small>Local Time</small></div>
   <div class="local-time-cell"><b id="displayMode">DESKTOP</b><small>Display</small></div>
+  <div class="local-time-cell db-sync-cell"><b id="dbLiveStatus" class="db-status-wait">CHECKING</b><small>Supabase Sync</small></div>
 </div>
 
 <main id="top">
@@ -1177,7 +1184,7 @@ body.weather-off #weatherFx{display:none!important;}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 
-const TEAM_LEADER = {
+const STATIC_TEAM_LEADER = {
   name: "Albina Jahan",
   role: "Team Leader",
   bio: "Leading Team Elite Star to operational excellence, driving high quality standards and top-tier customer satisfaction.",
@@ -1185,7 +1192,7 @@ const TEAM_LEADER = {
   cubeId: "TL_ALBINA_JSR"
 };
 
-const MEMBERS = [
+const STATIC_MEMBERS = [
   {
     dgId: "16546",
     name: "Suraya",
@@ -1323,7 +1330,10 @@ const MEMBERS = [
     bio: "Reliable member maintaining strong customer service performance and consistent productivity."
   }
 ];
- 
+
+let TEAM_LEADER = {...STATIC_TEAM_LEADER};
+let MEMBERS = [...STATIC_MEMBERS];
+
 const REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const FINE   = window.matchMedia('(pointer:fine)').matches;
  
@@ -1345,59 +1355,54 @@ if(REDUCE){
   }, {once:true});
 }
  
-(function buildMembers(){
-  const grid = document.getElementById('membersGrid'); if(!grid) return;
-  const initials = n => n.trim().split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase();
+window.renderTeamMembers = function renderTeamMembers(){
+  const grid = document.getElementById('membersGrid');
+  if(!grid) return;
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const initials = n => String(n||'').trim().split(/\s+/).slice(0,2).map(w=>w[0]||'').join('').toUpperCase() || '★';
   const fb='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.2c-1.2 0-1.6.8-1.6 1.5V12h2.7l-.4 2.9h-2.3v7A10 10 0 0 0 22 12z"/></svg>';
   const li='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5A2.5 2.5 0 1 1 5 8.5a2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM10 9h3.8v1.7h.1c.5-.9 1.8-1.9 3.6-1.9 3.9 0 4.6 2.5 4.6 5.8V21h-4v-5.2c0-1.2 0-2.8-1.7-2.8s-2 1.3-2 2.7V21h-4z"/></svg>';
   const mail='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>';
-
+  const leader = TEAM_LEADER || STATIC_TEAM_LEADER;
   let html = `
     <article class="member-card tl-card reveal" tabindex="0">
-      <span class="rank">${TEAM_LEADER.rank}</span>
-      <div class="avatar" aria-hidden="true">${initials(TEAM_LEADER.name)}</div>
-      <h3>${TEAM_LEADER.name}</h3>
-      <div class="role">${TEAM_LEADER.role} · Cube: ${TEAM_LEADER.cubeId}</div>
-      <p class="bio">${TEAM_LEADER.bio}</p>
+      <span class="rank">${esc(leader.rank||'Team Leader')}</span>
+      <div class="avatar" aria-hidden="true">${esc(initials(leader.name))}</div>
+      <h3>${esc(leader.name||'Team Leader')}</h3>
+      <div class="role">${esc(leader.role||'Team Leader')} · Cube: ${esc(leader.cubeId||'—')}</div>
+      <p class="bio">${esc(leader.bio||'Leading Team Elite Star.')}</p>
       <div class="metrics-badge">
-        <span class="badge" style="background:rgba(232,195,107,.2);color:var(--gold);">Lead Alignment: Albina Jahan</span>
-        <span class="badge">Team QA: Rasel Hossain</span>
+        <span class="badge" style="background:rgba(232,195,107,.2);color:var(--gold);">Lead Alignment: ${esc(leader.name||'Team Leader')}</span>
+        <span class="badge">Team QA: ${esc(leader.qa||'Rasel Hossain')}</span>
       </div>
       <div class="socials">
-        <a href="#" class="magnet" aria-label="${TEAM_LEADER.name} on Facebook">${fb}</a>
-        <a href="#" class="magnet" aria-label="${TEAM_LEADER.name} on LinkedIn">${li}</a>
-        <a href="#" class="magnet" aria-label="Email ${TEAM_LEADER.name}">${mail}</a>
+        <a href="#" class="magnet" aria-label="${esc(leader.name)} on Facebook">${fb}</a>
+        <a href="#" class="magnet" aria-label="${esc(leader.name)} on LinkedIn">${li}</a>
+        <a href="#" class="magnet" aria-label="Email ${esc(leader.name)}">${mail}</a>
       </div>
-    </article>
-  `;
-
-  html += MEMBERS.map(m=>`
+    </article>`;
+  html += (Array.isArray(MEMBERS)?MEMBERS:[]).map(m=>`
     <article class="member-card reveal" tabindex="0">
-      <span class="rank">${m.rank}</span>
-      <div class="avatar" aria-hidden="true">${initials(m.name)}</div>
-      <h3>${m.name}</h3>
-      <div class="role">${m.role}</div>
-      <div class="meta-details">
-        <b>ID:</b> ${m.dgId} | <b>Cube:</b> ${m.cubeId}<br/>
-        <b>Trainer:</b> ${m.trainer}
-      </div>
-      <p class="bio">${m.bio}</p>
+      <span class="rank">${esc(m.rank||m.role||'CSR')}</span>
+      <div class="avatar" aria-hidden="true">${esc(initials(m.name))}</div>
+      <h3>${esc(m.name)}</h3>
+      <div class="role">${esc(m.role||'CSR')}</div>
+      <div class="meta-details"><b>ID:</b> ${esc(m.dgId||'—')} | <b>Cube:</b> ${esc(m.cubeId||'—')}<br/><b>Trainer:</b> ${esc(m.trainer||'—')}</div>
+      <p class="bio">${esc(m.bio||'Team Elite Star member.')}</p>
       <div class="metrics-badge">
-        <span class="badge" style="color:var(--gold-shine);">Quality: ${m.mtdScore}</span>
-        <span class="badge">AHT: ${m.aht}</span>
-        <span class="badge">Prod: ${m.prodTime}</span>
+        <span class="badge" style="color:var(--gold-shine);">Quality: ${esc(m.mtdScore||'—')}</span>
+        <span class="badge">AHT: ${esc(m.aht||'—')}</span>
+        <span class="badge">Prod: ${esc(m.prodTime||'—')}</span>
       </div>
       <div class="socials">
-        <a href="#" class="magnet" aria-label="${m.name} on Facebook">${fb}</a>
-        <a href="#" class="magnet" aria-label="${m.name} on LinkedIn">${li}</a>
-        <a href="#" class="magnet" aria-label="Email ${m.name}">${mail}</a>
+        <a href="#" class="magnet" aria-label="${esc(m.name)} on Facebook">${fb}</a>
+        <a href="#" class="magnet" aria-label="${esc(m.name)} on LinkedIn">${li}</a>
+        <a href="#" class="magnet" aria-label="Email ${esc(m.name)}">${mail}</a>
       </div>
     </article>`).join('');
-
   grid.innerHTML = html;
-})();
- 
-(function marquee(){
+};
+window.renderTeamMembers();(function marquee(){
   const t=document.getElementById('marquee'); if(!t) return;
   const items=['Albina Jahan Leadership','98.06% Quality Score','100% On-Time Login','Trust','Speed','Accuracy'];
   const unit=items.map(w=>`<span>${w}</span><span class="solid"><b>★</b></span>`).join('');
@@ -1594,7 +1599,7 @@ if(!REDUCE){
   const empty = document.getElementById('emptyState');
   if(!panel || !search) return;
 
-  const all = MEMBERS.map(m=>({...m, leader:false}));
+  let all = MEMBERS.map(m=>({...m, leader:false}));
   let data=[...all], filter='all';
 
   const secs=s=>{const p=s.split(':').map(Number);return p.length===3?p[0]*3600+p[1]*60+p[2]:p[0]*60+p[1]}
@@ -1627,22 +1632,27 @@ if(!REDUCE){
   }
 
   function updateIntel(){
-    const active=MEMBERS;
+    const active=MEMBERS||[];
+    document.getElementById('countAll').textContent=all.length;
+    document.getElementById('countStars').textContent=all.filter(m=>/star/i.test(m.rank||'')).length;
+    document.getElementById('countPerfect').textContent=all.filter(m=>parseFloat(m.attendance)===100).length;
+    if(!active.length){
+      ['topQuality','topQualityValue','fastestAht','fastestAhtValue','avgQuality','avgProd'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='—'});
+      return;
+    }
     const top=[...active].sort((a,b)=>quality(b)-quality(a))[0];
     const fast=[...active].sort((a,b)=>ahtSecs(a.aht)-ahtSecs(b.aht))[0];
-    const avg=active.reduce((s,m)=>s+quality(m),0)/active.length;
-    const parseH=s=>{const p=s.split(':').map(Number);return p[0]*3600+p[1]*60+p[2]}
-    const avgP=active.reduce((s,m)=>s+parseH(m.prodTime),0)/active.length;
+    const avg=active.reduce((sum,m)=>sum+quality(m),0)/active.length;
+    const parseH=s=>{const p=String(s||'0:0:0').split(':').map(Number);return p.length===3?p[0]*3600+p[1]*60+p[2]:0};
+    const times=active.filter(m=>m.prodTime&&m.prodTime!=='—');
+    const avgP=times.length?times.reduce((sum,m)=>sum+parseH(m.prodTime),0)/times.length:0;
     const hh=Math.floor(avgP/3600),mm=Math.round((avgP%3600)/60);
-    document.getElementById('topQuality').textContent=top.name;
-    document.getElementById('topQualityValue').textContent=top.mtdScore;
-    document.getElementById('fastestAht').textContent=fast.name;
-    document.getElementById('fastestAhtValue').textContent=fast.aht;
+    document.getElementById('topQuality').textContent=top?.name||'—';
+    document.getElementById('topQualityValue').textContent=top?.mtdScore||'—';
+    document.getElementById('fastestAht').textContent=fast?.name||'—';
+    document.getElementById('fastestAhtValue').textContent=fast?.aht||'—';
     document.getElementById('avgQuality').textContent=avg.toFixed(2)+'%';
-    document.getElementById('avgProd').textContent=hh+'h '+String(mm).padStart(2,'0')+'m';
-    document.getElementById('countAll').textContent=all.length;
-    document.getElementById('countStars').textContent=all.filter(m=>/star/i.test(m.rank)).length;
-    document.getElementById('countPerfect').textContent=all.filter(m=>parseFloat(m.attendance)===100).length;
+    document.getElementById('avgProd').textContent=times.length?hh+'h '+String(mm).padStart(2,'0')+'m':'—';
   }
 
   document.querySelectorAll('.filter-chip').forEach(b=>b.addEventListener('click',()=>{
@@ -1725,6 +1735,12 @@ if(!REDUCE){
     }
   });
 
+  window.refreshTeamCommand = function refreshTeamCommand(){
+    all = (MEMBERS||[]).map(m=>({...m,leader:false}));
+    data = [...all];
+    updateIntel();
+    draw();
+  };
   updateIntel();draw();
 })();
 
@@ -2331,7 +2347,7 @@ if(!REDUCE){
 
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="./team-elite-star-supabase-config.js"></script><script>window.TEAM_ELITE_SUPABASE=window.TEAM_ELITE_SUPABASE_CONFIG||{url:"YOUR_SUPABASE_PROJECT_URL",key:"YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY"};</script>
+<script src="./team-elite-star-supabase-config.js?v=3"></script><script>window.TEAM_ELITE_SUPABASE=window.TEAM_ELITE_SUPABASE_CONFIG||null;</script>
 <script id="report-sections-script">
 (()=>{
   const $=s=>document.querySelector(s);
@@ -2421,28 +2437,132 @@ if(!REDUCE){
     const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     return `${Number(m[3])}-${months[Number(m[2])-1]}-${m[1].slice(2)}`;
   }
-  async function syncReportDataFromDatabase(){
-    const cfg=window.TEAM_ELITE_SUPABASE;
-    if(!cfg||!cfg.url||cfg.url.includes('YOUR_SUPABASE')||!cfg.key||cfg.key.includes('YOUR_SUPABASE')||!window.supabase)return;
-    const client=window.supabase.createClient(cfg.url,cfg.key);
-    const [p,s,c]=await Promise.all([
-      client.from('previous_members').select('*').order('archived_date',{ascending:false}),
-      client.from('sr_records').select('*').order('accuracy',{ascending:true}),
-      client.from('call_records').select('*').order('call_date',{ascending:true})
-    ]);
-    if(p.error)throw p.error;if(s.error)throw s.error;if(c.error)throw c.error;
-    archive=(p.data||[]).map(r=>({id:r.agent_id||'',name:r.name||'',location:r.location||'',cube:r.cube_id||'',role:r.role||'CSR',qa:r.qa||'',trainer:r.trainer||'',quality:r.quality==null?'—':Number(r.quality).toFixed(2)+'%',attendance:r.attendance==null?'—':Number(r.attendance).toFixed(2)+'%',staffed:r.staffed_time||'—',productive:r.productive_time||'—',breakTime:r.break_time||'—',aht:r.aht||'—',onTimeLogin:r.on_time_login==null?'—':Number(r.on_time_login).toFixed(2)+'%',note:r.notes||'Archived member record.',archivedDate:r.archived_date||''}));
-    srRows=(s.data||[]).map(r=>({id:r.agent_id||'',name:r.agent_name||'',location:r.location||'',right:Number(r.right_count)||0,wrong:Number(r.wrong_count)||0,accuracy:Number(r.accuracy)||0,reportDate:r.report_date||''}));
-    callRows=(c.data||[]).map(r=>({service:r.service_mobile_masked||'••••••',caller:r.caller_mobile_masked||'••••••',category:r.category||'',date:reportDateLabel(r.call_date),id:r.agent_id||'',name:r.agent_name||'',status:r.training_status||'Unknown',remarks:r.training_remarks||''}));
-    renderArchive();renderSr();renderCalls();
-    const prevNote=document.querySelector('#previous-members .report-panel > .report-note');
-    if(prevNote)prevNote.textContent='Archived profiles are loaded from the protected Team Elite Star database.';
-    const srNote=document.querySelector('#sr-data .report-panel > .report-note');
-    if(srNote)srNote.textContent='Values are loaded from the Team Elite Star report database. Accuracy is calculated from the stored right/wrong counts when a report is imported.';
-    const callNote=document.querySelector('#call-data .report-panel > .report-note');
-    if(callNote)callNote.textContent='Call-training records are loaded from the database. Service and caller numbers are stored in masked form only.';
+  const liveStatus=$('#dbLiveStatus');
+  let liveClient=null, liveChannel=null, realtimeReady=false, refreshTimer=0, pollTimer=0, busy=false, again=false, lastQueryErrors=false;
+  const signatures={agents:'',settings:'',previous:'',sr:'',calls:''};
+  function setDbStatus(mode,text,detail=''){
+    if(!liveStatus)return;
+    liveStatus.className=mode==='live'?'db-status-live':mode==='poll'?'db-status-poll':mode==='error'?'db-status-error':'db-status-wait';
+    liveStatus.textContent=text;
+    liveStatus.title=detail||text;
   }
-  syncReportDataFromDatabase().catch(err=>console.warn('Team Elite Star report sync unavailable; showing embedded report data.',err));
+  const pct=v=>v===null||v===undefined||v===''?'—':`${Number(v).toFixed(2)}%`;
+  function applyLiveAgents(rows){
+    const list=Array.isArray(rows)?rows:[];
+    const leader=list.find(r=>r.is_leader);
+    TEAM_LEADER=leader?{
+      name:leader.name||'Team Leader',role:leader.role||'Team Leader',rank:leader.rank||leader.role||'Team Leader',
+      cubeId:leader.cube_id||'',bio:leader.bio||'',qa:leader.qa||'Rasel Hossain'
+    }:{...STATIC_TEAM_LEADER};
+    MEMBERS=list.filter(r=>!r.is_leader&&r.active!==false).map(r=>({
+      dgId:r.dg_id||'',name:r.name||'',cubeId:r.cube_id||'',role:r.role||'CSR',rank:r.rank||r.role||'CSR',
+      qa:r.qa||'',trainer:r.trainer||'',mtdScore:pct(r.mtd_score),attendance:pct(r.attendance),
+      staffedTime:r.staffed_time||'—',prodTime:r.prod_time||'—',breakTime:r.break_time||'—',aht:r.aht||'—',
+      onTimeLogin:pct(r.on_time_login),bio:r.bio||'',facebookUrl:r.facebook_url||'',linkedinUrl:r.linkedin_url||'',email:r.email||''
+    }));
+    window.renderTeamMembers?.();
+    window.refreshTeamCommand?.();
+    const hero=document.querySelector('.hero .lede');
+    const leadBadge=document.querySelector('.stats-note span');
+    if(leadBadge)leadBadge.textContent=`TL: ${TEAM_LEADER.name}`;
+  }
+  function applyLiveSettings(rows){
+    const settings=Object.fromEntries((rows||[]).map(r=>[r.key,r.value]));
+    const siteName=settings.site_name;
+    if(siteName)document.title=siteName;
+    const heroEyebrow=document.querySelector('.hero .hero-eyebrow');
+    if(settings.tagline&&heroEyebrow)heroEyebrow.textContent=settings.tagline;
+    const hero=document.querySelector('.hero .lede');
+    if(settings.hero_description&&hero)hero.textContent=settings.hero_description;
+    const aboutFirst=document.querySelector('.about-copy p');
+    if(settings.about_description&&aboutFirst)aboutFirst.textContent=settings.about_description;
+    const announcement=settings.announcement;
+    if(announcement){
+      const marquee=document.getElementById('marquee');
+      if(marquee){const items=announcement.split('|').map(x=>x.trim()).filter(Boolean);if(items.length){const unit=items.map(w=>`<span>${esc(w)}</span><span class="solid"><b>★</b></span>`).join('');marquee.innerHTML=unit+unit;}}
+    }
+    const notice=settings.public_notice;
+    let noticeEl=document.getElementById('teamPublicNotice');
+    if(notice){if(!noticeEl){noticeEl=document.createElement('div');noticeEl.id='teamPublicNotice';noticeEl.className='report-note';noticeEl.style.cssText='max-width:1200px;margin:12px auto;padding:10px 14px;border:1px solid var(--line);border-radius:10px;text-align:center';document.querySelector('.local-time-bar')?.insertAdjacentElement('afterend',noticeEl);}noticeEl.textContent=notice;noticeEl.hidden=false;}else if(noticeEl){noticeEl.hidden=true;}
+  }
+  function applyPrevious(rows){
+    archive=(rows||[]).map(r=>({id:r.agent_id||'',name:r.name||'',location:r.location||'',cube:r.cube_id||'',role:r.role||'CSR',qa:r.qa||'',trainer:r.trainer||'',quality:pct(r.quality),attendance:pct(r.attendance),staffed:r.staffed_time||'—',productive:r.productive_time||'—',breakTime:r.break_time||'—',aht:r.aht||'—',onTimeLogin:pct(r.on_time_login),note:r.notes||'Archived member record.',archivedDate:r.archived_date||''}));
+    renderArchive();
+    const note=document.querySelector('#previous-members .report-panel > .report-note');if(note)note.textContent='Previous Member records are loaded from Supabase.';
+  }
+  function applySr(rows){
+    srRows=(rows||[]).map(r=>({id:r.agent_id||'',name:r.agent_name||'',location:r.location||'',right:Number(r.right_count)||0,wrong:Number(r.wrong_count)||0,accuracy:r.accuracy==null?((Number(r.right_count)||0)+(Number(r.wrong_count)||0)?Number(r.right_count)/(Number(r.right_count)+Number(r.wrong_count))*100:0):Number(r.accuracy),reportDate:r.report_date||''}));
+    renderSr();
+    const note=document.querySelector('#sr-data .report-panel > .report-note');if(note)note.textContent='SR records are loaded from Supabase. Accuracy is calculated from right/wrong counts when not provided.';
+  }
+  function applyCalls(rows){
+    callRows=(rows||[]).map(r=>({service:r.service_mobile_masked||'••••••',caller:r.caller_mobile_masked||'••••••',category:r.category||'',date:reportDateLabel(r.call_date),id:r.agent_id||'',name:r.agent_name||'',status:r.training_status||'Unknown',remarks:r.training_remarks||''}));
+    renderCalls();
+    const note=document.querySelector('#call-data .report-panel > .report-note');if(note)note.textContent='Call-training records are loaded from Supabase. Phone numbers remain masked.';
+  }
+  function signature(data){return JSON.stringify(data||[])}
+  async function loadSupabaseData(source='manual'){
+    if(!liveClient||busy){if(busy)again=true;return;}
+    busy=true;
+    const errors=[];
+    try{
+      const [a,s,p,sr,c]=await Promise.all([
+        liveClient.from('agents').select('*').eq('active',true).order('is_leader',{ascending:false}).order('sort_order',{ascending:true}).order('name',{ascending:true}),
+        liveClient.from('app_settings').select('key,value').eq('is_public',true).order('key'),
+        liveClient.from('previous_members').select('*').order('archived_date',{ascending:false}),
+        liveClient.from('sr_records').select('*').order('report_date',{ascending:false}).order('agent_name'),
+        liveClient.from('call_records').select('*').order('call_date',{ascending:false}).order('created_at',{ascending:false})
+      ]);
+      if(a.error)errors.push(`agents: ${a.error.message}`);else{const sig=signature(a.data);if(sig!==signatures.agents){signatures.agents=sig;applyLiveAgents(a.data||[]);}}
+      if(s.error)errors.push(`settings: ${s.error.message}`);else{const sig=signature(s.data);if(sig!==signatures.settings){signatures.settings=sig;applyLiveSettings(s.data||[]);}}
+      if(p.error)errors.push(`previous members: ${p.error.message}`);else{const sig=signature(p.data);if(sig!==signatures.previous){signatures.previous=sig;applyPrevious(p.data||[]);}}
+      if(sr.error)errors.push(`SR data: ${sr.error.message}`);else{const sig=signature(sr.data);if(sig!==signatures.sr){signatures.sr=sig;applySr(sr.data||[]);}}
+      if(c.error)errors.push(`call data: ${c.error.message}`);else{const sig=signature(c.data);if(sig!==signatures.calls){signatures.calls=sig;applyCalls(c.data||[]);}}
+      if(errors.length){lastQueryErrors=true;console.warn('[Team Elite Star] Some Supabase queries failed:',errors);setDbStatus('error','DB PARTIAL',errors.join('\n'));}
+      else{lastQueryErrors=false;setDbStatus(realtimeReady?'live':'poll',realtimeReady?'DB LIVE':'DB SYNC OK',`Updated at ${new Date().toLocaleTimeString()}; source=${source}`);}
+    }catch(err){console.error('[Team Elite Star] Supabase load failed:',err);setDbStatus('error','DB ERROR',err?.message||String(err));}
+    finally{busy=false;if(again){again=false;scheduleRefresh('queued');}}
+  }
+  function scheduleRefresh(source='realtime'){
+    clearTimeout(refreshTimer);
+    refreshTimer=setTimeout(()=>loadSupabaseData(source),220);
+  }
+  function setupRealtime(){
+    if(!liveClient)return;
+    try{
+      const tables=['agents','app_settings','previous_members','sr_records','call_records'];
+      let channel=liveClient.channel('team-elite-star-public-live');
+      tables.forEach(table=>{channel=channel.on('postgres_changes',{event:'*',schema:'public',table},()=>scheduleRefresh(`realtime:${table}`));});
+      liveChannel=channel.subscribe(status=>{
+        if(status==='SUBSCRIBED'){
+          realtimeReady=true;
+          if(!busy){if(lastQueryErrors)setDbStatus('error','DB PARTIAL','Realtime is connected, but one or more table queries are failing. Hover this badge or inspect browser console.');else setDbStatus('live','DB LIVE','Realtime subscribed; 15-second sync fallback is also active.');}
+        }else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'||status==='CLOSED'){
+          realtimeReady=false;
+          if(!busy)setDbStatus('poll','DB AUTO SYNC','Realtime publication is unavailable; periodic refresh will continue.');
+        }
+      });
+    }catch(err){realtimeReady=false;console.warn('[Team Elite Star] Realtime setup failed; polling fallback enabled.',err);}
+    if(!pollTimer)pollTimer=setInterval(()=>{if(!document.hidden)scheduleRefresh('poll');},15000);
+  }
+  function startLiveData(){
+    const cfg=window.TEAM_ELITE_SUPABASE_CONFIG;
+    if(!cfg||!cfg.url||!cfg.key||String(cfg.url).includes('YOUR_SUPABASE')||String(cfg.key).includes('YOUR_SUPABASE')){
+      setDbStatus('error','DB CONFIG?','Set the real Project URL and publishable key in team-elite-star-supabase-config.js and upload it beside index.html.');
+      return;
+    }
+    if(!window.supabase||typeof window.supabase.createClient!=='function'){
+      setDbStatus('error','DB LIB ERROR','Supabase JS library did not load. Check network/CDN access.');return;
+    }
+    try{liveClient=window.supabase.createClient(cfg.url,cfg.key,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false},realtime:{params:{eventsPerSecond:5}}});}
+    catch(err){setDbStatus('error','DB CONFIG ERROR',err?.message||String(err));return;}
+    loadSupabaseData('initial').then(setupRealtime);
+  }
+  window.addEventListener('focus',()=>scheduleRefresh('focus'),{passive:true});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)scheduleRefresh('resume');});
+  window.addEventListener('online',()=>scheduleRefresh('online'),{passive:true});
+  renderArchive();renderSr();renderCalls();
+  startLiveData();
 })();
 </script>
 
