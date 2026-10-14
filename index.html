@@ -21,12 +21,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
  
 <style>
-.db-sync-cell b{font-size:clamp(.56rem,1.15vw,.86rem);letter-spacing:.02em;white-space:nowrap}
-.db-sync-cell .db-status-live{color:#83e3ae!important}
-.db-sync-cell .db-status-poll{color:#ffd166!important}
-.db-sync-cell .db-status-error{color:#ff8d9a!important}
-.db-sync-cell .db-status-wait{color:#9aa4b2!important}
-@media(max-width:600px){.db-sync-cell{padding-left:6px!important;padding-right:6px!important}.db-sync-cell b{font-size:.48rem!important;letter-spacing:0!important}.db-sync-cell small{font-size:.32rem!important;letter-spacing:.01em!important}}
 :root{
   color-scheme: dark;
   --obsidian:#08070C; --obsidian-2:#0C0B12; --onyx:#14131A; --onyx-2:#1B1A22;
@@ -841,57 +835,6 @@ body.weather-off #weatherFx{display:none!important;}
 @media(max-width:860px){.weather-fx{opacity:.72}.weather-fx .petal{filter:none;}.weather-fx::before{filter:blur(12px);}}
 @media(prefers-reduced-motion:reduce){.weather-fx{display:none!important;}}
 </style>
-<style id="report-sections-css">
-.report-section{padding-top:clamp(64px,9vh,112px)}
-.report-panel{position:relative;overflow:hidden;border:1px solid var(--line);background:linear-gradient(180deg,rgba(27,26,34,.86),rgba(8,7,12,.94));border-radius:14px;padding:20px;box-shadow:0 35px 90px -55px var(--glow);backdrop-filter:blur(18px)}
-.report-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-bottom:15px;border-bottom:1px solid var(--line)}
-.report-kicker{font:600 .65rem var(--util);letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
-.report-actions{display:flex;gap:7px;flex-wrap:wrap}
-.report-btn{border:1px solid var(--line);background:rgba(255,255,255,.025);color:var(--muted);font:600 .63rem var(--util);letter-spacing:.06em;text-transform:uppercase;padding:9px 11px;border-radius:5px;cursor:pointer;transition:.22s ease}
-.report-btn:hover,.report-btn.active{color:var(--gold);border-color:var(--line-strong);background:rgba(232,195,107,.07)}
-.report-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden;margin:14px 0}
-.report-stat{background:rgba(8,7,12,.8);padding:13px}
-.report-stat span{display:block;font:600 .57rem var(--util);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
-.report-stat strong{display:block;margin-top:4px;font:600 clamp(1.4rem,3vw,2rem) var(--serif);color:var(--ivory)}
-.report-tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:13px 0}
-.report-search{flex:1;min-width:220px}
-.report-search input{width:100%;border:1px solid var(--line);background:rgba(0,0,0,.18);color:var(--ivory);border-radius:6px;padding:12px 13px;font:400 .85rem var(--sans);outline:none}
-.report-search input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(232,195,107,.07)}
-.report-table-wrap{overflow:auto;border:1px solid var(--line);border-radius:8px;max-width:100%}
-.report-table{width:100%;border-collapse:collapse;min-width:780px;font-size:.76rem}
-.report-table th,.report-table td{padding:11px 12px;text-align:left;border-bottom:1px solid rgba(232,195,107,.09);vertical-align:top}
-.report-table th{position:sticky;top:0;z-index:1;background:#17151d;color:var(--muted);font:600 .59rem var(--util);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
-.report-table tr:last-child td{border-bottom:0}
-.report-table tbody tr:hover td{background:rgba(232,195,107,.035)}
-.report-table td{color:#d8d1c2}
-.report-name{color:var(--ivory);font-weight:600;white-space:nowrap}
-.report-muted{display:block;color:var(--muted);font-size:.65rem;margin-top:3px}
-.report-badge{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:99px;padding:4px 7px;font:600 .57rem var(--util);letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
-.report-badge.good{color:#9ce7b8;border-color:rgba(131,227,174,.26);background:rgba(131,227,174,.06)}
-.report-badge.bad{color:#ff9ba1;border-color:rgba(255,111,120,.27);background:rgba(255,111,120,.06)}
-.report-badge.warn{color:var(--gold);border-color:var(--line-strong);background:rgba(232,195,107,.06)}
-.accuracy-cell{font-weight:700;white-space:nowrap}
-.accuracy-low{background:rgba(255,111,120,.15)!important;color:#ff9ba1!important}
-.accuracy-mid{background:rgba(232,195,107,.13)!important;color:#f5d88f!important}
-.accuracy-high{background:rgba(131,227,174,.13)!important;color:#a3e9bb!important}
-.report-total td{font-weight:700;color:var(--gold-shine);background:rgba(232,195,107,.055)}
-.report-empty{padding:28px 15px;text-align:center;color:var(--muted);font:.75rem var(--util)}
-.report-note{margin:12px 0 0;color:var(--muted);font-size:.73rem;line-height:1.55}
-.previous-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:15px}
-.previous-card{border:1px solid var(--line);background:linear-gradient(180deg,var(--onyx),var(--obsidian-2));border-radius:10px;padding:19px;min-width:0}
-.previous-card .prev-head{display:flex;align-items:center;gap:11px}
-.previous-card .prev-avatar{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 30% 25%,#2a2620,#141219);border:1px solid var(--line-strong);color:var(--gold-shine);font:600 1.1rem var(--serif);flex:0 0 auto}
-.previous-card h3{font:600 1.2rem var(--serif);margin:0;line-height:1.15;overflow-wrap:anywhere}
-.previous-card .prev-role{font:600 .57rem var(--util);color:var(--gold);text-transform:uppercase;letter-spacing:.09em;margin-top:4px}
-.prev-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:15px}
-.prev-metric{border:1px solid var(--line);border-radius:6px;padding:8px;min-width:0}
-.prev-metric span{display:block;color:var(--muted);font:600 .53rem var(--util);text-transform:uppercase;letter-spacing:.05em}
-.prev-metric strong{display:block;color:var(--ivory);font:600 .83rem var(--util);margin-top:3px;overflow-wrap:anywhere}
-@media(max-width:900px){.previous-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.report-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.report-panel{padding:14px}}
-@media(max-width:540px){.previous-grid{grid-template-columns:1fr}.report-stat{padding:11px}.report-table{min-width:700px}.report-top{align-items:flex-start}.report-actions{width:100%}.report-btn{flex:1}}
-@media(max-width:1080px){.nav-links{gap:1rem}.nav-links a{font-size:.68rem}.nav-tag{font-size:.58rem}}
-</style>
-
 </head>
 <body>
  
@@ -916,7 +859,7 @@ body.weather-off #weatherFx{display:none!important;}
     <nav class="nav-links" aria-label="Primary">
       <a href="#about">About</a>
       <a href="#impact">Achievements</a>
-      <a href="#team">Members</a><a href="#command">Command</a><a href="#previous-members">Previous</a><a href="#sr-data">SR Data</a><a href="#call-data">Call Data</a>
+      <a href="#team">Members</a><a href="#command">Command</a>
       <span class="nav-tag">Nagad&nbsp;·&nbsp;CSR</span>
     </nav>
     <button class="nav-toggle" id="navToggle" aria-label="Jump to members">
@@ -926,7 +869,7 @@ body.weather-off #weatherFx{display:none!important;}
 </header>
 
 <div class="local-time-bar" id="localTimeBar" aria-live="polite" aria-label="Local time">
-  <div class="local-time-cell"><b><span class="lt-dot" aria-hidden="true"></span><time id="localTime">--:--:--</time></b><small>Bangladesh Time</small></div>
+  <div class="local-time-cell"><b><span class="lt-dot" aria-hidden="true"></span><time id="localTime">--:--:--</time></b><small>Local Time</small></div>
   <div class="local-time-cell"><b id="displayMode">DESKTOP</b><small>Display</small></div>
 </div>
 
@@ -985,7 +928,7 @@ body.weather-off #weatherFx{display:none!important;}
         <div class="stat"><div class="num" data-count="8.28" data-suffix="h" data-dec="2">0</div><div class="lbl">Avg. Productivity / Day</div></div>
         <div class="stat"><div class="num" data-count="85.71" data-suffix="%" data-dec="2">0</div><div class="lbl">Overall Attendance</div></div>
       </div>
-      <div class="stats-note reveal"><span>TL: Albina Jahan</span><span>QA: Rasel Hossain</span><span>8 Active CSR Profiles</span></div>
+      <div class="stats-note reveal"><span>TL: Albina Jahan</span><span>QA: Rasel Hossain</span><span>12 Active Team Members</span></div>
     </div>
   </section>
  
@@ -1050,75 +993,6 @@ body.weather-off #weatherFx{display:none!important;}
   </div>
 </section>
 
-<section id="previous-members" class="report-section" aria-label="Previous members">
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <span class="eyebrow">Historical Roster</span>
-      <h2>Previous <span class="gold-text">members</span>.</h2>
-      <p>Archived team profile information retained from the earlier roster.</p>
-    </div>
-    <div class="report-panel reveal">
-      <div class="report-top">
-        <div><span class="report-kicker">Archived Profiles</span><div class="report-note" style="margin-top:5px">Past roster records are kept separate from the active team view.</div></div>
-        <div class="report-actions"><button class="report-btn" id="exportPreviousMembers" type="button">Export CSV</button></div>
-      </div>
-      <div class="report-tools"><div class="report-search"><input id="previousMemberSearch" type="search" placeholder="Search archived member, ID, cube or trainer…" autocomplete="off"></div><span class="report-badge warn" id="previousMemberCount">1 archived profile</span></div>
-      <div id="previousMembersGrid" class="previous-grid"></div>
-      <p class="report-note">This archived record was present in the earlier website roster but does not appear in the supplied SR accuracy sheet. Confirm the membership status before treating this as a final HR archive.</p>
-    </div>
-  </div>
-</section>
-
-<section id="sr-data" class="report-section" aria-label="SR accuracy data">
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <span class="eyebrow">Service Report</span>
-      <h2>SR <span class="gold-text">data</span>.</h2>
-      <p>Team accuracy report from the supplied Jashore sheet, with right/wrong counts and accuracy percentage.</p>
-    </div>
-    <div class="report-panel reveal">
-      <div class="report-top">
-        <div><span class="live-dot"></span><span class="report-kicker">SR Accuracy Report · Jashore</span></div>
-        <div class="report-actions"><button class="report-btn" id="srSortAccuracy" type="button">Accuracy ↑</button><button class="report-btn" id="exportSrData" type="button">Export CSV</button></div>
-      </div>
-      <div class="report-stats">
-        <div class="report-stat"><span>Total Agents</span><strong id="srTotalAgents">12</strong></div>
-        <div class="report-stat"><span>Right</span><strong id="srTotalRight">205</strong></div>
-        <div class="report-stat"><span>Wrong</span><strong id="srTotalWrong">11</strong></div>
-        <div class="report-stat"><span>Accuracy</span><strong id="srOverallAccuracy">94.91%</strong></div>
-      </div>
-      <div class="report-tools"><div class="report-search"><input id="srSearch" type="search" placeholder="Search ID, name, location…" autocomplete="off"></div><button class="report-btn active" id="srReset" type="button">Reset</button></div>
-      <div class="report-table-wrap"><table class="report-table"><thead><tr><th>ID</th><th>Name</th><th>Location</th><th>Right</th><th>Wrong</th><th>Accuracy %age</th></tr></thead><tbody id="srTableBody"></tbody><tfoot id="srTableFoot"></tfoot></table></div>
-      <p class="report-note">Totals and individual accuracy values are reproduced from the supplied sheet. Overall accuracy is 205 ÷ (205 + 11) = 94.91%.</p>
-    </div>
-  </div>
-</section>
-
-<section id="call-data" class="report-section" aria-label="Call training data">
-  <div class="wrap">
-    <div class="sec-head reveal">
-      <span class="eyebrow">Training Review</span>
-      <h2>Call <span class="gold-text">data</span>.</h2>
-      <p>Call review entries and training remarks from 2–7 October 2026.</p>
-    </div>
-    <div class="report-panel reveal">
-      <div class="report-top">
-        <div><span class="live-dot"></span><span class="report-kicker">Call Training Records</span></div>
-        <div class="report-actions"><button class="report-btn active" data-call-filter="all" type="button">All <b id="callCountAll">11</b></button><button class="report-btn" data-call-filter="wrong" type="button">Wrong only</button><button class="report-btn" id="exportCallData" type="button">Export CSV</button></div>
-      </div>
-      <div class="report-stats">
-        <div class="report-stat"><span>Total Records</span><strong id="callTotal">11</strong></div>
-        <div class="report-stat"><span>Wrong Training</span><strong id="callWrong">11</strong></div>
-        <div class="report-stat"><span>Unique Agents</span><strong id="callAgents">7</strong></div>
-        <div class="report-stat"><span>Date Range</span><strong style="font-size:1.25rem">2–7 Oct</strong></div>
-      </div>
-      <div class="report-tools"><div class="report-search"><input id="callSearch" type="search" placeholder="Search ID, name, category, remark, masked number…" autocomplete="off"></div><span class="report-badge warn">Customer numbers masked</span></div>
-      <div class="report-table-wrap"><table class="report-table"><thead><tr><th>Service Mobile No.</th><th>Caller Mobile No.</th><th>Sub Service Category</th><th>Date</th><th>ID</th><th>Name</th><th>Training Status</th><th>Training Remarks</th></tr></thead><tbody id="callTableBody"></tbody></table></div>
-      <p class="report-note">Customer/caller mobile numbers are masked to their last four digits for privacy. The unmasked numbers are not embedded in this page.</p>
-    </div>
-  </div>
-</section>
-
 <div class="quick-dock" id="quickDock" aria-label="Quick actions">
   <button class="dock-btn" id="soundBtn" aria-label="Toggle ambience" title="Sound">◒</button>
   <button class="dock-btn" id="themeGlow" aria-label="Toggle ambient glow" title="Ambient glow">◈</button>
@@ -1139,9 +1013,6 @@ body.weather-off #weatherFx{display:none!important;}
   <button class="sheet-item" id="sheetSound" type="button"><span class="sheet-ic">◒</span> Toggle Ambience</button>
   <button class="sheet-item" id="sheetGlow" type="button"><span class="sheet-ic">◈</span> Toggle Ambient Glow</button>
   <button class="sheet-item" id="sheetTop" type="button"><span class="sheet-ic">↑</span> Back to Top</button>
-  <button class="sheet-item" data-nav-target="#previous-members" type="button"><span class="sheet-ic">◷</span> Previous Members</button>
-  <button class="sheet-item" data-nav-target="#sr-data" type="button"><span class="sheet-ic">▤</span> SR Data</button>
-  <button class="sheet-item" data-nav-target="#call-data" type="button"><span class="sheet-ic">☎</span> Call Data</button>
   <button class="sheet-item" id="sheetInstall" type="button" hidden><span class="sheet-ic">⇩</span> Install App</button>
   <p class="sheet-ios-hint" id="sheetIosHint" hidden>To install as an app on iPhone/iPad: Tap the Share button below → select 'Add to Home Screen'.</p>
 </div>
@@ -1183,11 +1054,170 @@ body.weather-off #weatherFx{display:none!important;}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 
-const STATIC_TEAM_LEADER = null;
-const STATIC_MEMBERS = [];
-let TEAM_LEADER = null;
-let MEMBERS = [];
+const TEAM_LEADER = {
+  name: "Albina Jahan",
+  role: "Team Leader",
+  bio: "Leading Team Elite Star to operational excellence, driving high quality standards and top-tier customer satisfaction.",
+  rank: "Team Leader",
+  cubeId: "TL_ALBINA_JSR"
+};
 
+const MEMBERS = [
+  {
+    dgId: "16546",
+    name: "Suraya",
+    cubeId: "Suraya46_JSR",
+    role: "CSR",
+    rank: "CSR",
+    qa: "Rasel Hossain",
+    trainer: "Reduan Islam",
+    mtdScore: "99.32%",
+    attendance: "100.00%",
+    staffedTime: "9:01:22",
+    prodTime: "8:01:10",
+    breakTime: "1:00:12",
+    aht: "0:03:07",
+    onTimeLogin: "100.00%",
+    bio: "Consistent customer support provider with strong compliance and 100% attendance."
+  },
+  {
+    dgId: "17174",
+    name: "Sarmin Sultana Apon",
+    cubeId: "Apon74_JSR",
+    role: "CSR · Our Star",
+    rank: "CSR · Star",
+    qa: "Rasel Hossain",
+    trainer: "Md. Mynul Islam",
+    mtdScore: "99.65%",
+    attendance: "100.00%",
+    staffedTime: "10:33:20",
+    prodTime: "9:35:54",
+    breakTime: "0:57:26",
+    aht: "0:02:45",
+    onTimeLogin: "100.00%",
+    bio: "Top performer with excellent quality performance and over 9 hours average daily productivity."
+  },
+  {
+    dgId: "17916",
+    name: "Md.Sajman Basar",
+    cubeId: "Sajman_JSR",
+    role: "CSR",
+    rank: "CSR",
+    qa: "Rasel Hossain",
+    trainer: "Reduan Islam",
+    mtdScore: "93.97%",
+    attendance: "90.00%",
+    staffedTime: "9:01:40",
+    prodTime: "8:05:45",
+    breakTime: "0:55:55",
+    aht: "0:03:15",
+    onTimeLogin: "100.00%",
+    bio: "Focused on efficient handling, consistent performance, and delivering quality service with every interaction."
+  },
+  {
+    dgId: "18314",
+    name: "MD.shakibuzzaman shacho",
+    cubeId: "Shacho_JSR",
+    role: "CSR",
+    rank: "CSR",
+    qa: "Rasel Hossain",
+    trainer: "Md. Mynul Islam",
+    mtdScore: "97.75%",
+    attendance: "100.00%",
+    staffedTime: "9:00:54",
+    prodTime: "7:59:06",
+    breakTime: "1:01:48",
+    aht: "0:03:03",
+    onTimeLogin: "100.00%",
+    bio: "Outstanding performance featuring strong quality results and consistent daily productivity."
+  },
+  {
+    dgId: "19249",
+    name: "Md. Arifuzzaman",
+    cubeId: "Arifuzzaman_JSR",
+    role: "CSR",
+    rank: "CSR",
+    qa: "Rasel Hossain",
+    trainer: "Reduan Islam",
+    mtdScore: "96.73%",
+    attendance: "90.00%",
+    staffedTime: "8:59:37",
+    prodTime: "7:54:07",
+    breakTime: "1:05:30",
+    aht: "0:02:43",
+    onTimeLogin: "100.00%",
+    bio: "High accuracy and reliable daily productivity with consistent service performance."
+  },
+  {
+    dgId: "19266",
+    name: "Shuly Khatun",
+    cubeId: "Shulykhatun_JSR",
+    role: "CSR · Our Star",
+    rank: "CSR · Star",
+    qa: "Rasel Hossain",
+    trainer: "Reduan Islam",
+    mtdScore: "99.80%",
+    attendance: "100.00%",
+    staffedTime: "9:21:01",
+    prodTime: "8:22:47",
+    breakTime: "0:58:14",
+    aht: "0:02:59",
+    onTimeLogin: "100.00%",
+    bio: "Elite squad member boasting an excellent MTD score and swift handling performance."
+  },
+  {
+    dgId: "19420",
+    name: "Shekh Afsana mimi",
+    cubeId: "Afsanamimi_JSR",
+    role: "CSR",
+    rank: "CSR",
+    qa: "Rasel Hossain",
+    trainer: "Md. Shahin Akter",
+    mtdScore: "97.87%",
+    attendance: "100.00%",
+    staffedTime: "9:02:52",
+    prodTime: "7:55:14",
+    breakTime: "1:07:38",
+    aht: "0:02:48",
+    onTimeLogin: "100.00%",
+    bio: "Hardworking team member delivering strong staffed time with consistent service quality."
+  },
+  {
+    dgId: "20071",
+    name: "Abu Talha Raj",
+    cubeId: "Talharaj_JSR",
+    role: "CSR",
+    rank: "CSR",
+    qa: "Rasel Hossain",
+    trainer: "Md. Shahin Akter",
+    mtdScore: "99.41%",
+    attendance: "100.00%",
+    staffedTime: "9:02:44",
+    prodTime: "8:00:18",
+    breakTime: "1:02:26",
+    aht: "0:03:20",
+    onTimeLogin: "100.00%",
+    bio: "Focused team player driving continuous customer engagement and thorough resolution."
+  },
+  {
+    dgId: "20204",
+    name: "Bijoya Ray",
+    cubeId: "Bijoya_JSR",
+    role: "CSR",
+    rank: "CSR",
+    qa: "Rasel Hossain",
+    trainer: "Md. Shahin Akter",
+    mtdScore: "94.56%",
+    attendance: "88.89%",
+    staffedTime: "8:57:10",
+    prodTime: "7:40:58",
+    breakTime: "1:16:12",
+    aht: "0:02:45",
+    onTimeLogin: "100.00%",
+    bio: "Reliable member maintaining strong customer service performance and consistent productivity."
+  }
+];
+ 
 const REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const FINE   = window.matchMedia('(pointer:fine)').matches;
  
@@ -1209,56 +1239,59 @@ if(REDUCE){
   }, {once:true});
 }
  
-window.renderTeamMembers = function renderTeamMembers(){
-  const grid = document.getElementById('membersGrid');
-  if(!grid) return;
-  const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  const initials = n => String(n||'').trim().split(/\s+/).slice(0,2).map(w=>w[0]||'').join('').toUpperCase() || '★';
+(function buildMembers(){
+  const grid = document.getElementById('membersGrid'); if(!grid) return;
+  const initials = n => n.trim().split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase();
   const fb='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.2c-1.2 0-1.6.8-1.6 1.5V12h2.7l-.4 2.9h-2.3v7A10 10 0 0 0 22 12z"/></svg>';
   const li='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5A2.5 2.5 0 1 1 5 8.5a2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM10 9h3.8v1.7h.1c.5-.9 1.8-1.9 3.6-1.9 3.9 0 4.6 2.5 4.6 5.8V21h-4v-5.2c0-1.2 0-2.8-1.7-2.8s-2 1.3-2 2.7V21h-4z"/></svg>';
   const mail='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>';
-  const leader = TEAM_LEADER;
-  if(!leader && !MEMBERS.length){grid.innerHTML = '<div class="report-empty">Team data is temporarily unavailable.</div>';return;}
-  const leaderMarkup = leader ? `
+
+  let html = `
     <article class="member-card tl-card reveal" tabindex="0">
-      <span class="rank">${esc(leader.rank||'Team Leader')}</span>
-      <div class="avatar" aria-hidden="true">${esc(initials(leader.name))}</div>
-      <h3>${esc(leader.name||'Team Leader')}</h3>
-      <div class="role">${esc(leader.role||'Team Leader')} · Cube: ${esc(leader.cubeId||'—')}</div>
-      <p class="bio">${esc(leader.bio||'Leading Team Elite Star.')}</p>
+      <span class="rank">${TEAM_LEADER.rank}</span>
+      <div class="avatar" aria-hidden="true">${initials(TEAM_LEADER.name)}</div>
+      <h3>${TEAM_LEADER.name}</h3>
+      <div class="role">${TEAM_LEADER.role} · Cube: ${TEAM_LEADER.cubeId}</div>
+      <p class="bio">${TEAM_LEADER.bio}</p>
       <div class="metrics-badge">
-        <span class="badge" style="background:rgba(232,195,107,.2);color:var(--gold);">Lead Alignment: ${esc(leader.name||'Team Leader')}</span>
-        <span class="badge">Team QA: ${esc(leader.qa||'Rasel Hossain')}</span>
+        <span class="badge" style="background:rgba(232,195,107,.2);color:var(--gold);">Lead Alignment: Albina Jahan</span>
+        <span class="badge">Team QA: Rasel Hossain</span>
       </div>
       <div class="socials">
-        <a href="#" class="magnet" aria-label="${esc(leader.name)} on Facebook">${fb}</a>
-        <a href="#" class="magnet" aria-label="${esc(leader.name)} on LinkedIn">${li}</a>
-        <a href="#" class="magnet" aria-label="Email ${esc(leader.name)}">${mail}</a>
+        <a href="#" class="magnet" aria-label="${TEAM_LEADER.name} on Facebook">${fb}</a>
+        <a href="#" class="magnet" aria-label="${TEAM_LEADER.name} on LinkedIn">${li}</a>
+        <a href="#" class="magnet" aria-label="Email ${TEAM_LEADER.name}">${mail}</a>
       </div>
-    </article>` : '';
-  let html = leaderMarkup;
-  html += (Array.isArray(MEMBERS)?MEMBERS:[]).map(m=>`
+    </article>
+  `;
+
+  html += MEMBERS.map(m=>`
     <article class="member-card reveal" tabindex="0">
-      <span class="rank">${esc(m.rank||m.role||'CSR')}</span>
-      <div class="avatar" aria-hidden="true">${esc(initials(m.name))}</div>
-      <h3>${esc(m.name)}</h3>
-      <div class="role">${esc(m.role||'CSR')}</div>
-      <div class="meta-details"><b>ID:</b> ${esc(m.dgId||'—')} | <b>Cube:</b> ${esc(m.cubeId||'—')}<br/><b>Trainer:</b> ${esc(m.trainer||'—')}</div>
-      <p class="bio">${esc(m.bio||'Team Elite Star member.')}</p>
+      <span class="rank">${m.rank}</span>
+      <div class="avatar" aria-hidden="true">${initials(m.name)}</div>
+      <h3>${m.name}</h3>
+      <div class="role">${m.role}</div>
+      <div class="meta-details">
+        <b>ID:</b> ${m.dgId} | <b>Cube:</b> ${m.cubeId}<br/>
+        <b>Trainer:</b> ${m.trainer}
+      </div>
+      <p class="bio">${m.bio}</p>
       <div class="metrics-badge">
-        <span class="badge" style="color:var(--gold-shine);">Quality: ${esc(m.mtdScore||'—')}</span>
-        <span class="badge">AHT: ${esc(m.aht||'—')}</span>
-        <span class="badge">Prod: ${esc(m.prodTime||'—')}</span>
+        <span class="badge" style="color:var(--gold-shine);">Quality: ${m.mtdScore}</span>
+        <span class="badge">AHT: ${m.aht}</span>
+        <span class="badge">Prod: ${m.prodTime}</span>
       </div>
       <div class="socials">
-        <a href="#" class="magnet" aria-label="${esc(m.name)} on Facebook">${fb}</a>
-        <a href="#" class="magnet" aria-label="${esc(m.name)} on LinkedIn">${li}</a>
-        <a href="#" class="magnet" aria-label="Email ${esc(m.name)}">${mail}</a>
+        <a href="#" class="magnet" aria-label="${m.name} on Facebook">${fb}</a>
+        <a href="#" class="magnet" aria-label="${m.name} on LinkedIn">${li}</a>
+        <a href="#" class="magnet" aria-label="Email ${m.name}">${mail}</a>
       </div>
     </article>`).join('');
+
   grid.innerHTML = html;
-};
-window.renderTeamMembers();(function marquee(){
+})();
+ 
+(function marquee(){
   const t=document.getElementById('marquee'); if(!t) return;
   const items=['Albina Jahan Leadership','98.06% Quality Score','100% On-Time Login','Trust','Speed','Accuracy'];
   const unit=items.map(w=>`<span>${w}</span><span class="solid"><b>★</b></span>`).join('');
@@ -1455,7 +1488,7 @@ if(!REDUCE){
   const empty = document.getElementById('emptyState');
   if(!panel || !search) return;
 
-  let all = MEMBERS.map(m=>({...m, leader:false}));
+  const all = MEMBERS.map(m=>({...m, leader:false}));
   let data=[...all], filter='all';
 
   const secs=s=>{const p=s.split(':').map(Number);return p.length===3?p[0]*3600+p[1]*60+p[2]:p[0]*60+p[1]}
@@ -1488,27 +1521,22 @@ if(!REDUCE){
   }
 
   function updateIntel(){
-    const active=MEMBERS||[];
-    document.getElementById('countAll').textContent=all.length;
-    document.getElementById('countStars').textContent=all.filter(m=>/star/i.test(m.rank||'')).length;
-    document.getElementById('countPerfect').textContent=all.filter(m=>parseFloat(m.attendance)===100).length;
-    if(!active.length){
-      ['topQuality','topQualityValue','fastestAht','fastestAhtValue','avgQuality','avgProd'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='—'});
-      return;
-    }
+    const active=MEMBERS;
     const top=[...active].sort((a,b)=>quality(b)-quality(a))[0];
     const fast=[...active].sort((a,b)=>ahtSecs(a.aht)-ahtSecs(b.aht))[0];
-    const avg=active.reduce((sum,m)=>sum+quality(m),0)/active.length;
-    const parseH=s=>{const p=String(s||'0:0:0').split(':').map(Number);return p.length===3?p[0]*3600+p[1]*60+p[2]:0};
-    const times=active.filter(m=>m.prodTime&&m.prodTime!=='—');
-    const avgP=times.length?times.reduce((sum,m)=>sum+parseH(m.prodTime),0)/times.length:0;
+    const avg=active.reduce((s,m)=>s+quality(m),0)/active.length;
+    const parseH=s=>{const p=s.split(':').map(Number);return p[0]*3600+p[1]*60+p[2]}
+    const avgP=active.reduce((s,m)=>s+parseH(m.prodTime),0)/active.length;
     const hh=Math.floor(avgP/3600),mm=Math.round((avgP%3600)/60);
-    document.getElementById('topQuality').textContent=top?.name||'—';
-    document.getElementById('topQualityValue').textContent=top?.mtdScore||'—';
-    document.getElementById('fastestAht').textContent=fast?.name||'—';
-    document.getElementById('fastestAhtValue').textContent=fast?.aht||'—';
+    document.getElementById('topQuality').textContent=top.name;
+    document.getElementById('topQualityValue').textContent=top.mtdScore;
+    document.getElementById('fastestAht').textContent=fast.name;
+    document.getElementById('fastestAhtValue').textContent=fast.aht;
     document.getElementById('avgQuality').textContent=avg.toFixed(2)+'%';
-    document.getElementById('avgProd').textContent=times.length?hh+'h '+String(mm).padStart(2,'0')+'m':'—';
+    document.getElementById('avgProd').textContent=hh+'h '+String(mm).padStart(2,'0')+'m';
+    document.getElementById('countAll').textContent=all.length;
+    document.getElementById('countStars').textContent=all.filter(m=>/star/i.test(m.rank)).length;
+    document.getElementById('countPerfect').textContent=all.filter(m=>parseFloat(m.attendance)===100).length;
   }
 
   document.querySelectorAll('.filter-chip').forEach(b=>b.addEventListener('click',()=>{
@@ -1591,12 +1619,6 @@ if(!REDUCE){
     }
   });
 
-  window.refreshTeamCommand = function refreshTeamCommand(){
-    all = (MEMBERS||[]).map(m=>({...m,leader:false}));
-    data = [...all];
-    updateIntel();
-    draw();
-  };
   updateIntel();draw();
 })();
 
@@ -2198,238 +2220,6 @@ if(!REDUCE){
     const m=document.getElementById('memberModal');
     if(m&&!m.classList.contains('open'))m.setAttribute('aria-hidden','true');
   });
-})();
-</script>
-
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="./team-elite-star-supabase-config.js?v=4"></script><script>window.TEAM_ELITE_SUPABASE=window.TEAM_ELITE_SUPABASE_CONFIG||null;</script>
-<script id="report-sections-script">
-(()=>{
-  const $=s=>document.querySelector(s);
-  const $$=s=>[...document.querySelectorAll(s)];
-  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-  let archive=[];
-  let srRows=[];
-  let callRows=[];
-
-  function exportCsv(filename,headers,rows){
-    const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
-    const csv=[headers.map(q).join(','),...rows.map(row=>row.map(q).join(','))].join('\r\n');
-    const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});
-    const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),800);
-  }
-
-  function renderArchive(){
-    const q=($('#previousMemberSearch')?.value||'').trim().toLowerCase();
-    const rows=archive.filter(a=>[a.id,a.name,a.location,a.cube,a.role,a.qa,a.trainer,a.note].join(' ').toLowerCase().includes(q));
-    $('#previousMemberCount').textContent=`${rows.length} archived profile${rows.length===1?'':'s'}`;
-    $('#previousMembersGrid').innerHTML=rows.length?rows.map(a=>`<article class="previous-card"><div class="prev-head"><div class="prev-avatar">${esc(a.name.split(/\s+/).slice(0,2).map(x=>x[0]).join('').toUpperCase())}</div><div><h3>${esc(a.name)}</h3><div class="prev-role">${esc(a.role)} · Archived profile</div></div></div><div class="report-note"><b>ID:</b> ${esc(a.id)} · <b>Cube:</b> ${esc(a.cube)}<br><b>Trainer:</b> ${esc(a.trainer)}<br><b>QA:</b> ${esc(a.qa)}</div><div class="prev-metrics"><div class="prev-metric"><span>Quality</span><strong>${esc(a.quality)}</strong></div><div class="prev-metric"><span>Attendance</span><strong>${esc(a.attendance)}</strong></div><div class="prev-metric"><span>AHT</span><strong>${esc(a.aht)}</strong></div><div class="prev-metric"><span>Productivity</span><strong>${esc(a.productive)}</strong></div></div><p class="report-note">${esc(a.note)}</p></article>`).join(''):'<div class="report-empty">No previous member matches your search.</div>';
-  }
-
-  let srSorted=false;
-  function renderSr(){
-    const q=($('#srSearch')?.value||'').trim().toLowerCase();
-    let rows=srRows.filter(r=>[r.id,r.name,r.location].join(' ').toLowerCase().includes(q));
-    if(srSorted) rows=[...rows].sort((a,b)=>a.accuracy-b.accuracy);
-    $('#srTableBody').innerHTML=rows.map(r=>`<tr><td>${esc(r.id)}</td><td><span class="report-name">${esc(r.name)}</span></td><td>${esc(r.location)}</td><td>${r.right}</td><td>${r.wrong}</td><td class="accuracy-cell ${r.accuracy<70?'accuracy-low':r.accuracy<95?'accuracy-mid':'accuracy-high'}">${r.accuracy.toFixed(2)}%</td></tr>`).join('')||'<tr><td colspan="6"><div class="report-empty">No matching SR record.</div></td></tr>';
-    const right=srRows.reduce((s,r)=>s+r.right,0),wrong=srRows.reduce((s,r)=>s+r.wrong,0);
-    $('#srTotalAgents').textContent=srRows.length;$('#srTotalRight').textContent=right;$('#srTotalWrong').textContent=wrong;$('#srOverallAccuracy').textContent=(right/(right+wrong)*100).toFixed(2)+'%';
-    $('#srTableFoot').innerHTML=`<tr class="report-total"><td colspan="3">Grand Total</td><td>${right}</td><td>${wrong}</td><td>${right+wrong?((right/(right+wrong)*100).toFixed(2)+'%'):'—'}</td></tr>`;
-  }
-
-  let callFilter='all';
-  function renderCalls(){
-    const q=($('#callSearch')?.value||'').trim().toLowerCase();
-    const rows=callRows.filter(r=>(callFilter==='all'||r.status.toLowerCase()===callFilter)&&[r.service,r.caller,r.category,r.date,r.id,r.name,r.status,r.remarks].join(' ').toLowerCase().includes(q));
-    $('#callCountAll').textContent=callRows.length;$('#callTotal').textContent=callRows.length;$('#callWrong').textContent=callRows.filter(r=>r.status==='Wrong').length;$('#callAgents').textContent=new Set(callRows.map(r=>r.id)).size;
-    $('#callTableBody').innerHTML=rows.map(r=>`<tr><td>${esc(r.service)}</td><td>${esc(r.caller)}</td><td>${esc(r.category)}</td><td>${esc(r.date)}</td><td>${esc(r.id)}</td><td><span class="report-name">${esc(r.name)}</span></td><td><span class="report-badge bad">${esc(r.status)}</span></td><td>${esc(r.remarks)}</td></tr>`).join('')||'<tr><td colspan="8"><div class="report-empty">No matching call record.</div></td></tr>';
-    $$('[data-call-filter]').forEach(b=>b.classList.toggle('active',b.dataset.callFilter===callFilter));
-  }
-
-  $('#previousMemberSearch')?.addEventListener('input',renderArchive);
-  $('#srSearch')?.addEventListener('input',renderSr);
-  $('#callSearch')?.addEventListener('input',renderCalls);
-  $('#srSortAccuracy')?.addEventListener('click',()=>{srSorted=!srSorted;$('#srSortAccuracy').textContent=srSorted?'Accuracy ↓':'Accuracy ↑';renderSr()});
-  $('#srReset')?.addEventListener('click',()=>{$('#srSearch').value='';srSorted=false;$('#srSortAccuracy').textContent='Accuracy ↑';renderSr()});
-  $$('[data-call-filter]').forEach(b=>b.addEventListener('click',()=>{callFilter=b.dataset.callFilter;renderCalls()}));
-  $('#exportPreviousMembers')?.addEventListener('click',()=>exportCsv('team-elite-star-previous-members.csv',['ID','Name','Location','Cube','Role','QA','Trainer','Quality','Attendance','Staffed','Productivity','Break','AHT','On-Time Login'],archive.map(a=>[a.id,a.name,a.location,a.cube,a.role,a.qa,a.trainer,a.quality,a.attendance,a.staffed,a.productive,a.breakTime,a.aht,a.onTimeLogin])));
-  $('#exportSrData')?.addEventListener('click',()=>exportCsv('team-elite-star-sr-data.csv',['ID','Name','Location','Right','Wrong','Accuracy %'],srRows.map(r=>[r.id,r.name,r.location,r.right,r.wrong,r.accuracy.toFixed(2)+'%'])));
-  $('#exportCallData')?.addEventListener('click',()=>exportCsv('team-elite-star-call-data.csv',['Service Mobile No. (masked)','Caller Mobile No. (masked)','Sub Service Category','Date','ID','Name','Training Status','Training Remarks'],callRows.map(r=>[r.service,r.caller,r.category,r.date,r.id,r.name,r.status,r.remarks])));
-  $$('[data-nav-target]').forEach(b=>b.addEventListener('click',()=>{const target=$(b.dataset.navTarget);if(target){target.scrollIntoView({behavior:'smooth',block:'start'});$('#actionSheet')?.classList.remove('open');$('#sheetBackdrop')?.classList.remove('open');$('#actionSheet')?.setAttribute('aria-hidden','true');$('#moreTabBtn')?.setAttribute('aria-expanded','false')}}));
-
-  function reportDateLabel(value){
-    if(!value)return '';
-    const m=String(value).match(/^(\d{4})-(\d{2})-(\d{2})/);
-    if(!m)return String(value);
-    const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    return `${Number(m[3])}-${months[Number(m[2])-1]}-${m[1].slice(2)}`;
-  }
-  const liveStatus=null;
-  let liveClient=null, liveChannel=null, realtimeReady=false, refreshTimer=0, pollTimer=0, busy=false, again=false, lastQueryErrors=false;
-  const signatures={agents:'',settings:'',previous:'',sr:'',calls:''};
-  const CACHE_KEY='teamEliteStarSupabaseLastSnapshotV2';
-  const PUBLIC_CACHE_TABLE='public_site_cache';
-  function readCache(){try{const x=JSON.parse(localStorage.getItem(CACHE_KEY)||'null');return x&&x.tables?x.tables:null;}catch(_){return null;}}
-  function writeCache(tables){try{localStorage.setItem(CACHE_KEY,JSON.stringify({savedAt:Date.now(),tables}));}catch(e){console.warn('[Team Elite Star] Device cache could not be saved.',e);}}
-  function applyCachedSnapshot(tables){if(!tables)return;if(Array.isArray(tables.agents))applyLiveAgents(tables.agents);if(Array.isArray(tables.settings))applyLiveSettings(tables.settings);if(Array.isArray(tables.previous))applyPrevious(tables.previous);if(Array.isArray(tables.sr))applySr(tables.sr);if(Array.isArray(tables.calls))applyCalls(tables.calls);}
-  async function readPublicCache(){
-    if(!liveClient)return null;
-    try{const r=await liveClient.from(PUBLIC_CACHE_TABLE).select('payload,updated_at').eq('id','public').maybeSingle();if(r.error||!r.data||!r.data.payload)return null;const payload=r.data.payload;if(payload&&typeof payload==='object')return payload;return null;}catch(e){console.warn('[Team Elite Star] Shared public cache unavailable.',e);return null;}
-  }
-  const lastGood=readCache();
-  if(lastGood)applyCachedSnapshot(lastGood);
-  function setDbStatus(mode,text,detail=''){
-    if(!liveStatus)return;
-    liveStatus.className=mode==='live'?'db-status-live':mode==='poll'?'db-status-poll':mode==='error'?'db-status-error':'db-status-wait';
-    liveStatus.textContent=text;
-    liveStatus.title=detail||text;
-  }
-  const pct=v=>v===null||v===undefined||v===''?'—':`${Number(v).toFixed(2)}%`;
-  function applyLiveAgents(rows){
-    const list=Array.isArray(rows)?rows:[];
-    const leader=list.find(r=>r.is_leader);
-    TEAM_LEADER=leader?{
-      name:leader.name||'Team Leader',role:leader.role||'Team Leader',rank:leader.rank||leader.role||'Team Leader',
-      cubeId:leader.cube_id||'',bio:leader.bio||'',qa:leader.qa||'Rasel Hossain'
-    }:null;
-    MEMBERS=list.filter(r=>!r.is_leader&&r.active!==false).map(r=>({
-      dgId:r.dg_id||'',name:r.name||'',cubeId:r.cube_id||'',role:r.role||'CSR',rank:r.rank||r.role||'CSR',
-      qa:r.qa||'',trainer:r.trainer||'',mtdScore:pct(r.mtd_score),attendance:pct(r.attendance),
-      staffedTime:r.staffed_time||'—',prodTime:r.prod_time||'—',breakTime:r.break_time||'—',aht:r.aht||'—',
-      onTimeLogin:pct(r.on_time_login),bio:r.bio||'',facebookUrl:r.facebook_url||'',linkedinUrl:r.linkedin_url||'',email:r.email||''
-    }));
-    window.renderTeamMembers?.();
-    window.refreshTeamCommand?.();
-    const hero=document.querySelector('.hero .lede');
-    const leadBadge=document.querySelector('.stats-note span');
-    if(leadBadge)leadBadge.textContent=TEAM_LEADER?`TL: ${TEAM_LEADER.name}`:'Team Leader';
-  }
-  function applyLiveSettings(rows){
-    const settings=Object.fromEntries((rows||[]).map(r=>[r.key,r.value]));
-    const siteName=settings.site_name;
-    if(siteName)document.title=siteName;
-    const heroEyebrow=document.querySelector('.hero .hero-eyebrow');
-    if(settings.tagline&&heroEyebrow)heroEyebrow.textContent=settings.tagline;
-    const hero=document.querySelector('.hero .lede');
-    if(settings.hero_description&&hero)hero.textContent=settings.hero_description;
-    const aboutFirst=document.querySelector('.about-copy p');
-    if(settings.about_description&&aboutFirst)aboutFirst.textContent=settings.about_description;
-    const announcement=settings.announcement;
-    if(announcement){
-      const marquee=document.getElementById('marquee');
-      if(marquee){const items=announcement.split('|').map(x=>x.trim()).filter(Boolean);if(items.length){const unit=items.map(w=>`<span>${esc(w)}</span><span class="solid"><b>★</b></span>`).join('');marquee.innerHTML=unit+unit;}}
-    }
-    const notice=settings.public_notice;
-    let noticeEl=document.getElementById('teamPublicNotice');
-    if(notice){if(!noticeEl){noticeEl=document.createElement('div');noticeEl.id='teamPublicNotice';noticeEl.className='report-note';noticeEl.style.cssText='max-width:1200px;margin:12px auto;padding:10px 14px;border:1px solid var(--line);border-radius:10px;text-align:center';document.querySelector('.local-time-bar')?.insertAdjacentElement('afterend',noticeEl);}noticeEl.textContent=notice;noticeEl.hidden=false;}else if(noticeEl){noticeEl.hidden=true;}
-  }
-  function applyPrevious(rows){
-    archive=(rows||[]).map(r=>({id:r.agent_id||'',name:r.name||'',location:r.location||'',cube:r.cube_id||'',role:r.role||'CSR',qa:r.qa||'',trainer:r.trainer||'',quality:pct(r.quality),attendance:pct(r.attendance),staffed:r.staffed_time||'—',productive:r.productive_time||'—',breakTime:r.break_time||'—',aht:r.aht||'—',onTimeLogin:pct(r.on_time_login),note:r.notes||'Archived member record.',archivedDate:r.archived_date||''}));
-    renderArchive();
-    const note=document.querySelector('#previous-members .report-panel > .report-note');if(note)note.textContent='Previous Member records are loaded from Supabase.';
-  }
-  function applySr(rows){
-    srRows=(rows||[]).map(r=>({id:r.agent_id||'',name:r.agent_name||'',location:r.location||'',right:Number(r.right_count)||0,wrong:Number(r.wrong_count)||0,accuracy:r.accuracy==null?((Number(r.right_count)||0)+(Number(r.wrong_count)||0)?Number(r.right_count)/(Number(r.right_count)+Number(r.wrong_count))*100:0):Number(r.accuracy),reportDate:r.report_date||''}));
-    renderSr();
-    const note=document.querySelector('#sr-data .report-panel > .report-note');if(note)note.textContent='SR records are loaded from Supabase. Accuracy is calculated from right/wrong counts when not provided.';
-  }
-  function applyCalls(rows){
-    callRows=(rows||[]).map(r=>({service:r.service_mobile_masked||'••••••',caller:r.caller_mobile_masked||'••••••',category:r.category||'',date:reportDateLabel(r.call_date),id:r.agent_id||'',name:r.agent_name||'',status:r.training_status||'Unknown',remarks:r.training_remarks||''}));
-    renderCalls();
-    const note=document.querySelector('#call-data .report-panel > .report-note');if(note)note.textContent='Call-training records are loaded from Supabase. Phone numbers remain masked.';
-  }
-  function signature(data){return JSON.stringify(data||[])}
-  async function loadSupabaseData(source='manual'){
-    if(!liveClient||busy){if(busy)again=true;return;}
-    busy=true;
-    const errors=[];
-    try{
-      const [a,s,p,sr,c]=await Promise.all([
-        liveClient.from('agents').select('*').eq('active',true).order('is_leader',{ascending:false}).order('sort_order',{ascending:true}).order('name',{ascending:true}),
-        liveClient.from('app_settings').select('key,value').eq('is_public',true).order('key'),
-        liveClient.from('previous_members').select('*').order('archived_date',{ascending:false}),
-        liveClient.from('sr_records').select('*').order('report_date',{ascending:false}).order('agent_name'),
-        liveClient.from('call_records').select('*').order('call_date',{ascending:false}).order('created_at',{ascending:false})
-      ]);
-      const results={agents:a,settings:s,previous:p,sr,calls:c};
-      const cached=readCache()||{};let cacheChanged=false;
-      for(const [key,res] of Object.entries(results)){
-        if(res.error){errors.push(`${key}: ${res.error.message}`);continue;}
-        const rows=Array.isArray(res.data)?res.data:[];cached[key]=rows;cacheChanged=true;
-        const sig=signature(rows);
-        if(sig!==signatures[key]){signatures[key]=sig;if(key==='agents')applyLiveAgents(rows);else if(key==='settings')applyLiveSettings(rows);else if(key==='previous')applyPrevious(rows);else if(key==='sr')applySr(rows);else if(key==='calls')applyCalls(rows);}
-      }
-      if(cacheChanged)writeCache(cached);
-      if(errors.length){
-        const shared=await readPublicCache();
-        if(shared){
-          const fallback={agents:shared.agents,settings:shared.settings,previous:shared.previous,sr:shared.sr,calls:shared.calls};
-          for(const key of Object.keys(results)){
-            if(!results[key].error||!Array.isArray(fallback[key]))continue;
-            const sig=signature(fallback[key]);
-            if(sig!==signatures[key]){signatures[key]=sig;if(key==='agents')applyLiveAgents(fallback[key]);else if(key==='settings')applyLiveSettings(fallback[key]);else if(key==='previous')applyPrevious(fallback[key]);else if(key==='sr')applySr(fallback[key]);else if(key==='calls')applyCalls(fallback[key]);}
-            cached[key]=fallback[key];cacheChanged=true;
-          }
-        }
-        if(!shared){
-          for(const key of Object.keys(results)){
-            if(!results[key].error||!Array.isArray(cached[key]))continue;
-            const sig=signature(cached[key]);
-            if(sig!==signatures[key]){signatures[key]=sig;if(key==='agents')applyLiveAgents(cached[key]);else if(key==='settings')applyLiveSettings(cached[key]);else if(key==='previous')applyPrevious(cached[key]);else if(key==='sr')applySr(cached[key]);else if(key==='calls')applyCalls(cached[key]);}
-          }
-        }
-        if(cacheChanged)writeCache(cached);
-        lastQueryErrors=true;
-        console.warn('[Team Elite Star] Some Supabase reads failed; using shared database cache or last device cache where available:',errors);
-      }else{lastQueryErrors=false;}
-    }catch(err){
-      console.error('[Team Elite Star] Supabase load failed:',err);
-      const shared=await readPublicCache();
-      if(shared){applyCachedSnapshot(shared);writeCache(shared);}
-      else{const local=readCache();if(local)applyCachedSnapshot(local);}
-      setDbStatus('error','DB ERROR',err?.message||String(err));
-    }finally{busy=false;if(again){again=false;scheduleRefresh('queued');}}
-  }
-  function scheduleRefresh(source='realtime'){
-    clearTimeout(refreshTimer);
-    refreshTimer=setTimeout(()=>loadSupabaseData(source),220);
-  }
-  function setupRealtime(){
-    if(!liveClient)return;
-    try{
-      const tables=['agents','app_settings','previous_members','sr_records','call_records'];
-      let channel=liveClient.channel('team-elite-star-public-live');
-      tables.forEach(table=>{channel=channel.on('postgres_changes',{event:'*',schema:'public',table},()=>scheduleRefresh(`realtime:${table}`));});
-      liveChannel=channel.subscribe(status=>{
-        if(status==='SUBSCRIBED'){
-          realtimeReady=true;
-          if(!busy){if(lastQueryErrors)setDbStatus('error','DB PARTIAL','Realtime is connected, but one or more table queries are failing. Hover this badge or inspect browser console.');else setDbStatus('live','DB LIVE','Realtime subscribed; 15-second sync fallback is also active.');}
-        }else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'||status==='CLOSED'){
-          realtimeReady=false;
-          if(!busy)setDbStatus('poll','DB AUTO SYNC','Realtime publication is unavailable; periodic refresh will continue.');
-        }
-      });
-    }catch(err){realtimeReady=false;console.warn('[Team Elite Star] Realtime setup failed; polling fallback enabled.',err);}
-    if(!pollTimer)pollTimer=setInterval(()=>{if(!document.hidden)scheduleRefresh('poll');},15000);
-  }
-  function startLiveData(){
-    const cfg=window.TEAM_ELITE_SUPABASE_CONFIG;
-    if(!cfg||!cfg.url||!cfg.key||String(cfg.url).includes('YOUR_SUPABASE')||String(cfg.key).includes('YOUR_SUPABASE')){
-      setDbStatus('error','DB CONFIG?','Set the real Project URL and publishable key in team-elite-star-supabase-config.js and upload it beside index.html.');
-      return;
-    }
-    if(!window.supabase||typeof window.supabase.createClient!=='function'){
-      setDbStatus('error','DB LIB ERROR','Supabase JS library did not load. Check network/CDN access.');return;
-    }
-    try{liveClient=window.supabase.createClient(cfg.url,cfg.key,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false},realtime:{params:{eventsPerSecond:5}}});}
-    catch(err){setDbStatus('error','DB CONFIG ERROR',err?.message||String(err));return;}
-    readPublicCache().then(shared=>{if(shared){applyCachedSnapshot(shared);writeCache(shared);}}).finally(()=>loadSupabaseData('initial').then(setupRealtime));
-  }
-  window.addEventListener('focus',()=>scheduleRefresh('focus'),{passive:true});
-  document.addEventListener('visibilitychange',()=>{if(!document.hidden)scheduleRefresh('resume');});
-  window.addEventListener('online',()=>scheduleRefresh('online'),{passive:true});
-  startLiveData();
 })();
 </script>
 
