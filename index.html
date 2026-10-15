@@ -1046,6 +1046,23 @@ body.weather-off #weatherFx{display:none!important;}
   </div>
 </section>
 
+<style id="test-cards-fix">
+  #test-cards .test-card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px}
+  #test-cards .test-card-item{padding:20px;border:1px solid var(--line);border-radius:10px;background:linear-gradient(145deg,var(--onyx),var(--obsidian-2));box-shadow:0 12px 30px -24px #000}
+  #test-cards .test-card-head{display:flex;justify-content:space-between;gap:10px;align-items:start;margin-bottom:14px}
+  #test-cards .test-card-item h3{margin:0;font:600 1.3rem var(--serif)}
+  #test-cards .test-card-meta{display:grid;gap:7px;color:var(--muted);font-size:.78rem}
+  #test-cards .test-card-meta b{color:var(--ivory);font-weight:500}
+  #test-cards .test-card-badge{padding:4px 8px;border:1px solid var(--line-strong);border-radius:999px;color:var(--gold);font:600 .62rem var(--util);text-transform:uppercase;white-space:nowrap}
+  #test-cards .test-card-empty{padding:18px;border:1px dashed var(--line);border-radius:10px;color:var(--muted)}
+</style>
+<section id="test-cards" class="report-section" aria-label="Test cards">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="eyebrow">Card Vault</span><h2>Available <span class="gold-text">test cards</span>.</h2><p>Test-card records loaded directly from Supabase. Only masked last-four digits are displayed.</p></div>
+    <div class="test-card-grid" id="testCardsGrid"><div class="test-card-empty">Loading card data from Supabase…</div></div>
+  </div>
+</section>
+
 <section id="previous-members" class="report-section" aria-label="Previous members">
   <div class="wrap">
     <div class="sec-head reveal">
@@ -2184,6 +2201,7 @@ if(!REDUCE){
   let archive=[];
   let srRows=[];
   let callRows=[];
+  let testCards=[];
 
   function exportCsv(filename,headers,rows){
     const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
@@ -2218,6 +2236,11 @@ if(!REDUCE){
     $('#callTableBody').innerHTML=rows.map(r=>`<tr><td>${esc(r.service)}</td><td>${esc(r.caller)}</td><td>${esc(r.category)}</td><td>${esc(r.date)}</td><td>${esc(r.id)}</td><td><span class="report-name">${esc(r.name)}</span></td><td><span class="report-badge bad">${esc(r.status)}</span></td><td>${esc(r.remarks)}</td></tr>`).join('')||'<tr><td colspan="8"><div class="report-empty">No matching call record.</div></td></tr>';
     $$('[data-call-filter]').forEach(b=>b.classList.toggle('active',b.dataset.callFilter===callFilter));
   }
+  function renderTestCards(){
+    const grid=$('#testCardsGrid');if(!grid)return;
+    const rows=Array.isArray(testCards)?testCards:[];
+    grid.innerHTML=rows.length?rows.map(c=>`<article class="test-card-item"><div class="test-card-head"><h3>${esc(c.label||'Test card')}</h3><span class="test-card-badge">${esc(c.status||'active')}</span></div><div class="test-card-meta"><div><b>Provider:</b> ${esc(c.provider||'—')}</div><div><b>Scenario:</b> ${esc(c.scenario||'—')}</div><div><b>Environment:</b> ${esc(c.environment||'sandbox')}</div><div><b>Last 4:</b> ${esc(c.last4?'•••• '+c.last4:'—')}</div><div><b>Reference:</b> ${esc(c.reference||'—')}</div><div><b>Priority:</b> ${esc(c.priority||'normal')}</div></div></article>`).join(''):'<div class="test-card-empty">No active test-card data found in Supabase.</div>';
+  }
 
   $('#previousMemberSearch')?.addEventListener('input',renderArchive);
   $('#srSearch')?.addEventListener('input',renderSr);
@@ -2240,7 +2263,7 @@ if(!REDUCE){
   }
   const liveStatus=$('#dbLiveStatus');
   let liveClient=null, liveChannel=null, realtimeReady=false, refreshTimer=0, pollTimer=0, busy=false, again=false, lastQueryErrors=false;
-  const signatures={agents:'',settings:'',previous:'',sr:'',calls:''};
+  const signatures={agents:'',settings:'',previous:'',sr:'',calls:'',cards:''};
   function setDbStatus(mode,text,detail=''){
     if(!liveStatus)return;
     liveStatus.className=mode==='live'?'db-status-live':mode==='poll'?'db-status-poll':mode==='error'?'db-status-error':'db-status-wait';
@@ -2321,6 +2344,10 @@ if(!REDUCE){
     renderCalls();
     const note=document.querySelector('#call-data .report-panel > .report-note');if(note)note.textContent='Call-training records are loaded from Supabase. Phone numbers remain masked.';
   }
+  function applyTestCards(rows){
+    testCards=(rows||[]).filter(r=>r.active!==false&&r.status!=='disabled'&&r.status!=='expired').map(r=>({label:r.label||'',provider:r.provider||'',scenario:r.scenario||'',environment:r.environment||'sandbox',last4:r.last4||'',reference:r.reference||'',status:r.status||'active',priority:r.priority||'normal'}));
+    renderTestCards();
+  }
   function signature(data){return JSON.stringify(data||[])}
   const CACHE_KEY='teamEliteStar:lastSupabaseSnapshot:v1';
   function applySnapshot(snapshot){
@@ -2329,13 +2356,14 @@ if(!REDUCE){
     applyPrevious(snapshot.previous||[]);
     applySr(snapshot.sr||[]);
     applyCalls(snapshot.calls||[]);
+    applyTestCards(snapshot.cards||[]);
   }
   function readSnapshotCache(){
     try{
       const raw=localStorage.getItem(CACHE_KEY);
       if(!raw)return null;
       const parsed=JSON.parse(raw);
-      if(!parsed||parsed.version!==1||!parsed.data||!['agents','settings','previous','sr','calls'].every(k=>Array.isArray(parsed.data[k])))return null;
+      if(!parsed||parsed.version!==1||!parsed.data||!['agents','settings','previous','sr','calls','cards'].every(k=>Array.isArray(parsed.data[k])))return null;
       return parsed;
     }catch(_){return null;}
   }
@@ -2364,14 +2392,15 @@ if(!REDUCE){
         if(result.error)result=await read(liveClient.from('agents').select('*'));
         return result;
       };
-      const [a,s,p,sr,c]=await Promise.all([
+      const [a,s,p,sr,c,tc]=await Promise.all([
         readAgents(),
         read(liveClient.from('app_settings').select('key,value').eq('is_public',true).order('key')),
         read(liveClient.from('previous_members').select('*').order('archived_date',{ascending:false})),
         read(liveClient.from('sr_records').select('*').order('report_date',{ascending:false}).order('agent_name')),
-        read(liveClient.from('call_records').select('*').order('call_date',{ascending:false}).order('created_at',{ascending:false}))
+        read(liveClient.from('call_records').select('*').order('call_date',{ascending:false}).order('created_at',{ascending:false})),
+        read(liveClient.from('test_cards').select('*').order('priority',{ascending:false}).order('created_at',{ascending:false}))
       ]);
-      const results=[['agents',a],['settings',s],['previous members',p],['SR data',sr],['call data',c]];
+      const results=[['agents',a],['settings',s],['previous members',p],['SR data',sr],['call data',c],['test cards',tc]];
       const failed=results.filter(([_,r])=>r.error);
       // Agents are required for the member cards; the other tables are optional.
       if(a.error){
@@ -2380,12 +2409,12 @@ if(!REDUCE){
         if(!applyCachedSnapshot(message))setDbStatus('error','NO DATA',`Could not read the agents table from Supabase. ${message}`);
         return;
       }
-      const snapshot={agents:a.data||[],settings:s.data||[],previous:p.data||[],sr:sr.data||[],calls:c.data||[]};
+      const snapshot={agents:a.data||[],settings:s.data||[],previous:p.data||[],sr:sr.data||[],calls:c.data||[],cards:tc.data||[]};
       const sig=JSON.stringify(snapshot);
-      const oldSig=JSON.stringify({agents:signatures.agents?JSON.parse(signatures.agents):null,settings:signatures.settings?JSON.parse(signatures.settings):null,previous:signatures.previous?JSON.parse(signatures.previous):null,sr:signatures.sr?JSON.parse(signatures.sr):null,calls:signatures.calls?JSON.parse(signatures.calls):null});
+      const oldSig=JSON.stringify({agents:signatures.agents?JSON.parse(signatures.agents):null,settings:signatures.settings?JSON.parse(signatures.settings):null,previous:signatures.previous?JSON.parse(signatures.previous):null,sr:signatures.sr?JSON.parse(signatures.sr):null,calls:signatures.calls?JSON.parse(signatures.calls):null,cards:signatures.cards?JSON.parse(signatures.cards):null});
       if(sig!==oldSig){
         applySnapshot(snapshot);
-        signatures.agents=signature(snapshot.agents);signatures.settings=signature(snapshot.settings);signatures.previous=signature(snapshot.previous);signatures.sr=signature(snapshot.sr);signatures.calls=signature(snapshot.calls);
+        signatures.agents=signature(snapshot.agents);signatures.settings=signature(snapshot.settings);signatures.previous=signature(snapshot.previous);signatures.sr=signature(snapshot.sr);signatures.calls=signature(snapshot.calls);signatures.cards=signature(snapshot.cards);
       }
       writeSnapshotCache(snapshot);
       const partial=failed.length>0;
@@ -2824,6 +2853,7 @@ if(!REDUCE){
   function resetChat(){conversation.length=0;transcript.replaceChildren();transcript.hidden=true;welcome.hidden=false;input.value='';resizeInput();setTab('chat');}
   function resizeInput(){input.style.height='auto';input.style.height=Math.min(input.scrollHeight,104)+'px';}
   const sectionMap=[
+    {id:'test-cards',names:['test cards','test card','card vault','cards','কার্ড']},
     {id:'previous-members',names:['previous members','previous member','archived members','archive','historical roster']},
     {id:'sr-data',names:['sr data','sr accuracy','service report','sr report']},
     {id:'call-data',names:['call data','call records','call training','training records']},
@@ -2840,12 +2870,20 @@ if(!REDUCE){
     return null;
   }
   const updateText='Here are the latest page improvements:\n\n• Quick assistant: ask for help in Bangla, Banglish, or English.\n• Page navigation: jump to About, Achievements, Team, Command Center, Previous Members, SR Data, or Call Data.\n• Dashboard guidance: get simple explanations of common page controls and KPIs.\n• CSR writing help: draft clear and polite customer-service replies.\n• Privacy reminder: do not share private customer numbers, passwords, PINs, or OTPs.';
+  function localAssistantReply(text){
+    const s=String(text||'').toLowerCase();
+    if(/card|test card|test_cards|কার্ড/.test(s))return 'Test cards are loaded from Supabase test_cards table. This page shows label, provider, scenario, environment, masked last four digits, status and priority.';
+    if(/supabase|database|data|ডাটা|ডেটা/.test(s))return 'The page reads team members, settings, reports and test cards from Supabase. It also refreshes automatically and uses the last saved Supabase snapshot if the network briefly fails.';
+    if(/kpi|quality|aht|attendance|productivity/.test(s))return 'Quality is the MTD score, AHT is average handling time, attendance is the attendance percentage, and productivity is the productive time shown for each member.';
+    if(/guide|help|use this page|কিভাবে|সাহায্য/.test(s))return 'Use Team for member cards, Command for search and rankings, Card Vault for test cards, and the report sections for previous members, SR data and call-training records.';
+    return 'I’m connected to the page locally. You can ask about team members, Supabase data, test cards, KPIs, or any section of this dashboard.';
+  }
   async function checkHealth(){
     hasCheckedHealth=true;
-    if(!isConfigured){setStatus('Temporarily unavailable','error');return;}
+    if(!isConfigured){setStatus('Local assistant ready','ready');return;}
     setStatus('Connecting…','');
     try{const healthUrl=WORKER_URL.replace(/\/api\/chat$/,'/api/health');const response=await fetch(healthUrl,{method:'GET',headers:{'Accept':'application/json'},cache:'no-store',signal:AbortSignal.timeout(4500)});if(!response.ok)throw new Error('Worker health check failed');const data=await response.json();if(!data.ok)throw new Error('Service not ready');setStatus('Online','ready');}
-    catch{setStatus('Connection unavailable','error');}
+    catch{setStatus('Local assistant ready','ready');}
   }
   async function sendMessage(raw){
     const text=String(raw??input.value).trim();if(!text||isBusy)return;if(text.length>3000){addMessage('assistant','Please keep each message under 3,000 characters.');return;}
@@ -2855,7 +2893,7 @@ if(!REDUCE){
     if(/\b(update|updates|what(?:'s| is) new|what changed|recent changes|page change|changelog|release notes)\b|আপডেট|কি পরিবর্তন|কী পরিবর্তন/i.test(text)){
       addMessage('assistant',updateText);conversation.push({role:'model',text:updateText});return;
     }
-    if(!isConfigured){const reply='I’m temporarily unavailable. Please try again later.';addMessage('assistant',reply);conversation.push({role:'model',text:reply});setStatus('Temporarily unavailable','error');return;}
+    if(!isConfigured){const reply=localAssistantReply(text);addMessage('assistant',reply);conversation.push({role:'model',text:reply});setStatus('Local assistant ready','ready');return;}
     isBusy=true;sendBtn.disabled=true;input.disabled=true;const pending=addMessage('assistant','Thinking…',{pending:true});pending.bubble.innerHTML='<span class="ea-typing" aria-label="Thinking"><i></i><i></i><i></i></span>';setStatus('Thinking…','');
     try{
       const history=conversation.slice(-12).map(m=>({role:m.role,text:m.text.slice(0,3000)}));
@@ -2864,14 +2902,14 @@ if(!REDUCE){
       if(!response.ok){throw new Error('A reply could not be generated right now. Please try again in a moment.');}
       const reply=String(data.reply||'I could not generate a reply. Please try again.').slice(0,12000);
       pending.node.remove();addMessage('assistant',reply);conversation.push({role:'model',text:reply});if(conversation.length>20)conversation.splice(0,conversation.length-20);setStatus('Online','ready');
-    }catch(error){pending.node.remove();let msg=error?.name==='TimeoutError'?'This request took too long. Please try again.':String(error?.message||'Connection failed. Please try again.');if(msg.includes('Failed to fetch')||msg.includes('NetworkError'))msg='The assistant is temporarily unavailable. Please try again in a moment.';else msg='A reply could not be generated right now. Please try again in a moment.';addMessage('assistant',msg);conversation.push({role:'model',text:msg});setStatus('Connection unavailable','error');}
+    }catch(error){pending.node.remove();const msg=localAssistantReply(text)+'\n\nThe online AI worker is unavailable, so I answered using the built-in page assistant.';addMessage('assistant',msg);conversation.push({role:'model',text:msg});setStatus('Local assistant ready','ready');}
     finally{isBusy=false;sendBtn.disabled=false;input.disabled=false;input.focus({preventScroll:true});}
   }
   launcher.addEventListener('click',()=>{if(Date.now()<suppressLauncherClickUntil)return;panel.classList.contains('open')?closePanel():openPanel();});closeBtn.addEventListener('click',closePanel);newChatBtn.addEventListener('click',resetChat);chatTab.addEventListener('click',()=>setTab('chat'));updatesTab.addEventListener('click',()=>setTab('updates'));$('eliteAiClear').addEventListener('click',resetChat);
   form.addEventListener('submit',e=>{e.preventDefault();sendMessage(input.value)});input.addEventListener('input',resizeInput);input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();form.requestSubmit();}});
   document.querySelectorAll('[data-ai-quick]').forEach(button=>button.addEventListener('click',()=>{const action=button.dataset.aiQuick;if(action==='updates'){setTab('updates');return;}const prompts={guide:'Please give me a simple guide to this Team Elite Star website and explain how to use the Command Center, filters and CSV export.',kpi:'Explain the difference between AHT, quality, attendance, productivity and on-time login in simple, practical terms. If the page does not define an exact target or formula, please say so.',draft:'Help me write a polite, professional CSR response. First ask me what situation or customer issue the reply is for. Remind me not to include personal account details.'};sendMessage(prompts[action]||'Please help me use this page.');}));
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panel.classList.contains('open'))closePanel();});
-  if(!isConfigured)setStatus('Temporarily unavailable','error');else setStatus('Ready to connect','');
+  setStatus(isConfigured?'Ready to connect':'Local assistant ready','ready');
 })();
 </script>
 
