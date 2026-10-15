@@ -2715,7 +2715,7 @@ if(!REDUCE){
   const chatTab=$('eliteAiChatTab'),updatesTab=$('eliteAiUpdatesTab'),chatView=$('eliteAiChatView'),updatesView=$('eliteAiUpdatesView');
   const welcome=$('eliteAiWelcome'),transcript=$('eliteAiTranscript'),form=$('eliteAiForm'),input=$('eliteAiInput'),sendBtn=$('eliteAiSend');
   const statusText=$('eliteAiStatusText'),statusDot=$('eliteAiStatusDot');
-  const DEFAULT_WORKER_URL=(()=>{const w=String(window.TEAM_ELITE_SUPABASE_CONFIG?.workerUrl||'').trim().replace(/\/+$/,'').replace(/\/api\/chat$/,'');return w?w+'/api/chat':'https://team-elite-star-ai.YOUR-SUBDOMAIN.workers.dev/api/chat'})();
+  const DEFAULT_WORKER_URL=(()=>{const w=String(window.TEAM_ELITE_SUPABASE_CONFIG?.workerUrl||'').trim().replace(/\/+$/,'').replace(/\/api\/chat$/,'');return w?w+'/api/chat':'https://elitestarai.mirrorleechbot202.workers.dev/api/chat'})();
   const WORKER_URL=String(window.ELITE_STAR_AI_CONFIG?.workerUrl||DEFAULT_WORKER_URL).trim().replace(/\/$/,'');
   const isConfigured=/^https:\/\/[a-z0-9.-]+\.workers\.dev\/api\/chat$/i.test(WORKER_URL)&&!WORKER_URL.includes('https://elitestarai.mirrorleechbot202.workers.dev');
   const conversation=[];
