@@ -21,6 +21,12 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500&family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
  
 <style>
+.db-sync-cell b{font-size:clamp(.56rem,1.15vw,.86rem);letter-spacing:.02em;white-space:nowrap}
+.db-sync-cell .db-status-live{color:#83e3ae!important}
+.db-sync-cell .db-status-poll{color:#ffd166!important}
+.db-sync-cell .db-status-error{color:#ff8d9a!important}
+.db-sync-cell .db-status-wait{color:#9aa4b2!important}
+@media(max-width:600px){.db-sync-cell{padding-left:6px!important;padding-right:6px!important}.db-sync-cell b{font-size:.48rem!important;letter-spacing:0!important}.db-sync-cell small{font-size:.32rem!important;letter-spacing:.01em!important}}
 :root{
   color-scheme: dark;
   --obsidian:#08070C; --obsidian-2:#0C0B12; --onyx:#14131A; --onyx-2:#1B1A22;
@@ -835,6 +841,58 @@ body.weather-off #weatherFx{display:none!important;}
 @media(max-width:860px){.weather-fx{opacity:.72}.weather-fx .petal{filter:none;}.weather-fx::before{filter:blur(12px);}}
 @media(prefers-reduced-motion:reduce){.weather-fx{display:none!important;}}
 </style>
+<style id="report-sections-css">
+.report-section{padding-top:clamp(64px,9vh,112px)}
+.report-panel{position:relative;overflow:hidden;border:1px solid var(--line);background:linear-gradient(180deg,rgba(27,26,34,.86),rgba(8,7,12,.94));border-radius:14px;padding:20px;box-shadow:0 35px 90px -55px var(--glow);backdrop-filter:blur(18px)}
+.report-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-bottom:15px;border-bottom:1px solid var(--line)}
+.report-kicker{font:600 .65rem var(--util);letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
+.report-actions{display:flex;gap:7px;flex-wrap:wrap}
+.report-btn{border:1px solid var(--line);background:rgba(255,255,255,.025);color:var(--muted);font:600 .63rem var(--util);letter-spacing:.06em;text-transform:uppercase;padding:9px 11px;border-radius:5px;cursor:pointer;transition:.22s ease}
+.report-btn:hover,.report-btn.active{color:var(--gold);border-color:var(--line-strong);background:rgba(232,195,107,.07)}
+.report-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:8px;overflow:hidden;margin:14px 0}
+.report-stat{background:rgba(8,7,12,.8);padding:13px}
+.report-stat span{display:block;font:600 .57rem var(--util);letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.report-stat strong{display:block;margin-top:4px;font:600 clamp(1.4rem,3vw,2rem) var(--serif);color:var(--ivory)}
+.report-tools{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:13px 0}
+.report-search{flex:1;min-width:220px}
+.report-search input{width:100%;border:1px solid var(--line);background:rgba(0,0,0,.18);color:var(--ivory);border-radius:6px;padding:12px 13px;font:400 .85rem var(--sans);outline:none}
+.report-search input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(232,195,107,.07)}
+.report-table-wrap{overflow:auto;border:1px solid var(--line);border-radius:8px;max-width:100%}
+.report-table{width:100%;border-collapse:collapse;min-width:780px;font-size:.76rem}
+.report-table th,.report-table td{padding:11px 12px;text-align:left;border-bottom:1px solid rgba(232,195,107,.09);vertical-align:top}
+.report-table th{position:sticky;top:0;z-index:1;background:#17151d;color:var(--muted);font:600 .59rem var(--util);letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+.report-table tr:last-child td{border-bottom:0}
+.report-table tbody tr:hover td{background:rgba(232,195,107,.035)}
+.report-table td{color:#d8d1c2}
+.report-name{color:var(--ivory);font-weight:600;white-space:nowrap}
+.report-muted{display:block;color:var(--muted);font-size:.65rem;margin-top:3px}
+.report-badge{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:99px;padding:4px 7px;font:600 .57rem var(--util);letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+.report-badge.good{color:#9ce7b8;border-color:rgba(131,227,174,.26);background:rgba(131,227,174,.06)}
+.report-badge.bad{color:#ff9ba1;border-color:rgba(255,111,120,.27);background:rgba(255,111,120,.06)}
+.report-badge.warn{color:var(--gold);border-color:var(--line-strong);background:rgba(232,195,107,.06)}
+.accuracy-cell{font-weight:700;white-space:nowrap}
+.accuracy-low{background:rgba(255,111,120,.15)!important;color:#ff9ba1!important}
+.accuracy-mid{background:rgba(232,195,107,.13)!important;color:#f5d88f!important}
+.accuracy-high{background:rgba(131,227,174,.13)!important;color:#a3e9bb!important}
+.report-total td{font-weight:700;color:var(--gold-shine);background:rgba(232,195,107,.055)}
+.report-empty{padding:28px 15px;text-align:center;color:var(--muted);font:.75rem var(--util)}
+.report-note{margin:12px 0 0;color:var(--muted);font-size:.73rem;line-height:1.55}
+.previous-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:15px}
+.previous-card{border:1px solid var(--line);background:linear-gradient(180deg,var(--onyx),var(--obsidian-2));border-radius:10px;padding:19px;min-width:0}
+.previous-card .prev-head{display:flex;align-items:center;gap:11px}
+.previous-card .prev-avatar{width:48px;height:48px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 30% 25%,#2a2620,#141219);border:1px solid var(--line-strong);color:var(--gold-shine);font:600 1.1rem var(--serif);flex:0 0 auto}
+.previous-card h3{font:600 1.2rem var(--serif);margin:0;line-height:1.15;overflow-wrap:anywhere}
+.previous-card .prev-role{font:600 .57rem var(--util);color:var(--gold);text-transform:uppercase;letter-spacing:.09em;margin-top:4px}
+.prev-metrics{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin-top:15px}
+.prev-metric{border:1px solid var(--line);border-radius:6px;padding:8px;min-width:0}
+.prev-metric span{display:block;color:var(--muted);font:600 .53rem var(--util);text-transform:uppercase;letter-spacing:.05em}
+.prev-metric strong{display:block;color:var(--ivory);font:600 .83rem var(--util);margin-top:3px;overflow-wrap:anywhere}
+@media(max-width:900px){.previous-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.report-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.report-panel{padding:14px}}
+@media(max-width:540px){.previous-grid{grid-template-columns:1fr}.report-stat{padding:11px}.report-table{min-width:700px}.report-top{align-items:flex-start}.report-actions{width:100%}.report-btn{flex:1}}
+@media(max-width:1080px){.nav-links{gap:1rem}.nav-links a{font-size:.68rem}.nav-tag{font-size:.58rem}}
+</style>
+
+<style id="cms-custom-content-css">.cms-custom-section .wrap{max-width:var(--maxw,1200px);margin:0 auto;padding:0 26px}.cms-custom-section h2:empty{display:none}#siteMaintenanceGate[hidden]{display:none!important}</style>
 </head>
 <body>
  
@@ -859,7 +917,7 @@ body.weather-off #weatherFx{display:none!important;}
     <nav class="nav-links" aria-label="Primary">
       <a href="#about">About</a>
       <a href="#impact">Achievements</a>
-      <a href="#team">Members</a><a href="#command">Command</a>
+      <a href="#team">Members</a><a href="#command">Command</a><a href="#previous-members">Previous</a><a href="#sr-data">SR Data</a><a href="#call-data">Call Data</a>
       <span class="nav-tag">Nagad&nbsp;·&nbsp;CSR</span>
     </nav>
     <button class="nav-toggle" id="navToggle" aria-label="Jump to members">
@@ -867,11 +925,6 @@ body.weather-off #weatherFx{display:none!important;}
     </button>
   </div>
 </header>
-
-<div class="local-time-bar" id="localTimeBar" aria-live="polite" aria-label="Local time">
-  <div class="local-time-cell"><b><span class="lt-dot" aria-hidden="true"></span><time id="localTime">--:--:--</time></b><small>Local Time</small></div>
-  <div class="local-time-cell"><b id="displayMode">DESKTOP</b><small>Display</small></div>
-</div>
 
 <main id="top">
   <section class="hero" id="hero" aria-label="Introduction">
@@ -928,7 +981,7 @@ body.weather-off #weatherFx{display:none!important;}
         <div class="stat"><div class="num" data-count="8.28" data-suffix="h" data-dec="2">0</div><div class="lbl">Avg. Productivity / Day</div></div>
         <div class="stat"><div class="num" data-count="85.71" data-suffix="%" data-dec="2">0</div><div class="lbl">Overall Attendance</div></div>
       </div>
-      <div class="stats-note reveal"><span>TL: Albina Jahan</span><span>QA: Rasel Hossain</span><span>12 Active Team Members</span></div>
+      <div class="stats-note reveal"><span>TL: Albina Jahan</span><span>QA: Rasel Hossain</span><span>8 Active CSR Profiles</span></div>
     </div>
   </section>
  
@@ -993,6 +1046,75 @@ body.weather-off #weatherFx{display:none!important;}
   </div>
 </section>
 
+<section id="previous-members" class="report-section" aria-label="Previous members">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Historical Roster</span>
+      <h2>Previous <span class="gold-text">members</span>.</h2>
+      <p>Archived team profile information retained from the earlier roster.</p>
+    </div>
+    <div class="report-panel reveal">
+      <div class="report-top">
+        <div><span class="report-kicker">Archived Profiles</span><div class="report-note" style="margin-top:5px">Past roster records are kept separate from the active team view.</div></div>
+        <div class="report-actions"><button class="report-btn" id="exportPreviousMembers" type="button">Export CSV</button></div>
+      </div>
+      <div class="report-tools"><div class="report-search"><input id="previousMemberSearch" type="search" placeholder="Search archived member, ID, cube or trainer…" autocomplete="off"></div><span class="report-badge warn" id="previousMemberCount">1 archived profile</span></div>
+      <div id="previousMembersGrid" class="previous-grid"></div>
+      <p class="report-note">This archived record was present in the earlier website roster but does not appear in the supplied SR accuracy sheet. Confirm the membership status before treating this as a final HR archive.</p>
+    </div>
+  </div>
+</section>
+
+<section id="sr-data" class="report-section" aria-label="SR accuracy data">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Service Report</span>
+      <h2>SR <span class="gold-text">data</span>.</h2>
+      <p>Team accuracy report from the supplied Jashore sheet, with right/wrong counts and accuracy percentage.</p>
+    </div>
+    <div class="report-panel reveal">
+      <div class="report-top">
+        <div><span class="live-dot"></span><span class="report-kicker">SR Accuracy Report · Jashore</span></div>
+        <div class="report-actions"><button class="report-btn" id="srSortAccuracy" type="button">Accuracy ↑</button><button class="report-btn" id="exportSrData" type="button">Export CSV</button></div>
+      </div>
+      <div class="report-stats">
+        <div class="report-stat"><span>Total Agents</span><strong id="srTotalAgents">12</strong></div>
+        <div class="report-stat"><span>Right</span><strong id="srTotalRight">205</strong></div>
+        <div class="report-stat"><span>Wrong</span><strong id="srTotalWrong">11</strong></div>
+        <div class="report-stat"><span>Accuracy</span><strong id="srOverallAccuracy">94.91%</strong></div>
+      </div>
+      <div class="report-tools"><div class="report-search"><input id="srSearch" type="search" placeholder="Search ID, name, location…" autocomplete="off"></div><button class="report-btn active" id="srReset" type="button">Reset</button></div>
+      <div class="report-table-wrap"><table class="report-table"><thead><tr><th>ID</th><th>Name</th><th>Location</th><th>Right</th><th>Wrong</th><th>Accuracy %age</th></tr></thead><tbody id="srTableBody"></tbody><tfoot id="srTableFoot"></tfoot></table></div>
+      <p class="report-note">Totals and individual accuracy values are reproduced from the supplied sheet. Overall accuracy is 205 ÷ (205 + 11) = 94.91%.</p>
+    </div>
+  </div>
+</section>
+
+<section id="call-data" class="report-section" aria-label="Call training data">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="eyebrow">Training Review</span>
+      <h2>Call <span class="gold-text">data</span>.</h2>
+      <p>Call review entries and training remarks from 2–7 October 2026.</p>
+    </div>
+    <div class="report-panel reveal">
+      <div class="report-top">
+        <div><span class="live-dot"></span><span class="report-kicker">Call Training Records</span></div>
+        <div class="report-actions"><button class="report-btn active" data-call-filter="all" type="button">All <b id="callCountAll">11</b></button><button class="report-btn" data-call-filter="wrong" type="button">Wrong only</button><button class="report-btn" id="exportCallData" type="button">Export CSV</button></div>
+      </div>
+      <div class="report-stats">
+        <div class="report-stat"><span>Total Records</span><strong id="callTotal">11</strong></div>
+        <div class="report-stat"><span>Wrong Training</span><strong id="callWrong">11</strong></div>
+        <div class="report-stat"><span>Unique Agents</span><strong id="callAgents">7</strong></div>
+        <div class="report-stat"><span>Date Range</span><strong style="font-size:1.25rem">2–7 Oct</strong></div>
+      </div>
+      <div class="report-tools"><div class="report-search"><input id="callSearch" type="search" placeholder="Search ID, name, category, remark, masked number…" autocomplete="off"></div><span class="report-badge warn">Customer numbers masked</span></div>
+      <div class="report-table-wrap"><table class="report-table"><thead><tr><th>Service Mobile No.</th><th>Caller Mobile No.</th><th>Sub Service Category</th><th>Date</th><th>ID</th><th>Name</th><th>Training Status</th><th>Training Remarks</th></tr></thead><tbody id="callTableBody"></tbody></table></div>
+      <p class="report-note">Customer/caller mobile numbers are masked to their last four digits for privacy. The unmasked numbers are not embedded in this page.</p>
+    </div>
+  </div>
+</section>
+
 <div class="quick-dock" id="quickDock" aria-label="Quick actions">
   <button class="dock-btn" id="soundBtn" aria-label="Toggle ambience" title="Sound">◒</button>
   <button class="dock-btn" id="themeGlow" aria-label="Toggle ambient glow" title="Ambient glow">◈</button>
@@ -1013,6 +1135,9 @@ body.weather-off #weatherFx{display:none!important;}
   <button class="sheet-item" id="sheetSound" type="button"><span class="sheet-ic">◒</span> Toggle Ambience</button>
   <button class="sheet-item" id="sheetGlow" type="button"><span class="sheet-ic">◈</span> Toggle Ambient Glow</button>
   <button class="sheet-item" id="sheetTop" type="button"><span class="sheet-ic">↑</span> Back to Top</button>
+  <button class="sheet-item" data-nav-target="#previous-members" type="button"><span class="sheet-ic">◷</span> Previous Members</button>
+  <button class="sheet-item" data-nav-target="#sr-data" type="button"><span class="sheet-ic">▤</span> SR Data</button>
+  <button class="sheet-item" data-nav-target="#call-data" type="button"><span class="sheet-ic">☎</span> Call Data</button>
   <button class="sheet-item" id="sheetInstall" type="button" hidden><span class="sheet-ic">⇩</span> Install App</button>
   <p class="sheet-ios-hint" id="sheetIosHint" hidden>To install as an app on iPhone/iPad: Tap the Share button below → select 'Add to Home Screen'.</p>
 </div>
@@ -1054,170 +1179,10 @@ body.weather-off #weatherFx{display:none!important;}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 
-const TEAM_LEADER = {
-  name: "Albina Jahan",
-  role: "Team Leader",
-  bio: "Leading Team Elite Star to operational excellence, driving high quality standards and top-tier customer satisfaction.",
-  rank: "Team Leader",
-  cubeId: "TL_ALBINA_JSR"
-};
+const EMPTY_TEAM_LEADER = {name:"",role:"",bio:"",rank:"",cubeId:""};
+let TEAM_LEADER = {...EMPTY_TEAM_LEADER};
+let MEMBERS = [];
 
-const MEMBERS = [
-  {
-    dgId: "16546",
-    name: "Suraya",
-    cubeId: "Suraya46_JSR",
-    role: "CSR",
-    rank: "CSR",
-    qa: "Rasel Hossain",
-    trainer: "Reduan Islam",
-    mtdScore: "99.32%",
-    attendance: "100.00%",
-    staffedTime: "9:01:22",
-    prodTime: "8:01:10",
-    breakTime: "1:00:12",
-    aht: "0:03:07",
-    onTimeLogin: "100.00%",
-    bio: "Consistent customer support provider with strong compliance and 100% attendance."
-  },
-  {
-    dgId: "17174",
-    name: "Sarmin Sultana Apon",
-    cubeId: "Apon74_JSR",
-    role: "CSR · Our Star",
-    rank: "CSR · Star",
-    qa: "Rasel Hossain",
-    trainer: "Md. Mynul Islam",
-    mtdScore: "99.65%",
-    attendance: "100.00%",
-    staffedTime: "10:33:20",
-    prodTime: "9:35:54",
-    breakTime: "0:57:26",
-    aht: "0:02:45",
-    onTimeLogin: "100.00%",
-    bio: "Top performer with excellent quality performance and over 9 hours average daily productivity."
-  },
-  {
-    dgId: "17916",
-    name: "Md.Sajman Basar",
-    cubeId: "Sajman_JSR",
-    role: "CSR",
-    rank: "CSR",
-    qa: "Rasel Hossain",
-    trainer: "Reduan Islam",
-    mtdScore: "93.97%",
-    attendance: "90.00%",
-    staffedTime: "9:01:40",
-    prodTime: "8:05:45",
-    breakTime: "0:55:55",
-    aht: "0:03:15",
-    onTimeLogin: "100.00%",
-    bio: "Focused on efficient handling, consistent performance, and delivering quality service with every interaction."
-  },
-  {
-    dgId: "18314",
-    name: "MD.shakibuzzaman shacho",
-    cubeId: "Shacho_JSR",
-    role: "CSR",
-    rank: "CSR",
-    qa: "Rasel Hossain",
-    trainer: "Md. Mynul Islam",
-    mtdScore: "97.75%",
-    attendance: "100.00%",
-    staffedTime: "9:00:54",
-    prodTime: "7:59:06",
-    breakTime: "1:01:48",
-    aht: "0:03:03",
-    onTimeLogin: "100.00%",
-    bio: "Outstanding performance featuring strong quality results and consistent daily productivity."
-  },
-  {
-    dgId: "19249",
-    name: "Md. Arifuzzaman",
-    cubeId: "Arifuzzaman_JSR",
-    role: "CSR",
-    rank: "CSR",
-    qa: "Rasel Hossain",
-    trainer: "Reduan Islam",
-    mtdScore: "96.73%",
-    attendance: "90.00%",
-    staffedTime: "8:59:37",
-    prodTime: "7:54:07",
-    breakTime: "1:05:30",
-    aht: "0:02:43",
-    onTimeLogin: "100.00%",
-    bio: "High accuracy and reliable daily productivity with consistent service performance."
-  },
-  {
-    dgId: "19266",
-    name: "Shuly Khatun",
-    cubeId: "Shulykhatun_JSR",
-    role: "CSR · Our Star",
-    rank: "CSR · Star",
-    qa: "Rasel Hossain",
-    trainer: "Reduan Islam",
-    mtdScore: "99.80%",
-    attendance: "100.00%",
-    staffedTime: "9:21:01",
-    prodTime: "8:22:47",
-    breakTime: "0:58:14",
-    aht: "0:02:59",
-    onTimeLogin: "100.00%",
-    bio: "Elite squad member boasting an excellent MTD score and swift handling performance."
-  },
-  {
-    dgId: "19420",
-    name: "Shekh Afsana mimi",
-    cubeId: "Afsanamimi_JSR",
-    role: "CSR",
-    rank: "CSR",
-    qa: "Rasel Hossain",
-    trainer: "Md. Shahin Akter",
-    mtdScore: "97.87%",
-    attendance: "100.00%",
-    staffedTime: "9:02:52",
-    prodTime: "7:55:14",
-    breakTime: "1:07:38",
-    aht: "0:02:48",
-    onTimeLogin: "100.00%",
-    bio: "Hardworking team member delivering strong staffed time with consistent service quality."
-  },
-  {
-    dgId: "20071",
-    name: "Abu Talha Raj",
-    cubeId: "Talharaj_JSR",
-    role: "CSR",
-    rank: "CSR",
-    qa: "Rasel Hossain",
-    trainer: "Md. Shahin Akter",
-    mtdScore: "99.41%",
-    attendance: "100.00%",
-    staffedTime: "9:02:44",
-    prodTime: "8:00:18",
-    breakTime: "1:02:26",
-    aht: "0:03:20",
-    onTimeLogin: "100.00%",
-    bio: "Focused team player driving continuous customer engagement and thorough resolution."
-  },
-  {
-    dgId: "20204",
-    name: "Bijoya Ray",
-    cubeId: "Bijoya_JSR",
-    role: "CSR",
-    rank: "CSR",
-    qa: "Rasel Hossain",
-    trainer: "Md. Shahin Akter",
-    mtdScore: "94.56%",
-    attendance: "88.89%",
-    staffedTime: "8:57:10",
-    prodTime: "7:40:58",
-    breakTime: "1:16:12",
-    aht: "0:02:45",
-    onTimeLogin: "100.00%",
-    bio: "Reliable member maintaining strong customer service performance and consistent productivity."
-  }
-];
- 
 const REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const FINE   = window.matchMedia('(pointer:fine)').matches;
  
@@ -1239,63 +1204,57 @@ if(REDUCE){
   }, {once:true});
 }
  
-(function buildMembers(){
-  const grid = document.getElementById('membersGrid'); if(!grid) return;
-  const initials = n => n.trim().split(/\s+/).slice(0,2).map(w=>w[0]).join('').toUpperCase();
+window.renderTeamMembers = function renderTeamMembers(){
+  const grid = document.getElementById('membersGrid');
+  if(!grid) return;
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const initials = n => String(n||'').trim().split(/\s+/).slice(0,2).map(w=>w[0]||'').join('').toUpperCase() || '★';
   const fb='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.2c-1.2 0-1.6.8-1.6 1.5V12h2.7l-.4 2.9h-2.3v7A10 10 0 0 0 22 12z"/></svg>';
   const li='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5A2.5 2.5 0 1 1 5 8.5a2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM10 9h3.8v1.7h.1c.5-.9 1.8-1.9 3.6-1.9 3.9 0 4.6 2.5 4.6 5.8V21h-4v-5.2c0-1.2 0-2.8-1.7-2.8s-2 1.3-2 2.7V21h-4z"/></svg>';
   const mail='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>';
-
+  const leader = TEAM_LEADER || EMPTY_TEAM_LEADER;
   let html = `
     <article class="member-card tl-card reveal" tabindex="0">
-      <span class="rank">${TEAM_LEADER.rank}</span>
-      <div class="avatar" aria-hidden="true">${initials(TEAM_LEADER.name)}</div>
-      <h3>${TEAM_LEADER.name}</h3>
-      <div class="role">${TEAM_LEADER.role} · Cube: ${TEAM_LEADER.cubeId}</div>
-      <p class="bio">${TEAM_LEADER.bio}</p>
+      <span class="rank">${esc(leader.rank||'Team Leader')}</span>
+      <div class="avatar" aria-hidden="true">${esc(initials(leader.name))}</div>
+      <h3>${esc(leader.name||'Team Leader')}</h3>
+      <div class="role">${esc(leader.role||'Team Leader')} · Cube: ${esc(leader.cubeId||'—')}</div>
+      <p class="bio">${esc(leader.bio||'Leading Team Elite Star.')}</p>
       <div class="metrics-badge">
-        <span class="badge" style="background:rgba(232,195,107,.2);color:var(--gold);">Lead Alignment: Albina Jahan</span>
-        <span class="badge">Team QA: Rasel Hossain</span>
+        <span class="badge" style="background:rgba(232,195,107,.2);color:var(--gold);">Lead Alignment: ${esc(leader.name||'Team Leader')}</span>
+        <span class="badge">Team QA: ${esc(leader.qa||'Rasel Hossain')}</span>
       </div>
       <div class="socials">
-        <a href="#" class="magnet" aria-label="${TEAM_LEADER.name} on Facebook">${fb}</a>
-        <a href="#" class="magnet" aria-label="${TEAM_LEADER.name} on LinkedIn">${li}</a>
-        <a href="#" class="magnet" aria-label="Email ${TEAM_LEADER.name}">${mail}</a>
+        <a href="#" class="magnet" aria-label="${esc(leader.name)} on Facebook">${fb}</a>
+        <a href="#" class="magnet" aria-label="${esc(leader.name)} on LinkedIn">${li}</a>
+        <a href="#" class="magnet" aria-label="Email ${esc(leader.name)}">${mail}</a>
       </div>
-    </article>
-  `;
-
-  html += MEMBERS.map(m=>`
+    </article>`;
+  if(!leader.name) html='';
+  html += (Array.isArray(MEMBERS)?MEMBERS:[]).map(m=>`
     <article class="member-card reveal" tabindex="0">
-      <span class="rank">${m.rank}</span>
-      <div class="avatar" aria-hidden="true">${initials(m.name)}</div>
-      <h3>${m.name}</h3>
-      <div class="role">${m.role}</div>
-      <div class="meta-details">
-        <b>ID:</b> ${m.dgId} | <b>Cube:</b> ${m.cubeId}<br/>
-        <b>Trainer:</b> ${m.trainer}
-      </div>
-      <p class="bio">${m.bio}</p>
+      <span class="rank">${esc(m.rank||m.role||'CSR')}</span>
+      <div class="avatar" aria-hidden="true">${esc(initials(m.name))}</div>
+      <h3>${esc(m.name)}</h3>
+      <div class="role">${esc(m.role||'CSR')}</div>
+      <div class="meta-details"><b>ID:</b> ${esc(m.dgId||'—')} | <b>Cube:</b> ${esc(m.cubeId||'—')}<br/><b>Trainer:</b> ${esc(m.trainer||'—')}</div>
+      <p class="bio">${esc(m.bio||'Team Elite Star member.')}</p>
       <div class="metrics-badge">
-        <span class="badge" style="color:var(--gold-shine);">Quality: ${m.mtdScore}</span>
-        <span class="badge">AHT: ${m.aht}</span>
-        <span class="badge">Prod: ${m.prodTime}</span>
+        <span class="badge" style="color:var(--gold-shine);">Quality: ${esc(m.mtdScore||'—')}</span>
+        <span class="badge">AHT: ${esc(m.aht||'—')}</span>
+        <span class="badge">Prod: ${esc(m.prodTime||'—')}</span>
       </div>
       <div class="socials">
-        <a href="#" class="magnet" aria-label="${m.name} on Facebook">${fb}</a>
-        <a href="#" class="magnet" aria-label="${m.name} on LinkedIn">${li}</a>
-        <a href="#" class="magnet" aria-label="Email ${m.name}">${mail}</a>
+        <a href="#" class="magnet" aria-label="${esc(m.name)} on Facebook">${fb}</a>
+        <a href="#" class="magnet" aria-label="${esc(m.name)} on LinkedIn">${li}</a>
+        <a href="#" class="magnet" aria-label="Email ${esc(m.name)}">${mail}</a>
       </div>
     </article>`).join('');
-
   grid.innerHTML = html;
-})();
- 
-(function marquee(){
-  const t=document.getElementById('marquee'); if(!t) return;
-  const items=['Albina Jahan Leadership','98.06% Quality Score','100% On-Time Login','Trust','Speed','Accuracy'];
-  const unit=items.map(w=>`<span>${w}</span><span class="solid"><b>★</b></span>`).join('');
-  t.innerHTML=unit+unit;
+};
+window.renderTeamMembers();(function marquee(){
+  const t=document.getElementById('marquee');
+  if(t)t.replaceChildren();
 })();
  
 document.getElementById('year').textContent = new Date().getFullYear();
@@ -1488,7 +1447,7 @@ if(!REDUCE){
   const empty = document.getElementById('emptyState');
   if(!panel || !search) return;
 
-  const all = MEMBERS.map(m=>({...m, leader:false}));
+  let all = MEMBERS.map(m=>({...m, leader:false}));
   let data=[...all], filter='all';
 
   const secs=s=>{const p=s.split(':').map(Number);return p.length===3?p[0]*3600+p[1]*60+p[2]:p[0]*60+p[1]}
@@ -1521,22 +1480,27 @@ if(!REDUCE){
   }
 
   function updateIntel(){
-    const active=MEMBERS;
+    const active=MEMBERS||[];
+    document.getElementById('countAll').textContent=all.length;
+    document.getElementById('countStars').textContent=all.filter(m=>/star/i.test(m.rank||'')).length;
+    document.getElementById('countPerfect').textContent=all.filter(m=>parseFloat(m.attendance)===100).length;
+    if(!active.length){
+      ['topQuality','topQualityValue','fastestAht','fastestAhtValue','avgQuality','avgProd'].forEach(id=>{const el=document.getElementById(id);if(el)el.textContent='—'});
+      return;
+    }
     const top=[...active].sort((a,b)=>quality(b)-quality(a))[0];
     const fast=[...active].sort((a,b)=>ahtSecs(a.aht)-ahtSecs(b.aht))[0];
-    const avg=active.reduce((s,m)=>s+quality(m),0)/active.length;
-    const parseH=s=>{const p=s.split(':').map(Number);return p[0]*3600+p[1]*60+p[2]}
-    const avgP=active.reduce((s,m)=>s+parseH(m.prodTime),0)/active.length;
+    const avg=active.reduce((sum,m)=>sum+quality(m),0)/active.length;
+    const parseH=s=>{const p=String(s||'0:0:0').split(':').map(Number);return p.length===3?p[0]*3600+p[1]*60+p[2]:0};
+    const times=active.filter(m=>m.prodTime&&m.prodTime!=='—');
+    const avgP=times.length?times.reduce((sum,m)=>sum+parseH(m.prodTime),0)/times.length:0;
     const hh=Math.floor(avgP/3600),mm=Math.round((avgP%3600)/60);
-    document.getElementById('topQuality').textContent=top.name;
-    document.getElementById('topQualityValue').textContent=top.mtdScore;
-    document.getElementById('fastestAht').textContent=fast.name;
-    document.getElementById('fastestAhtValue').textContent=fast.aht;
+    document.getElementById('topQuality').textContent=top?.name||'—';
+    document.getElementById('topQualityValue').textContent=top?.mtdScore||'—';
+    document.getElementById('fastestAht').textContent=fast?.name||'—';
+    document.getElementById('fastestAhtValue').textContent=fast?.aht||'—';
     document.getElementById('avgQuality').textContent=avg.toFixed(2)+'%';
-    document.getElementById('avgProd').textContent=hh+'h '+String(mm).padStart(2,'0')+'m';
-    document.getElementById('countAll').textContent=all.length;
-    document.getElementById('countStars').textContent=all.filter(m=>/star/i.test(m.rank)).length;
-    document.getElementById('countPerfect').textContent=all.filter(m=>parseFloat(m.attendance)===100).length;
+    document.getElementById('avgProd').textContent=times.length?hh+'h '+String(mm).padStart(2,'0')+'m':'—';
   }
 
   document.querySelectorAll('.filter-chip').forEach(b=>b.addEventListener('click',()=>{
@@ -1619,6 +1583,12 @@ if(!REDUCE){
     }
   });
 
+  window.refreshTeamCommand = function refreshTeamCommand(){
+    all = (MEMBERS||[]).map(m=>({...m,leader:false}));
+    data = [...all];
+    updateIntel();
+    draw();
+  };
   updateIntel();draw();
 })();
 
@@ -2193,26 +2163,6 @@ if(!REDUCE){
 })();
 </script>
 <script>
-(function localClock(){
-  const timeEl=document.getElementById('localTime');
-  const modeEl=document.getElementById('displayMode');
-  if(!timeEl)return;
-  let timer=0;
-  const fmt=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Dhaka',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
-  const tick=()=>{
-    timeEl.textContent=fmt.format(new Date());
-    if(modeEl)modeEl.textContent=innerWidth<=860?'MOBILE':'DESKTOP';
-  };
-  const start=()=>{if(!timer){tick();timer=setInterval(tick,1000);}};
-  const stop=()=>{if(timer){clearInterval(timer);timer=0;}};
-  window.addEventListener('online',tick,{passive:true});
-  window.addEventListener('offline',tick,{passive:true});
-  window.addEventListener('resize',tick,{passive:true});
-  document.addEventListener('visibilitychange',()=>document.hidden?stop():start());
-  start();
-})();
-</script>
-<script>
 (function stabilityGuard(){
   window.addEventListener('pageshow',()=>{
     document.body.classList.remove('modal-open');
@@ -2222,6 +2172,706 @@ if(!REDUCE){
   });
 })();
 </script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="./team-elite-star-supabase-config.js?v=4"></script><script>window.TEAM_ELITE_SUPABASE=window.TEAM_ELITE_SUPABASE_CONFIG||null;</script>
+<script id="report-sections-script">
+(()=>{
+  const $=s=>document.querySelector(s);
+  const $$=s=>[...document.querySelectorAll(s)];
+  const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  let archive=[];
+  let srRows=[];
+  let callRows=[];
+
+  function exportCsv(filename,headers,rows){
+    const q=v=>'"'+String(v??'').replace(/"/g,'""')+'"';
+    const csv=[headers.map(q).join(','),...rows.map(row=>row.map(q).join(','))].join('\r\n');
+    const blob=new Blob(['\ufeff'+csv],{type:'text/csv;charset=utf-8'});
+    const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),800);
+  }
+
+  function renderArchive(){
+    const q=($('#previousMemberSearch')?.value||'').trim().toLowerCase();
+    const rows=archive.filter(a=>[a.id,a.name,a.location,a.cube,a.role,a.qa,a.trainer,a.note].join(' ').toLowerCase().includes(q));
+    $('#previousMemberCount').textContent=`${rows.length} archived profile${rows.length===1?'':'s'}`;
+    $('#previousMembersGrid').innerHTML=rows.length?rows.map(a=>`<article class="previous-card"><div class="prev-head"><div class="prev-avatar">${esc(a.name.split(/\s+/).slice(0,2).map(x=>x[0]).join('').toUpperCase())}</div><div><h3>${esc(a.name)}</h3><div class="prev-role">${esc(a.role)} · Archived profile</div></div></div><div class="report-note"><b>ID:</b> ${esc(a.id)} · <b>Cube:</b> ${esc(a.cube)}<br><b>Trainer:</b> ${esc(a.trainer)}<br><b>QA:</b> ${esc(a.qa)}</div><div class="prev-metrics"><div class="prev-metric"><span>Quality</span><strong>${esc(a.quality)}</strong></div><div class="prev-metric"><span>Attendance</span><strong>${esc(a.attendance)}</strong></div><div class="prev-metric"><span>AHT</span><strong>${esc(a.aht)}</strong></div><div class="prev-metric"><span>Productivity</span><strong>${esc(a.productive)}</strong></div></div><p class="report-note">${esc(a.note)}</p></article>`).join(''):'<div class="report-empty">No previous member matches your search.</div>';
+  }
+
+  let srSorted=false;
+  function renderSr(){
+    const q=($('#srSearch')?.value||'').trim().toLowerCase();
+    let rows=srRows.filter(r=>[r.id,r.name,r.location].join(' ').toLowerCase().includes(q));
+    if(srSorted) rows=[...rows].sort((a,b)=>a.accuracy-b.accuracy);
+    $('#srTableBody').innerHTML=rows.map(r=>`<tr><td>${esc(r.id)}</td><td><span class="report-name">${esc(r.name)}</span></td><td>${esc(r.location)}</td><td>${r.right}</td><td>${r.wrong}</td><td class="accuracy-cell ${r.accuracy<70?'accuracy-low':r.accuracy<95?'accuracy-mid':'accuracy-high'}">${r.accuracy.toFixed(2)}%</td></tr>`).join('')||'<tr><td colspan="6"><div class="report-empty">No matching SR record.</div></td></tr>';
+    const right=srRows.reduce((s,r)=>s+r.right,0),wrong=srRows.reduce((s,r)=>s+r.wrong,0);
+    $('#srTotalAgents').textContent=srRows.length;$('#srTotalRight').textContent=right;$('#srTotalWrong').textContent=wrong;$('#srOverallAccuracy').textContent=(right/(right+wrong)*100).toFixed(2)+'%';
+    $('#srTableFoot').innerHTML=`<tr class="report-total"><td colspan="3">Grand Total</td><td>${right}</td><td>${wrong}</td><td>${(right/(right+wrong)*100).toFixed(2)}%</td></tr>`;
+  }
+
+  let callFilter='all';
+  function renderCalls(){
+    const q=($('#callSearch')?.value||'').trim().toLowerCase();
+    const rows=callRows.filter(r=>(callFilter==='all'||r.status.toLowerCase()===callFilter)&&[r.service,r.caller,r.category,r.date,r.id,r.name,r.status,r.remarks].join(' ').toLowerCase().includes(q));
+    $('#callCountAll').textContent=callRows.length;$('#callTotal').textContent=callRows.length;$('#callWrong').textContent=callRows.filter(r=>r.status==='Wrong').length;$('#callAgents').textContent=new Set(callRows.map(r=>r.id)).size;
+    $('#callTableBody').innerHTML=rows.map(r=>`<tr><td>${esc(r.service)}</td><td>${esc(r.caller)}</td><td>${esc(r.category)}</td><td>${esc(r.date)}</td><td>${esc(r.id)}</td><td><span class="report-name">${esc(r.name)}</span></td><td><span class="report-badge bad">${esc(r.status)}</span></td><td>${esc(r.remarks)}</td></tr>`).join('')||'<tr><td colspan="8"><div class="report-empty">No matching call record.</div></td></tr>';
+    $$('[data-call-filter]').forEach(b=>b.classList.toggle('active',b.dataset.callFilter===callFilter));
+  }
+
+  $('#previousMemberSearch')?.addEventListener('input',renderArchive);
+  $('#srSearch')?.addEventListener('input',renderSr);
+  $('#callSearch')?.addEventListener('input',renderCalls);
+  $('#srSortAccuracy')?.addEventListener('click',()=>{srSorted=!srSorted;$('#srSortAccuracy').textContent=srSorted?'Accuracy ↓':'Accuracy ↑';renderSr()});
+  $('#srReset')?.addEventListener('click',()=>{$('#srSearch').value='';srSorted=false;$('#srSortAccuracy').textContent='Accuracy ↑';renderSr()});
+  $$('[data-call-filter]').forEach(b=>b.addEventListener('click',()=>{callFilter=b.dataset.callFilter;renderCalls()}));
+  $('#exportPreviousMembers')?.addEventListener('click',()=>exportCsv('team-elite-star-previous-members.csv',['ID','Name','Location','Cube','Role','QA','Trainer','Quality','Attendance','Staffed','Productivity','Break','AHT','On-Time Login'],archive.map(a=>[a.id,a.name,a.location,a.cube,a.role,a.qa,a.trainer,a.quality,a.attendance,a.staffed,a.productive,a.breakTime,a.aht,a.onTimeLogin])));
+  $('#exportSrData')?.addEventListener('click',()=>exportCsv('team-elite-star-sr-data.csv',['ID','Name','Location','Right','Wrong','Accuracy %'],srRows.map(r=>[r.id,r.name,r.location,r.right,r.wrong,r.accuracy.toFixed(2)+'%'])));
+  $('#exportCallData')?.addEventListener('click',()=>exportCsv('team-elite-star-call-data.csv',['Service Mobile No. (masked)','Caller Mobile No. (masked)','Sub Service Category','Date','ID','Name','Training Status','Training Remarks'],callRows.map(r=>[r.service,r.caller,r.category,r.date,r.id,r.name,r.status,r.remarks])));
+  $$('[data-nav-target]').forEach(b=>b.addEventListener('click',()=>{const target=$(b.dataset.navTarget);if(target){target.scrollIntoView({behavior:'smooth',block:'start'});$('#actionSheet')?.classList.remove('open');$('#sheetBackdrop')?.classList.remove('open');$('#actionSheet')?.setAttribute('aria-hidden','true');$('#moreTabBtn')?.setAttribute('aria-expanded','false')}}));
+  renderArchive();renderSr();renderCalls();
+
+  function reportDateLabel(value){
+    if(!value)return '';
+    const m=String(value).match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if(!m)return String(value);
+    const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return `${Number(m[3])}-${months[Number(m[2])-1]}-${m[1].slice(2)}`;
+  }
+  const liveStatus=$('#dbLiveStatus');
+  let liveClient=null, liveChannel=null, realtimeReady=false, refreshTimer=0, pollTimer=0, busy=false, again=false, lastQueryErrors=false;
+  const signatures={agents:'',settings:'',previous:'',sr:'',calls:''};
+  function setDbStatus(mode,text,detail=''){
+    if(!liveStatus)return;
+    liveStatus.className=mode==='live'?'db-status-live':mode==='poll'?'db-status-poll':mode==='error'?'db-status-error':'db-status-wait';
+    liveStatus.textContent=text;
+    liveStatus.title=detail||text;
+  }
+  const pct=v=>v===null||v===undefined||v===''?'—':`${Number(v).toFixed(2)}%`;
+  function applyLiveAgents(rows){
+    const list=Array.isArray(rows)?rows:[];
+    const leader=list.find(r=>r.is_leader);
+    TEAM_LEADER=leader?{
+      name:leader.name||'Team Leader',role:leader.role||'Team Leader',rank:leader.rank||leader.role||'Team Leader',
+      cubeId:leader.cube_id||'',bio:leader.bio||'',qa:leader.qa||'Rasel Hossain'
+    }:{...EMPTY_TEAM_LEADER};
+    MEMBERS=list.filter(r=>!r.is_leader&&r.active!==false).map(r=>({
+      dgId:r.dg_id||'',name:r.name||'',cubeId:r.cube_id||'',role:r.role||'CSR',rank:r.rank||r.role||'CSR',
+      qa:r.qa||'',trainer:r.trainer||'',mtdScore:pct(r.mtd_score),attendance:pct(r.attendance),
+      staffedTime:r.staffed_time||'—',prodTime:r.prod_time||'—',breakTime:r.break_time||'—',aht:r.aht||'—',
+      onTimeLogin:pct(r.on_time_login),bio:r.bio||'',facebookUrl:r.facebook_url||'',linkedinUrl:r.linkedin_url||'',email:r.email||''
+    }));
+    window.renderTeamMembers?.();
+    window.refreshTeamCommand?.();
+    const hero=document.querySelector('.hero .lede');
+    const leadBadge=document.querySelector('.stats-note span');
+    if(leadBadge)leadBadge.textContent=`TL: ${TEAM_LEADER.name}`;
+  }
+  function applyLiveSettings(rows){
+    const settings=Object.fromEntries((rows||[]).map(r=>[r.key,r.value]));
+    const siteName=settings.site_name;if(siteName)document.title=siteName;
+    const heroEyebrow=document.querySelector('.hero .hero-eyebrow');if(settings.tagline&&heroEyebrow)heroEyebrow.textContent=settings.tagline;
+    const hero=document.querySelector('.hero .lede');if(settings.hero_description&&hero)hero.textContent=settings.hero_description;
+    const aboutFirst=document.querySelector('.about-copy p');if(settings.about_description&&aboutFirst)aboutFirst.textContent=settings.about_description;
+    const footer=document.querySelector('footer .foot-inner p,footer p');if(settings.footer_text&&footer)footer.textContent=settings.footer_text;
+    const teamLead=document.querySelector('.stats-note span');if(settings.team_leader&&teamLead)teamLead.textContent=`TL: ${settings.team_leader}`;
+    const announcement=settings.announcement;
+    if(announcement){const marquee=document.getElementById('marquee');if(marquee){const items=announcement.split('|').map(x=>x.trim()).filter(Boolean);if(items.length){const unit=items.map(w=>`<span>${esc(w)}</span><span class="solid"><b>★</b></span>`).join('');marquee.innerHTML=unit+unit;}}}
+    let noticeEl=document.getElementById('teamPublicNotice');const notice=settings.public_notice;
+    if(notice){if(!noticeEl){noticeEl=document.createElement('div');noticeEl.id='teamPublicNotice';noticeEl.className='report-note';noticeEl.style.cssText='max-width:1200px;margin:12px auto;padding:10px 14px;border:1px solid var(--line);border-radius:10px;text-align:center';document.querySelector('.hero')?.insertAdjacentElement('beforebegin',noticeEl);}noticeEl.textContent=notice;noticeEl.hidden=false;}else if(noticeEl){noticeEl.hidden=true;}
+    const safeCssVars=new Set(['--gold','--gold-deep','--gold-shine','--ivory','--muted','--obsidian','--obsidian-2','--onyx','--onyx-2','--line','--line-strong','--glow']);
+    if(/^#[0-9a-f]{3,8}$/i.test(String(settings.theme_primary||'')))document.documentElement.style.setProperty('--gold',settings.theme_primary);
+    if(/^#[0-9a-f]{3,8}$/i.test(String(settings.theme_background||'')))document.documentElement.style.setProperty('--obsidian',settings.theme_background);
+    Object.entries(settings).forEach(([key,value])=>{
+      const v=String(value??'');
+      if(key.startsWith('dom_text:')){const selector=key.slice(9);try{document.querySelectorAll(selector).forEach(el=>{el.textContent=v})}catch(_){} }
+      else if(key.startsWith('dom_href:')){const selector=key.slice(9);try{document.querySelectorAll(selector).forEach(el=>{if(el instanceof HTMLAnchorElement||el instanceof HTMLAreaElement){if(/^(https?:|mailto:|tel:|\/|#)/i.test(v))el.setAttribute('href',v)}})}catch(_){} }
+      else if(key.startsWith('dom_src:')){const selector=key.slice(8);try{document.querySelectorAll(selector).forEach(el=>{if(el instanceof HTMLImageElement&&/^(https?:|data:image\/(png|jpeg|webp);base64,)/i.test(v))el.src=v})}catch(_){} }
+      else if(key.startsWith('css_var:')){const varName=key.slice(8);if(safeCssVars.has(varName)&&v.length<120&&!/[;{}<>]/.test(v))document.documentElement.style.setProperty(varName,v)}
+      else if(key.startsWith('section_enabled:')){const id=key.slice(16);const el=document.getElementById(id);if(el)el.hidden=/^(false|0|off|no)$/i.test(v.trim())}
+    });
+    renderCustomSiteBlocks(settings);
+    if(String(settings.maintenance||'').toLowerCase()==='true'){
+      let gate=document.getElementById('siteMaintenanceGate');if(!gate){gate=document.createElement('div');gate.id='siteMaintenanceGate';gate.style.cssText='position:fixed;inset:0;z-index:200000;display:grid;place-items:center;padding:24px;background:rgba(8,7,12,.97);color:var(--ivory);text-align:center;font:400 1rem var(--sans)';gate.innerHTML='<div style="max-width:620px"><div style="font-size:3rem;color:var(--gold)">✦</div><h1 style="font:600 clamp(2rem,7vw,4rem) var(--serif);margin:.5rem 0">We will be back soon.</h1><p id="maintenanceText" style="color:var(--muted)">The website is temporarily unavailable for updates.</p></div>';document.body.appendChild(gate)}const mt=document.getElementById('maintenanceText');if(mt)mt.textContent=notice||'The website is temporarily unavailable for updates.';gate.hidden=false;
+    }else{const gate=document.getElementById('siteMaintenanceGate');if(gate)gate.hidden=true}
+  }
+  function renderCustomSiteBlocks(settings){
+    document.querySelectorAll('.cms-custom-section[data-cms-key]').forEach(node=>node.remove());
+    let holder=document.getElementById('cmsCustomBlocks');if(!holder){holder=document.createElement('div');holder.id='cmsCustomBlocks';holder.className='cms-custom-blocks';const foot=document.querySelector('footer');(foot?.parentNode||document.body).insertBefore(holder,foot||null)}
+    holder.replaceChildren();
+    Object.entries(settings).filter(([k])=>k.startsWith('custom_block:')).forEach(([key,value])=>{
+      try{const cfg=JSON.parse(String(value||'{}'));if(!cfg||typeof cfg!=='object')return;const section=document.createElement('section');section.className='cms-custom-section';section.dataset.cmsKey=key;section.dataset.after=String(cfg.after||'').trim();section.dataset.order=String(Number(cfg.order)||0);section.style.cssText='position:relative;padding:clamp(48px,8vh,100px) 0;border-top:1px solid var(--line)';const wrap=document.createElement('div');wrap.className='wrap';const eyebrow=document.createElement('span');eyebrow.className='eyebrow';eyebrow.textContent=String(cfg.label||'Team Update');const heading=document.createElement('h2');heading.style.cssText='font:600 clamp(2rem,5vw,3.4rem) var(--serif);line-height:1.1;margin:1rem 0';heading.textContent=String(cfg.heading||'');const body=document.createElement('p');body.style.cssText='color:var(--muted);max-width:75ch;white-space:pre-wrap';body.textContent=String(cfg.body||'');wrap.append(eyebrow,heading,body);section.appendChild(wrap);holder.appendChild(section)}catch(_){}
+    });
+    const sections=[...holder.children];sections.sort((a,b)=>Number(a.dataset.order||0)-Number(b.dataset.order||0));sections.forEach(section=>holder.appendChild(section));
+    for(const section of [...holder.children]){const selector=section.dataset.after;if(!selector)continue;try{const anchor=document.querySelector(selector);if(anchor&&!holder.contains(anchor)&&anchor!==section)anchor.insertAdjacentElement('afterend',section)}catch(_){}}
+    if(!holder.children.length)holder.remove();
+  }
+  function applyPrevious(rows){
+    archive=(rows||[]).map(r=>({id:r.agent_id||'',name:r.name||'',location:r.location||'',cube:r.cube_id||'',role:r.role||'CSR',qa:r.qa||'',trainer:r.trainer||'',quality:pct(r.quality),attendance:pct(r.attendance),staffed:r.staffed_time||'—',productive:r.productive_time||'—',breakTime:r.break_time||'—',aht:r.aht||'—',onTimeLogin:pct(r.on_time_login),note:r.notes||'Archived member record.',archivedDate:r.archived_date||''}));
+    renderArchive();
+    const note=document.querySelector('#previous-members .report-panel > .report-note');if(note)note.textContent='Previous Member records are loaded from Supabase.';
+  }
+  function applySr(rows){
+    srRows=(rows||[]).map(r=>({id:r.agent_id||'',name:r.agent_name||'',location:r.location||'',right:Number(r.right_count)||0,wrong:Number(r.wrong_count)||0,accuracy:r.accuracy==null?((Number(r.right_count)||0)+(Number(r.wrong_count)||0)?Number(r.right_count)/(Number(r.right_count)+Number(r.wrong_count))*100:0):Number(r.accuracy),reportDate:r.report_date||''}));
+    renderSr();
+    const note=document.querySelector('#sr-data .report-panel > .report-note');if(note)note.textContent='SR records are loaded from Supabase. Accuracy is calculated from right/wrong counts when not provided.';
+  }
+  function applyCalls(rows){
+    callRows=(rows||[]).map(r=>({service:r.service_mobile_masked||'••••••',caller:r.caller_mobile_masked||'••••••',category:r.category||'',date:reportDateLabel(r.call_date),id:r.agent_id||'',name:r.agent_name||'',status:r.training_status||'Unknown',remarks:r.training_remarks||''}));
+    renderCalls();
+    const note=document.querySelector('#call-data .report-panel > .report-note');if(note)note.textContent='Call-training records are loaded from Supabase. Phone numbers remain masked.';
+  }
+  function signature(data){return JSON.stringify(data||[])}
+  const CACHE_KEY='teamEliteStar:lastSupabaseSnapshot:v1';
+  function applySnapshot(snapshot){
+    applyLiveAgents(snapshot.agents||[]);
+    applyLiveSettings(snapshot.settings||[]);
+    applyPrevious(snapshot.previous||[]);
+    applySr(snapshot.sr||[]);
+    applyCalls(snapshot.calls||[]);
+  }
+  function readSnapshotCache(){
+    try{
+      const raw=localStorage.getItem(CACHE_KEY);
+      if(!raw)return null;
+      const parsed=JSON.parse(raw);
+      if(!parsed||parsed.version!==1||!parsed.data||!['agents','settings','previous','sr','calls'].every(k=>Array.isArray(parsed.data[k])))return null;
+      return parsed;
+    }catch(_){return null;}
+  }
+  function writeSnapshotCache(data){
+    try{localStorage.setItem(CACHE_KEY,JSON.stringify({version:1,savedAt:Date.now(),data}));}catch(err){console.warn('[Team Elite Star] Could not cache Supabase snapshot:',err);}
+  }
+  function applyCachedSnapshot(reason){
+    const cached=readSnapshotCache();
+    if(!cached)return false;
+    applySnapshot(cached.data);
+    const age=Math.max(0,Date.now()-(cached.savedAt||Date.now()));
+    const ageText=age<60000?`${Math.round(age/1000)} seconds`:age<3600000?`${Math.round(age/60000)} minutes`:`${Math.round(age/3600000)} hours`;
+    setDbStatus('poll','CACHED DATA',`Supabase could not be read. Showing the last successfully saved Supabase snapshot (${ageText} old). ${reason||''}`.trim());
+    return true;
+  }
+  async function loadSupabaseData(source='manual'){
+    if(!liveClient||busy){if(busy)again=true;return;}
+    busy=true;
+    try{
+      const [a,s,p,sr,c]=await Promise.all([
+        liveClient.from('agents').select('*').eq('active',true).order('is_leader',{ascending:false}).order('sort_order',{ascending:true}).order('name',{ascending:true}),
+        liveClient.from('app_settings').select('key,value').eq('is_public',true).order('key'),
+        liveClient.from('previous_members').select('*').order('archived_date',{ascending:false}),
+        liveClient.from('sr_records').select('*').order('report_date',{ascending:false}).order('agent_name'),
+        liveClient.from('call_records').select('*').order('call_date',{ascending:false}).order('created_at',{ascending:false})
+      ]);
+      const results=[['agents',a],['settings',s],['previous members',p],['SR data',sr],['call data',c]];
+      const failed=results.filter(([_,r])=>r.error);
+      if(failed.length){
+        const message=failed.map(([name,r])=>`${name}: ${r.error.message}`).join('\n');
+        console.warn('[Team Elite Star] Supabase read failed:',message);
+        if(!applyCachedSnapshot(message)){
+          TEAM_LEADER={...EMPTY_TEAM_LEADER};MEMBERS=[];archive=[];srRows=[];callRows=[];
+          window.renderTeamMembers?.();window.refreshTeamCommand?.();
+          renderArchive();renderSr();renderCalls();
+          setDbStatus('error','NO DATA',`Supabase read failed and no prior Supabase snapshot exists. No bundled/static data is shown. ${message}`);
+        }
+        return;
+      }
+      const snapshot={agents:a.data||[],settings:s.data||[],previous:p.data||[],sr:sr.data||[],calls:c.data||[]};
+      const sig=JSON.stringify(snapshot);
+      const oldSig=JSON.stringify({agents:signatures.agents?JSON.parse(signatures.agents):null,settings:signatures.settings?JSON.parse(signatures.settings):null,previous:signatures.previous?JSON.parse(signatures.previous):null,sr:signatures.sr?JSON.parse(signatures.sr):null,calls:signatures.calls?JSON.parse(signatures.calls):null});
+      if(sig!==oldSig){
+        applySnapshot(snapshot);
+        signatures.agents=signature(snapshot.agents);signatures.settings=signature(snapshot.settings);signatures.previous=signature(snapshot.previous);signatures.sr=signature(snapshot.sr);signatures.calls=signature(snapshot.calls);
+      }
+      writeSnapshotCache(snapshot);
+      setDbStatus(realtimeReady?'live':'poll',realtimeReady?'DB LIVE':'DB SYNC OK',`Data read successfully from Supabase. Source: ${source}.`);
+    }catch(err){
+      console.error('[Team Elite Star] Supabase load failed:',err);
+      if(!applyCachedSnapshot(err?.message||String(err))){
+        TEAM_LEADER={...EMPTY_TEAM_LEADER};MEMBERS=[];archive=[];srRows=[];callRows=[];
+        window.renderTeamMembers?.();window.refreshTeamCommand?.();renderArchive();renderSr();renderCalls();
+        setDbStatus('error','NO DATA',`Supabase read failed and no prior Supabase snapshot exists. No bundled/static data is shown. ${err?.message||String(err)}`);
+      }
+    }finally{busy=false;if(again){again=false;scheduleRefresh('queued');}}
+  }
+  function scheduleRefresh(source='realtime'){
+    clearTimeout(refreshTimer);
+    refreshTimer=setTimeout(()=>loadSupabaseData(source),220);
+  }
+  function setupRealtime(){
+    if(!liveClient)return;
+    try{
+      const tables=['agents','app_settings','previous_members','sr_records','call_records'];
+      let channel=liveClient.channel('team-elite-star-public-live');
+      tables.forEach(table=>{channel=channel.on('postgres_changes',{event:'*',schema:'public',table},()=>scheduleRefresh(`realtime:${table}`));});
+      liveChannel=channel.subscribe(status=>{
+        if(status==='SUBSCRIBED'){
+          realtimeReady=true;
+          if(!busy){if(lastQueryErrors)setDbStatus('error','DB PARTIAL','Realtime is connected, but one or more table queries are failing. Hover this badge or inspect browser console.');else setDbStatus('live','DB LIVE','Realtime subscribed; 15-second sync fallback is also active.');}
+        }else if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'||status==='CLOSED'){
+          realtimeReady=false;
+          if(!busy)setDbStatus('poll','DB AUTO SYNC','Realtime publication is unavailable; periodic refresh will continue.');
+        }
+      });
+    }catch(err){realtimeReady=false;console.warn('[Team Elite Star] Realtime setup failed; polling fallback enabled.',err);}
+    if(!pollTimer)pollTimer=setInterval(()=>{if(!document.hidden)scheduleRefresh('poll');},15000);
+  }
+  function startLiveData(){
+    const cfg=window.TEAM_ELITE_SUPABASE_CONFIG;
+    if(!cfg||!cfg.url||!cfg.key||String(cfg.url).includes('YOUR_SUPABASE')||String(cfg.key).includes('YOUR_SUPABASE')){
+      if(!applyCachedSnapshot('Supabase configuration is missing or still contains placeholders.')){
+        TEAM_LEADER={...EMPTY_TEAM_LEADER};MEMBERS=[];archive=[];srRows=[];callRows=[];
+        window.renderTeamMembers?.();window.refreshTeamCommand?.();renderArchive();renderSr();renderCalls();
+        setDbStatus('error','NO DATA','Supabase configuration is missing and no prior Supabase snapshot exists. No bundled/static data is shown.');
+      }
+      return;
+    }
+    if(!window.supabase||typeof window.supabase.createClient!=='function'){
+      if(!applyCachedSnapshot('Supabase JavaScript library did not load.'))setDbStatus('error','NO DATA','Supabase library failed to load and no prior Supabase snapshot exists.');return;
+    }
+    try{liveClient=window.supabase.createClient(cfg.url,cfg.key,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false},realtime:{params:{eventsPerSecond:5}}});}
+    catch(err){setDbStatus('error','DB CONFIG ERROR',err?.message||String(err));return;}
+    loadSupabaseData('initial').then(setupRealtime);
+  }
+  window.addEventListener('focus',()=>scheduleRefresh('focus'),{passive:true});
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)scheduleRefresh('resume');});
+  window.addEventListener('online',()=>scheduleRefresh('online'),{passive:true});
+  renderArchive();renderSr();renderCalls();
+  startLiveData();
+})();
+</script>
+
+<style>
+#eliteAiRoot{--ea-bg:#0c0b12;--ea-panel:#111019;--ea-gold:#e8c36b;--ea-ivory:#ede7d6;--ea-muted:#a29b8a;--ea-line:rgba(232,195,107,.22);font-family:var(--sans,Inter,system-ui,sans-serif);color:var(--ea-ivory)}
+#eliteAiRoot *{box-sizing:border-box}
+#eliteAiLauncher{position:fixed;z-index:10070;right:22px;bottom:88px;display:flex;align-items:center;gap:10px;padding:10px 15px 10px 10px;border:1px solid rgba(232,195,107,.56);border-radius:999px;background:linear-gradient(145deg,rgba(28,25,34,.96),rgba(9,8,13,.97));box-shadow:0 12px 42px -18px #000,0 0 26px -12px rgba(232,195,107,.45);color:var(--ea-ivory);cursor:pointer;backdrop-filter:blur(16px);transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease;-webkit-tap-highlight-color:transparent}
+#eliteAiLauncher:hover{transform:translateY(-3px);border-color:var(--ea-gold);box-shadow:0 16px 46px -18px #000,0 0 32px -10px rgba(232,195,107,.46)}
+.ea-launch-star{width:38px;height:38px;display:grid;place-items:center;border-radius:50%;background:linear-gradient(145deg,#fce7b8,#b8912e);color:#171108;font-size:1.35rem;box-shadow:inset 0 0 0 1px rgba(255,255,255,.25)}
+.ea-launch-copy{display:flex;flex-direction:column;align-items:flex-start;line-height:1.2;gap:3px}.ea-launch-copy strong{font:600 .77rem var(--util,Inter,sans-serif);letter-spacing:.04em}.ea-launch-copy small{font-size:.63rem;color:var(--ea-muted)}.ea-launch-live{width:7px;height:7px;flex:none;border-radius:50%;background:#7ce7a4;box-shadow:0 0 10px rgba(124,231,164,.65)}
+#eliteAiPanel{position:fixed;z-index:10071;right:22px;bottom:146px;width:min(430px,calc(100vw - 30px));height:min(680px,calc(100dvh - 170px));min-height:390px;display:none;flex-direction:column;overflow:hidden;border:1px solid rgba(232,195,107,.42);border-radius:18px;background:linear-gradient(160deg,rgba(22,20,29,.985),rgba(8,7,12,.99) 70%);box-shadow:0 30px 100px -30px rgba(0,0,0,.92),0 0 55px -24px rgba(232,195,107,.3);backdrop-filter:blur(22px);isolation:isolate}
+#eliteAiPanel.open{display:flex;animation:eaPanelIn .22s ease-out both}
+@keyframes eaPanelIn{from{opacity:0;transform:translateY(8px) scale(.99)}to{opacity:1;transform:none}}
+.ea-header{display:flex;align-items:center;gap:11px;padding:14px 14px 12px;border-bottom:1px solid var(--ea-line);background:linear-gradient(110deg,rgba(232,195,107,.08),transparent 70%);flex:none}
+.ea-brand-mark{width:39px;height:39px;display:grid;place-items:center;flex:none;border:1px solid rgba(232,195,107,.42);border-radius:12px;color:#181205;background:linear-gradient(145deg,#fce7b8,#c49a3d);font-size:1.25rem}
+.ea-header-title{flex:1;min-width:0}.ea-header-title strong{display:block;font:600 1rem var(--serif,Georgia,serif);letter-spacing:.01em}.ea-header-title small{display:flex;align-items:center;gap:6px;margin-top:2px;font:500 .59rem var(--util,Inter,sans-serif);letter-spacing:.06em;color:var(--ea-muted)}#eliteAiStatusDot{width:6px;height:6px;display:inline-block;border-radius:50%;background:#d5a84e}#eliteAiStatusDot.ready{background:#7ce7a4;box-shadow:0 0 8px #7ce7a455}#eliteAiStatusDot.error{background:#ff8585}
+.ea-icon-btn{width:32px;height:32px;display:grid;place-items:center;flex:none;border:1px solid var(--ea-line);border-radius:9px;background:rgba(255,255,255,.025);color:var(--ea-muted);font-size:1rem;cursor:pointer;transition:.2s ease}.ea-icon-btn:hover{color:var(--ea-gold);border-color:rgba(232,195,107,.5);background:rgba(232,195,107,.07)}
+.ea-tabs{display:flex;gap:5px;padding:9px 12px 0;flex:none}.ea-tab{flex:1;border:1px solid transparent;border-radius:8px;background:transparent;color:var(--ea-muted);padding:9px 8px;font:600 .69rem var(--util,Inter,sans-serif);cursor:pointer;transition:.2s ease}.ea-tab.active{color:var(--ea-gold);background:rgba(232,195,107,.08);border-color:var(--ea-line)}.ea-tab span{margin-right:5px}
+.ea-view{display:none;flex:1;min-height:0;overflow:hidden}.ea-view.active{display:flex;flex-direction:column}
+#eliteAiChatView{padding-top:8px}
+#eliteAiWelcome{margin:8px 12px 10px;padding:15px 14px;border:1px solid var(--ea-line);border-radius:13px;background:radial-gradient(250px 140px at 0 0,rgba(232,195,107,.10),transparent 75%),rgba(255,255,255,.018);flex:none}
+.ea-welcome-top{display:flex;align-items:center;gap:7px;color:var(--ea-gold);font:600 .61rem var(--util,Inter,sans-serif);letter-spacing:.13em;text-transform:uppercase}.ea-welcome-title{margin:7px 0 4px;font:600 1.38rem/1.05 var(--serif,Georgia,serif)}.ea-welcome-copy{margin:0;color:#bdb6a7;font-size:.76rem;line-height:1.55}.ea-quick-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:12px}.ea-quick{min-height:48px;padding:8px 9px;text-align:left;border:1px solid rgba(232,195,107,.18);border-radius:9px;background:rgba(255,255,255,.025);color:var(--ea-ivory);font:500 .67rem/1.35 var(--sans,Inter,sans-serif);cursor:pointer;transition:.2s ease}.ea-quick:hover{background:rgba(232,195,107,.075);border-color:rgba(232,195,107,.48)}.ea-quick i{font-style:normal;color:var(--ea-gold);font-size:.9rem;margin-right:5px}
+#eliteAiTranscript{flex:1;min-height:80px;overflow-y:auto;padding:2px 12px 14px;scroll-behavior:smooth;overscroll-behavior:contain;display:flex;flex-direction:column;gap:12px;scrollbar-width:thin;scrollbar-color:rgba(232,195,107,.25) transparent}
+.ea-message{display:flex;flex-direction:column;max-width:92%;gap:5px;align-self:flex-start;min-width:0}.ea-message.user{align-self:flex-end;align-items:flex-end}.ea-message-label{font:600 .57rem var(--util,Inter,sans-serif);letter-spacing:.08em;text-transform:uppercase;color:var(--ea-muted);padding:0 4px}.ea-message.user .ea-message-label{color:#ceb16b}.ea-bubble{padding:10px 12px;border:1px solid rgba(255,255,255,.075);border-radius:13px 13px 13px 4px;background:rgba(255,255,255,.045);color:#e9e3d6;font-size:.79rem;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere}.ea-message.user .ea-bubble{border-color:rgba(232,195,107,.23);border-radius:13px 13px 4px 13px;background:rgba(232,195,107,.105);color:#fff4d5}.ea-message.is-pending .ea-bubble{color:var(--ea-muted)}.ea-message-tools{display:flex;gap:6px;padding:0 3px}.ea-copy-answer{border:0;background:transparent;color:#8f8879;padding:3px 2px;font:500 .6rem var(--util,Inter,sans-serif);cursor:pointer}.ea-copy-answer:hover{color:var(--ea-gold)}
+.ea-typing{display:inline-flex;align-items:center;gap:4px}.ea-typing i{width:5px;height:5px;background:currentColor;border-radius:50%;animation:eaTyping 1s ease-in-out infinite}.ea-typing i:nth-child(2){animation-delay:.14s}.ea-typing i:nth-child(3){animation-delay:.28s}@keyframes eaTyping{0%,70%,100%{opacity:.35;transform:translateY(0)}35%{opacity:1;transform:translateY(-3px)}}
+.ea-composer-wrap{padding:10px 12px 11px;border-top:1px solid var(--ea-line);background:rgba(4,4,7,.26);flex:none}.ea-composer{display:flex;align-items:flex-end;gap:7px;padding:5px;border:1px solid rgba(232,195,107,.24);border-radius:12px;background:rgba(0,0,0,.2);transition:border-color .2s ease}.ea-composer:focus-within{border-color:rgba(232,195,107,.64);box-shadow:0 0 0 2px rgba(232,195,107,.045)}#eliteAiInput{display:block;min-width:0;flex:1;resize:none;max-height:104px;min-height:39px;padding:9px 7px;border:0;outline:0;background:transparent;color:var(--ea-ivory);font:400 .78rem/1.5 var(--sans,Inter,sans-serif);overflow-y:auto}#eliteAiInput::placeholder{color:#817b6f}.ea-send-btn{width:38px;height:38px;display:grid;place-items:center;flex:none;border:0;border-radius:9px;background:linear-gradient(145deg,#fce7b8,#c29a42);color:#1a1408;font-size:1.06rem;cursor:pointer;transition:transform .18s ease,opacity .18s ease}.ea-send-btn:hover{transform:translateY(-1px)}.ea-send-btn:disabled{opacity:.45;cursor:not-allowed;transform:none}.ea-composer-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:7px 3px 0;color:#898274;font-size:.58rem;line-height:1.4}.ea-meta-actions{display:flex;gap:10px}.ea-text-btn{border:0;padding:0;background:none;color:#b5a785;font-size:.59rem;cursor:pointer}.ea-text-btn:hover{color:var(--ea-gold)}
+#eliteAiUpdatesView{overflow-y:auto;padding:15px 13px 18px;gap:12px;overscroll-behavior:contain}.ea-updates-intro{padding:14px;border:1px solid var(--ea-line);border-radius:12px;background:rgba(232,195,107,.045)}.ea-updates-intro small{font:600 .59rem var(--util,Inter,sans-serif);letter-spacing:.15em;text-transform:uppercase;color:var(--ea-gold)}.ea-updates-intro h3{font:600 1.35rem var(--serif,Georgia,serif);margin:5px 0}.ea-updates-intro p{font-size:.74rem;color:var(--ea-muted);line-height:1.55;margin:0}.ea-update-item{position:relative;padding:13px 13px 13px 16px;border:1px solid rgba(255,255,255,.075);border-radius:11px;background:rgba(255,255,255,.02)}.ea-update-item:before{content:"";position:absolute;left:0;top:14px;bottom:14px;width:2px;border-radius:9px;background:linear-gradient(var(--ea-gold),transparent)}.ea-update-date{font:600 .57rem var(--util,Inter,sans-serif);letter-spacing:.09em;color:#bd9a4f;text-transform:uppercase}.ea-update-item h4{margin:5px 0;font:600 .96rem var(--serif,Georgia,serif);color:var(--ea-ivory)}.ea-update-item p{margin:0;color:#b3ad9e;font-size:.72rem;line-height:1.55}.ea-update-status{display:inline-flex;align-items:center;gap:6px;margin-top:9px;padding:4px 7px;border:1px solid var(--ea-line);border-radius:5px;color:#cab982;font:500 .55rem var(--util,Inter,sans-serif)}.ea-update-status:before{content:"";width:5px;height:5px;border-radius:50%;background:#d2ad54}
+.ea-privacy-note{display:flex;gap:7px;align-items:flex-start;color:#8e8779;font-size:.57rem;line-height:1.45;margin-top:8px}.ea-privacy-note strong{color:#b9ab85;font-weight:600}
+@media(max-width:860px){#eliteAiLauncher{right:12px;bottom:calc(82px + env(safe-area-inset-bottom));padding:8px 12px 8px 8px;gap:8px}#eliteAiLauncher .ea-launch-star{width:35px;height:35px}#eliteAiPanel{right:9px;bottom:calc(78px + env(safe-area-inset-bottom));width:calc(100vw - 18px);height:min(690px,calc(100dvh - 155px - env(safe-area-inset-bottom)));min-height:360px;border-radius:16px}.ea-header{padding:12px}.ea-composer-wrap{padding-bottom:10px}}
+@media(max-width:420px){.ea-quick-grid{grid-template-columns:1fr 1fr}.ea-quick{font-size:.62rem;min-height:51px}.ea-welcome-title{font-size:1.26rem}#eliteAiPanel{height:min(680px,calc(100dvh - 145px - env(safe-area-inset-bottom)))}.ea-composer-meta{font-size:.54rem}}
+@media(prefers-reduced-motion:reduce){#eliteAiPanel.open{animation:none}#eliteAiRoot *{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
+
+
+/* Elite Star Assistant: final responsive and hit-testing overrides */
+#eliteAiRoot{
+  position:fixed!important;inset:0!important;width:auto!important;height:auto!important;
+  z-index:10080!important;isolation:isolate!important;pointer-events:none!important;
+  overflow:visible!important;
+}
+#eliteAiRoot #eliteAiLauncher,
+#eliteAiRoot #eliteAiPanel{pointer-events:auto!important;touch-action:manipulation;}
+#eliteAiRoot #eliteAiLauncher{
+  left:22px!important;right:auto!important;bottom:22px!important;z-index:10082!important;
+  max-width:calc(100vw - 44px);min-height:54px;white-space:normal;
+}
+#eliteAiRoot #eliteAiPanel{
+  left:22px!important;right:auto!important;bottom:86px!important;top:auto!important;
+  width:min(430px,calc(100vw - 44px))!important;
+  height:min(680px,calc(100dvh - 110px))!important;
+  max-height:calc(100dvh - 24px)!important;min-height:300px!important;
+  z-index:10083!important;overflow:hidden!important;overscroll-behavior:contain;
+  -webkit-user-select:text;user-select:text;
+}
+#eliteAiRoot #eliteAiPanel *{pointer-events:auto;}
+#eliteAiRoot #eliteAiTranscript{min-height:0;overscroll-behavior:contain;touch-action:pan-y;}
+#eliteAiRoot .ea-view.active{min-height:0;min-width:0;}
+#eliteAiRoot .ea-composer-wrap{flex-shrink:0;padding-bottom:max(11px,env(safe-area-inset-bottom,0px));}
+#eliteAiRoot #eliteAiInput{font-size:16px;line-height:1.45;touch-action:manipulation;}
+#eliteAiRoot .ea-icon-btn,
+#eliteAiRoot .ea-tab,
+#eliteAiRoot .ea-quick,
+#eliteAiRoot .ea-send-btn,
+#eliteAiRoot .ea-text-btn,
+#eliteAiRoot .ea-copy-answer{touch-action:manipulation;}
+/* The main page has a custom cursor that is intentionally below this UI.
+   Restore a native cursor within the assistant so it never appears missing. */
+@media (pointer:fine){
+  body.fx #eliteAiRoot,body.fx #eliteAiRoot *{cursor:auto!important;}
+  body.fx #eliteAiRoot button,body.fx #eliteAiRoot [role="tab"]{cursor:pointer!important;}
+  body.fx #eliteAiRoot textarea{cursor:text!important;}
+}
+@media (max-width:860px){
+  #eliteAiRoot #eliteAiLauncher{
+    left:12px!important;right:auto!important;bottom:calc(76px + env(safe-area-inset-bottom,0px))!important;
+    max-width:calc(100vw - 24px);min-height:48px;padding:7px 11px 7px 8px;gap:8px;
+  }
+  #eliteAiRoot .ea-launch-star{width:34px;height:34px;flex:0 0 34px;}
+  #eliteAiRoot .ea-launch-copy strong{font-size:.73rem;}
+  #eliteAiRoot .ea-launch-copy small{font-size:.61rem;}
+  #eliteAiRoot #eliteAiPanel{
+    left:10px!important;right:10px!important;top:calc(8px + env(safe-area-inset-top,0px))!important;
+    bottom:calc(72px + env(safe-area-inset-bottom,0px))!important;
+    width:auto!important;height:auto!important;max-height:none!important;min-height:0!important;
+    border-radius:16px!important;
+  }
+  #eliteAiRoot .ea-header{gap:8px;padding:10px 11px;}
+  #eliteAiRoot .ea-brand-mark{width:34px;height:34px;border-radius:10px;}
+  #eliteAiRoot .ea-header-title strong{font-size:.96rem;}
+  #eliteAiRoot .ea-header-title small{font-size:.58rem;}
+  #eliteAiRoot .ea-tabs{padding:7px 9px 0;}
+  #eliteAiRoot .ea-tab{padding:8px 5px;font-size:.68rem;}
+  #eliteAiRoot #eliteAiChatView{padding-top:4px;}
+  #eliteAiRoot #eliteAiWelcome{margin:6px 9px 8px;padding:11px 11px;}
+  #eliteAiRoot .ea-welcome-title{font-size:1.2rem;}
+  #eliteAiRoot .ea-welcome-copy{font-size:.73rem;}
+  #eliteAiRoot .ea-quick-grid{gap:6px;margin-top:9px;}
+  #eliteAiRoot .ea-quick{min-height:42px;padding:7px;font-size:.66rem;}
+  #eliteAiRoot #eliteAiTranscript{padding:3px 9px 10px;}
+  #eliteAiRoot .ea-composer-wrap{padding:8px 9px max(9px,env(safe-area-inset-bottom,0px));}
+  #eliteAiRoot .ea-composer-meta{font-size:.57rem;}
+  #eliteAiRoot .ea-privacy-note{font-size:.58rem;}
+}
+@media (max-width:420px){
+  #eliteAiRoot .ea-launch-copy small{display:none;}
+  #eliteAiRoot #eliteAiLauncher{min-height:44px;}
+  #eliteAiRoot .ea-launch-star{width:30px;height:30px;flex-basis:30px;}
+  #eliteAiRoot .ea-quick-grid{grid-template-columns:1fr 1fr;}
+  #eliteAiRoot .ea-quick{font-size:.62rem;min-height:43px;}
+  #eliteAiRoot .ea-composer-meta{gap:5px;font-size:.53rem;}
+  #eliteAiRoot .ea-meta-actions{gap:6px;}
+}
+@media (max-height:560px){
+  #eliteAiRoot #eliteAiPanel{height:min(520px,calc(100dvh - 102px))!important;}
+  #eliteAiRoot #eliteAiWelcome{padding:8px 10px;margin:4px 8px 6px;}
+  #eliteAiRoot .ea-welcome-copy{display:none;}
+  #eliteAiRoot .ea-welcome-title{font-size:1.08rem;margin-top:4px;}
+  #eliteAiRoot .ea-quick-grid{margin-top:6px;gap:5px;}
+  #eliteAiRoot .ea-quick{min-height:34px;padding:5px 7px;font-size:.6rem;}
+  #eliteAiRoot .ea-composer-wrap{padding-top:6px;padding-bottom:7px;}
+  #eliteAiRoot .ea-composer-meta{margin-top:5px;}
+}
+@media (max-width:860px) and (max-height:560px){
+  #eliteAiRoot #eliteAiPanel{top:calc(5px + env(safe-area-inset-top,0px))!important;bottom:calc(66px + env(safe-area-inset-bottom,0px))!important;height:auto!important;}
+}
+@media (prefers-reduced-motion:reduce){#eliteAiRoot #eliteAiPanel.open{animation:none!important;}}
+
+
+
+/* FINAL LAYOUT: keep the clock clear and make the assistant draggable. */
+#eliteAiRoot #eliteAiLauncher{
+  left:22px!important;right:auto!important;top:auto!important;bottom:100px!important;
+  z-index:10082!important;max-width:calc(100vw - 44px);cursor:grab!important;
+  touch-action:none!important;user-select:none;-webkit-user-select:none;
+  transition:border-color .22s ease,box-shadow .22s ease!important;
+}
+#eliteAiRoot #eliteAiLauncher:active{cursor:grabbing!important;transform:none!important;}
+#eliteAiRoot #eliteAiLauncher.ea-dragging{cursor:grabbing!important;transform:none!important;}
+#eliteAiRoot #eliteAiPanel{
+  left:22px!important;right:auto!important;top:auto!important;bottom:160px!important;
+  width:min(430px,calc(100vw - 44px))!important;
+  height:min(680px,calc(100dvh - 190px))!important;
+  min-height:300px!important;max-height:calc(100dvh - 24px)!important;
+  overflow:hidden!important;overscroll-behavior:contain;
+}
+#eliteAiRoot #eliteAiPanel .ea-header{
+  cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;
+}
+#eliteAiRoot #eliteAiPanel.ea-panel-dragging .ea-header{cursor:grabbing;}
+#eliteAiRoot #eliteAiPanel.ea-drag-positioned{
+  left:var(--ea-panel-left)!important;top:var(--ea-panel-top)!important;
+  right:auto!important;bottom:auto!important;
+  width:var(--ea-panel-width)!important;height:var(--ea-panel-height)!important;
+  max-width:calc(100vw - 16px)!important;max-height:calc(100dvh - 16px)!important;
+}
+#eliteAiRoot #eliteAiLauncher.ea-drag-positioned{
+  left:var(--ea-launch-left)!important;top:var(--ea-launch-top)!important;
+  right:auto!important;bottom:auto!important;
+}
+#eliteAiRoot #eliteAiLauncher.ea-drag-positioned:hover{transform:none!important;}
+@media(min-width:861px){
+  #eliteAiRoot #eliteAiPanel{bottom:160px!important;}
+  #eliteAiRoot #eliteAiLauncher{bottom:100px!important;}
+}
+@media(max-width:860px){
+  #eliteAiRoot #eliteAiLauncher{
+    left:12px!important;right:auto!important;top:auto!important;
+    bottom:calc(130px + env(safe-area-inset-bottom,0px))!important;
+    width:max-content;max-width:calc(100vw - 24px);min-height:48px;
+  }
+  #eliteAiRoot #eliteAiPanel{
+    left:10px!important;right:10px!important;top:calc(8px + env(safe-area-inset-top,0px))!important;
+    bottom:calc(130px + env(safe-area-inset-bottom,0px))!important;
+    width:auto!important;height:auto!important;min-height:0!important;max-height:none!important;
+    border-radius:16px!important;
+  }
+  #eliteAiRoot #eliteAiPanel.ea-drag-positioned{
+    left:var(--ea-panel-left)!important;right:auto!important;top:var(--ea-panel-top)!important;
+    bottom:auto!important;width:var(--ea-panel-width)!important;height:var(--ea-panel-height)!important;
+    max-width:calc(100vw - 16px)!important;max-height:calc(100dvh - 16px)!important;
+  }
+}
+@media(max-width:420px){
+  #eliteAiRoot #eliteAiLauncher{min-height:44px;}
+}
+@media(max-height:560px){
+  #eliteAiRoot #eliteAiPanel{min-height:0!important;}
+  #eliteAiRoot #eliteAiPanel.ea-drag-positioned{min-height:0!important;}
+}
+
+</style>
+<div id="eliteAiRoot">
+  <button id="eliteAiLauncher" type="button" aria-label="Open Elite Star Assistant" aria-controls="eliteAiPanel" aria-expanded="false">
+    <span class="ea-launch-star" aria-hidden="true">✦</span>
+    <span class="ea-launch-copy"><strong>Elite Star Assistant</strong><small>Your Team Star helper</small></span>
+    <span class="ea-launch-live" aria-hidden="true"></span>
+  </button>
+  <section id="eliteAiPanel" role="dialog" aria-modal="false" aria-label="Elite Star Assistant" aria-hidden="true">
+    <header class="ea-header">
+      <span class="ea-brand-mark" aria-hidden="true">✦</span>
+      <div class="ea-header-title"><strong>Elite Star Assistant</strong><small><i id="eliteAiStatusDot"></i><span id="eliteAiStatusText">Checking availability…</span></small></div>
+      <button class="ea-icon-btn" id="eliteAiNewChat" type="button" title="Start a new chat" aria-label="Start a new chat">↻</button>
+      <button class="ea-icon-btn" id="eliteAiClose" type="button" title="Close assistant" aria-label="Close assistant">×</button>
+    </header>
+    <div class="ea-tabs" role="tablist" aria-label="Assistant sections">
+      <button class="ea-tab active" id="eliteAiChatTab" type="button" role="tab" aria-selected="true" aria-controls="eliteAiChatView"><span>✦</span>Chat</button>
+      <button class="ea-tab" id="eliteAiUpdatesTab" type="button" role="tab" aria-selected="false" aria-controls="eliteAiUpdatesView"><span>◷</span>Page updates</button>
+    </div>
+    <div class="ea-view active" id="eliteAiChatView" role="tabpanel" aria-labelledby="eliteAiChatTab">
+      <div id="eliteAiWelcome">
+        <div class="ea-welcome-top"><span>✧</span> PERFORMANCE, DECODED.</div>
+        <h3 class="ea-welcome-title">How can I help today?</h3>
+        <p class="ea-welcome-copy">Ask about this page, find a section, understand the dashboard, or draft a polite CSR message. You can write in Bangla, Banglish or English.</p>
+        <div class="ea-quick-grid">
+          <button class="ea-quick" type="button" data-ai-quick="guide"><i>⌘</i> Help me use this page</button>
+          <button class="ea-quick" type="button" data-ai-quick="kpi"><i>◈</i> Explain the team KPIs</button>
+          <button class="ea-quick" type="button" data-ai-quick="draft"><i>✎</i> Draft a professional reply</button>
+          <button class="ea-quick" type="button" data-ai-quick="updates"><i>◷</i> Show recent page updates</button>
+        </div>
+      </div>
+      <div id="eliteAiTranscript" role="log" aria-live="polite" aria-relevant="additions text" hidden></div>
+      <div class="ea-composer-wrap">
+        <form class="ea-composer" id="eliteAiForm">
+          <textarea id="eliteAiInput" rows="1" maxlength="3000" placeholder="Ask anything about this page…" aria-label="Message the assistant"></textarea>
+          <button class="ea-send-btn" id="eliteAiSend" type="submit" aria-label="Send message" title="Send message">↑</button>
+        </form>
+        <div class="ea-composer-meta"><span>Enter to send · Shift+Enter for a new line</span><span class="ea-meta-actions"><button class="ea-text-btn" id="eliteAiClear" type="button">Clear chat</button></span></div>
+        <div class="ea-privacy-note"><span aria-hidden="true">♢</span><span>For your safety, never share full customer numbers, account details, passwords, PINs or OTPs.</span></div>
+      </div>
+    </div>
+    <div class="ea-view" id="eliteAiUpdatesView" role="tabpanel" aria-labelledby="eliteAiUpdatesTab">
+      <div class="ea-updates-intro"><small>PAGE UPDATES</small><h3>What’s new on this page</h3><p>A few helpful improvements to make the Team Elite Star page easier to use.</p></div>
+      <article class="ea-update-item"><div class="ea-update-date">Assistant</div><h4>Quick help, whenever you need it</h4><p>Get page guidance, practical explanations, and help drafting clear, polite CSR messages in Bangla, Banglish, or English.</p><span class="ea-update-status">Available from the floating button</span></article>
+      <article class="ea-update-item"><div class="ea-update-date">Navigation</div><h4>Find sections faster</h4><p>Ask to open About, Achievements, Team, Command Center, Previous Members, SR Data, or Call Data and the page will move to that section.</p><span class="ea-update-status">Section shortcuts enabled</span></article>
+      <article class="ea-update-item"><div class="ea-update-date">Usability</div><h4>Improved chat experience</h4><p>The assistant layout adapts to desktop, tablet, and mobile screens, with dedicated space for reading messages and writing replies.</p><span class="ea-update-status">Responsive layout</span></article>
+      <article class="ea-update-item"><div class="ea-update-date">Privacy</div><h4>Safer everyday use</h4><p>The assistant provides general guidance and does not replace the dashboard, approved procedures, or an authorized TL/QA decision. Do not share private customer or account details in chat.</p><span class="ea-update-status">Privacy reminder</span></article>
+    </div>
+  </section>
+</div>
+<script>
+(()=>{
+  'use strict';
+  const $=id=>document.getElementById(id);
+  const launcher=$('eliteAiLauncher'),panel=$('eliteAiPanel'),closeBtn=$('eliteAiClose'),newChatBtn=$('eliteAiNewChat');
+  const chatTab=$('eliteAiChatTab'),updatesTab=$('eliteAiUpdatesTab'),chatView=$('eliteAiChatView'),updatesView=$('eliteAiUpdatesView');
+  const welcome=$('eliteAiWelcome'),transcript=$('eliteAiTranscript'),form=$('eliteAiForm'),input=$('eliteAiInput'),sendBtn=$('eliteAiSend');
+  const statusText=$('eliteAiStatusText'),statusDot=$('eliteAiStatusDot');
+  const DEFAULT_WORKER_URL=(()=>{const w=String(window.TEAM_ELITE_SUPABASE_CONFIG?.workerUrl||'').trim().replace(/\/+$/,'').replace(/\/api\/chat$/,'');return w?w+'/api/chat':'https://team-elite-star-ai.YOUR-SUBDOMAIN.workers.dev/api/chat'})();
+  const WORKER_URL=String(window.ELITE_STAR_AI_CONFIG?.workerUrl||DEFAULT_WORKER_URL).trim().replace(/\/$/,'');
+  const isConfigured=/^https:\/\/[a-z0-9.-]+\.workers\.dev\/api\/chat$/i.test(WORKER_URL)&&!WORKER_URL.includes('YOUR-SUBDOMAIN');
+  const conversation=[];
+  let isBusy=false,hasCheckedHealth=false;
+  const assistantHeader=panel.querySelector('.ea-header');
+  const positionPrefix='elite-star-assistant-pos-v3-';
+  let suppressLauncherClickUntil=0;
+
+  function deviceBucket(){return matchMedia('(max-width: 860px)').matches?'mobile':'desktop';}
+  function savedPosition(kind){
+    try{const raw=localStorage.getItem(positionPrefix+deviceBucket()+'-'+kind);return raw?JSON.parse(raw):null;}catch{return null;}
+  }
+  function savePosition(kind,left,top){
+    try{localStorage.setItem(positionPrefix+deviceBucket()+'-'+kind,JSON.stringify({left,top}));}catch{}
+  }
+  function intersects(a,b,pad=0){
+    return a.left < b.right+pad && a.right > b.left-pad && a.top < b.bottom+pad && a.bottom > b.top-pad;
+  }
+  function safePosition(left,top,width,height,avoidClock=true){
+    const margin=8, maxLeft=Math.max(margin,innerWidth-width-margin),maxTop=Math.max(margin,innerHeight-height-margin);
+    const clamp=(x,y)=>({left:Math.min(maxLeft,Math.max(margin,x)),top:Math.min(maxTop,Math.max(margin,y))});
+    let p=clamp(left,top);
+    const clock=$('localTimeBar');
+    if(avoidClock&&clock&&clock.getClientRects().length){
+      const r=clock.getBoundingClientRect();
+      const target={left:r.left,right:r.right,top:r.top,bottom:r.bottom};
+      const current={left:p.left,right:p.left+width,top:p.top,bottom:p.top+height};
+      if(intersects(current,target,7)){
+        const candidates=[
+          clamp(p.left,r.top-height-10),
+          clamp(p.left,r.bottom+10),
+          clamp(r.left-width-10,p.top),
+          clamp(r.right+10,p.top)
+        ];
+        const valid=candidates.find(q=>q.left+width<=innerWidth-margin&&q.top+height<=innerHeight-margin&&
+          !intersects({left:q.left,right:q.left+width,top:q.top,bottom:q.top+height},target,7));
+        if(valid)p=valid;
+      }
+    }
+    return p;
+  }
+  function placeLauncher(left,top,persist=true){
+    const r=launcher.getBoundingClientRect();
+    const p=safePosition(left,top,r.width||230,r.height||50,true);
+    launcher.classList.add('ea-drag-positioned');
+    launcher.style.setProperty('--ea-launch-left',p.left+'px');
+    launcher.style.setProperty('--ea-launch-top',p.top+'px');
+    if(persist)savePosition('launcher',p.left,p.top);
+    return p;
+  }
+  function placePanel(left,top,width,height,persist=true){
+    const rect=panel.getBoundingClientRect();
+    width=width||rect.width||Math.min(430,innerWidth-20);
+    height=height||rect.height||Math.min(620,innerHeight-150);
+    const p=safePosition(left,top,width,height,true);
+    panel.classList.add('ea-drag-positioned');
+    panel.style.setProperty('--ea-panel-left',p.left+'px');
+    panel.style.setProperty('--ea-panel-top',p.top+'px');
+    panel.style.setProperty('--ea-panel-width',Math.min(width,innerWidth-16)+'px');
+    panel.style.setProperty('--ea-panel-height',Math.min(height,innerHeight-16)+'px');
+    if(persist)savePosition('panel',p.left,p.top);
+    return p;
+  }
+  function restoreLauncherPosition(){
+    const p=savedPosition('launcher');
+    if(p&&Number.isFinite(p.left)&&Number.isFinite(p.top))requestAnimationFrame(()=>placeLauncher(p.left,p.top,false));
+  }
+  function restorePanelPosition(){
+    const p=savedPosition('panel');
+    if(p&&Number.isFinite(p.left)&&Number.isFinite(p.top)){
+      requestAnimationFrame(()=>placePanel(p.left,p.top,panel.getBoundingClientRect().width,panel.getBoundingClientRect().height,false));
+    }
+  }
+  function attachLauncherDrag(){
+    let start=null,dragging=false;
+    launcher.addEventListener('pointerdown',e=>{
+      if(e.button!==undefined&&e.button!==0)return;
+      const r=launcher.getBoundingClientRect();
+      start={id:e.pointerId,x:e.clientX,y:e.clientY,left:r.left,top:r.top};dragging=false;
+      try{launcher.setPointerCapture(e.pointerId);}catch{}
+    });
+    launcher.addEventListener('pointermove',e=>{
+      if(!start||e.pointerId!==start.id)return;
+      const dx=e.clientX-start.x,dy=e.clientY-start.y;
+      if(!dragging&&Math.hypot(dx,dy)>6){dragging=true;launcher.classList.add('ea-dragging');}
+      if(dragging){e.preventDefault();placeLauncher(start.left+dx,start.top+dy,false);}
+    });
+    const finish=e=>{
+      if(!start||e.pointerId!==start.id)return;
+      if(dragging){const r=launcher.getBoundingClientRect();placeLauncher(r.left,r.top,true);suppressLauncherClickUntil=Date.now()+450;}
+      launcher.classList.remove('ea-dragging');start=null;dragging=false;
+    };
+    launcher.addEventListener('pointerup',finish);launcher.addEventListener('pointercancel',finish);
+  }
+  function attachPanelDrag(){
+    if(!assistantHeader)return;
+    let start=null,dragging=false;
+    assistantHeader.addEventListener('pointerdown',e=>{
+      if(e.target.closest('button,a,input,textarea,select,[role="button"]'))return;
+      if(e.button!==undefined&&e.button!==0)return;
+      const r=panel.getBoundingClientRect();
+      start={id:e.pointerId,x:e.clientX,y:e.clientY,left:r.left,top:r.top,width:r.width,height:r.height};dragging=false;
+      try{assistantHeader.setPointerCapture(e.pointerId);}catch{}
+    });
+    assistantHeader.addEventListener('pointermove',e=>{
+      if(!start||e.pointerId!==start.id)return;
+      const dx=e.clientX-start.x,dy=e.clientY-start.y;
+      if(!dragging&&Math.hypot(dx,dy)>5){dragging=true;panel.classList.add('ea-panel-dragging');}
+      if(dragging){e.preventDefault();placePanel(start.left+dx,start.top+dy,start.width,start.height,false);}
+    });
+    const finish=e=>{
+      if(!start||e.pointerId!==start.id)return;
+      if(dragging){const r=panel.getBoundingClientRect();placePanel(r.left,r.top,r.width,r.height,true);}
+      panel.classList.remove('ea-panel-dragging');start=null;dragging=false;
+    };
+    assistantHeader.addEventListener('pointerup',finish);assistantHeader.addEventListener('pointercancel',finish);
+  }
+  attachLauncherDrag();attachPanelDrag();restoreLauncherPosition();
+  window.addEventListener('resize',()=>{
+    if(launcher.classList.contains('ea-drag-positioned')){const r=launcher.getBoundingClientRect();placeLauncher(r.left,r.top,false);}
+    if(panel.classList.contains('open')&&panel.classList.contains('ea-drag-positioned')){const r=panel.getBoundingClientRect();placePanel(r.left,r.top,r.width,r.height,false);}
+  },{passive:true});
+  function setStatus(label,state){statusText.textContent=label;statusDot.className=state||'';}
+  function setTab(which){const chat=which==='chat';chatTab.classList.toggle('active',chat);updatesTab.classList.toggle('active',!chat);chatTab.setAttribute('aria-selected',String(chat));updatesTab.setAttribute('aria-selected',String(!chat));chatView.classList.toggle('active',chat);updatesView.classList.toggle('active',!chat);}
+  function openPanel(){panel.classList.add('open');panel.setAttribute('aria-hidden','false');launcher.setAttribute('aria-expanded','true');requestAnimationFrame(()=>{if(!panel.classList.contains('ea-drag-positioned'))restorePanelPosition();});if(!hasCheckedHealth)checkHealth();setTimeout(()=>input.focus({preventScroll:true}),60);}
+  function closePanel(){panel.classList.remove('open');panel.setAttribute('aria-hidden','true');launcher.setAttribute('aria-expanded','false');launcher.focus({preventScroll:true});}
+  function scrollTranscript(){transcript.scrollTop=transcript.scrollHeight;}
+  function addMessage(role,text,options={}){
+    const node=document.createElement('div');node.className='ea-message '+(role==='user'?'user':'assistant')+(options.pending?' is-pending':'');
+    const label=document.createElement('div');label.className='ea-message-label';label.textContent=role==='user'?'You':'Elite Assistant';node.appendChild(label);
+    const bubble=document.createElement('div');bubble.className='ea-bubble';bubble.textContent=String(text??'');node.appendChild(bubble);
+    if(role!=='user'&&!options.pending){const tools=document.createElement('div');tools.className='ea-message-tools';const copy=document.createElement('button');copy.type='button';copy.className='ea-copy-answer';copy.textContent='Copy answer';copy.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(String(text??''));copy.textContent='Copied';setTimeout(()=>copy.textContent='Copy answer',1200)}catch{copy.textContent='Select and copy text';}});tools.appendChild(copy);node.appendChild(tools);}
+    transcript.appendChild(node);transcript.hidden=false;welcome.hidden=true;scrollTranscript();return {node,bubble};
+  }
+  function resetChat(){conversation.length=0;transcript.replaceChildren();transcript.hidden=true;welcome.hidden=false;input.value='';resizeInput();setTab('chat');}
+  function resizeInput(){input.style.height='auto';input.style.height=Math.min(input.scrollHeight,104)+'px';}
+  const sectionMap=[
+    {id:'previous-members',names:['previous members','previous member','archived members','archive','historical roster']},
+    {id:'sr-data',names:['sr data','sr accuracy','service report','sr report']},
+    {id:'call-data',names:['call data','call records','call training','training records']},
+    {id:'command',names:['command center','command','performance board','board','ranking','rankings']},
+    {id:'impact',names:['achievement','achievements','impact','team metrics','metrics']},
+    {id:'about',names:['about','about team','who we are']},
+    {id:'team',names:['active members','active team','team member','members','team']},
+    {id:'hero',names:['home','homepage','home page']}
+  ];
+  function findSectionIntent(text){
+    const s=String(text).toLowerCase();
+    if(!/(\b(open|go to|jump to|scroll to|take me|navigate|show me|find|where is|where can i find|bring up)\b|খুলে|দেখাও|নিয়ে যাও|নিয়ে যাও|কোথায়|কোথায়)/i.test(s))return null;
+    for(const item of sectionMap){if(item.names.some(name=>s.includes(name)))return item;}
+    return null;
+  }
+  const updateText='Here are the latest page improvements:\n\n• Quick assistant: ask for help in Bangla, Banglish, or English.\n• Page navigation: jump to About, Achievements, Team, Command Center, Previous Members, SR Data, or Call Data.\n• Dashboard guidance: get simple explanations of common page controls and KPIs.\n• CSR writing help: draft clear and polite customer-service replies.\n• Privacy reminder: do not share private customer numbers, passwords, PINs, or OTPs.';
+  async function checkHealth(){
+    hasCheckedHealth=true;
+    if(!isConfigured){setStatus('Temporarily unavailable','error');return;}
+    setStatus('Connecting…','');
+    try{const healthUrl=WORKER_URL.replace(/\/api\/chat$/,'/api/health');const response=await fetch(healthUrl,{method:'GET',headers:{'Accept':'application/json'},cache:'no-store',signal:AbortSignal.timeout(4500)});if(!response.ok)throw new Error('Worker health check failed');const data=await response.json();if(!data.ok)throw new Error('Service not ready');setStatus('Online','ready');}
+    catch{setStatus('Connection unavailable','error');}
+  }
+  async function sendMessage(raw){
+    const text=String(raw??input.value).trim();if(!text||isBusy)return;if(text.length>3000){addMessage('assistant','Please keep each message under 3,000 characters.');return;}
+    input.value='';resizeInput();setTab('chat');addMessage('user',text);conversation.push({role:'user',text});
+    const section=findSectionIntent(text);
+    if(section){const el=$(section.id);if(el){el.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'});const label=section.names[0].replace(/\b\w/g,c=>c.toUpperCase());const reply='Done — I moved the page to '+label+'. You can continue browsing there, or ask me to explain what this section does.';addMessage('assistant',reply);conversation.push({role:'model',text:reply});return;}}
+    if(/\b(update|updates|what(?:'s| is) new|what changed|recent changes|page change|changelog|release notes)\b|আপডেট|কি পরিবর্তন|কী পরিবর্তন/i.test(text)){
+      addMessage('assistant',updateText);conversation.push({role:'model',text:updateText});return;
+    }
+    if(!isConfigured){const reply='I’m temporarily unavailable. Please try again later.';addMessage('assistant',reply);conversation.push({role:'model',text:reply});setStatus('Temporarily unavailable','error');return;}
+    isBusy=true;sendBtn.disabled=true;input.disabled=true;const pending=addMessage('assistant','Thinking…',{pending:true});pending.bubble.innerHTML='<span class="ea-typing" aria-label="Thinking"><i></i><i></i><i></i></span>';setStatus('Thinking…','');
+    try{
+      const history=conversation.slice(-12).map(m=>({role:m.role,text:m.text.slice(0,3000)}));
+      const response=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({messages:history}),signal:AbortSignal.timeout(45000),cache:'no-store'});
+      let data={};try{data=await response.json()}catch{}
+      if(!response.ok){throw new Error('A reply could not be generated right now. Please try again in a moment.');}
+      const reply=String(data.reply||'I could not generate a reply. Please try again.').slice(0,12000);
+      pending.node.remove();addMessage('assistant',reply);conversation.push({role:'model',text:reply});if(conversation.length>20)conversation.splice(0,conversation.length-20);setStatus('Online','ready');
+    }catch(error){pending.node.remove();let msg=error?.name==='TimeoutError'?'This request took too long. Please try again.':String(error?.message||'Connection failed. Please try again.');if(msg.includes('Failed to fetch')||msg.includes('NetworkError'))msg='The assistant is temporarily unavailable. Please try again in a moment.';else msg='A reply could not be generated right now. Please try again in a moment.';addMessage('assistant',msg);conversation.push({role:'model',text:msg});setStatus('Connection unavailable','error');}
+    finally{isBusy=false;sendBtn.disabled=false;input.disabled=false;input.focus({preventScroll:true});}
+  }
+  launcher.addEventListener('click',()=>{if(Date.now()<suppressLauncherClickUntil)return;panel.classList.contains('open')?closePanel():openPanel();});closeBtn.addEventListener('click',closePanel);newChatBtn.addEventListener('click',resetChat);chatTab.addEventListener('click',()=>setTab('chat'));updatesTab.addEventListener('click',()=>setTab('updates'));$('eliteAiClear').addEventListener('click',resetChat);
+  form.addEventListener('submit',e=>{e.preventDefault();sendMessage(input.value)});input.addEventListener('input',resizeInput);input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();form.requestSubmit();}});
+  document.querySelectorAll('[data-ai-quick]').forEach(button=>button.addEventListener('click',()=>{const action=button.dataset.aiQuick;if(action==='updates'){setTab('updates');return;}const prompts={guide:'Please give me a simple guide to this Team Elite Star website and explain how to use the Command Center, filters and CSV export.',kpi:'Explain the difference between AHT, quality, attendance, productivity and on-time login in simple, practical terms. If the page does not define an exact target or formula, please say so.',draft:'Help me write a polite, professional CSR response. First ask me what situation or customer issue the reply is for. Remind me not to include personal account details.'};sendMessage(prompts[action]||'Please help me use this page.');}));
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panel.classList.contains('open'))closePanel();});
+  if(!isConfigured)setStatus('Temporarily unavailable','error');else setStatus('Ready to connect','');
+})();
+</script>
+
 
 </body>
 </html>
