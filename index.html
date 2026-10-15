@@ -2355,24 +2355,29 @@ if(!REDUCE){
     if(!liveClient||busy){if(busy)again=true;return;}
     busy=true;
     try{
+      // Keep the team cards independent from optional report tables.  Previously
+      // one missing/blocked table made Promise.all fail and cleared every card.
+      const read=(query,fallback=[])=>query.then(result=>result?.error?{data:fallback,error:result.error}:result).catch(error=>({data:fallback,error}));
+      const readAgents=async()=>{
+        let result=await read(liveClient.from('agents').select('*').order('is_leader',{ascending:false}).order('sort_order',{ascending:true}).order('name',{ascending:true}));
+        if(result.error)result=await read(liveClient.from('agents').select('*').order('name',{ascending:true}));
+        if(result.error)result=await read(liveClient.from('agents').select('*'));
+        return result;
+      };
       const [a,s,p,sr,c]=await Promise.all([
-        liveClient.from('agents').select('*').eq('active',true).order('is_leader',{ascending:false}).order('sort_order',{ascending:true}).order('name',{ascending:true}),
-        liveClient.from('app_settings').select('key,value').eq('is_public',true).order('key'),
-        liveClient.from('previous_members').select('*').order('archived_date',{ascending:false}),
-        liveClient.from('sr_records').select('*').order('report_date',{ascending:false}).order('agent_name'),
-        liveClient.from('call_records').select('*').order('call_date',{ascending:false}).order('created_at',{ascending:false})
+        readAgents(),
+        read(liveClient.from('app_settings').select('key,value').eq('is_public',true).order('key')),
+        read(liveClient.from('previous_members').select('*').order('archived_date',{ascending:false})),
+        read(liveClient.from('sr_records').select('*').order('report_date',{ascending:false}).order('agent_name')),
+        read(liveClient.from('call_records').select('*').order('call_date',{ascending:false}).order('created_at',{ascending:false}))
       ]);
       const results=[['agents',a],['settings',s],['previous members',p],['SR data',sr],['call data',c]];
       const failed=results.filter(([_,r])=>r.error);
-      if(failed.length){
-        const message=failed.map(([name,r])=>`${name}: ${r.error.message}`).join('\n');
-        console.warn('[Team Elite Star] Supabase read failed:',message);
-        if(!applyCachedSnapshot(message)){
-          TEAM_LEADER={...EMPTY_TEAM_LEADER};MEMBERS=[];archive=[];srRows=[];callRows=[];
-          window.renderTeamMembers?.();window.refreshTeamCommand?.();
-          renderArchive();renderSr();renderCalls();
-          setDbStatus('error','NO DATA',`Supabase read failed and no prior Supabase snapshot exists. No bundled/static data is shown. ${message}`);
-        }
+      // Agents are required for the member cards; the other tables are optional.
+      if(a.error){
+        const message=`agents: ${a.error.message||a.error}`;
+        console.warn('[Team Elite Star] Supabase agents read failed:',message);
+        if(!applyCachedSnapshot(message))setDbStatus('error','NO DATA',`Could not read the agents table from Supabase. ${message}`);
         return;
       }
       const snapshot={agents:a.data||[],settings:s.data||[],previous:p.data||[],sr:sr.data||[],calls:c.data||[]};
@@ -2383,14 +2388,12 @@ if(!REDUCE){
         signatures.agents=signature(snapshot.agents);signatures.settings=signature(snapshot.settings);signatures.previous=signature(snapshot.previous);signatures.sr=signature(snapshot.sr);signatures.calls=signature(snapshot.calls);
       }
       writeSnapshotCache(snapshot);
-      setDbStatus(realtimeReady?'live':'poll',realtimeReady?'DB LIVE':'DB SYNC OK',`Data read successfully from Supabase. Source: ${source}.`);
+      const partial=failed.length>0;
+      lastQueryErrors=partial;
+      setDbStatus(partial?'poll':(realtimeReady?'live':'poll'),partial?'DB PARTIAL':(realtimeReady?'DB LIVE':'DB SYNC OK'),partial?`Team cards loaded from Supabase, but optional report data could not be read: ${failed.map(([name,r])=>name).join(', ')}.`:`Data read successfully from Supabase. Source: ${source}.`);
     }catch(err){
       console.error('[Team Elite Star] Supabase load failed:',err);
-      if(!applyCachedSnapshot(err?.message||String(err))){
-        TEAM_LEADER={...EMPTY_TEAM_LEADER};MEMBERS=[];archive=[];srRows=[];callRows=[];
-        window.renderTeamMembers?.();window.refreshTeamCommand?.();renderArchive();renderSr();renderCalls();
-        setDbStatus('error','NO DATA',`Supabase read failed and no prior Supabase snapshot exists. No bundled/static data is shown. ${err?.message||String(err)}`);
-      }
+      if(!applyCachedSnapshot(err?.message||String(err)))setDbStatus('error','NO DATA',`Supabase read failed. ${err?.message||String(err)}`);
     }finally{busy=false;if(again){again=false;scheduleRefresh('queued');}}
   }
   function scheduleRefresh(source='realtime'){
