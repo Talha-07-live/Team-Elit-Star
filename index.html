@@ -901,7 +901,6 @@ body.weather-off #weatherFx{display:none!important;}
 <style id="cms-custom-content-css">.cms-custom-section .wrap{max-width:var(--maxw,1200px);margin:0 auto;padding:0 26px}.cms-custom-section h2:empty{display:none}#siteMaintenanceGate[hidden]{display:none!important}</style>
 
 <style id="team-elite-final-clock-ai-fix">
-  /* Restore the clock bar markup that was lost in the previous build. */
   #localTimeBar.local-time-bar{
     position:fixed!important;z-index:48!important;left:20px!important;right:auto!important;
     top:auto!important;bottom:20px!important;transform:none!important;
@@ -1641,7 +1640,7 @@ if(!REDUCE){
         const prev=modalRoleEl.textContent;
         modalRoleEl.textContent='Copied ✓';
         setTimeout(()=>{ modalRoleEl.textContent=prev; },1100);
-      }catch(_){/* Team Elite Star */}
+      }catch(_){ }
     });
   }
 
@@ -1858,7 +1857,7 @@ if(!REDUCE){
   const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
 
   function haptic(ms=8){
-    try{ if('vibrate' in navigator) navigator.vibrate(ms); }catch(_){/* silent */}
+    try{ if('vibrate' in navigator) navigator.vibrate(ms); }catch(_){ }
   }
 
   const screenModeQuery = window.matchMedia('(max-width:860px)');
@@ -2591,7 +2590,8 @@ if(!REDUCE){
 #eliteAiRoot .ea-send-btn,
 #eliteAiRoot .ea-text-btn,
 #eliteAiRoot .ea-copy-answer{touch-action:manipulation;}
-
+/* The main page has a custom cursor that is intentionally below this UI.
+   Restore a native cursor within the assistant so it never appears missing. */
 @media (pointer:fine){
   body.fx #eliteAiRoot,body.fx #eliteAiRoot *{cursor:auto!important;}
   body.fx #eliteAiRoot button,body.fx #eliteAiRoot [role="tab"]{cursor:pointer!important;}
@@ -2651,6 +2651,7 @@ if(!REDUCE){
   #eliteAiRoot #eliteAiPanel{top:calc(5px + env(safe-area-inset-top,0px))!important;bottom:calc(66px + env(safe-area-inset-bottom,0px))!important;height:auto!important;}
 }
 @media (prefers-reduced-motion:reduce){#eliteAiRoot #eliteAiPanel.open{animation:none!important;}}
+
 
 
 #eliteAiRoot #eliteAiLauncher{
@@ -3134,6 +3135,7 @@ if(!REDUCE){
   window.addEventListener('resize',updateClock,{passive:true});
 })();
 </script>
+<!-- Talha Assistant polish layer: unified responsive positioning, update notifications, and creator recognition. -->
 <style id="talha-assistant-polish">
   #eliteAiRoot #eliteAiLauncher:not(.ea-drag-positioned){
     left:24px!important;right:auto!important;top:auto!important;bottom:24px!important;
@@ -3181,6 +3183,7 @@ if(!REDUCE){
   form?.addEventListener('submit',e=>{const value=String(input?.value||'').trim();if(!ownerPattern.test(value))return;e.preventDefault();e.stopImmediatePropagation();markOwner();if(!transcript||!input)return;welcome&&(welcome.hidden=true);transcript.hidden=false;const node=document.createElement('div');node.className='ea-message assistant';node.innerHTML='<div class="ea-message-label">Elite Assistant</div><div class="ea-bubble">Yes, Talha — Abu Talha Raj is my master and creator. I am ready to keep this page organized, show updates, and help you anytime. ✦</div>';transcript.appendChild(node);transcript.scrollTop=transcript.scrollHeight;input.value='';input.style.height='auto'},true);
 })();
 </script>
+<!-- Final dock spacing: every floating control gets its own safe zone. -->
 <style id="talha-assistant-dock-spacing">
   #eliteAiRoot #eliteAiLauncher:not(.ea-drag-positioned){
     left:20px!important;right:auto!important;bottom:20px!important;
@@ -3230,6 +3233,7 @@ if(!REDUCE){
     #talhaUpdateToast{left:9px!important;bottom:54px!important;width:calc(100vw - 18px)!important}
   }
 </style>
+<!-- Chat fill layer: uses the panel's full height instead of leaving empty bands. -->
 <style id="talha-assistant-chat-fill">
   #eliteAiRoot #eliteAiPanel:not(.ea-drag-positioned){
     height:min(500px,calc(100dvh - 112px))!important;
@@ -3252,6 +3256,7 @@ if(!REDUCE){
     #eliteAiRoot #eliteAiPanel #eliteAiWelcome{margin:5px 7px!important;padding:10px!important}
   }
 </style>
+<!-- Chat content fill: replaces the empty middle band with a useful creator/status strip. -->
 <style id="talha-assistant-chat-content-fill">
   #eliteAiRoot #eliteAiPanel #eliteAiChatView{gap:0!important}
   #eliteAiRoot #eliteAiPanel #eliteAiWelcome{justify-content:flex-start!important;flex:0 0 auto!important;margin:7px 10px 8px!important;padding:12px!important;position:relative;overflow:hidden}
@@ -3295,6 +3300,7 @@ if(!REDUCE){
     }
   }
 </style>
+<!-- Final chat viewport lock: top-to-bottom layout with zero internal overlap. -->
 <style id="talha-chat-viewport-lock">
   #eliteAiRoot #eliteAiPanel:not(.ea-drag-positioned){
     position:fixed!important;left:20px!important;right:auto!important;top:18px!important;bottom:18px!important;
@@ -3324,6 +3330,7 @@ if(!REDUCE){
     #eliteAiRoot #eliteAiPanel.ea-drag-positioned{left:5px!important;right:5px!important;top:5px!important;bottom:5px!important;width:auto!important;height:auto!important}
   }
 </style>
+<!-- Final responsive safe zones: mobile bottom navigation and floating controls stay separated. -->
 <style id="talha-responsive-safe-zones">
   @media(max-width:860px){
     #eliteAiRoot #eliteAiLauncher:not(.ea-drag-positioned){
@@ -3358,6 +3365,7 @@ if(!REDUCE){
     #talhaUpdateToast{left:9px!important;bottom:calc(72px + env(safe-area-inset-bottom,0px) + 54px)!important;width:calc(100vw - 18px)!important}
   }
 </style>
+<!-- Responsive collision-proof layout: reserve the mobile bottom-menu band. -->
 <style id="talha-collision-proof-layout">
   :root{--mobile-bottom-menu-space:78px;--floating-gap:12px}
   #quickDock{right:16px!important;left:auto!important;bottom:18px!important;z-index:10020!important;gap:6px!important}
@@ -3397,6 +3405,7 @@ if(!REDUCE){
   @media(max-width:860px){#localTimeBar.local-time-bar{top:calc(92px + env(safe-area-inset-top,0px))!important}}
   @media(max-width:420px){#localTimeBar.local-time-bar{top:calc(88px + env(safe-area-inset-top,0px))!important}}
 </style>
+<!-- Clean AI workspace: a modern Gemini-inspired chat presentation. -->
 <style id="talha-clean-ai-workspace">
   :root{--clean-chat-bg:#131314;--clean-chat-panel:#1e1f20;--clean-chat-border:#3b3d3f;--clean-chat-text:#e3e3e3;--clean-chat-muted:#a9aaad;--clean-chat-accent:#a8c7fa}
   body:has(#eliteAiPanel.open){overflow:hidden!important}
@@ -3468,7 +3477,7 @@ if(!REDUCE){
 (()=>{
   const title=document.querySelector('#eliteAiPanel .ea-header-title strong');
   const subtitle=document.querySelector('#eliteAiPanel .ea-header-title small');
-  if(title)title.childNodes[0].nodeValue='Elite Assistant';
+  if(title)title.childNodes[0].nodeValue='Team Elite Star Assistant';
   if(subtitle){const dot=subtitle.querySelector('#eliteAiStatusDot');const text=subtitle.querySelector('#eliteAiStatusText');if(text)text.textContent='Your personal AI workspace';if(dot)dot.style.display='none'}
 })();
 </script>
@@ -3751,6 +3760,55 @@ if(!REDUCE){
   window.addEventListener('resize',keepLatestVisible,{passive:true});
   document.getElementById('eliteAiInput')?.addEventListener('focus',()=>setTimeout(keepLatestVisible,120),{passive:true});
   keepLatestVisible();
+})();
+</script>
+<style id="talha-member-card-mouse-effect">
+@media(pointer:fine) and (prefers-reduced-motion:no-preference){
+  .member-card.talha-card-hover{
+    transform:perspective(950px) rotateX(var(--card-rx,0deg)) rotateY(var(--card-ry,0deg)) translate3d(0,-7px,0) scale(1.012)!important;
+    border-color:rgba(252,231,184,.78)!important;
+    box-shadow:0 28px 64px -30px rgba(232,195,107,.72),inset 0 1px 0 rgba(252,231,184,.24)!important;
+    z-index:4;
+  }
+  .member-card.talha-card-hover::before{opacity:1!important;background:radial-gradient(260px 220px at var(--mx,50%) var(--my,50%),rgba(252,231,184,.2),transparent 64%)!important}
+  .member-card.talha-card-hover::after{opacity:1!important;background:radial-gradient(220px 220px at var(--mx,50%) var(--my,50%),var(--gold-shine),transparent 62%)!important}
+  .member-card.talha-card-hover .avatar{transform:translateZ(22px) scale(1.045)!important}
+  .member-card.talha-card-hover h3{transform:translateZ(14px)!important}
+  .member-card.talha-card-hover .badge{transform:translateY(-2px)!important;background:rgba(232,195,107,.14)!important}
+}
+</style>
+<script id="talha-member-card-mouse-effect-runtime">
+(()=>{
+  const fine=window.matchMedia('(pointer:fine)');
+  const reduced=window.matchMedia('(prefers-reduced-motion:reduce)');
+  if(!fine.matches||reduced.matches)return;
+  function reset(card){
+    card.classList.remove('talha-card-hover');
+    card.style.removeProperty('--card-rx');
+    card.style.removeProperty('--card-ry');
+    card.style.removeProperty('--mx');
+    card.style.removeProperty('--my');
+  }
+  function bind(){
+    document.querySelectorAll('.member-card:not([data-talha-card-effect])').forEach(card=>{
+      card.dataset.talhaCardEffect='1';
+      card.addEventListener('pointermove',event=>{
+        const rect=card.getBoundingClientRect();
+        const x=Math.max(0,Math.min(1,(event.clientX-rect.left)/Math.max(1,rect.width)));
+        const y=Math.max(0,Math.min(1,(event.clientY-rect.top)/Math.max(1,rect.height)));
+        card.style.setProperty('--mx',(x*100).toFixed(2)+'%');
+        card.style.setProperty('--my',(y*100).toFixed(2)+'%');
+        card.style.setProperty('--card-rx',((.5-y)*8).toFixed(2)+'deg');
+        card.style.setProperty('--card-ry',((x-.5)*10).toFixed(2)+'deg');
+        card.classList.add('talha-card-hover');
+      },{passive:true});
+      card.addEventListener('pointerleave',()=>reset(card),{passive:true});
+      card.addEventListener('blur',()=>reset(card),{passive:true});
+    });
+  }
+  bind();
+  const grid=document.getElementById('membersGrid');
+  if(grid)new MutationObserver(bind).observe(grid,{childList:true,subtree:true});
 })();
 </script>
 </body>
