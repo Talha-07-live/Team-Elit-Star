@@ -508,7 +508,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
 <script>
 const SUPABASE_URL=window.TEAM_ELITE_SUPABASE_CONFIG?.url||"YOUR_SUPABASE_PROJECT_URL";
 const SUPABASE_ANON_KEY=window.TEAM_ELITE_SUPABASE_CONFIG?.key||"YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY";
-const AI_WORKER_URL=String(window.TEAM_ELITE_SUPABASE_CONFIG?.workerUrl||"").replace(/\/$/,"");
+const AI_WORKER_URL="https://elitestarai.mirrorleechbot202.workers.dev";
 const {createClient}=supabase;
 const db=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 
