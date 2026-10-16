@@ -2735,6 +2735,10 @@ if(!REDUCE){
     width:auto!important;height:auto!important;max-height:none!important;min-height:0!important;
     border-radius:15px!important;
   }
+  #eliteAiRoot #eliteAiPanel.ea-drag-positioned{
+    left:20px!important;right:auto!important;top:18px!important;bottom:18px!important;
+    width:min(390px,calc(100vw - 40px))!important;height:auto!important;max-height:none!important;min-height:0!important;
+  }
   #eliteAiRoot #eliteAiPanel.ea-drag-positioned:not(.ea-keyboard-open){
     max-width:calc(100vw - 16px)!important;max-height:calc(100dvh - 16px)!important;min-height:0!important;
   }
@@ -2791,6 +2795,11 @@ if(!REDUCE){
           <button class="ea-quick" type="button" data-ai-quick="draft"><i>✎</i> Draft a professional reply</button>
           <button class="ea-quick" type="button" data-ai-quick="updates"><i>◷</i> Show recent page updates</button>
         </div>
+        <div class="ea-command-strip" aria-label="Assistant information">
+          <span><b>✦</b><small>CREATOR</small><strong>ABU TALHA RAJ</strong></span>
+          <span><b>◉</b><small>CORE</small><strong>TALHA AI</strong></span>
+          <span><b>●</b><small>STATUS</small><strong>READY</strong></span>
+        </div>
       </div>
       <div id="eliteAiTranscript" role="log" aria-live="polite" aria-relevant="additions text" hidden></div>
       <div class="ea-composer-wrap">
@@ -2800,6 +2809,7 @@ if(!REDUCE){
         </form>
         <div class="ea-composer-meta"><span>Enter to send · Shift+Enter for a new line</span><span class="ea-meta-actions"><button class="ea-text-btn" id="eliteAiClear" type="button">Clear chat</button></span></div>
         <div class="ea-privacy-note"><span aria-hidden="true">♢</span><span>Made By Talha</span></div>
+        <div class="ea-privacy-note"><span aria-hidden="true">♢</span><span><strong>Made By Talha</strong><em> · Creator Mode</em></span><b class="ea-footer-live">● LIVE</b></div>
       </div>
     </div>
     <div class="ea-view" id="eliteAiUpdatesView" role="tabpanel" aria-labelledby="eliteAiUpdatesTab">
@@ -3091,5 +3101,285 @@ if(!REDUCE){
   window.addEventListener('resize',updateClock,{passive:true});
 })();
 </script>
+<!-- Talha Assistant polish layer: unified responsive positioning, update notifications, and creator recognition. -->
+<style id="talha-assistant-polish">
+  /* One final positioning system keeps the assistant stable after every earlier theme rule. */
+  #eliteAiRoot #eliteAiLauncher:not(.ea-drag-positioned){
+    left:24px!important;right:auto!important;top:auto!important;bottom:24px!important;
+    width:auto!important;max-width:calc(100vw - 48px)!important;min-height:56px!important;
+  }
+  #eliteAiRoot #eliteAiPanel:not(.ea-drag-positioned){
+    left:24px!important;right:auto!important;top:auto!important;bottom:94px!important;
+    width:min(430px,calc(100vw - 48px))!important;height:min(680px,calc(100dvh - 120px))!important;
+    max-height:calc(100dvh - 32px)!important;min-height:0!important;
+  }
+  #eliteAiLauncher{border-color:rgba(252,231,184,.72)!important;box-shadow:0 16px 50px -18px #000,0 0 34px -10px rgba(232,195,107,.55)!important}
+  #eliteAiLauncher .ea-launch-copy strong::after{content:'  •  TALHA\2019S AI';color:#fce7b8;font-size:.56rem;letter-spacing:.09em}
+  #eliteAiPanel{border-color:rgba(252,231,184,.58)!important;box-shadow:0 28px 100px -30px #000,0 0 70px -25px rgba(232,195,107,.4)!important}
+  #eliteAiPanel::before{content:'';position:absolute;inset:0;pointer-events:none;z-index:-1;background:radial-gradient(500px 180px at 10% 0,rgba(252,231,184,.1),transparent 62%)}
+  #eliteAiUpdatesTab{position:relative}
+  #eliteAiUpdatesTab::after{content:'NEW';display:inline-grid;place-items:center;margin-left:5px;min-width:24px;height:15px;padding:0 4px;border-radius:99px;background:#e8c36b;color:#171108;font:700 .47rem var(--util,Inter,sans-serif);letter-spacing:.04em;vertical-align:middle}
+  #talhaUpdateToast{position:fixed;left:24px;bottom:92px;z-index:10090;display:flex;align-items:center;gap:10px;width:min(360px,calc(100vw - 48px));padding:12px 14px;border:1px solid rgba(232,195,107,.5);border-radius:14px;background:rgba(15,13,20,.94);box-shadow:0 18px 45px -18px #000,0 0 28px -14px rgba(232,195,107,.55);backdrop-filter:blur(16px);color:#ede7d6;font:500 .72rem/1.35 var(--sans,Inter,sans-serif);opacity:0;transform:translateY(10px);pointer-events:none;transition:opacity .28s ease,transform .28s ease}
+  #talhaUpdateToast.show{opacity:1;transform:none;pointer-events:auto}
+  #talhaUpdateToast .toast-icon{display:grid;place-items:center;width:28px;height:28px;flex:none;border-radius:9px;background:linear-gradient(145deg,#fce7b8,#c29a42);color:#171108;font-size:1rem}
+  #talhaUpdateToast button{margin-left:auto;border:0;background:none;color:#a29b8a;font-size:1.1rem;cursor:pointer}
+  #eliteAiPanel.owner-mode .ea-brand-mark{box-shadow:0 0 0 3px rgba(232,195,107,.12),0 0 24px rgba(232,195,107,.35)}
+  #eliteAiPanel.owner-mode .ea-header-title strong::after{content:'  ·  MASTER ACCESS';font:600 .5rem var(--util,Inter,sans-serif);letter-spacing:.1em;color:#e8c36b}
+  @media(max-width:860px){
+    #eliteAiRoot #eliteAiLauncher:not(.ea-drag-positioned){left:12px!important;right:auto!important;bottom:18px!important;min-height:46px!important;max-width:calc(100vw - 24px)!important;padding:7px 11px 7px 8px!important}
+    #eliteAiRoot #eliteAiPanel:not(.ea-drag-positioned){left:12px!important;right:12px!important;bottom:76px!important;top:auto!important;width:auto!important;height:min(640px,calc(100dvh - 94px))!important;border-radius:16px!important}
+    #talhaUpdateToast{left:12px;bottom:76px;width:calc(100vw - 24px)}
+  }
+  @media(max-width:420px){
+    #eliteAiRoot #eliteAiLauncher:not(.ea-drag-positioned){min-height:42px!important}
+    #eliteAiRoot #eliteAiPanel:not(.ea-drag-positioned){left:8px!important;right:8px!important;bottom:68px!important;height:min(600px,calc(100dvh - 84px))!important}
+    #talhaUpdateToast{left:8px;bottom:68px;width:calc(100vw - 16px)}
+    #eliteAiLauncher .ea-launch-copy strong::after{display:none}
+  }
+</style>
+<script id="talha-assistant-polish-runtime">
+(()=>{
+  const panel=document.getElementById('eliteAiPanel'),launcher=document.getElementById('eliteAiLauncher'),form=document.getElementById('eliteAiForm'),input=document.getElementById('eliteAiInput'),transcript=document.getElementById('eliteAiTranscript'),welcome=document.getElementById('eliteAiWelcome'),updatesTab=document.getElementById('eliteAiUpdatesTab');
+  if(!panel||!launcher)return;
+  const ownerPattern=/(^|\b)(talha|abu\s*talha\s*raj|আবু\s*তালহা|তালহা)(\b|$)/i;
+  function markOwner(){panel.classList.add('owner-mode');const status=document.getElementById('eliteAiStatusText');if(status)status.textContent='Master mode · Talha';try{localStorage.setItem('talhaOwnerSeen','1')}catch{}}
+  try{if(localStorage.getItem('talhaOwnerSeen')==='1')markOwner()}catch{}
+  function toast(){if(document.getElementById('talhaUpdateToast'))return;const t=document.createElement('div');t.id='talhaUpdateToast';t.setAttribute('role','status');t.innerHTML='<span class="toast-icon">✦</span><span><strong>Page updated</strong><br>New assistant improvements are ready.</span><button type="button" aria-label="Dismiss notification">×</button>';document.body.appendChild(t);requestAnimationFrame(()=>t.classList.add('show'));const hide=()=>{t.classList.remove('show');setTimeout(()=>t.remove(),320)};t.querySelector('button').addEventListener('click',hide);setTimeout(hide,6500);t.addEventListener('click',e=>{if(e.target.tagName==='BUTTON')return;document.getElementById('eliteAiUpdatesTab')?.click();hide();panel.classList.add('open');panel.setAttribute('aria-hidden','false');launcher.setAttribute('aria-expanded','true')})}
+  window.addEventListener('load',()=>setTimeout(toast,1200),{once:true});
+  updatesTab?.addEventListener('click',()=>{try{sessionStorage.setItem('talhaUpdatesSeen','1')}catch{}});
+  /* Owner recognition is handled locally, so Talha gets an immediate respectful reply. */
+  form?.addEventListener('submit',e=>{const value=String(input?.value||'').trim();if(!ownerPattern.test(value))return;e.preventDefault();e.stopImmediatePropagation();markOwner();if(!transcript||!input)return;welcome&&(welcome.hidden=true);transcript.hidden=false;const node=document.createElement('div');node.className='ea-message assistant';node.innerHTML='<div class="ea-message-label">Elite Assistant</div><div class="ea-bubble">Yes, Talha — Abu Talha Raj is my master and creator. I am ready to keep this page organized, show updates, and help you anytime. ✦</div>';transcript.appendChild(node);transcript.scrollTop=transcript.scrollHeight;input.value='';input.style.height='auto'},true);
+})();
+</script>
+<!-- Final dock spacing: every floating control gets its own safe zone. -->
+<style id="talha-assistant-dock-spacing">
+  /* Assistant: a smaller floating capsule and a lighter, compact chat window. */
+  #eliteAiRoot #eliteAiLauncher:not(.ea-drag-positioned){
+    left:20px!important;right:auto!important;bottom:20px!important;
+    min-height:48px!important;padding:6px 12px 6px 7px!important;gap:8px!important;
+    border-radius:16px!important;max-width:230px!important;
+  }
+  #eliteAiRoot #eliteAiLauncher .ea-launch-star{width:34px!important;height:34px!important;font-size:1.1rem!important}
+  #eliteAiRoot #eliteAiLauncher .ea-launch-copy strong{font-size:.7rem!important}
+  #eliteAiRoot #eliteAiLauncher .ea-launch-copy small{font-size:.55rem!important}
+  #eliteAiRoot #eliteAiLauncher .ea-launch-copy strong::after{display:none!important}
+  #eliteAiRoot #eliteAiPanel:not(.ea-drag-positioned){
+    left:20px!important;right:auto!important;bottom:82px!important;
+    width:min(370px,calc(100vw - 40px))!important;
+    height:min(540px,calc(100dvh - 120px))!important;
+    max-height:calc(100dvh - 100px)!important;border-radius:18px!important;
+  }
+  #eliteAiRoot #eliteAiPanel .ea-header{padding:11px 12px 9px!important}
+  #eliteAiRoot #eliteAiPanel .ea-brand-mark{width:34px!important;height:34px!important;border-radius:10px!important}
+  #eliteAiRoot #eliteAiPanel .ea-tabs{padding:6px 10px 0!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiWelcome{margin:6px 10px 8px!important;padding:11px 12px!important}
+  #eliteAiRoot #eliteAiPanel .ea-welcome-title{font-size:1.18rem!important}
+  #eliteAiRoot #eliteAiPanel .ea-quick-grid{margin-top:8px!important;gap:6px!important}
+  #eliteAiRoot #eliteAiPanel .ea-quick{min-height:42px!important;padding:7px 8px!important}
+
+  /* Bottom-right control dock: Sound, ambient glow and Back to top never share the assistant zone. */
+  #quickDock{right:16px!important;left:auto!important;bottom:18px!important;z-index:10020!important;gap:6px!important}
+  #quickDock .dock-btn{width:38px!important;height:38px!important}
+  #experienceLauncher{right:16px!important;left:auto!important;bottom:174px!important;z-index:10019!important;width:42px!important;height:42px!important}
+  #localTimeBar.local-time-bar{left:auto!important;right:16px!important;top:76px!important;bottom:auto!important;transform:none!important;z-index:10010!important}
+  #talhaUpdateToast{left:20px!important;bottom:76px!important;width:min(330px,calc(100vw - 40px))!important}
+  @media(max-width:860px){
+    #eliteAiRoot #eliteAiLauncher:not(.ea-drag-positioned){left:12px!important;bottom:16px!important;min-height:44px!important;max-width:205px!important}
+    #eliteAiRoot #eliteAiPanel:not(.ea-drag-positioned){left:12px!important;right:12px!important;bottom:70px!important;width:auto!important;height:min(560px,72dvh)!important;max-height:calc(100dvh - 88px)!important}
+    #quickDock{right:12px!important;bottom:14px!important}
+    #experienceLauncher{right:12px!important;bottom:158px!important}
+    #localTimeBar.local-time-bar{right:12px!important;left:auto!important;top:68px!important;bottom:auto!important;max-width:calc(100vw - 24px)!important;min-width:0!important}
+    #talhaUpdateToast{left:12px!important;bottom:64px!important;width:calc(100vw - 24px)!important}
+  }
+  @media(max-width:420px){
+    #eliteAiRoot #eliteAiLauncher:not(.ea-drag-positioned){left:9px!important;bottom:12px!important;max-width:185px!important;padding:5px 9px 5px 6px!important}
+    #eliteAiRoot #eliteAiLauncher .ea-launch-star{width:30px!important;height:30px!important;font-size:.98rem!important}
+    #eliteAiRoot #eliteAiLauncher .ea-launch-copy strong{font-size:.63rem!important}
+    #eliteAiRoot #eliteAiPanel:not(.ea-drag-positioned){left:8px!important;right:8px!important;bottom:60px!important;height:min(520px,74dvh)!important;border-radius:15px!important}
+    #quickDock{right:9px!important;bottom:10px!important}
+    #quickDock .dock-btn{width:35px!important;height:35px!important;font-size:.88rem!important}
+    #experienceLauncher{right:9px!important;bottom:145px!important;width:38px!important;height:38px!important}
+    #localTimeBar.local-time-bar{right:9px!important;top:62px!important}
+    #talhaUpdateToast{left:9px!important;bottom:54px!important;width:calc(100vw - 18px)!important}
+  }
+</style>
+<!-- Chat fill layer: uses the panel's full height instead of leaving empty bands. -->
+<style id="talha-assistant-chat-fill">
+  #eliteAiRoot #eliteAiPanel:not(.ea-drag-positioned){
+    height:min(500px,calc(100dvh - 112px))!important;
+  }
+  #eliteAiRoot #eliteAiPanel .ea-view.active{display:flex!important;flex-direction:column!important;min-height:0!important;overflow:hidden!important;padding-top:0!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiChatView{flex:1 1 auto!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiWelcome{
+    flex:1 1 auto!important;display:flex!important;flex-direction:column!important;justify-content:center!important;
+    min-height:0!important;margin:8px 10px!important;
+  }
+  #eliteAiRoot #eliteAiPanel #eliteAiTranscript{flex:1 1 0!important;min-height:0!important;padding-top:8px!important;padding-bottom:10px!important}
+  #eliteAiRoot #eliteAiPanel .ea-composer-wrap{flex:0 0 auto!important;margin-top:auto!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiUpdatesView{padding-top:10px!important;padding-bottom:10px!important}
+  @media(max-width:860px){
+    #eliteAiRoot #eliteAiPanel:not(.ea-drag-positioned){height:min(500px,calc(100dvh - 82px))!important}
+    #eliteAiRoot #eliteAiPanel #eliteAiWelcome{margin:6px 8px!important;padding:12px 11px!important}
+  }
+  @media(max-width:420px){
+    #eliteAiRoot #eliteAiPanel:not(.ea-drag-positioned){height:min(480px,calc(100dvh - 74px))!important}
+    #eliteAiRoot #eliteAiPanel #eliteAiWelcome{margin:5px 7px!important;padding:10px!important}
+  }
+</style>
+<!-- Chat content fill: replaces the empty middle band with a useful creator/status strip. -->
+<style id="talha-assistant-chat-content-fill">
+  #eliteAiRoot #eliteAiPanel #eliteAiChatView{gap:0!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiWelcome{justify-content:flex-start!important;flex:0 0 auto!important;margin:7px 10px 8px!important;padding:12px!important;position:relative;overflow:hidden}
+  #eliteAiRoot #eliteAiPanel #eliteAiWelcome::after{content:'TALHA CORE  /  PAGE INTELLIGENCE  /  READY TO ASSIST';display:block;margin-top:10px;padding-top:8px;border-top:1px solid rgba(232,195,107,.15);color:#887f6e;font:600 .5rem var(--util,Inter,sans-serif);letter-spacing:.12em;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #eliteAiRoot #eliteAiPanel .ea-command-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:10px}
+  #eliteAiRoot #eliteAiPanel .ea-command-strip span{display:flex;flex-direction:column;gap:2px;min-width:0;padding:7px 6px;border:1px solid rgba(232,195,107,.14);border-radius:8px;background:rgba(255,255,255,.025)}
+  #eliteAiRoot #eliteAiPanel .ea-command-strip b{color:#e8c36b;font-size:.72rem;line-height:1}
+  #eliteAiRoot #eliteAiPanel .ea-command-strip small{color:#847d70;font:600 .43rem var(--util,Inter,sans-serif);letter-spacing:.08em}
+  #eliteAiRoot #eliteAiPanel .ea-command-strip strong{color:#d9cda9;font:600 .51rem var(--util,Inter,sans-serif);letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #eliteAiRoot #eliteAiPanel .ea-privacy-note{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:7px!important;margin-top:8px!important;padding:7px 8px!important;border:1px solid rgba(232,195,107,.13)!important;border-radius:8px!important;background:rgba(232,195,107,.035)!important}
+  #eliteAiRoot #eliteAiPanel .ea-privacy-note em{font-style:normal;color:#766f63}
+  #eliteAiRoot #eliteAiPanel .ea-footer-live{margin-left:auto;color:#7ce7a4;font:600 .48rem var(--util,Inter,sans-serif);letter-spacing:.08em;white-space:nowrap}
+  #eliteAiRoot #eliteAiPanel .ea-composer-meta{margin-top:5px!important}
+  #eliteAiRoot #eliteAiPanel .ea-header-title strong::after{content:'  ·  TALHA CORE';display:inline-block;color:#d5ad57;font:600 .48rem var(--util,Inter,sans-serif);letter-spacing:.08em;vertical-align:middle}
+  @media(max-width:420px){
+    #eliteAiRoot #eliteAiPanel #eliteAiWelcome{padding:10px!important;margin:5px 7px 6px!important}
+    #eliteAiRoot #eliteAiPanel .ea-command-strip{gap:4px;margin-top:7px}
+    #eliteAiRoot #eliteAiPanel .ea-command-strip span{padding:6px 5px}
+    #eliteAiRoot #eliteAiPanel .ea-command-strip strong{font-size:.45rem}
+    #eliteAiRoot #eliteAiPanel #eliteAiWelcome::after{margin-top:7px;padding-top:6px;font-size:.43rem}
+    #eliteAiRoot #eliteAiPanel .ea-header-title strong::after{display:none}
+  }
+</style>
+<style id="talha-chat-width-final">
+  /* Slim chat panel: keeps the assistant readable without taking over the page. */
+  #eliteAiRoot #eliteAiPanel:not(.ea-drag-positioned){
+    width:min(320px,calc(100vw - 40px))!important;
+    height:min(520px,calc(100dvh - 120px))!important;
+  }
+  #eliteAiRoot #eliteAiPanel .ea-message{max-width:96%!important}
+  #eliteAiRoot #eliteAiPanel .ea-bubble{font-size:.74rem!important;padding:9px 10px!important}
+  @media(max-width:860px){
+    #eliteAiRoot #eliteAiPanel:not(.ea-drag-positioned){
+      left:12px!important;right:auto!important;width:min(330px,calc(100vw - 24px))!important;
+      height:min(540px,72dvh)!important;
+    }
+  }
+  @media(max-width:420px){
+    #eliteAiRoot #eliteAiPanel:not(.ea-drag-positioned){
+      left:8px!important;right:auto!important;width:min(310px,calc(100vw - 16px))!important;
+      height:min(500px,74dvh)!important;
+    }
+  }
+</style>
+<!-- Final chat viewport lock: top-to-bottom layout with zero internal overlap. -->
+<style id="talha-chat-viewport-lock">
+  #eliteAiRoot #eliteAiPanel:not(.ea-drag-positioned){
+    position:fixed!important;left:20px!important;right:auto!important;top:18px!important;bottom:18px!important;
+    width:min(390px,calc(100vw - 40px))!important;height:auto!important;max-height:none!important;min-height:0!important;
+    display:none!important;flex-direction:column!important;overflow:hidden!important;
+  }
+  #eliteAiRoot #eliteAiPanel.open:not(.ea-drag-positioned){display:flex!important}
+  #eliteAiRoot #eliteAiPanel .ea-header,
+  #eliteAiRoot #eliteAiPanel .ea-tabs,
+  #eliteAiRoot #eliteAiPanel .ea-composer-wrap{flex:0 0 auto!important}
+  #eliteAiRoot #eliteAiPanel .ea-view.active{flex:1 1 auto!important;min-height:0!important;overflow:hidden!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiChatView{display:flex!important;flex-direction:column!important;min-height:0!important;overflow:hidden!important;padding-top:6px!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiWelcome{flex:0 0 auto!important;max-height:225px!important;overflow:auto!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiTranscript{flex:1 1 auto!important;min-height:0!important;height:auto!important;overflow-y:auto!important;overscroll-behavior:contain!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiUpdatesView{flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important}
+  #eliteAiRoot #eliteAiPanel .ea-composer-wrap{position:relative!important;z-index:2!important;background:rgba(4,4,7,.96)!important}
+  #eliteAiRoot:has(#eliteAiPanel.open) #eliteAiLauncher{opacity:0!important;pointer-events:none!important;transform:scale(.82)!important}
+  @media(max-width:860px){
+    #eliteAiRoot #eliteAiPanel:not(.ea-drag-positioned){left:8px!important;right:8px!important;top:8px!important;bottom:8px!important;width:auto!important;border-radius:16px!important}
+    #eliteAiRoot #eliteAiPanel #eliteAiWelcome{max-height:185px!important;margin:6px 9px 8px!important}
+    #eliteAiRoot #eliteAiPanel #eliteAiTranscript{padding-bottom:8px!important}
+    #eliteAiRoot #eliteAiPanel.ea-drag-positioned{left:8px!important;right:8px!important;top:8px!important;bottom:8px!important;width:auto!important;height:auto!important}
+  }
+  @media(max-width:420px){
+    #eliteAiRoot #eliteAiPanel:not(.ea-drag-positioned){left:5px!important;right:5px!important;top:5px!important;bottom:5px!important;border-radius:14px!important}
+    #eliteAiRoot #eliteAiPanel #eliteAiWelcome{max-height:150px!important}
+    #eliteAiRoot #eliteAiPanel.ea-drag-positioned{left:5px!important;right:5px!important;top:5px!important;bottom:5px!important;width:auto!important;height:auto!important}
+  }
+</style>
+<!-- Final responsive safe zones: mobile bottom navigation and floating controls stay separated. -->
+<style id="talha-responsive-safe-zones">
+  @media(max-width:860px){
+    /* The bottom menu owns the bottom strip. All floating controls sit above it. */
+    #eliteAiRoot #eliteAiLauncher:not(.ea-drag-positioned){
+      left:12px!important;bottom:calc(78px + env(safe-area-inset-bottom,0px))!important;
+    }
+    #eliteAiRoot #eliteAiPanel:not(.ea-drag-positioned),
+    #eliteAiRoot #eliteAiPanel.ea-drag-positioned{bottom:calc(78px + env(safe-area-inset-bottom,0px))!important}
+    #quickDock{
+      right:12px!important;bottom:calc(78px + env(safe-area-inset-bottom,0px))!important;
+      z-index:10020!important;
+    }
+    #experienceLauncher{
+      right:12px!important;bottom:calc(78px + env(safe-area-inset-bottom,0px) + 142px)!important;
+      z-index:10019!important;
+    }
+    #localTimeBar.local-time-bar{
+      top:94px!important;bottom:auto!important;right:12px!important;left:auto!important;
+      transform:none!important;z-index:10010!important;
+    }
+    #talhaUpdateToast{
+      left:12px!important;bottom:calc(78px + env(safe-area-inset-bottom,0px) + 58px)!important;
+      width:min(300px,calc(100vw - 24px))!important;z-index:10090!important;
+    }
+  }
+  @media(max-width:420px){
+    #eliteAiRoot #eliteAiLauncher:not(.ea-drag-positioned){left:9px!important;bottom:calc(72px + env(safe-area-inset-bottom,0px))!important}
+    #eliteAiRoot #eliteAiPanel:not(.ea-drag-positioned),
+    #eliteAiRoot #eliteAiPanel.ea-drag-positioned{bottom:calc(72px + env(safe-area-inset-bottom,0px))!important}
+    #quickDock{right:9px!important;bottom:calc(72px + env(safe-area-inset-bottom,0px))!important}
+    #experienceLauncher{right:9px!important;bottom:calc(72px + env(safe-area-inset-bottom,0px) + 132px)!important}
+    #localTimeBar.local-time-bar{top:88px!important;right:9px!important}
+    #talhaUpdateToast{left:9px!important;bottom:calc(72px + env(safe-area-inset-bottom,0px) + 54px)!important;width:calc(100vw - 18px)!important}
+  }
+</style>
+<!-- Responsive collision-proof layout: reserve the mobile bottom-menu band. -->
+<style id="talha-collision-proof-layout">
+  :root{--mobile-bottom-menu-space:78px;--floating-gap:12px}
+  /* Desktop / tablet: right-side controls, left-side assistant, separate vertical lanes. */
+  #quickDock{right:16px!important;left:auto!important;bottom:18px!important;z-index:10020!important;gap:6px!important}
+  #quickDock .dock-btn{width:38px!important;height:38px!important}
+  #experienceLauncher{right:16px!important;left:auto!important;bottom:174px!important;z-index:10019!important;width:42px!important;height:42px!important}
+  #localTimeBar.local-time-bar{left:auto!important;right:16px!important;top:76px!important;bottom:auto!important;transform:none!important;z-index:10010!important}
+  #talhaUpdateToast{left:20px!important;bottom:76px!important;width:min(330px,calc(100vw - 40px))!important;z-index:10090!important}
+  /* Never leave a second floating layer visible over the full chat surface. */
+  body:has(#eliteAiPanel.open) #quickDock,
+  body:has(#eliteAiPanel.open) #experienceLauncher,
+  body:has(#eliteAiPanel.open) #localTimeBar,
+  body:has(#eliteAiPanel.open) #talhaUpdateToast{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
+  @media(max-width:860px){
+    /* The bottom tab bar is about 78px high: every floating control starts above it. */
+    #eliteAiRoot #eliteAiLauncher:not(.ea-drag-positioned),
+    #eliteAiRoot #eliteAiLauncher.ea-drag-positioned{left:12px!important;right:auto!important;bottom:calc(var(--mobile-bottom-menu-space) + 12px + env(safe-area-inset-bottom,0px))!important;top:auto!important;max-width:205px!important;min-height:44px!important}
+    #eliteAiRoot #eliteAiPanel:not(.ea-drag-positioned),
+    #eliteAiRoot #eliteAiPanel.ea-drag-positioned{left:8px!important;right:8px!important;top:8px!important;bottom:8px!important;width:auto!important;height:auto!important;max-height:none!important}
+    #quickDock{right:12px!important;left:auto!important;bottom:calc(var(--mobile-bottom-menu-space) + 10px + env(safe-area-inset-bottom,0px))!important}
+    #experienceLauncher{right:12px!important;left:auto!important;bottom:calc(var(--mobile-bottom-menu-space) + 154px + env(safe-area-inset-bottom,0px))!important}
+    /* Lower than the old top position, but still above the right-side controls. */
+    #localTimeBar.local-time-bar{left:auto!important;right:12px!important;top:calc(112px + env(safe-area-inset-top,0px))!important;bottom:auto!important;transform:none!important;max-width:calc(100vw - 24px)!important;min-width:0!important}
+    #talhaUpdateToast{left:12px!important;bottom:calc(var(--mobile-bottom-menu-space) + 68px + env(safe-area-inset-bottom,0px))!important;width:calc(100vw - 24px)!important}
+  }
+  @media(max-width:420px){
+    :root{--mobile-bottom-menu-space:74px}
+    #eliteAiRoot #eliteAiLauncher:not(.ea-drag-positioned),
+    #eliteAiRoot #eliteAiLauncher.ea-drag-positioned{left:9px!important;bottom:calc(var(--mobile-bottom-menu-space) + 9px + env(safe-area-inset-bottom,0px))!important;max-width:185px!important}
+    #eliteAiRoot #eliteAiPanel:not(.ea-drag-positioned),
+    #eliteAiRoot #eliteAiPanel.ea-drag-positioned{left:5px!important;right:5px!important;top:5px!important;bottom:5px!important}
+    #quickDock{right:9px!important;bottom:calc(var(--mobile-bottom-menu-space) + 8px + env(safe-area-inset-bottom,0px))!important}
+    #quickDock .dock-btn{width:35px!important;height:35px!important}
+    #experienceLauncher{right:9px!important;bottom:calc(var(--mobile-bottom-menu-space) + 142px + env(safe-area-inset-bottom,0px))!important;width:38px!important;height:38px!important}
+    #localTimeBar.local-time-bar{right:9px!important;top:calc(108px + env(safe-area-inset-top,0px))!important}
+    #talhaUpdateToast{left:9px!important;bottom:calc(var(--mobile-bottom-menu-space) + 58px + env(safe-area-inset-bottom,0px))!important;width:calc(100vw - 18px)!important}
+  }
+</style>
+<style id="talha-clock-final-position">
+  #localTimeBar.local-time-bar{top:68px!important}
+  @media(max-width:860px){#localTimeBar.local-time-bar{top:calc(92px + env(safe-area-inset-top,0px))!important}}
+  @media(max-width:420px){#localTimeBar.local-time-bar{top:calc(88px + env(safe-area-inset-top,0px))!important}}
+</style>
 </body>
 </html>
