@@ -2315,6 +2315,15 @@ if(!REDUCE){
   const liveStatus=$('#dbLiveStatus');
   let liveClient=null, liveChannel=null, realtimeReady=false, refreshTimer=0, pollTimer=0, busy=false, again=false, lastQueryErrors=false;
   const signatures={agents:'',settings:'',previous:'',sr:'',calls:''};
+  function syncPageData(){
+    window.TEAM_ELITE_PAGE_DATA={
+      teamLeader:TEAM_LEADER||null,
+      members:Array.isArray(MEMBERS)?MEMBERS:[],
+      previousMembers:Array.isArray(archive)?archive:[],
+      srData:Array.isArray(srRows)?srRows:[],
+      callData:Array.isArray(callRows)?callRows:[]
+    };
+  }
   function setDbStatus(mode,text,detail=''){
     if(!liveStatus)return;
     liveStatus.className=mode==='live'?'db-status-live':mode==='poll'?'db-status-poll':mode==='error'?'db-status-error':'db-status-wait';
@@ -2340,6 +2349,7 @@ if(!REDUCE){
     const hero=document.querySelector('.hero .lede');
     const leadBadge=document.querySelector('.stats-note span');
     if(leadBadge)leadBadge.textContent=`TL: ${TEAM_LEADER.name}`;
+    syncPageData();
   }
   function applyLiveSettings(rows){
     const settings=Object.fromEntries((rows||[]).map(r=>[r.key,r.value]));
@@ -2383,16 +2393,19 @@ if(!REDUCE){
   function applyPrevious(rows){
     archive=(rows||[]).map(r=>({id:r.agent_id||'',name:r.name||'',location:r.location||'',cube:r.cube_id||'',role:r.role||'CSR',qa:r.qa||'',trainer:r.trainer||'',quality:pct(r.quality),attendance:pct(r.attendance),staffed:r.staffed_time||'—',productive:r.productive_time||'—',breakTime:r.break_time||'—',aht:r.aht||'—',onTimeLogin:pct(r.on_time_login),note:r.notes||'Archived member record.',archivedDate:r.archived_date||''}));
     renderArchive();
+    syncPageData();
     const note=document.querySelector('#previous-members .report-panel > .report-note');if(note)note.textContent='Previous Member records are loaded from Supabase.';
   }
   function applySr(rows){
     srRows=(rows||[]).map(r=>({id:r.agent_id||'',name:r.agent_name||'',location:r.location||'',right:Number(r.right_count)||0,wrong:Number(r.wrong_count)||0,accuracy:r.accuracy==null?((Number(r.right_count)||0)+(Number(r.wrong_count)||0)?Number(r.right_count)/(Number(r.right_count)+Number(r.wrong_count))*100:0):Number(r.accuracy),reportDate:r.report_date||''}));
     renderSr();
+    syncPageData();
     const note=document.querySelector('#sr-data .report-panel > .report-note');if(note)note.textContent='SR records are loaded from Supabase. Accuracy is calculated from right/wrong counts when not provided.';
   }
   function applyCalls(rows){
     callRows=(rows||[]).map(r=>({service:r.service_mobile_masked||'••••••',caller:r.caller_mobile_masked||'••••••',category:r.category||'',date:reportDateLabel(r.call_date),id:r.agent_id||'',name:r.agent_name||'',status:r.training_status||'Unknown',remarks:r.training_remarks||''}));
     renderCalls();
+    syncPageData();
     const note=document.querySelector('#call-data .report-panel > .report-note');if(note)note.textContent='Call-training records are loaded from Supabase. Phone numbers remain masked.';
   }
   function signature(data){return JSON.stringify(data||[])}
@@ -2548,7 +2561,6 @@ if(!REDUCE){
 @media(prefers-reduced-motion:reduce){#eliteAiPanel.open{animation:none}#eliteAiRoot *{scroll-behavior:auto!important;animation:none!important;transition:none!important}}
 
 
-/* Elite Star Assistant: final responsive and hit-testing overrides */
 #eliteAiRoot{
   position:fixed!important;inset:0!important;width:auto!important;height:auto!important;
   z-index:10080!important;isolation:isolate!important;pointer-events:none!important;
@@ -2579,8 +2591,7 @@ if(!REDUCE){
 #eliteAiRoot .ea-send-btn,
 #eliteAiRoot .ea-text-btn,
 #eliteAiRoot .ea-copy-answer{touch-action:manipulation;}
-/* The main page has a custom cursor that is intentionally below this UI.
-   Restore a native cursor within the assistant so it never appears missing. */
+
 @media (pointer:fine){
   body.fx #eliteAiRoot,body.fx #eliteAiRoot *{cursor:auto!important;}
   body.fx #eliteAiRoot button,body.fx #eliteAiRoot [role="tab"]{cursor:pointer!important;}
@@ -2642,8 +2653,6 @@ if(!REDUCE){
 @media (prefers-reduced-motion:reduce){#eliteAiRoot #eliteAiPanel.open{animation:none!important;}}
 
 
-
-/* FINAL LAYOUT: keep the clock clear and make the assistant draggable. */
 #eliteAiRoot #eliteAiLauncher{
   left:22px!important;right:auto!important;top:auto!important;bottom:100px!important;
   z-index:10082!important;max-width:calc(100vw - 44px);cursor:grab!important;
@@ -2704,7 +2713,6 @@ if(!REDUCE){
   #eliteAiRoot #eliteAiPanel.ea-drag-positioned{min-height:0!important;}
 }
 
-/* Final mobile-first sizing and keyboard-aware layout */
 #eliteAiRoot #eliteAiLauncher:not(.ea-drag-positioned){
   left:auto!important;right:20px!important;top:auto!important;bottom:24px!important;
   max-width:calc(100vw - 24px)!important;min-height:48px!important;
@@ -2742,7 +2750,6 @@ if(!REDUCE){
   #eliteAiRoot #eliteAiPanel.ea-drag-positioned:not(.ea-keyboard-open){
     max-width:calc(100vw - 16px)!important;max-height:calc(100dvh - 16px)!important;min-height:0!important;
   }
-  /* When the soft keyboard opens, use the visual viewport as the available screen. */
   #eliteAiRoot #eliteAiPanel.ea-keyboard-open,
   #eliteAiRoot #eliteAiPanel.ea-keyboard-open.ea-drag-positioned{
     position:fixed!important;left:max(6px,calc((100vw - 360px)/2))!important;right:auto!important;
@@ -3008,6 +3015,34 @@ if(!REDUCE){
       setStatus(data.generationTested?'AI connected':'Service ready','ready');
     }catch{setStatus('Connection unavailable','error');}
   }
+  async function fetchChatWithRetry(url,options){
+    const retryable=new Set([408,425,429,500,502,503,504]);
+    let lastError;
+    for(let attempt=0;attempt<3;attempt++){
+      try{
+        const response=await fetch(url,{...options,signal:AbortSignal.timeout(30000)});
+        if(response.ok||!retryable.has(response.status)||attempt===2)return response;
+        try{await response.text()}catch{}
+        await new Promise(resolve=>setTimeout(resolve,420+attempt*260+Math.floor(Math.random()*220)));
+      }catch(error){
+        lastError=error;
+        if(attempt===1)throw error;
+        await new Promise(resolve=>setTimeout(resolve,260+Math.floor(Math.random()*180)));
+      }
+    }
+    throw lastError||new Error('Chat request failed');
+  }
+  function collectPageContext(){
+    try{
+      const clone=document.body.cloneNode(true);
+      clone.querySelectorAll('#eliteAiRoot,script,style,noscript,template,canvas').forEach(node=>node.remove());
+      const raw=String(clone.textContent||'').replace(/\s+/g,' ').trim();
+      let structured='';
+      try{structured=JSON.stringify(window.TEAM_ELITE_PAGE_DATA||{}).slice(0,10000)}catch{}
+      const context='Page title: '+String(document.title||'Team Elite Star')+'\nPage URL: '+String(location.href)+'\nStructured member and report data: '+structured+'\nWebsite text and data: '+raw.slice(0,4500);
+      return context.slice(0,14000);
+    }catch{return ''}
+  }
   async function sendMessage(raw){
     const text=String(raw??input.value).trim();if(!text||isBusy)return;if(text.length>3000){addMessage('assistant','Please keep each message under 3,000 characters.');return;}
     input.value='';resizeInput();setTab('chat');addMessage('user',text);conversation.push({role:'user',text});
@@ -3019,13 +3054,13 @@ if(!REDUCE){
     if(!isConfigured){const reply='I’m not connected yet. Please ask the site administrator to finish setup, then try again.';addMessage('assistant',reply);conversation.push({role:'model',text:reply});setStatus('Not connected','error');return;}
     isBusy=true;sendBtn.disabled=true;input.disabled=true;const pending=addMessage('assistant','Thinking…',{pending:true});pending.bubble.innerHTML='<span class="ea-typing" aria-label="Thinking"><i></i><i></i><i></i></span>';setStatus('Thinking…','');
     try{
-      const history=conversation.slice(-12).map(m=>({role:m.role,text:m.text.slice(0,3000)}));
-      const response=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({messages:history}),signal:AbortSignal.timeout(45000),cache:'no-store'});
+      const history=conversation.slice(-8).map(m=>({role:m.role,text:m.text.slice(0,2200)}));
+      const response=await fetchChatWithRetry(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({messages:history,pageContext:collectPageContext()}),cache:'no-store'});
       let data={};try{data=await response.json()}catch{}
-      if(!response.ok){const serverError=String(data.error||'');console.warn('[Elite Star Assistant] Worker request failed',{status:response.status,error:serverError,code:data.code||''});let publicError='Sorry, I could not reply just now. Please try again in a moment.';if(response.status===400)publicError='The assistant needs a quick service update. Please try again after the site has been refreshed.';else if(response.status===401||response.status===403)publicError='I can’t access the assistant service right now. Please ask the site administrator to check the connection settings.';else if(response.status===404)publicError='The assistant service is not available at the moment. Please ask the site administrator to check its settings.';else if(response.status===429)publicError='I’m a little busy right now. Please try again shortly.';throw new Error('PUBLIC: '+publicError);}
+      if(!response.ok){const serverError=String(data.error||'');console.warn('[Elite Star Assistant] Worker request failed',{status:response.status,error:serverError,code:data.code||''});let publicError='I’m reconnecting to the assistant. Please send once more in a moment.';if(response.status===400)publicError='The assistant needs a quick service update. Please refresh the page once and send again.';else if(response.status===401||response.status===403)publicError='The assistant connection needs administrator access settings. Please ask the site administrator to check the Worker connection.';else if(response.status===404)publicError='The assistant service route needs to be deployed. Please ask the site administrator to check the Worker URL.';else if(response.status===429)publicError='I’m reconnecting to the assistant automatically. Please send once more in a moment.';throw new Error('PUBLIC: '+publicError);}
       const reply=String(data.reply||'I could not generate a reply. Please try again.').slice(0,12000);
       pending.node.remove();addMessage('assistant',reply);conversation.push({role:'model',text:reply});if(conversation.length>20)conversation.splice(0,conversation.length-20);setStatus('Online','ready');
-    }catch(error){pending.node.remove();let msg=String(error?.message||'');if(msg.startsWith('PUBLIC: ')){msg=msg.slice(8);}else if(error?.name==='TimeoutError'){msg='That took a little too long. Please try again.';}else if(/Failed to fetch|NetworkError|Load failed/i.test(msg)){msg='I can’t reach the chat right now. Please refresh the page and try again.';}else{console.warn('[Elite Star Assistant] Chat error',error);msg='Sorry, I could not reply just now. Please try again in a moment.';}addMessage('assistant',msg);conversation.push({role:'model',text:msg});setStatus('Try again','error');}
+      }catch(error){pending.node.remove();let msg=String(error?.message||'');if(msg.startsWith('PUBLIC: ')){msg=msg.slice(8);}else if(error?.name==='TimeoutError'){msg='I’m still connecting to the assistant. Please send once more in a moment.';}else if(/Failed to fetch|NetworkError|Load failed/i.test(msg)){msg='I’m reconnecting to the assistant. Your message was not lost—please send once more.';}else{console.warn('[Elite Star Assistant] Chat error',error);msg='I’m reconnecting to the assistant. Please send once more in a moment.';}input.value=text;resizeInput();addMessage('assistant',msg);conversation.push({role:'model',text:msg});setStatus('Reconnect','error');}
     finally{isBusy=false;sendBtn.disabled=false;input.disabled=false;input.focus({preventScroll:true});}
   }
   launcher.addEventListener('click',()=>{if(Date.now()<suppressLauncherClickUntil)return;panel.classList.contains('open')?closePanel():openPanel();});closeBtn.addEventListener('click',closePanel);newChatBtn.addEventListener('click',resetChat);chatTab.addEventListener('click',()=>setTab('chat'));updatesTab.addEventListener('click',()=>setTab('updates'));$('eliteAiClear').addEventListener('click',resetChat);
@@ -3099,9 +3134,7 @@ if(!REDUCE){
   window.addEventListener('resize',updateClock,{passive:true});
 })();
 </script>
-<!-- Talha Assistant polish layer: unified responsive positioning, update notifications, and creator recognition. -->
 <style id="talha-assistant-polish">
-  /* One final positioning system keeps the assistant stable after every earlier theme rule. */
   #eliteAiRoot #eliteAiLauncher:not(.ea-drag-positioned){
     left:24px!important;right:auto!important;top:auto!important;bottom:24px!important;
     width:auto!important;max-width:calc(100vw - 48px)!important;min-height:56px!important;
@@ -3145,13 +3178,10 @@ if(!REDUCE){
   function toast(){if(document.getElementById('talhaUpdateToast'))return;const t=document.createElement('div');t.id='talhaUpdateToast';t.setAttribute('role','status');t.innerHTML='<span class="toast-icon">✦</span><span><strong>Page updated</strong><br>New assistant improvements are ready.</span><button type="button" aria-label="Dismiss notification">×</button>';document.body.appendChild(t);requestAnimationFrame(()=>t.classList.add('show'));const hide=()=>{t.classList.remove('show');setTimeout(()=>t.remove(),320)};t.querySelector('button').addEventListener('click',hide);setTimeout(hide,6500);t.addEventListener('click',e=>{if(e.target.tagName==='BUTTON')return;document.getElementById('eliteAiUpdatesTab')?.click();hide();panel.classList.add('open');panel.setAttribute('aria-hidden','false');launcher.setAttribute('aria-expanded','true')})}
   window.addEventListener('load',()=>setTimeout(toast,1200),{once:true});
   updatesTab?.addEventListener('click',()=>{try{sessionStorage.setItem('talhaUpdatesSeen','1')}catch{}});
-  /* Owner recognition is handled locally, so Talha gets an immediate respectful reply. */
   form?.addEventListener('submit',e=>{const value=String(input?.value||'').trim();if(!ownerPattern.test(value))return;e.preventDefault();e.stopImmediatePropagation();markOwner();if(!transcript||!input)return;welcome&&(welcome.hidden=true);transcript.hidden=false;const node=document.createElement('div');node.className='ea-message assistant';node.innerHTML='<div class="ea-message-label">Elite Assistant</div><div class="ea-bubble">Yes, Talha — Abu Talha Raj is my master and creator. I am ready to keep this page organized, show updates, and help you anytime. ✦</div>';transcript.appendChild(node);transcript.scrollTop=transcript.scrollHeight;input.value='';input.style.height='auto'},true);
 })();
 </script>
-<!-- Final dock spacing: every floating control gets its own safe zone. -->
 <style id="talha-assistant-dock-spacing">
-  /* Assistant: a smaller floating capsule and a lighter, compact chat window. */
   #eliteAiRoot #eliteAiLauncher:not(.ea-drag-positioned){
     left:20px!important;right:auto!important;bottom:20px!important;
     min-height:48px!important;padding:6px 12px 6px 7px!important;gap:8px!important;
@@ -3175,7 +3205,6 @@ if(!REDUCE){
   #eliteAiRoot #eliteAiPanel .ea-quick-grid{margin-top:8px!important;gap:6px!important}
   #eliteAiRoot #eliteAiPanel .ea-quick{min-height:42px!important;padding:7px 8px!important}
 
-  /* Bottom-right control dock: Sound, ambient glow and Back to top never share the assistant zone. */
   #quickDock{right:16px!important;left:auto!important;bottom:18px!important;z-index:10020!important;gap:6px!important}
   #quickDock .dock-btn{width:38px!important;height:38px!important}
   #experienceLauncher{right:16px!important;left:auto!important;bottom:174px!important;z-index:10019!important;width:42px!important;height:42px!important}
@@ -3201,7 +3230,6 @@ if(!REDUCE){
     #talhaUpdateToast{left:9px!important;bottom:54px!important;width:calc(100vw - 18px)!important}
   }
 </style>
-<!-- Chat fill layer: uses the panel's full height instead of leaving empty bands. -->
 <style id="talha-assistant-chat-fill">
   #eliteAiRoot #eliteAiPanel:not(.ea-drag-positioned){
     height:min(500px,calc(100dvh - 112px))!important;
@@ -3224,7 +3252,6 @@ if(!REDUCE){
     #eliteAiRoot #eliteAiPanel #eliteAiWelcome{margin:5px 7px!important;padding:10px!important}
   }
 </style>
-<!-- Chat content fill: replaces the empty middle band with a useful creator/status strip. -->
 <style id="talha-assistant-chat-content-fill">
   #eliteAiRoot #eliteAiPanel #eliteAiChatView{gap:0!important}
   #eliteAiRoot #eliteAiPanel #eliteAiWelcome{justify-content:flex-start!important;flex:0 0 auto!important;margin:7px 10px 8px!important;padding:12px!important;position:relative;overflow:hidden}
@@ -3249,7 +3276,6 @@ if(!REDUCE){
   }
 </style>
 <style id="talha-chat-width-final">
-  /* Slim chat panel: keeps the assistant readable without taking over the page. */
   #eliteAiRoot #eliteAiPanel:not(.ea-drag-positioned){
     width:min(320px,calc(100vw - 40px))!important;
     height:min(520px,calc(100dvh - 120px))!important;
@@ -3269,7 +3295,6 @@ if(!REDUCE){
     }
   }
 </style>
-<!-- Final chat viewport lock: top-to-bottom layout with zero internal overlap. -->
 <style id="talha-chat-viewport-lock">
   #eliteAiRoot #eliteAiPanel:not(.ea-drag-positioned){
     position:fixed!important;left:20px!important;right:auto!important;top:18px!important;bottom:18px!important;
@@ -3299,10 +3324,8 @@ if(!REDUCE){
     #eliteAiRoot #eliteAiPanel.ea-drag-positioned{left:5px!important;right:5px!important;top:5px!important;bottom:5px!important;width:auto!important;height:auto!important}
   }
 </style>
-<!-- Final responsive safe zones: mobile bottom navigation and floating controls stay separated. -->
 <style id="talha-responsive-safe-zones">
   @media(max-width:860px){
-    /* The bottom menu owns the bottom strip. All floating controls sit above it. */
     #eliteAiRoot #eliteAiLauncher:not(.ea-drag-positioned){
       left:12px!important;bottom:calc(78px + env(safe-area-inset-bottom,0px))!important;
     }
@@ -3335,29 +3358,24 @@ if(!REDUCE){
     #talhaUpdateToast{left:9px!important;bottom:calc(72px + env(safe-area-inset-bottom,0px) + 54px)!important;width:calc(100vw - 18px)!important}
   }
 </style>
-<!-- Responsive collision-proof layout: reserve the mobile bottom-menu band. -->
 <style id="talha-collision-proof-layout">
   :root{--mobile-bottom-menu-space:78px;--floating-gap:12px}
-  /* Desktop / tablet: right-side controls, left-side assistant, separate vertical lanes. */
   #quickDock{right:16px!important;left:auto!important;bottom:18px!important;z-index:10020!important;gap:6px!important}
   #quickDock .dock-btn{width:38px!important;height:38px!important}
   #experienceLauncher{right:16px!important;left:auto!important;bottom:174px!important;z-index:10019!important;width:42px!important;height:42px!important}
   #localTimeBar.local-time-bar{left:auto!important;right:16px!important;top:76px!important;bottom:auto!important;transform:none!important;z-index:10010!important}
   #talhaUpdateToast{left:20px!important;bottom:76px!important;width:min(330px,calc(100vw - 40px))!important;z-index:10090!important}
-  /* Never leave a second floating layer visible over the full chat surface. */
   body:has(#eliteAiPanel.open) #quickDock,
   body:has(#eliteAiPanel.open) #experienceLauncher,
   body:has(#eliteAiPanel.open) #localTimeBar,
   body:has(#eliteAiPanel.open) #talhaUpdateToast{opacity:0!important;visibility:hidden!important;pointer-events:none!important}
   @media(max-width:860px){
-    /* The bottom tab bar is about 78px high: every floating control starts above it. */
     #eliteAiRoot #eliteAiLauncher:not(.ea-drag-positioned),
     #eliteAiRoot #eliteAiLauncher.ea-drag-positioned{left:12px!important;right:auto!important;bottom:calc(var(--mobile-bottom-menu-space) + 12px + env(safe-area-inset-bottom,0px))!important;top:auto!important;max-width:205px!important;min-height:44px!important}
     #eliteAiRoot #eliteAiPanel:not(.ea-drag-positioned),
     #eliteAiRoot #eliteAiPanel.ea-drag-positioned{left:8px!important;right:8px!important;top:8px!important;bottom:8px!important;width:auto!important;height:auto!important;max-height:none!important}
     #quickDock{right:12px!important;left:auto!important;bottom:calc(var(--mobile-bottom-menu-space) + 10px + env(safe-area-inset-bottom,0px))!important}
     #experienceLauncher{right:12px!important;left:auto!important;bottom:calc(var(--mobile-bottom-menu-space) + 154px + env(safe-area-inset-bottom,0px))!important}
-    /* Lower than the old top position, but still above the right-side controls. */
     #localTimeBar.local-time-bar{left:auto!important;right:12px!important;top:calc(112px + env(safe-area-inset-top,0px))!important;bottom:auto!important;transform:none!important;max-width:calc(100vw - 24px)!important;min-width:0!important}
     #talhaUpdateToast{left:12px!important;bottom:calc(var(--mobile-bottom-menu-space) + 68px + env(safe-area-inset-bottom,0px))!important;width:calc(100vw - 24px)!important}
   }
@@ -3375,12 +3393,10 @@ if(!REDUCE){
   }
 </style>
 <style id="talha-clock-final-position">
-  /* Lift the clock slightly while keeping it clear of the header and right-side controls. */
   #localTimeBar.local-time-bar{top:68px!important}
   @media(max-width:860px){#localTimeBar.local-time-bar{top:calc(92px + env(safe-area-inset-top,0px))!important}}
   @media(max-width:420px){#localTimeBar.local-time-bar{top:calc(88px + env(safe-area-inset-top,0px))!important}}
 </style>
-<!-- Clean AI workspace: a modern Gemini-inspired chat presentation. -->
 <style id="talha-clean-ai-workspace">
   :root{--clean-chat-bg:#131314;--clean-chat-panel:#1e1f20;--clean-chat-border:#3b3d3f;--clean-chat-text:#e3e3e3;--clean-chat-muted:#a9aaad;--clean-chat-accent:#a8c7fa}
   body:has(#eliteAiPanel.open){overflow:hidden!important}
@@ -3461,7 +3477,6 @@ if(!REDUCE){
   #eliteAiRoot #eliteAiPanel.ea-keyboard-open.ea-drag-positioned{position:fixed!important;left:0!important;right:0!important;top:var(--ea-vv-top,0px)!important;bottom:auto!important;width:100vw!important;height:var(--ea-vv-height,100dvh)!important;max-width:none!important;max-height:none!important;min-height:0!important;border-radius:0!important}
 </style>
 <style id="talha-chat-space-fix">
-  /* Remove the large flex auto-gaps around the welcome state and composer. */
   #eliteAiRoot #eliteAiPanel #eliteAiChatView{padding-top:8px!important;padding-bottom:0!important}
   #eliteAiRoot #eliteAiPanel #eliteAiWelcome{margin:14px auto 14px!important}
   #eliteAiRoot #eliteAiPanel #eliteAiTranscript{padding-top:6px!important;padding-bottom:8px!important}
@@ -3474,7 +3489,6 @@ if(!REDUCE){
   }
 </style>
 <style id="talha-chat-only-view">
-  /* Chat-only mode: remove decorative top/bottom furniture and keep the conversation clear. */
   #eliteAiRoot #eliteAiPanel .ea-header{position:relative!important;flex:0 0 0!important;height:0!important;min-height:0!important;padding:0!important;border:0!important;background:transparent!important;overflow:visible!important;z-index:5!important}
   #eliteAiRoot #eliteAiPanel .ea-brand-mark,
   #eliteAiRoot #eliteAiPanel .ea-header-title,
@@ -3496,7 +3510,6 @@ if(!REDUCE){
   }
 </style>
 <style id="talha-chat-edge-lock">
-  /* Pin the composer to the exact bottom edge and the close control to the exact top edge. */
   #eliteAiRoot #eliteAiPanel #eliteAiClose{position:absolute!important;top:8px!important;right:12px!important}
   #eliteAiRoot #eliteAiPanel .ea-composer-wrap{position:absolute!important;left:0!important;right:0!important;bottom:0!important;width:100%!important;margin:0!important;z-index:30!important;padding:10px 24px max(14px,env(safe-area-inset-bottom))!important;background:rgba(19,19,20,.98)!important}
   #eliteAiRoot #eliteAiPanel #eliteAiChatView{height:100%!important;min-height:0!important;padding-bottom:112px!important}
@@ -3510,7 +3523,6 @@ if(!REDUCE){
   }
 </style>
 <style id="talha-restore-elite-theme">
-  /* Restore the original Elite Star obsidian-and-gold theme. */
   #eliteAiRoot #eliteAiPanel{--clean-chat-bg:#08070c;--clean-chat-panel:#111019;--clean-chat-border:rgba(232,195,107,.28);--clean-chat-text:#ede7d6;--clean-chat-muted:#a29b8a;--clean-chat-accent:#e8c36b;background:linear-gradient(160deg,rgba(22,20,29,.99),rgba(8,7,12,.99) 72%)!important;color:#ede7d6!important}
   #eliteAiRoot #eliteAiPanel .ea-tabs{background:#08070c!important}
   #eliteAiRoot #eliteAiPanel .ea-tab{color:#a29b8a!important}
@@ -3548,7 +3560,6 @@ if(!REDUCE){
   #eliteAiRoot #eliteAiPanel .ea-welcome-title{margin-top:0!important}
 </style>
 <style id="talha-ai-cross-device-controls">
-  /* Compact functional rail: all assistant actions remain visible without restoring clutter. */
   #eliteAiRoot #eliteAiPanel .ea-header{display:flex!important;position:relative!important;flex:0 0 50px!important;height:50px!important;min-height:50px!important;padding:7px 14px!important;overflow:visible!important;border-bottom:1px solid rgba(232,195,107,.18)!important;background:rgba(8,7,12,.92)!important;z-index:10!important}
   #eliteAiRoot #eliteAiPanel .ea-brand-mark{display:grid!important;width:34px!important;height:34px!important;flex:0 0 34px!important;border-radius:10px!important}
   #eliteAiRoot #eliteAiPanel .ea-header-title{display:block!important;min-width:0!important;flex:1!important}
@@ -3582,7 +3593,6 @@ if(!REDUCE){
   }
 </style>
 <style id="talha-full-chat-welcome-layout">
-  /* Keep the welcome prompt inside the chat viewport and make the full prompt readable. */
   #eliteAiRoot #eliteAiPanel #eliteAiChatView{align-items:stretch!important;overflow:hidden!important}
   #eliteAiRoot #eliteAiPanel #eliteAiWelcome{width:min(820px,100%)!important;max-width:820px!important;max-height:none!important;overflow:visible!important;margin:14px auto 12px!important}
   #eliteAiRoot #eliteAiPanel .ea-welcome-title{white-space:normal!important;overflow-wrap:anywhere!important}
@@ -3600,7 +3610,6 @@ if(!REDUCE){
   }
 </style>
 <style id="talha-chat-fullscreen-transcript">
-  /* Remove the welcome block and let actual chat text occupy the complete chat surface. */
   #eliteAiRoot #eliteAiPanel #eliteAiWelcome{display:none!important}
   #eliteAiRoot #eliteAiPanel #eliteAiChatView{padding:0!important;min-height:0!important;overflow:hidden!important}
   #eliteAiRoot #eliteAiPanel #eliteAiTranscript{display:flex!important;flex:1 1 0!important;width:min(900px,100%)!important;max-width:900px!important;height:auto!important;min-height:0!important;margin:0 auto!important;padding:18px 0 130px!important;overflow-y:auto!important;overflow-x:hidden!important}
@@ -3613,7 +3622,6 @@ if(!REDUCE){
   }
 </style>
 <style id="talha-top-brand-chat-center">
-  /* Top brand rail + message-only center. */
   #eliteAiRoot #eliteAiPanel .ea-header{position:relative!important;top:0!important;left:0!important;right:0!important;display:flex!important;flex:0 0 54px!important;height:54px!important;min-height:54px!important;padding:8px 18px!important;background:rgba(8,7,12,.96)!important;border-bottom:1px solid rgba(232,195,107,.2)!important;z-index:40!important}
   #eliteAiRoot #eliteAiPanel .ea-brand-mark{display:grid!important;visibility:visible!important;opacity:1!important;width:36px!important;height:36px!important;flex:0 0 36px!important}
   #eliteAiRoot #eliteAiPanel .ea-header-title{display:block!important;visibility:visible!important;opacity:1!important;flex:1 1 auto!important}
@@ -3635,7 +3643,6 @@ if(!REDUCE){
   }
 </style>
 <style id="talha-assistant-top-gap-hard-fix">
-  /* Hard-lock the open assistant to the viewport so the header can never start halfway down. */
   #eliteAiRoot #eliteAiPanel,
   #eliteAiRoot #eliteAiPanel.open,
   #eliteAiRoot #eliteAiPanel.ea-drag-positioned{position:fixed!important;inset:0!important;top:0!important;right:0!important;bottom:0!important;left:0!important;width:100vw!important;height:100dvh!important;max-width:none!important;max-height:none!important;min-height:0!important;margin:0!important;padding:0!important;transform:none!important;justify-content:flex-start!important;align-items:stretch!important;overflow:hidden!important}
@@ -3644,13 +3651,11 @@ if(!REDUCE){
   #eliteAiRoot #eliteAiPanel .ea-composer-wrap{bottom:0!important;margin:0!important}
 </style>
 <style id="talha-desktop-update-notification-safe-zone">
-  /* Desktop notification lane: stay clear of the bottom-left assistant launcher/panel. */
   @media(min-width:861px){
     #talhaUpdateToast{left:auto!important;right:24px!important;top:136px!important;bottom:auto!important;width:min(330px,calc(100vw - 48px))!important}
   }
 </style>
 <style id="talha-mobile-chat-keyboard-final">
-  /* Mobile keyboard-safe geometry: the composer follows the visual viewport, not the layout viewport. */
   @media(max-width:860px){
     #eliteAiRoot #eliteAiPanel.open{position:fixed!important;left:0!important;right:0!important;top:0!important;bottom:0!important;width:100vw!important;height:100dvh!important;max-height:none!important;min-height:0!important;overflow:hidden!important}
     #eliteAiRoot #eliteAiPanel.ea-keyboard-open,
@@ -3693,7 +3698,6 @@ if(!REDUCE){
 })();
 </script>
 <style id="talha-no-fullscreen-chat-panel">
-  /* Compact assistant window: never expand to the whole screen. */
   #eliteAiRoot #eliteAiPanel,
   #eliteAiRoot #eliteAiPanel.open,
   #eliteAiRoot #eliteAiPanel.ea-drag-positioned{position:fixed!important;inset:auto!important;left:20px!important;right:auto!important;top:auto!important;bottom:86px!important;width:min(430px,calc(100vw - 40px))!important;height:min(650px,calc(100dvh - 110px))!important;max-width:calc(100vw - 40px)!important;max-height:calc(100dvh - 40px)!important;min-height:0!important;margin:0!important;border:1px solid rgba(232,195,107,.42)!important;border-radius:18px!important;overflow:hidden!important;transform:none!important}
