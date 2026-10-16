@@ -2974,12 +2974,50 @@ if(!REDUCE){
   function openPanel(){panel.classList.add('open');panel.setAttribute('aria-hidden','false');launcher.setAttribute('aria-expanded','true');requestAnimationFrame(()=>{if(!panel.classList.contains('ea-drag-positioned'))restorePanelPosition();});if(!hasCheckedHealth)checkHealth();setTimeout(()=>{if(!matchMedia('(max-width:860px)').matches)input.focus({preventScroll:true})},60);}
   function closePanel(){panel.classList.remove('open');panel.setAttribute('aria-hidden','true');launcher.setAttribute('aria-expanded','false');launcher.focus({preventScroll:true});}
   function scrollTranscript(){transcript.scrollTop=transcript.scrollHeight;}
+  function animateAssistantText(bubble,text){
+    const value=String(text??'');
+    const chars=Array.from(value);
+    bubble.classList.add('ea-typing-text');
+    bubble.setAttribute('aria-live','polite');
+    const copy=document.createElement('span');
+    copy.className='ea-typing-copy';
+    const cursor=document.createElement('span');
+    cursor.className='ea-type-cursor';
+    cursor.setAttribute('aria-hidden','true');
+    bubble.replaceChildren(copy,cursor);
+    const finish=()=>{
+      copy.textContent=value;
+      cursor.remove();
+      bubble.removeAttribute('aria-live');
+      bubble.classList.remove('ea-typing-text');
+    };
+    if(!chars.length||matchMedia('(prefers-reduced-motion: reduce)').matches){finish();return Promise.resolve();}
+    const length=chars.length;
+    const duration=length<=90?Math.max(700,length*13):length<=360?1450+(length-90)*2.5:length<=1000?2125+(length-360)*1.2:Math.min(4200,2893+Math.log(length/1000)*650);
+    const started=performance.now();
+    let shown=0;
+    return new Promise(resolve=>{
+      const frame=now=>{
+        const follow=transcript.scrollHeight-transcript.scrollTop-transcript.clientHeight<110;
+        const progress=Math.min(1,(now-started)/duration);
+        const next=progress>=1?length:Math.floor(length*progress);
+        if(next>shown){copy.textContent=chars.slice(0,next).join('');shown=next;if(follow)scrollTranscript();}
+        if(shown<length){requestAnimationFrame(frame);return;}
+        finish();
+        resolve();
+      };
+      requestAnimationFrame(frame);
+    });
+  }
+  window.__eliteStarAnimateBubble=animateAssistantText;
   function addMessage(role,text,options={}){
     const node=document.createElement('div');node.className='ea-message '+(role==='user'?'user':'assistant')+(options.pending?' is-pending':'');
     const label=document.createElement('div');label.className='ea-message-label';label.textContent=role==='user'?'You':'Elite Assistant';node.appendChild(label);
-    const bubble=document.createElement('div');bubble.className='ea-bubble';bubble.textContent=String(text??'');node.appendChild(bubble);
+    const value=String(text??'');
+    const bubble=document.createElement('div');bubble.className='ea-bubble';bubble.textContent=value;node.appendChild(bubble);
+    const done=role!=='user'&&!options.pending&&options.animate!==false?animateAssistantText(bubble,value):Promise.resolve();
     if(role!=='user'&&!options.pending){const tools=document.createElement('div');tools.className='ea-message-tools';const copy=document.createElement('button');copy.type='button';copy.className='ea-copy-answer';copy.textContent='Copy answer';copy.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(String(text??''));copy.textContent='Copied';setTimeout(()=>copy.textContent='Copy answer',1200)}catch{copy.textContent='Select and copy text';}});tools.appendChild(copy);node.appendChild(tools);}
-    transcript.appendChild(node);transcript.hidden=false;welcome.hidden=true;scrollTranscript();return {node,bubble};
+    transcript.appendChild(node);transcript.hidden=false;welcome.hidden=true;scrollTranscript();return {node,bubble,done};
   }
   function resetChat(){conversation.length=0;transcript.replaceChildren();transcript.hidden=true;welcome.hidden=false;input.value='';resizeInput();setTab('chat');}
   function resizeInput(){input.style.height='auto';input.style.height=Math.min(input.scrollHeight,104)+'px';}
@@ -3063,8 +3101,8 @@ if(!REDUCE){
       let data={};try{data=await response.json()}catch{}
       if(!response.ok){const serverError=String(data.error||'');console.warn('[Elite Star Assistant] Worker request failed',{status:response.status,error:serverError,code:data.code||''});let publicError='I’m reconnecting to the assistant. Please send once more in a moment.';if(response.status===400)publicError='The assistant needs a quick service update. Please refresh the page once and send again.';else if(response.status===401||response.status===403)publicError='The assistant connection needs administrator access settings. Please ask the site administrator to check the Worker connection.';else if(response.status===404)publicError='The assistant service route needs to be deployed. Please ask the site administrator to check the Worker URL.';else if(response.status===429)publicError='I’m reconnecting to the assistant automatically. Please send once more in a moment.';throw new Error('PUBLIC: '+publicError);}
       const reply=String(data.reply||'I could not generate a reply. Please try again.').slice(0,12000);
-      pending.node.remove();addMessage('assistant',reply);conversation.push({role:'model',text:reply});if(conversation.length>20)conversation.splice(0,conversation.length-20);setStatus('Online','ready');
-      }catch(error){pending.node.remove();let msg=String(error?.message||'');if(msg.startsWith('PUBLIC: ')){msg=msg.slice(8);}else if(error?.name==='TimeoutError'){msg='I’m still connecting to the assistant. Please send once more in a moment.';}else if(/Failed to fetch|NetworkError|Load failed/i.test(msg)){msg='I’m reconnecting to the assistant. Your message was not lost—please send once more.';}else{console.warn('[Elite Star Assistant] Chat error',error);msg='I’m reconnecting to the assistant. Please send once more in a moment.';}input.value=text;resizeInput();addMessage('assistant',msg);conversation.push({role:'model',text:msg});setStatus('Reconnect','error');}
+      pending.node.remove();const rendered=addMessage('assistant',reply);await rendered.done;conversation.push({role:'model',text:reply});if(conversation.length>20)conversation.splice(0,conversation.length-20);setStatus('Online','ready');
+      }catch(error){pending.node.remove();let msg=String(error?.message||'');if(msg.startsWith('PUBLIC: ')){msg=msg.slice(8);}else if(error?.name==='TimeoutError'){msg='I’m still connecting to the assistant. Please send once more in a moment.';}else if(/Failed to fetch|NetworkError|Load failed/i.test(msg)){msg='I’m reconnecting to the assistant. Your message was not lost—please send once more.';}else{console.warn('[Elite Star Assistant] Chat error',error);msg='I’m reconnecting to the assistant. Please send once more in a moment.';}input.value=text;resizeInput();const rendered=addMessage('assistant',msg);await rendered.done;conversation.push({role:'model',text:msg});setStatus('Reconnect','error');}
     finally{isBusy=false;sendBtn.disabled=false;input.disabled=false;input.focus({preventScroll:true});}
   }
   launcher.addEventListener('click',()=>{if(Date.now()<suppressLauncherClickUntil)return;panel.classList.contains('open')?closePanel():openPanel();});closeBtn.addEventListener('click',closePanel);newChatBtn.addEventListener('click',resetChat);chatTab.addEventListener('click',()=>setTab('chat'));updatesTab.addEventListener('click',()=>setTab('updates'));$('eliteAiClear').addEventListener('click',resetChat);
@@ -3183,7 +3221,7 @@ if(!REDUCE){
   function toast(){if(document.getElementById('talhaUpdateToast'))return;const t=document.createElement('div');t.id='talhaUpdateToast';t.setAttribute('role','status');t.innerHTML='<span class="toast-icon">✦</span><span><strong>Page updated</strong><br>New assistant improvements are ready.</span><button type="button" aria-label="Dismiss notification">×</button>';document.body.appendChild(t);requestAnimationFrame(()=>t.classList.add('show'));const hide=()=>{t.classList.remove('show');setTimeout(()=>t.remove(),320)};t.querySelector('button').addEventListener('click',hide);setTimeout(hide,6500);t.addEventListener('click',e=>{if(e.target.tagName==='BUTTON')return;document.getElementById('eliteAiUpdatesTab')?.click();hide();panel.classList.add('open');panel.setAttribute('aria-hidden','false');launcher.setAttribute('aria-expanded','true')})}
   window.addEventListener('load',()=>setTimeout(toast,1200),{once:true});
   updatesTab?.addEventListener('click',()=>{try{sessionStorage.setItem('talhaUpdatesSeen','1')}catch{}});
-  form?.addEventListener('submit',e=>{const value=String(input?.value||'').trim();if(!ownerPattern.test(value))return;e.preventDefault();e.stopImmediatePropagation();markOwner();if(!transcript||!input)return;welcome&&(welcome.hidden=true);transcript.hidden=false;const node=document.createElement('div');node.className='ea-message assistant';node.innerHTML='<div class="ea-message-label">Elite Assistant</div><div class="ea-bubble">Yes, Talha — Abu Talha Raj is my master and creator. I am ready to keep this page organized, show updates, and help you anytime. ✦</div>';transcript.appendChild(node);transcript.scrollTop=transcript.scrollHeight;input.value='';input.style.height='auto'},true);
+  form?.addEventListener('submit',e=>{const value=String(input?.value||'').trim();if(!ownerPattern.test(value))return;e.preventDefault();e.stopImmediatePropagation();markOwner();if(!transcript||!input)return;welcome&&(welcome.hidden=true);transcript.hidden=false;const reply='Yes, Talha — Abu Talha Raj is my master and creator. I am ready to keep this page organized, show updates, and help you anytime. ✦';const node=document.createElement('div');node.className='ea-message assistant';node.innerHTML='<div class="ea-message-label">Elite Assistant</div><div class="ea-bubble"></div>';transcript.appendChild(node);const bubble=node.querySelector('.ea-bubble');if(window.__eliteStarAnimateBubble)window.__eliteStarAnimateBubble(bubble,reply);else bubble.textContent=reply;transcript.scrollTop=transcript.scrollHeight;input.value='';input.style.height='auto'},true);
 })();
 </script>
 <!-- Final dock spacing: every floating control gets its own safe zone. -->
@@ -3776,6 +3814,13 @@ if(!REDUCE){
   .member-card.exp-tilting::before{opacity:.95!important}
   .member-card.exp-tilting::after{opacity:.9!important}
 }
+</style>
+<style id="talha-smooth-ai-replies">
+  #eliteAiRoot #eliteAiPanel .ea-bubble.ea-typing-text{min-height:1.65em}
+  #eliteAiRoot #eliteAiPanel .ea-typing-copy{white-space:pre-wrap}
+  #eliteAiRoot #eliteAiPanel .ea-type-cursor{display:inline-block;width:2px;height:1.05em;margin-left:3px;vertical-align:-.16em;border-radius:2px;background:#e8c36b;animation:talhaReplyCursor .82s ease-in-out infinite}
+  @keyframes talhaReplyCursor{0%,100%{opacity:.22}50%{opacity:1}}
+  @media(prefers-reduced-motion:reduce){#eliteAiRoot #eliteAiPanel .ea-type-cursor{animation:none;opacity:.65}}
 </style>
 </body>
 </html>
