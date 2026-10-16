@@ -2808,7 +2808,6 @@ if(!REDUCE){
           <button class="ea-send-btn" id="eliteAiSend" type="submit" aria-label="Send message" title="Send message">↑</button>
         </form>
         <div class="ea-composer-meta"><span>Enter to send · Shift+Enter for a new line</span><span class="ea-meta-actions"><button class="ea-text-btn" id="eliteAiClear" type="button">Clear chat</button></span></div>
-        <div class="ea-privacy-note"><span aria-hidden="true">♢</span><span>Made By Talha</span></div>
         <div class="ea-privacy-note"><span aria-hidden="true">♢</span><span><strong>Made By Talha</strong><em> · Creator Mode</em></span><b class="ea-footer-live">● LIVE</b></div>
       </div>
     </div>
@@ -3377,9 +3376,174 @@ if(!REDUCE){
   }
 </style>
 <style id="talha-clock-final-position">
+  /* Lift the clock slightly while keeping it clear of the header and right-side controls. */
   #localTimeBar.local-time-bar{top:68px!important}
   @media(max-width:860px){#localTimeBar.local-time-bar{top:calc(92px + env(safe-area-inset-top,0px))!important}}
   @media(max-width:420px){#localTimeBar.local-time-bar{top:calc(88px + env(safe-area-inset-top,0px))!important}}
+</style>
+<!-- Clean AI workspace: a modern Gemini-inspired chat presentation. -->
+<style id="talha-clean-ai-workspace">
+  :root{--clean-chat-bg:#131314;--clean-chat-panel:#1e1f20;--clean-chat-border:#3b3d3f;--clean-chat-text:#e3e3e3;--clean-chat-muted:#a9aaad;--clean-chat-accent:#a8c7fa}
+  body:has(#eliteAiPanel.open){overflow:hidden!important}
+  #eliteAiRoot #eliteAiPanel,
+  #eliteAiRoot #eliteAiPanel.ea-drag-positioned,
+  #eliteAiRoot #eliteAiPanel.ea-keyboard-open{position:fixed!important;inset:0!important;left:0!important;right:0!important;top:0!important;bottom:0!important;width:100vw!important;height:100dvh!important;max-width:none!important;max-height:none!important;min-height:0!important;border:0!important;border-radius:0!important;background:var(--clean-chat-bg)!important;box-shadow:none!important;backdrop-filter:none!important;overflow:hidden!important;z-index:200000!important;color:var(--clean-chat-text)!important}
+  #eliteAiRoot #eliteAiPanel::before{display:none!important}
+  #eliteAiRoot #eliteAiPanel.open{display:flex!important;animation:cleanChatIn .18s ease-out both!important}
+  @keyframes cleanChatIn{from{opacity:0}to{opacity:1}}
+  #eliteAiRoot #eliteAiPanel .ea-header{flex:0 0 auto!important;min-height:62px!important;padding:13px 24px!important;border-bottom:1px solid rgba(255,255,255,.08)!important;background:rgba(19,19,20,.94)!important;backdrop-filter:blur(18px)!important;gap:12px!important}
+  #eliteAiRoot #eliteAiPanel .ea-brand-mark{width:36px!important;height:36px!important;border:0!important;border-radius:50%!important;background:linear-gradient(145deg,#a8c7fa,#d7b9ff)!important;color:#202124!important;box-shadow:none!important;font-size:1.05rem!important}
+  #eliteAiRoot #eliteAiPanel .ea-header-title strong{font:500 1rem/1.2 var(--sans,Inter,sans-serif)!important;letter-spacing:0!important;color:var(--clean-chat-text)!important}
+  #eliteAiRoot #eliteAiPanel .ea-header-title small{font:400 .68rem/1.3 var(--sans,Inter,sans-serif)!important;letter-spacing:0!important;color:var(--clean-chat-muted)!important}
+  #eliteAiRoot #eliteAiPanel .ea-header-title strong::after{font:500 .56rem var(--sans,Inter,sans-serif)!important;letter-spacing:.06em!important;color:#a8c7fa!important}
+  #eliteAiRoot #eliteAiPanel .ea-icon-btn{width:34px!important;height:34px!important;border:0!important;border-radius:50%!important;background:transparent!important;color:var(--clean-chat-muted)!important;font-size:1.15rem!important}
+  #eliteAiRoot #eliteAiPanel .ea-icon-btn:hover{background:rgba(255,255,255,.08)!important;color:var(--clean-chat-text)!important}
+  #eliteAiRoot #eliteAiPanel .ea-tabs{flex:0 0 auto!important;width:min(900px,100%)!important;margin:0 auto!important;padding:12px 24px 0!important;gap:6px!important;background:var(--clean-chat-bg)!important}
+  #eliteAiRoot #eliteAiPanel .ea-tab{flex:0 0 auto!important;border:0!important;border-radius:9px!important;background:transparent!important;color:var(--clean-chat-muted)!important;padding:9px 13px!important;font:500 .72rem var(--sans,Inter,sans-serif)!important}
+  #eliteAiRoot #eliteAiPanel .ea-tab.active{background:#2b2d30!important;color:var(--clean-chat-text)!important}
+  #eliteAiRoot #eliteAiPanel .ea-tab::after{background:#a8c7fa!important;color:#202124!important}
+  #eliteAiRoot #eliteAiPanel .ea-view.active{flex:1 1 0!important;width:100%!important;min-height:0!important;overflow:hidden!important;background:var(--clean-chat-bg)!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiChatView{display:flex!important;flex-direction:column!important;align-items:stretch!important;max-width:940px!important;margin:0 auto!important;padding:16px 24px 0!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiWelcome{width:min(820px,100%)!important;margin:auto auto 26px!important;padding:0!important;border:0!important;border-radius:0!important;background:transparent!important;max-height:none!important;overflow:visible!important}
+  #eliteAiRoot #eliteAiPanel .ea-welcome-top{font:500 .7rem var(--sans,Inter,sans-serif)!important;letter-spacing:.04em!important;text-transform:none!important;color:var(--clean-chat-muted)!important}
+  #eliteAiRoot #eliteAiPanel .ea-welcome-title{margin:9px 0 8px!important;font:500 clamp(1.8rem,4vw,2.7rem)/1.12 var(--sans,Inter,sans-serif)!important;letter-spacing:-.03em!important;color:var(--clean-chat-text)!important}
+  #eliteAiRoot #eliteAiPanel .ea-welcome-copy{color:var(--clean-chat-muted)!important;font:400 .86rem/1.55 var(--sans,Inter,sans-serif)!important}
+  #eliteAiRoot #eliteAiPanel .ea-quick-grid{gap:9px!important;margin-top:20px!important}
+  #eliteAiRoot #eliteAiPanel .ea-quick{min-height:54px!important;padding:11px 13px!important;border:1px solid var(--clean-chat-border)!important;border-radius:13px!important;background:#1c1d1e!important;color:var(--clean-chat-text)!important;font:400 .72rem/1.35 var(--sans,Inter,sans-serif)!important}
+  #eliteAiRoot #eliteAiPanel .ea-quick:hover{border-color:#6d7075!important;background:#27292b!important}
+  #eliteAiRoot #eliteAiPanel .ea-quick i{color:var(--clean-chat-accent)!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiTranscript{flex:1 1 0!important;width:min(820px,100%)!important;margin:0 auto!important;padding:12px 0 20px!important;min-height:0!important;gap:20px!important;scrollbar-color:#4c4f52 transparent!important}
+  #eliteAiRoot #eliteAiPanel .ea-message{max-width:82%!important;gap:6px!important}
+  #eliteAiRoot #eliteAiPanel .ea-message-label{padding:0 4px!important;color:var(--clean-chat-muted)!important;font:500 .62rem var(--sans,Inter,sans-serif)!important;letter-spacing:0!important;text-transform:none!important}
+  #eliteAiRoot #eliteAiPanel .ea-bubble{padding:10px 14px!important;border:0!important;border-radius:16px!important;background:transparent!important;color:var(--clean-chat-text)!important;font:400 .88rem/1.65 var(--sans,Inter,sans-serif)!important}
+  #eliteAiRoot #eliteAiPanel .ea-message.user .ea-bubble{background:#2b2d30!important;color:var(--clean-chat-text)!important;border-radius:18px!important}
+  #eliteAiRoot #eliteAiPanel .ea-message.user .ea-message-label{color:#b9cfff!important}
+  #eliteAiRoot #eliteAiPanel .ea-message-tools{padding:0 9px!important}
+  #eliteAiRoot #eliteAiPanel .ea-copy-answer{color:#9aa0a6!important;font:400 .65rem var(--sans,Inter,sans-serif)!important}
+  #eliteAiRoot #eliteAiPanel .ea-composer-wrap{flex:0 0 auto!important;width:min(860px,100%)!important;margin:0 auto!important;padding:12px 24px max(24px,env(safe-area-inset-bottom))!important;border:0!important;background:var(--clean-chat-bg)!important}
+  #eliteAiRoot #eliteAiPanel .ea-composer{min-height:58px!important;padding:8px 9px 8px 18px!important;border:1px solid var(--clean-chat-border)!important;border-radius:30px!important;background:var(--clean-chat-panel)!important;box-shadow:0 8px 28px rgba(0,0,0,.18)!important}
+  #eliteAiRoot #eliteAiPanel .ea-composer:focus-within{border-color:#70757a!important;box-shadow:0 0 0 2px rgba(168,199,250,.08)!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiInput{min-height:40px!important;max-height:140px!important;padding:9px 5px!important;color:var(--clean-chat-text)!important;font:400 16px/1.5 var(--sans,Inter,sans-serif)!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiInput::placeholder{color:#9aa0a6!important}
+  #eliteAiRoot #eliteAiPanel .ea-send-btn{width:40px!important;height:40px!important;border-radius:50%!important;background:#a8c7fa!important;color:#202124!important;font-size:1rem!important}
+  #eliteAiRoot #eliteAiPanel .ea-composer-meta{margin:8px 5px 0!important;color:#8f9398!important;font:400 .62rem var(--sans,Inter,sans-serif)!important}
+  #eliteAiRoot #eliteAiPanel .ea-text-btn{color:#a8c7fa!important;font:400 .63rem var(--sans,Inter,sans-serif)!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiUpdatesView{width:min(820px,100%)!important;margin:0 auto!important;padding:22px 24px 28px!important;gap:12px!important}
+  #eliteAiRoot #eliteAiPanel .ea-updates-intro,#eliteAiRoot #eliteAiPanel .ea-update-item{border:1px solid var(--clean-chat-border)!important;border-radius:14px!important;background:#1c1d1e!important}
+  #eliteAiRoot #eliteAiPanel .ea-updates-intro h3,#eliteAiRoot #eliteAiPanel .ea-update-item h4{color:var(--clean-chat-text)!important;font-family:var(--sans,Inter,sans-serif)!important}
+  #eliteAiRoot #eliteAiPanel .ea-updates-intro p,#eliteAiRoot #eliteAiPanel .ea-update-item p{color:var(--clean-chat-muted)!important;font-family:var(--sans,Inter,sans-serif)!important}
+  #eliteAiRoot #eliteAiPanel .ea-update-item:before{background:#a8c7fa!important}
+  @media(max-width:700px){
+    #eliteAiRoot #eliteAiPanel .ea-header{padding:11px 14px!important}
+    #eliteAiRoot #eliteAiPanel .ea-tabs{padding:9px 14px 0!important}
+    #eliteAiRoot #eliteAiPanel #eliteAiChatView{padding:12px 16px 0!important}
+    #eliteAiRoot #eliteAiPanel #eliteAiTranscript{width:100%!important;padding-bottom:14px!important}
+    #eliteAiRoot #eliteAiPanel .ea-message{max-width:92%!important}
+    #eliteAiRoot #eliteAiPanel .ea-composer-wrap{padding:9px 12px max(16px,env(safe-area-inset-bottom))!important}
+    #eliteAiRoot #eliteAiPanel #eliteAiUpdatesView{padding:16px 14px 24px!important}
+  }
+  @media(max-width:420px){
+    #eliteAiRoot #eliteAiPanel .ea-header-title strong{font-size:.92rem!important}
+    #eliteAiRoot #eliteAiPanel .ea-welcome-title{font-size:1.65rem!important}
+    #eliteAiRoot #eliteAiPanel .ea-quick-grid{grid-template-columns:1fr!important}
+    #eliteAiRoot #eliteAiPanel .ea-quick{min-height:46px!important}
+  }
+</style>
+<script id="talha-clean-ai-workspace-runtime">
+(()=>{
+  const title=document.querySelector('#eliteAiPanel .ea-header-title strong');
+  const subtitle=document.querySelector('#eliteAiPanel .ea-header-title small');
+  if(title)title.childNodes[0].nodeValue='Talha AI';
+  if(subtitle){const dot=subtitle.querySelector('#eliteAiStatusDot');const text=subtitle.querySelector('#eliteAiStatusText');if(text)text.textContent='Your personal AI workspace';if(dot)dot.style.display='none'}
+})();
+</script>
+<style id="talha-clean-ai-keyboard-fix">
+  #eliteAiRoot #eliteAiPanel.ea-keyboard-open,
+  #eliteAiRoot #eliteAiPanel.ea-keyboard-open.ea-drag-positioned{position:fixed!important;left:0!important;right:0!important;top:var(--ea-vv-top,0px)!important;bottom:auto!important;width:100vw!important;height:var(--ea-vv-height,100dvh)!important;max-width:none!important;max-height:none!important;min-height:0!important;border-radius:0!important}
+</style>
+<style id="talha-chat-space-fix">
+  /* Remove the large flex auto-gaps around the welcome state and composer. */
+  #eliteAiRoot #eliteAiPanel #eliteAiChatView{padding-top:8px!important;padding-bottom:0!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiWelcome{margin:14px auto 14px!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiTranscript{padding-top:6px!important;padding-bottom:8px!important}
+  #eliteAiRoot #eliteAiPanel .ea-composer-wrap{padding-top:8px!important;padding-bottom:max(12px,env(safe-area-inset-bottom))!important}
+  #eliteAiRoot #eliteAiPanel .ea-composer-meta{margin-top:5px!important}
+  @media(max-width:700px){
+    #eliteAiRoot #eliteAiPanel #eliteAiChatView{padding-top:5px!important}
+    #eliteAiRoot #eliteAiPanel #eliteAiWelcome{margin:10px auto 10px!important}
+    #eliteAiRoot #eliteAiPanel .ea-composer-wrap{padding:6px 12px max(10px,env(safe-area-inset-bottom))!important}
+  }
+</style>
+<style id="talha-chat-only-view">
+  /* Chat-only mode: remove decorative top/bottom furniture and keep the conversation clear. */
+  #eliteAiRoot #eliteAiPanel .ea-header{position:relative!important;flex:0 0 0!important;height:0!important;min-height:0!important;padding:0!important;border:0!important;background:transparent!important;overflow:visible!important;z-index:5!important}
+  #eliteAiRoot #eliteAiPanel .ea-brand-mark,
+  #eliteAiRoot #eliteAiPanel .ea-header-title,
+  #eliteAiRoot #eliteAiPanel #eliteAiNewChat,
+  #eliteAiRoot #eliteAiPanel .ea-tabs{display:none!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiClose{display:grid!important;position:fixed!important;top:12px!important;right:16px!important;z-index:20!important;width:34px!important;height:34px!important;background:rgba(30,31,32,.88)!important;border:1px solid #3b3d3f!important;color:#a9aaad!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiChatView{padding:0 24px!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiWelcome{margin:12px auto 10px!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiTranscript{padding-top:4px!important;padding-bottom:4px!important}
+  #eliteAiRoot #eliteAiPanel .ea-composer-wrap{padding:8px 24px max(12px,env(safe-area-inset-bottom))!important}
+  #eliteAiRoot #eliteAiPanel .ea-composer-meta,
+  #eliteAiRoot #eliteAiPanel .ea-privacy-note{display:none!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiUpdatesView{padding-top:10px!important}
+  @media(max-width:700px){
+    #eliteAiRoot #eliteAiPanel #eliteAiClose{top:9px!important;right:10px!important}
+    #eliteAiRoot #eliteAiPanel #eliteAiChatView{padding:0 14px!important}
+    #eliteAiRoot #eliteAiPanel #eliteAiWelcome{margin:9px auto 8px!important}
+    #eliteAiRoot #eliteAiPanel .ea-composer-wrap{padding:6px 12px max(10px,env(safe-area-inset-bottom))!important}
+  }
+</style>
+<style id="talha-chat-edge-lock">
+  /* Pin the composer to the exact bottom edge and the close control to the exact top edge. */
+  #eliteAiRoot #eliteAiPanel #eliteAiClose{position:absolute!important;top:8px!important;right:12px!important}
+  #eliteAiRoot #eliteAiPanel .ea-composer-wrap{position:absolute!important;left:0!important;right:0!important;bottom:0!important;width:100%!important;margin:0!important;z-index:30!important;padding:10px 24px max(14px,env(safe-area-inset-bottom))!important;background:rgba(19,19,20,.98)!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiChatView{height:100%!important;min-height:0!important;padding-bottom:112px!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiUpdatesView{height:100%!important;min-height:0!important;padding-bottom:112px!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiTranscript{padding-bottom:12px!important}
+  @media(max-width:700px){
+    #eliteAiRoot #eliteAiPanel #eliteAiClose{top:6px!important;right:8px!important}
+    #eliteAiRoot #eliteAiPanel .ea-composer-wrap{padding:7px 12px max(10px,env(safe-area-inset-bottom))!important}
+    #eliteAiRoot #eliteAiPanel #eliteAiChatView,
+    #eliteAiRoot #eliteAiPanel #eliteAiUpdatesView{padding-bottom:100px!important}
+  }
+</style>
+<style id="talha-restore-elite-theme">
+  /* Restore the original Elite Star obsidian-and-gold theme. */
+  #eliteAiRoot #eliteAiPanel{--clean-chat-bg:#08070c;--clean-chat-panel:#111019;--clean-chat-border:rgba(232,195,107,.28);--clean-chat-text:#ede7d6;--clean-chat-muted:#a29b8a;--clean-chat-accent:#e8c36b;background:linear-gradient(160deg,rgba(22,20,29,.99),rgba(8,7,12,.99) 72%)!important;color:#ede7d6!important}
+  #eliteAiRoot #eliteAiPanel .ea-tabs{background:#08070c!important}
+  #eliteAiRoot #eliteAiPanel .ea-tab{color:#a29b8a!important}
+  #eliteAiRoot #eliteAiPanel .ea-tab.active{background:rgba(232,195,107,.1)!important;color:#e8c36b!important;border:1px solid rgba(232,195,107,.25)!important}
+  #eliteAiRoot #eliteAiPanel .ea-brand-mark{background:linear-gradient(145deg,#fce7b8,#c49a3d)!important;color:#181205!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiClose{background:rgba(17,16,25,.94)!important;border-color:rgba(232,195,107,.42)!important;color:#e8c36b!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiClose:hover{background:rgba(232,195,107,.12)!important;color:#fce7b8!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiWelcome{background:radial-gradient(300px 170px at 0 0,rgba(232,195,107,.1),transparent 72%),transparent!important}
+  #eliteAiRoot #eliteAiPanel .ea-welcome-top{color:#e8c36b!important}
+  #eliteAiRoot #eliteAiPanel .ea-welcome-title{color:#ede7d6!important}
+  #eliteAiRoot #eliteAiPanel .ea-welcome-copy{color:#bdb6a7!important}
+  #eliteAiRoot #eliteAiPanel .ea-quick{border-color:rgba(232,195,107,.22)!important;background:rgba(232,195,107,.045)!important;color:#ede7d6!important}
+  #eliteAiRoot #eliteAiPanel .ea-quick:hover{border-color:rgba(232,195,107,.58)!important;background:rgba(232,195,107,.1)!important}
+  #eliteAiRoot #eliteAiPanel .ea-quick i{color:#e8c36b!important}
+  #eliteAiRoot #eliteAiPanel .ea-message-label{color:#a29b8a!important}
+  #eliteAiRoot #eliteAiPanel .ea-message.user .ea-message-label{color:#ceb16b!important}
+  #eliteAiRoot #eliteAiPanel .ea-bubble{color:#e9e3d6!important}
+  #eliteAiRoot #eliteAiPanel .ea-message.user .ea-bubble{background:rgba(232,195,107,.12)!important;color:#fff4d5!important;border:1px solid rgba(232,195,107,.25)!important}
+  #eliteAiRoot #eliteAiPanel .ea-composer-wrap{background:rgba(8,7,12,.98)!important}
+  #eliteAiRoot #eliteAiPanel .ea-composer{border-color:rgba(232,195,107,.32)!important;background:rgba(0,0,0,.28)!important;box-shadow:0 10px 30px -20px #000!important}
+  #eliteAiRoot #eliteAiPanel .ea-composer:focus-within{border-color:rgba(232,195,107,.7)!important;box-shadow:0 0 0 2px rgba(232,195,107,.07)!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiInput{color:#ede7d6!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiInput::placeholder{color:#817b6f!important}
+  #eliteAiRoot #eliteAiPanel .ea-send-btn{background:linear-gradient(145deg,#fce7b8,#c29a42)!important;color:#1a1408!important}
+  #eliteAiRoot #eliteAiPanel .ea-composer-meta{color:#898274!important}
+  #eliteAiRoot #eliteAiPanel .ea-updates-intro,
+  #eliteAiRoot #eliteAiPanel .ea-update-item{border-color:rgba(232,195,107,.22)!important;background:rgba(232,195,107,.045)!important}
+  #eliteAiRoot #eliteAiPanel .ea-updates-intro h3,
+  #eliteAiRoot #eliteAiPanel .ea-update-item h4{color:#ede7d6!important}
+  #eliteAiRoot #eliteAiPanel .ea-updates-intro p,
+  #eliteAiRoot #eliteAiPanel .ea-update-item p{color:#b3ad9e!important}
+  #eliteAiRoot #eliteAiPanel .ea-update-item:before{background:linear-gradient(#e8c36b,transparent)!important}
 </style>
 </body>
 </html>
