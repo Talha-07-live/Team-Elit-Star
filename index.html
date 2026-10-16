@@ -2960,7 +2960,7 @@ if(!REDUCE){
   },{passive:true});
   function setStatus(label,state){statusText.textContent=label;statusDot.className=state||'';}
   function setTab(which){const chat=which==='chat';chatTab.classList.toggle('active',chat);updatesTab.classList.toggle('active',!chat);chatTab.setAttribute('aria-selected',String(chat));updatesTab.setAttribute('aria-selected',String(!chat));chatView.classList.toggle('active',chat);updatesView.classList.toggle('active',!chat);}
-  function openPanel(){panel.classList.add('open');panel.setAttribute('aria-hidden','false');launcher.setAttribute('aria-expanded','true');requestAnimationFrame(()=>{if(!panel.classList.contains('ea-drag-positioned'))restorePanelPosition();});if(!hasCheckedHealth)checkHealth();setTimeout(()=>input.focus({preventScroll:true}),60);}
+  function openPanel(){panel.classList.add('open');panel.setAttribute('aria-hidden','false');launcher.setAttribute('aria-expanded','true');requestAnimationFrame(()=>{if(!panel.classList.contains('ea-drag-positioned'))restorePanelPosition();});if(!hasCheckedHealth)checkHealth();setTimeout(()=>{if(!matchMedia('(max-width:860px)').matches)input.focus({preventScroll:true})},60);}
   function closePanel(){panel.classList.remove('open');panel.setAttribute('aria-hidden','true');launcher.setAttribute('aria-expanded','false');launcher.focus({preventScroll:true});}
   function scrollTranscript(){transcript.scrollTop=transcript.scrollHeight;}
   function addMessage(role,text,options={}){
@@ -3649,5 +3649,48 @@ if(!REDUCE){
     #talhaUpdateToast{left:auto!important;right:24px!important;top:136px!important;bottom:auto!important;width:min(330px,calc(100vw - 48px))!important}
   }
 </style>
+<style id="talha-mobile-chat-keyboard-final">
+  /* Mobile keyboard-safe geometry: the composer follows the visual viewport, not the layout viewport. */
+  @media(max-width:860px){
+    #eliteAiRoot #eliteAiPanel.open{position:fixed!important;left:0!important;right:0!important;top:0!important;bottom:0!important;width:100vw!important;height:100dvh!important;max-height:none!important;min-height:0!important;overflow:hidden!important}
+    #eliteAiRoot #eliteAiPanel.ea-keyboard-open,
+    #eliteAiRoot #eliteAiPanel.ea-keyboard-open.ea-drag-positioned{top:var(--ea-vv-top,0px)!important;bottom:auto!important;height:var(--ea-vv-height,100dvh)!important;max-height:none!important;min-height:0!important}
+    #eliteAiRoot #eliteAiPanel.ea-keyboard-open .ea-header{flex-basis:46px!important;height:46px!important;min-height:46px!important}
+    #eliteAiRoot #eliteAiPanel.ea-keyboard-open #eliteAiChatView{height:auto!important;min-height:0!important;padding-bottom:0!important;overflow:hidden!important}
+    #eliteAiRoot #eliteAiPanel.ea-keyboard-open #eliteAiTranscript{display:flex!important;flex:1 1 0!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;padding-top:10px!important;padding-bottom:12px!important;overflow-anchor:none!important}
+    #eliteAiRoot #eliteAiPanel.ea-keyboard-open .ea-composer-wrap{position:absolute!important;left:0!important;right:0!important;bottom:0!important;padding:6px 8px max(7px,env(safe-area-inset-bottom))!important;background:rgba(8,7,12,.99)!important;z-index:50!important}
+    #eliteAiRoot #eliteAiPanel.ea-keyboard-open .ea-composer-meta,
+    #eliteAiRoot #eliteAiPanel.ea-keyboard-open .ea-privacy-note{display:none!important}
+    #eliteAiRoot #eliteAiPanel.ea-keyboard-open #eliteAiInput{min-height:38px!important;max-height:88px!important;font-size:16px!important}
+  }
+</style>
+<script id="talha-mobile-chat-keyboard-final-runtime">
+(()=>{
+  const root=document.getElementById('eliteAiRoot');
+  const panel=document.getElementById('eliteAiPanel');
+  const input=document.getElementById('eliteAiInput');
+  const transcript=document.getElementById('eliteAiTranscript');
+  if(!root||!panel||!input)return;
+  const vv=window.visualViewport;
+  function syncMobileChat(){
+    const height=vv&&Number.isFinite(vv.height)?vv.height:window.innerHeight;
+    const top=vv&&Number.isFinite(vv.offsetTop)?vv.offsetTop:0;
+    root.style.setProperty('--ea-vv-height',Math.max(220,height)+'px');
+    root.style.setProperty('--ea-vv-top',Math.max(0,top)+'px');
+    const mobile=window.matchMedia('(max-width:860px)').matches;
+    const focused=document.activeElement===input;
+    const keyboard=mobile&&panel.classList.contains('open')&&focused&&((window.innerHeight-height)>80||panel.classList.contains('ea-keyboard-open'));
+    if(keyboard)panel.classList.add('ea-keyboard-open');
+    else if(!focused||!panel.classList.contains('open'))panel.classList.remove('ea-keyboard-open');
+    if(panel.classList.contains('open')&&transcript){requestAnimationFrame(()=>{transcript.scrollTop=transcript.scrollHeight})}
+  }
+  input.addEventListener('focus',()=>setTimeout(syncMobileChat,80),{passive:true});
+  input.addEventListener('blur',()=>setTimeout(syncMobileChat,140),{passive:true});
+  window.addEventListener('resize',syncMobileChat,{passive:true});
+  window.addEventListener('orientationchange',()=>setTimeout(syncMobileChat,160),{passive:true});
+  if(vv){vv.addEventListener('resize',syncMobileChat,{passive:true});vv.addEventListener('scroll',syncMobileChat,{passive:true})}
+  syncMobileChat();
+})();
+</script>
 </body>
 </html>
