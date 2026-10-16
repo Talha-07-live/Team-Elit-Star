@@ -899,6 +899,46 @@ body.weather-off #weatherFx{display:none!important;}
 </style>
 
 <style id="cms-custom-content-css">.cms-custom-section .wrap{max-width:var(--maxw,1200px);margin:0 auto;padding:0 26px}.cms-custom-section h2:empty{display:none}#siteMaintenanceGate[hidden]{display:none!important}</style>
+
+<style id="team-elite-final-clock-ai-fix">
+  /* Restore the clock bar markup that was lost in the previous build. */
+  #localTimeBar.local-time-bar{
+    position:fixed!important;z-index:48!important;left:20px!important;right:auto!important;
+    top:auto!important;bottom:20px!important;transform:none!important;
+    display:grid!important;grid-template-columns:repeat(2,minmax(98px,max-content))!important;
+    width:max-content!important;min-width:0!important;max-width:calc(100vw - 40px)!important;
+    pointer-events:none!important;visibility:visible!important;opacity:1!important;
+  }
+  body.hud-off #localTimeBar.local-time-bar{visibility:visible!important;opacity:1!important;}
+  #localTimeBar .local-time-cell{min-width:0!important;padding:8px 12px 7px!important;}
+  #localTimeBar .local-time-cell b{font-size:clamp(.72rem,1.4vw,1rem)!important;}
+  #localTimeBar .local-time-cell small{font-size:.43rem!important;letter-spacing:.08em!important;}
+  #eliteAiRoot #eliteAiLauncher{left:22px!important;right:auto!important;top:auto!important;bottom:100px!important;}
+  @media(max-width:860px){
+    #localTimeBar.local-time-bar{
+      left:50%!important;right:auto!important;top:auto!important;
+      bottom:calc(72px + env(safe-area-inset-bottom))!important;
+      transform:translateX(-50%)!important;width:max-content!important;
+      grid-template-columns:repeat(2,minmax(0,1fr))!important;
+      max-width:calc(100vw - 20px)!important;border-radius:16px!important;
+    }
+    #localTimeBar .local-time-cell{padding:6px 9px 5px!important;min-width:72px!important;}
+    #localTimeBar .local-time-cell b{font-size:.68rem!important;}
+    #localTimeBar .local-time-cell small{font-size:.35rem!important;letter-spacing:.04em!important;}
+    #eliteAiRoot #eliteAiLauncher{
+      left:auto!important;right:12px!important;top:auto!important;
+      bottom:calc(142px + env(safe-area-inset-bottom))!important;
+      max-width:calc(100vw - 24px)!important;
+    }
+  }
+  @media(max-width:380px){
+    #localTimeBar.local-time-bar{max-width:calc(100vw - 12px)!important;}
+    #localTimeBar .local-time-cell{padding:5px 6px 4px!important;min-width:66px!important;}
+    #localTimeBar .local-time-cell b{font-size:.61rem!important;}
+    #localTimeBar .local-time-cell small{font-size:.31rem!important;}
+  }
+</style>
+
 </head>
 <body>
  
@@ -931,6 +971,17 @@ body.weather-off #weatherFx{display:none!important;}
     </button>
   </div>
 </header>
+
+<div class="local-time-bar" id="localTimeBar" aria-label="Bangladesh local time and display mode">
+  <div class="local-time-cell">
+    <b><span class="lt-dot" aria-hidden="true"></span><time id="localTime" aria-live="off">--:--:--</time></b>
+    <small>Bangladesh Time</small>
+  </div>
+  <div class="local-time-cell">
+    <b id="displayMode">DESKTOP</b>
+    <small>Display</small>
+  </div>
+</div>
 
 <main id="top">
   <section class="hero" id="hero" aria-label="Introduction">
@@ -2198,7 +2249,7 @@ if(!REDUCE){
 
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="./team-elite-star-supabase-config.js?v=4"></script><script>window.TEAM_ELITE_SUPABASE=window.TEAM_ELITE_SUPABASE_CONFIG||null;</script>
+<script src="./team-elite-star-supabase-config.js?v=5"></script><script>window.TEAM_ELITE_SUPABASE=window.TEAM_ELITE_SUPABASE_CONFIG||null;</script>
 <script id="report-sections-script">
 (()=>{
   const $=s=>document.querySelector(s);
@@ -2710,9 +2761,17 @@ if(!REDUCE){
   const chatTab=$('eliteAiChatTab'),updatesTab=$('eliteAiUpdatesTab'),chatView=$('eliteAiChatView'),updatesView=$('eliteAiUpdatesView');
   const welcome=$('eliteAiWelcome'),transcript=$('eliteAiTranscript'),form=$('eliteAiForm'),input=$('eliteAiInput'),sendBtn=$('eliteAiSend');
   const statusText=$('eliteAiStatusText'),statusDot=$('eliteAiStatusDot');
-  const DEFAULT_WORKER_URL=(()=>{const w=String(window.TEAM_ELITE_SUPABASE_CONFIG?.workerUrl||'').trim().replace(/\/+$/,'').replace(/\/api\/chat$/,'');return w?w+'/api/chat':'https://team-elite-star-ai.YOUR-SUBDOMAIN.workers.dev/api/chat'})();
-  const WORKER_URL=String(window.ELITE_STAR_AI_CONFIG?.workerUrl||DEFAULT_WORKER_URL).trim().replace(/\/$/,'');
-  const isConfigured=/^https:\/\/[a-z0-9.-]+\.workers\.dev\/api\/chat$/i.test(WORKER_URL)&&!WORKER_URL.includes('YOUR-SUBDOMAIN');
+  const RAW_WORKER_URL=String(window.ELITE_STAR_AI_CONFIG?.workerUrl||window.TEAM_ELITE_SUPABASE_CONFIG?.workerUrl||'').trim();
+  function resolveWorkerEndpoint(raw){
+    if(!raw||/YOUR[-_. ]*(?:ACTUAL[-_. ]*)?(?:WORKER|SUBDOMAIN)|PLACEHOLDER|CHANGE[-_. ]?ME/i.test(raw))return '';
+    try{
+      const u=new URL(raw);
+      if(u.protocol!=='https:'||!u.hostname||/YOUR|PLACEHOLDER|CHANGE[-_. ]?ME/i.test(u.hostname))return '';
+      return u.origin+'/api/chat';
+    }catch{return '';}
+  }
+  const WORKER_URL=resolveWorkerEndpoint(RAW_WORKER_URL);
+  const isConfigured=Boolean(WORKER_URL);
   const conversation=[];
   let isBusy=false,hasCheckedHealth=false;
   const assistantHeader=panel.querySelector('.ea-header');
@@ -2866,10 +2925,16 @@ if(!REDUCE){
   const updateText='Here are the latest page improvements:\n\n• Quick assistant: ask for help in Bangla, Banglish, or English.\n• Page navigation: jump to About, Achievements, Team, Command Center, Previous Members, SR Data, or Call Data.\n• Dashboard guidance: get simple explanations of common page controls and KPIs.\n• CSR writing help: draft clear and polite customer-service replies.\n• Privacy reminder: do not share private customer numbers, passwords, PINs, or OTPs.';
   async function checkHealth(){
     hasCheckedHealth=true;
-    if(!isConfigured){setStatus('Temporarily unavailable','error');return;}
+    if(!isConfigured){setStatus('Not connected','error');return;}
     setStatus('Connecting…','');
-    try{const healthUrl=WORKER_URL.replace(/\/api\/chat$/,'/api/health');const response=await fetch(healthUrl,{method:'GET',headers:{'Accept':'application/json'},cache:'no-store',signal:AbortSignal.timeout(4500)});if(!response.ok)throw new Error('Worker health check failed');const data=await response.json();if(!data.ok)throw new Error('Service not ready');setStatus('Online','ready');}
-    catch{setStatus('Connection unavailable','error');}
+    try{
+      const healthUrl=WORKER_URL.replace(/\/api\/chat$/,'/api/health');
+      const response=await fetch(healthUrl,{method:'GET',headers:{'Accept':'application/json'},cache:'no-store',signal:AbortSignal.timeout(6500)});
+      let data={};try{data=await response.json()}catch{}
+      if(response.status===403){setStatus('Check site access','error');return;}
+      if(!response.ok||!data.ok){setStatus('Not connected','error');return;}
+      setStatus('Online','ready');
+    }catch{setStatus('Connection unavailable','error');}
   }
   async function sendMessage(raw){
     const text=String(raw??input.value).trim();if(!text||isBusy)return;if(text.length>3000){addMessage('assistant','Please keep each message under 3,000 characters.');return;}
@@ -2879,7 +2944,7 @@ if(!REDUCE){
     if(/\b(update|updates|what(?:'s| is) new|what changed|recent changes|page change|changelog|release notes)\b|আপডেট|কি পরিবর্তন|কী পরিবর্তন/i.test(text)){
       addMessage('assistant',updateText);conversation.push({role:'model',text:updateText});return;
     }
-    if(!isConfigured){const reply='I’m temporarily unavailable. Please try again later.';addMessage('assistant',reply);conversation.push({role:'model',text:reply});setStatus('Temporarily unavailable','error');return;}
+    if(!isConfigured){const reply='I’m not connected yet. Please ask the site administrator to finish setup, then try again.';addMessage('assistant',reply);conversation.push({role:'model',text:reply});setStatus('Not connected','error');return;}
     isBusy=true;sendBtn.disabled=true;input.disabled=true;const pending=addMessage('assistant','Thinking…',{pending:true});pending.bubble.innerHTML='<span class="ea-typing" aria-label="Thinking"><i></i><i></i><i></i></span>';setStatus('Thinking…','');
     try{
       const history=conversation.slice(-12).map(m=>({role:m.role,text:m.text.slice(0,3000)}));
@@ -2895,10 +2960,27 @@ if(!REDUCE){
   form.addEventListener('submit',e=>{e.preventDefault();sendMessage(input.value)});input.addEventListener('input',resizeInput);input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();form.requestSubmit();}});
   document.querySelectorAll('[data-ai-quick]').forEach(button=>button.addEventListener('click',()=>{const action=button.dataset.aiQuick;if(action==='updates'){setTab('updates');return;}const prompts={guide:'Please give me a simple guide to this Team Elite Star website and explain how to use the Command Center, filters and CSV export.',kpi:'Explain the difference between AHT, quality, attendance, productivity and on-time login in simple, practical terms. If the page does not define an exact target or formula, please say so.',draft:'Help me write a polite, professional CSR response. First ask me what situation or customer issue the reply is for. Remind me not to include personal account details.'};sendMessage(prompts[action]||'Please help me use this page.');}));
   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&panel.classList.contains('open'))closePanel();});
-  if(!isConfigured)setStatus('Temporarily unavailable','error');else setStatus('Ready to connect','');
+  if(!isConfigured)setStatus('Not connected','error');else setStatus('Ready to connect','');
 })();
 </script>
 
 
+
+<script id="team-elite-local-time-runtime">
+(()=>{
+  const timeEl=document.getElementById('localTime');
+  const modeEl=document.getElementById('displayMode');
+  if(!timeEl||!modeEl)return;
+  const formatter=new Intl.DateTimeFormat('en-GB',{timeZone:'Asia/Dhaka',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
+  function updateClock(){
+    timeEl.textContent=formatter.format(new Date());
+    const width=window.innerWidth;
+    modeEl.textContent=width<=600?'MOBILE':width<=1024?'TABLET':'DESKTOP';
+  }
+  updateClock();
+  window.setInterval(updateClock,1000);
+  window.addEventListener('resize',updateClock,{passive:true});
+})();
+</script>
 </body>
 </html>
