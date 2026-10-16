@@ -2786,8 +2786,7 @@ if(!REDUCE){
     </div>
     <div class="ea-view active" id="eliteAiChatView" role="tabpanel" aria-labelledby="eliteAiChatTab">
       <div id="eliteAiWelcome">
-        <div class="ea-welcome-top"><span>✧</span> PERFORMANCE, DECODED.</div>
-        <h3 class="ea-welcome-title">How can I help today?</h3>
+        <h3 class="ea-welcome-title" aria-hidden="true"></h3>
         <p class="ea-welcome-copy">Ask about this page, find a section, understand the dashboard, or draft a polite CSR message. You can write in Bangla, Banglish or English.</p>
         <div class="ea-quick-grid">
           <button class="ea-quick" type="button" data-ai-quick="guide"><i>⌘</i> Help me use this page</button>
@@ -2797,7 +2796,7 @@ if(!REDUCE){
         </div>
         <div class="ea-command-strip" aria-label="Assistant information">
           <span><b>✦</b><small>CREATOR</small><strong>ABU TALHA RAJ</strong></span>
-          <span><b>◉</b><small>CORE</small><strong>TALHA AI</strong></span>
+          <span><b>◉</b><small>CORE</small><strong>ELITE STAR AI</strong></span>
           <span><b>●</b><small>STATUS</small><strong>READY</strong></span>
         </div>
       </div>
@@ -3453,7 +3452,7 @@ if(!REDUCE){
 (()=>{
   const title=document.querySelector('#eliteAiPanel .ea-header-title strong');
   const subtitle=document.querySelector('#eliteAiPanel .ea-header-title small');
-  if(title)title.childNodes[0].nodeValue='Talha AI';
+  if(title)title.childNodes[0].nodeValue='Team Elite Star Assistant';
   if(subtitle){const dot=subtitle.querySelector('#eliteAiStatusDot');const text=subtitle.querySelector('#eliteAiStatusText');if(text)text.textContent='Your personal AI workspace';if(dot)dot.style.display='none'}
 })();
 </script>
@@ -3544,6 +3543,96 @@ if(!REDUCE){
   #eliteAiRoot #eliteAiPanel .ea-updates-intro p,
   #eliteAiRoot #eliteAiPanel .ea-update-item p{color:#b3ad9e!important}
   #eliteAiRoot #eliteAiPanel .ea-update-item:before{background:linear-gradient(#e8c36b,transparent)!important}
+</style>
+<style id="remove-performance-kicker-gap">
+  #eliteAiRoot #eliteAiPanel .ea-welcome-title{margin-top:0!important}
+</style>
+<style id="talha-ai-cross-device-controls">
+  /* Compact functional rail: all assistant actions remain visible without restoring clutter. */
+  #eliteAiRoot #eliteAiPanel .ea-header{display:flex!important;position:relative!important;flex:0 0 50px!important;height:50px!important;min-height:50px!important;padding:7px 14px!important;overflow:visible!important;border-bottom:1px solid rgba(232,195,107,.18)!important;background:rgba(8,7,12,.92)!important;z-index:10!important}
+  #eliteAiRoot #eliteAiPanel .ea-brand-mark{display:grid!important;width:34px!important;height:34px!important;flex:0 0 34px!important;border-radius:10px!important}
+  #eliteAiRoot #eliteAiPanel .ea-header-title{display:block!important;min-width:0!important;flex:1!important}
+  #eliteAiRoot #eliteAiPanel .ea-header-title strong{display:block!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;font-size:.92rem!important}
+  #eliteAiRoot #eliteAiPanel .ea-header-title small{display:flex!important;white-space:nowrap!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiNewChat{display:grid!important;position:static!important;width:34px!important;height:34px!important;margin-left:auto!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiClose{display:grid!important;position:static!important;top:auto!important;right:auto!important;width:34px!important;height:34px!important;margin-left:3px!important}
+  #eliteAiRoot #eliteAiPanel .ea-tabs{display:flex!important;position:relative!important;flex:0 0 42px!important;width:min(900px,100%)!important;height:42px!important;margin:0 auto!important;padding:6px 20px 0!important;gap:6px!important;background:#08070c!important;z-index:9!important}
+  #eliteAiRoot #eliteAiPanel .ea-tab{display:block!important;min-height:32px!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiChatView,
+  #eliteAiRoot #eliteAiPanel #eliteAiUpdatesView{height:auto!important;flex:1 1 0!important;min-height:0!important}
+  #eliteAiRoot #eliteAiPanel .ea-composer-meta{display:flex!important;align-items:center!important;justify-content:space-between!important;min-height:14px!important}
+  #eliteAiRoot #eliteAiPanel .ea-composer-meta>span:first-child{display:block!important}
+  #eliteAiRoot #eliteAiPanel .ea-text-btn{display:inline-block!important;min-height:24px!important;padding:3px 2px!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiChatView{padding-top:6px!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiWelcome{margin-top:10px!important}
+  @media(max-width:700px){
+    #eliteAiRoot #eliteAiPanel .ea-header{flex-basis:48px!important;height:48px!important;min-height:48px!important;padding:6px 9px!important}
+    #eliteAiRoot #eliteAiPanel .ea-brand-mark{width:32px!important;height:32px!important;flex-basis:32px!important}
+    #eliteAiRoot #eliteAiPanel .ea-header-title strong{font-size:.86rem!important}
+    #eliteAiRoot #eliteAiPanel .ea-header-title small{font-size:.55rem!important}
+    #eliteAiRoot #eliteAiPanel #eliteAiNewChat,#eliteAiRoot #eliteAiPanel #eliteAiClose{width:32px!important;height:32px!important}
+    #eliteAiRoot #eliteAiPanel .ea-tabs{flex-basis:39px!important;height:39px!important;padding:5px 12px 0!important}
+    #eliteAiRoot #eliteAiPanel .ea-tab{min-height:30px!important;padding:7px 10px!important;font-size:.64rem!important}
+    #eliteAiRoot #eliteAiPanel .ea-composer-meta{font-size:.54rem!important}
+  }
+  @media(max-width:380px){
+    #eliteAiRoot #eliteAiPanel .ea-header-title small{display:none!important}
+    #eliteAiRoot #eliteAiPanel .ea-tab{padding-left:8px!important;padding-right:8px!important}
+    #eliteAiRoot #eliteAiPanel .ea-composer-meta>span:first-child{display:none!important}
+  }
+</style>
+<style id="talha-full-chat-welcome-layout">
+  /* Keep the welcome prompt inside the chat viewport and make the full prompt readable. */
+  #eliteAiRoot #eliteAiPanel #eliteAiChatView{align-items:stretch!important;overflow:hidden!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiWelcome{width:min(820px,100%)!important;max-width:820px!important;max-height:none!important;overflow:visible!important;margin:14px auto 12px!important}
+  #eliteAiRoot #eliteAiPanel .ea-welcome-title{white-space:normal!important;overflow-wrap:anywhere!important}
+  #eliteAiRoot #eliteAiPanel .ea-welcome-copy{display:block!important;max-width:68ch!important}
+  #eliteAiRoot #eliteAiPanel .ea-quick-grid{width:100%!important}
+  #eliteAiRoot #eliteAiPanel .ea-command-strip{width:100%!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiTranscript{width:min(820px,100%)!important;max-width:820px!important;margin-left:auto!important;margin-right:auto!important}
+  @media(max-width:700px){
+    #eliteAiRoot #eliteAiPanel #eliteAiWelcome{max-height:calc(100% - 12px)!important;overflow-y:auto!important;margin:9px auto 8px!important;padding-bottom:6px!important;scrollbar-width:thin}
+    #eliteAiRoot #eliteAiPanel .ea-welcome-copy{font-size:.76rem!important}
+    #eliteAiRoot #eliteAiPanel .ea-command-strip{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  }
+  @media(max-width:380px){
+    #eliteAiRoot #eliteAiPanel .ea-command-strip{grid-template-columns:1fr!important}
+  }
+</style>
+<style id="talha-chat-fullscreen-transcript">
+  /* Remove the welcome block and let actual chat text occupy the complete chat surface. */
+  #eliteAiRoot #eliteAiPanel #eliteAiWelcome{display:none!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiChatView{padding:0!important;min-height:0!important;overflow:hidden!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiTranscript{display:flex!important;flex:1 1 0!important;width:min(900px,100%)!important;max-width:900px!important;height:auto!important;min-height:0!important;margin:0 auto!important;padding:18px 0 130px!important;overflow-y:auto!important;overflow-x:hidden!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiTranscript[hidden]{display:none!important}
+  #eliteAiRoot #eliteAiPanel .ea-message{width:100%!important;max-width:100%!important}
+  #eliteAiRoot #eliteAiPanel .ea-message.user{width:auto!important;max-width:82%!important;align-self:flex-end!important}
+  @media(max-width:700px){
+    #eliteAiRoot #eliteAiPanel #eliteAiTranscript{padding:14px 0 118px!important}
+    #eliteAiRoot #eliteAiPanel .ea-message.user{max-width:92%!important}
+  }
+</style>
+<style id="talha-top-brand-chat-center">
+  /* Top brand rail + message-only center. */
+  #eliteAiRoot #eliteAiPanel .ea-header{position:relative!important;top:0!important;left:0!important;right:0!important;display:flex!important;flex:0 0 54px!important;height:54px!important;min-height:54px!important;padding:8px 18px!important;background:rgba(8,7,12,.96)!important;border-bottom:1px solid rgba(232,195,107,.2)!important;z-index:40!important}
+  #eliteAiRoot #eliteAiPanel .ea-brand-mark{display:grid!important;visibility:visible!important;opacity:1!important;width:36px!important;height:36px!important;flex:0 0 36px!important}
+  #eliteAiRoot #eliteAiPanel .ea-header-title{display:block!important;visibility:visible!important;opacity:1!important;flex:1 1 auto!important}
+  #eliteAiRoot #eliteAiPanel .ea-header-title strong{display:block!important;color:#ede7d6!important;font-size:.94rem!important}
+  #eliteAiRoot #eliteAiPanel .ea-header-title small{display:flex!important;color:#a29b8a!important}
+  #eliteAiRoot #eliteAiPanel .ea-tabs{display:none!important;height:0!important;min-height:0!important;padding:0!important;overflow:hidden!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiChatView{display:flex!important;flex:1 1 auto!important;height:auto!important;min-height:0!important;padding:0!important;overflow:hidden!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiTranscript{display:flex!important;flex:1 1 0!important;align-content:flex-start!important;justify-content:flex-start!important;margin:0 auto!important;padding:22px 0 132px!important;overflow-y:auto!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiTranscript[hidden]{display:none!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiUpdatesView{display:none!important}
+  #eliteAiRoot #eliteAiPanel .ea-composer-meta,
+  #eliteAiRoot #eliteAiPanel .ea-privacy-note{display:none!important}
+  @media(max-width:700px){
+    #eliteAiRoot #eliteAiPanel .ea-header{flex-basis:50px!important;height:50px!important;min-height:50px!important;padding:7px 10px!important}
+    #eliteAiRoot #eliteAiPanel .ea-brand-mark{width:32px!important;height:32px!important;flex-basis:32px!important}
+    #eliteAiRoot #eliteAiPanel .ea-header-title strong{font-size:.86rem!important}
+    #eliteAiRoot #eliteAiPanel .ea-header-title small{font-size:.55rem!important}
+    #eliteAiRoot #eliteAiPanel #eliteAiTranscript{padding:16px 0 120px!important}
+  }
 </style>
 </body>
 </html>
