@@ -1241,6 +1241,8 @@ let MEMBERS = [];
 
 const REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const FINE   = window.matchMedia('(pointer:fine)').matches;
+const LOW_END = !REDUCE && ((Number(navigator.hardwareConcurrency||8)<=4) || (Number(navigator.deviceMemory||8)<=4) || Boolean(navigator.connection?.saveData));
+document.documentElement.classList.toggle('low-end-device',LOW_END);
  
 (function pl(){
   const el = document.getElementById('plName');
@@ -1252,7 +1254,7 @@ function hidePreloader(){ const p=document.getElementById('preloader'); if(p) p.
 if(REDUCE){
   hidePreloader();
 }else{
-  const PRELOADER_MIN_MS = 3200;
+  const PRELOADER_MIN_MS = LOW_END ? 1800 : 2600;
   const preloaderStartedAt = performance.now();
   window.addEventListener('load', ()=>{
     const remaining = Math.max(0, PRELOADER_MIN_MS - (performance.now() - preloaderStartedAt));
@@ -1371,7 +1373,7 @@ window.addEventListener('scroll',()=>{ if(!progTicking){ requestAnimationFrame((
  
  
 let MX=window.innerWidth/2, MY=window.innerHeight/2;
-if(FINE && !REDUCE){
+if(FINE && !REDUCE && !LOW_END){
   document.body.classList.add('fx');
   const dot=document.getElementById('cursorDot'), ring=document.getElementById('cursorRing'), spot=document.getElementById('spotlight');
   let rx=MX,ry=MY,sx=MX,sy=MY;
@@ -1395,7 +1397,7 @@ if(FINE && !REDUCE){
   window.addEventListener('pointermove',e=>{MX=e.clientX;MY=e.clientY;},{passive:true});
 }
  
-if(FINE && !REDUCE){
+if(FINE && !REDUCE && !LOW_END){
   const box=document.getElementById('sparkles'); let last=0;
   window.addEventListener('pointermove',e=>{
     const now=performance.now(); if(now-last<70) return; last=now;
@@ -1437,9 +1439,9 @@ if(!REDUCE){
   const canvas=document.getElementById('star-canvas');
   if(!canvas||typeof THREE==='undefined') return;
   let W=innerWidth,H=innerHeight;
-  const lite = !window.matchMedia('(pointer:fine)').matches;
+  const lite = !FINE;
   const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true,powerPreference:'high-performance',preserveDrawingBuffer:false});
-  renderer.setPixelRatio(Math.min(devicePixelRatio||1,2)); renderer.setSize(W,H); renderer.setClearColor(0x000000,0);
+  renderer.setPixelRatio(Math.min(devicePixelRatio||1,LOW_END?1.5:2)); renderer.setSize(W,H); renderer.setClearColor(0x000000,0);
   const scene=new THREE.Scene();
   const camera=new THREE.PerspectiveCamera(46,W/H,0.1,100); camera.position.set(0,0,6.2);
   const rig=new THREE.Group(); scene.add(rig);
@@ -1453,7 +1455,7 @@ if(!REDUCE){
   const star=new THREE.Mesh(geo,mat); rig.add(star);
   const wire=new THREE.Mesh(geo,new THREE.MeshBasicMaterial({color:0xFCE7B8,wireframe:true,transparent:true,opacity:0.06})); wire.scale.setScalar(1.02); rig.add(wire);
  
-  const COUNT=lite?90:420,pos=new Float32Array(COUNT*3);
+  const COUNT=lite?90:(LOW_END?220:420),pos=new Float32Array(COUNT*3);
   for(let i=0;i<COUNT;i++){const r=4+Math.random()*9,th=Math.random()*Math.PI*2,ph=Math.acos(2*Math.random()-1);
     pos[i*3]=r*Math.sin(ph)*Math.cos(th);pos[i*3+1]=r*Math.sin(ph)*Math.sin(th);pos[i*3+2]=r*Math.cos(ph)-2;}
   const pGeo=new THREE.BufferGeometry(); pGeo.setAttribute('position',new THREE.BufferAttribute(pos,3));
@@ -1477,12 +1479,15 @@ if(!REDUCE){
   canvas.addEventListener('webglcontextlost',e=>{ e.preventDefault(); contextLost=true; },false);
   canvas.addEventListener('webglcontextrestored',()=>{ contextLost=false; loop(); },false);
 
-  let rafId=0,running=false;
+  let rafId=0,running=false,lastFrameTime=0;
   function loop(){
     if(running || !pageVisible || !inView || contextLost) return;
     running=true;
     const frame=()=>{
       if(!pageVisible || !inView || contextLost){running=false;rafId=0;return;}
+      const now=performance.now();
+      if(LOW_END && now-lastFrameTime<33){rafId=requestAnimationFrame(frame);return;}
+      lastFrameTime=now;
       t+=0.01;
        if(!REDUCE){
         const tx=(MX/innerWidth-0.5),ty=(MY/innerHeight-0.5);
@@ -2135,10 +2140,10 @@ if(!REDUCE){
       card.style.setProperty('--lift','0px');card.style.setProperty('--px','0px');card.style.setProperty('--py','0px');
     };
     const update=(x,y)=>{
-      if(state.lowPower || !state.depth){ reset(); return; }
+      if(!state.depth){ reset(); return; }
       const r=card.getBoundingClientRect(), px=(x-r.left)/r.width, py=(y-r.top)/r.height;
       const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
-      const maxX=state.depth?9:0, maxY=state.depth?11:0;
+      const maxX=state.lowPower?6:9, maxY=state.lowPower?7:11;
       const rx=clamp((.5-py)*maxX,-maxX,maxX), ry=clamp((px-.5)*maxY,-maxY,maxY);
       card.style.setProperty('--rx',rx.toFixed(2)+'deg');
       card.style.setProperty('--ry',ry.toFixed(2)+'deg');
@@ -2215,7 +2220,7 @@ if(!REDUCE){
   const layer=document.getElementById('weatherFx');
   if(!layer || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const mobile=window.matchMedia('(max-width:860px)').matches;
-  const count=mobile?14:30;
+  const count=mobile?10:(LOW_END?18:30);
   const frag=document.createDocumentFragment();
   for(let i=0;i<count;i++){
     const petal=document.createElement('i');
@@ -2590,8 +2595,6 @@ if(!REDUCE){
 #eliteAiRoot .ea-send-btn,
 #eliteAiRoot .ea-text-btn,
 #eliteAiRoot .ea-copy-answer{touch-action:manipulation;}
-/* The main page has a custom cursor that is intentionally below this UI.
-   Restore a native cursor within the assistant so it never appears missing. */
 @media (pointer:fine){
   body.fx #eliteAiRoot,body.fx #eliteAiRoot *{cursor:auto!important;}
   body.fx #eliteAiRoot button,body.fx #eliteAiRoot [role="tab"]{cursor:pointer!important;}
@@ -3762,54 +3765,17 @@ if(!REDUCE){
   keepLatestVisible();
 })();
 </script>
-<style id="talha-member-card-mouse-effect">
+<style id="talha-card-depth-final">
 @media(pointer:fine) and (prefers-reduced-motion:no-preference){
-  .member-card.talha-card-hover{
-    transform:perspective(950px) rotateX(var(--card-rx,0deg)) rotateY(var(--card-ry,0deg)) translate3d(0,-7px,0) scale(1.012)!important;
-    border-color:rgba(252,231,184,.78)!important;
-    box-shadow:0 28px 64px -30px rgba(232,195,107,.72),inset 0 1px 0 rgba(252,231,184,.24)!important;
+  .member-card.exp-tilting{
+    transform:perspective(1050px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translate3d(var(--px,0px),var(--py,0px),var(--lift,0px)) scale(1.014)!important;
+    border-color:rgba(252,231,184,.72)!important;
+    box-shadow:0 30px 72px -34px rgba(232,195,107,.68),inset 0 1px 0 rgba(252,231,184,.2)!important;
     z-index:4;
   }
-  .member-card.talha-card-hover::before{opacity:1!important;background:radial-gradient(260px 220px at var(--mx,50%) var(--my,50%),rgba(252,231,184,.2),transparent 64%)!important}
-  .member-card.talha-card-hover::after{opacity:1!important;background:radial-gradient(220px 220px at var(--mx,50%) var(--my,50%),var(--gold-shine),transparent 62%)!important}
-  .member-card.talha-card-hover .avatar{transform:translateZ(22px) scale(1.045)!important}
-  .member-card.talha-card-hover h3{transform:translateZ(14px)!important}
-  .member-card.talha-card-hover .badge{transform:translateY(-2px)!important;background:rgba(232,195,107,.14)!important}
+  .member-card.exp-tilting::before{opacity:.95!important}
+  .member-card.exp-tilting::after{opacity:.9!important}
 }
 </style>
-<script id="talha-member-card-mouse-effect-runtime">
-(()=>{
-  const fine=window.matchMedia('(pointer:fine)');
-  const reduced=window.matchMedia('(prefers-reduced-motion:reduce)');
-  if(!fine.matches||reduced.matches)return;
-  function reset(card){
-    card.classList.remove('talha-card-hover');
-    card.style.removeProperty('--card-rx');
-    card.style.removeProperty('--card-ry');
-    card.style.removeProperty('--mx');
-    card.style.removeProperty('--my');
-  }
-  function bind(){
-    document.querySelectorAll('.member-card:not([data-talha-card-effect])').forEach(card=>{
-      card.dataset.talhaCardEffect='1';
-      card.addEventListener('pointermove',event=>{
-        const rect=card.getBoundingClientRect();
-        const x=Math.max(0,Math.min(1,(event.clientX-rect.left)/Math.max(1,rect.width)));
-        const y=Math.max(0,Math.min(1,(event.clientY-rect.top)/Math.max(1,rect.height)));
-        card.style.setProperty('--mx',(x*100).toFixed(2)+'%');
-        card.style.setProperty('--my',(y*100).toFixed(2)+'%');
-        card.style.setProperty('--card-rx',((.5-y)*8).toFixed(2)+'deg');
-        card.style.setProperty('--card-ry',((x-.5)*10).toFixed(2)+'deg');
-        card.classList.add('talha-card-hover');
-      },{passive:true});
-      card.addEventListener('pointerleave',()=>reset(card),{passive:true});
-      card.addEventListener('blur',()=>reset(card),{passive:true});
-    });
-  }
-  bind();
-  const grid=document.getElementById('membersGrid');
-  if(grid)new MutationObserver(bind).observe(grid,{childList:true,subtree:true});
-})();
-</script>
 </body>
 </html>
