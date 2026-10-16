@@ -3717,5 +3717,37 @@ if(!REDUCE){
     #eliteAiRoot #eliteAiPanel.ea-keyboard-open.ea-drag-positioned{left:5px!important;right:5px!important;top:5px!important;width:auto!important;height:min(560px,calc(var(--ea-vv-height,100dvh) - 10px))!important;max-height:calc(var(--ea-vv-height,100dvh) - 10px)!important}
   }
 </style>
+<style id="talha-mobile-reply-visibility-fix">
+  @media(max-width:860px){
+    #eliteAiRoot #eliteAiPanel.ea-keyboard-open #eliteAiChatView{padding-bottom:0!important;overflow:hidden!important}
+    #eliteAiRoot #eliteAiPanel.ea-keyboard-open #eliteAiTranscript{padding-bottom:calc(var(--ea-composer-height,104px) + 18px)!important;overflow-anchor:none!important;scroll-padding-bottom:calc(var(--ea-composer-height,104px) + 18px)!important}
+  }
+</style>
+<script id="talha-mobile-reply-visibility-fix-runtime">
+(()=>{
+  const panel=document.getElementById('eliteAiPanel');
+  const transcript=document.getElementById('eliteAiTranscript');
+  const composer=document.querySelector('#eliteAiPanel .ea-composer-wrap');
+  if(!panel||!transcript||!composer)return;
+  let scrollTimer=0;
+  function keepLatestVisible(){
+    const height=Math.ceil(composer.getBoundingClientRect().height||104);
+    panel.style.setProperty('--ea-composer-height',height+'px');
+    transcript.style.setProperty('padding-bottom',(height+18)+'px','important');
+    transcript.style.setProperty('scroll-padding-bottom',(height+18)+'px','important');
+    if(!transcript.hidden){
+      cancelAnimationFrame(scrollTimer);
+      scrollTimer=requestAnimationFrame(()=>requestAnimationFrame(()=>{transcript.scrollTop=transcript.scrollHeight}))
+    }
+  }
+  const observer=new ResizeObserver(keepLatestVisible);observer.observe(composer);
+  const messages=new MutationObserver(keepLatestVisible);messages.observe(transcript,{childList:true,subtree:true});
+  window.visualViewport?.addEventListener('resize',keepLatestVisible,{passive:true});
+  window.visualViewport?.addEventListener('scroll',keepLatestVisible,{passive:true});
+  window.addEventListener('resize',keepLatestVisible,{passive:true});
+  document.getElementById('eliteAiInput')?.addEventListener('focus',()=>setTimeout(keepLatestVisible,120),{passive:true});
+  keepLatestVisible();
+})();
+</script>
 </body>
 </html>
