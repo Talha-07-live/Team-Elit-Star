@@ -3634,5 +3634,20 @@ if(!REDUCE){
     #eliteAiRoot #eliteAiPanel #eliteAiTranscript{padding:16px 0 120px!important}
   }
 </style>
+<style id="talha-assistant-top-gap-hard-fix">
+  /* Hard-lock the open assistant to the viewport so the header can never start halfway down. */
+  #eliteAiRoot #eliteAiPanel,
+  #eliteAiRoot #eliteAiPanel.open,
+  #eliteAiRoot #eliteAiPanel.ea-drag-positioned{position:fixed!important;inset:0!important;top:0!important;right:0!important;bottom:0!important;left:0!important;width:100vw!important;height:100dvh!important;max-width:none!important;max-height:none!important;min-height:0!important;margin:0!important;padding:0!important;transform:none!important;justify-content:flex-start!important;align-items:stretch!important;overflow:hidden!important}
+  #eliteAiRoot #eliteAiPanel .ea-header{order:0!important;align-self:stretch!important;margin:0!important;transform:none!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiChatView{order:1!important;align-self:stretch!important;margin:0!important;transform:none!important}
+  #eliteAiRoot #eliteAiPanel .ea-composer-wrap{bottom:0!important;margin:0!important}
+</style>
+<style id="talha-desktop-update-notification-safe-zone">
+  /* Desktop notification lane: stay clear of the bottom-left assistant launcher/panel. */
+  @media(min-width:861px){
+    #talhaUpdateToast{left:auto!important;right:24px!important;top:136px!important;bottom:auto!important;width:min(330px,calc(100vw - 48px))!important}
+  }
+</style>
 </body>
 </html>
