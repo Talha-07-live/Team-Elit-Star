@@ -2799,7 +2799,7 @@ if(!REDUCE){
           <button class="ea-send-btn" id="eliteAiSend" type="submit" aria-label="Send message" title="Send message">↑</button>
         </form>
         <div class="ea-composer-meta"><span>Enter to send · Shift+Enter for a new line</span><span class="ea-meta-actions"><button class="ea-text-btn" id="eliteAiClear" type="button">Clear chat</button></span></div>
-        <div class="ea-privacy-note"><span aria-hidden="true">♢</span><span>For your safety, never share full customer numbers, account details, passwords, PINs or OTPs.</span></div>
+        <div class="ea-privacy-note"><span aria-hidden="true">♢</span><span>Made By Talha</span></div>
       </div>
     </div>
     <div class="ea-view" id="eliteAiUpdatesView" role="tabpanel" aria-labelledby="eliteAiUpdatesTab">
@@ -2990,8 +2990,14 @@ if(!REDUCE){
       const response=await fetch(healthUrl,{method:'GET',headers:{'Accept':'application/json'},cache:'no-store',signal:AbortSignal.timeout(6500)});
       let data={};try{data=await response.json()}catch{}
       if(response.status===403){setStatus('Check site access','error');return;}
-      if(!response.ok||!data.ok){setStatus('Not connected','error');return;}
-      setStatus('Ready','ready');
+      if(!response.ok||!data.ok){
+        const code=String(data.code||'');
+        const label=code==='MISSING_API_KEY'?'Service key missing':code==='INVALID_API_KEY'?'Check service key':code==='API_ACCESS_DENIED'?'Check API access':code==='MODEL_NOT_FOUND'?'Check model setting':code==='QUOTA_OR_RATE_LIMIT'?'Usage limit reached':code==='ORIGIN_NOT_ALLOWED'?'Check site access':'Connection needs attention';
+        setStatus(label,'error');
+        console.warn('[Elite Star Assistant] Connection check failed:',code||response.status);
+        return;
+      }
+      setStatus(data.generationTested?'AI connected':'Service ready','ready');
     }catch{setStatus('Connection unavailable','error');}
   }
   async function sendMessage(raw){
@@ -3008,7 +3014,7 @@ if(!REDUCE){
       const history=conversation.slice(-12).map(m=>({role:m.role,text:m.text.slice(0,3000)}));
       const response=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({messages:history}),signal:AbortSignal.timeout(45000),cache:'no-store'});
       let data={};try{data=await response.json()}catch{}
-      if(!response.ok){const serverError=String(data.error||'');console.warn('[Elite Star Assistant] Worker request failed',{status:response.status,error:serverError});let publicError='Sorry, I could not reply just now. Please try again in a moment.';if(response.status===429)publicError='I’m a little busy right now. Please try again shortly.';throw new Error('PUBLIC: '+publicError);}
+      if(!response.ok){const serverError=String(data.error||'');console.warn('[Elite Star Assistant] Worker request failed',{status:response.status,error:serverError,code:data.code||''});let publicError='Sorry, I could not reply just now. Please try again in a moment.';if(response.status===400)publicError='The assistant needs a quick service update. Please try again after the site has been refreshed.';else if(response.status===401||response.status===403)publicError='I can’t access the assistant service right now. Please ask the site administrator to check the connection settings.';else if(response.status===404)publicError='The assistant service is not available at the moment. Please ask the site administrator to check its settings.';else if(response.status===429)publicError='I’m a little busy right now. Please try again shortly.';throw new Error('PUBLIC: '+publicError);}
       const reply=String(data.reply||'I could not generate a reply. Please try again.').slice(0,12000);
       pending.node.remove();addMessage('assistant',reply);conversation.push({role:'model',text:reply});if(conversation.length>20)conversation.splice(0,conversation.length-20);setStatus('Online','ready');
     }catch(error){pending.node.remove();let msg=String(error?.message||'');if(msg.startsWith('PUBLIC: ')){msg=msg.slice(8);}else if(error?.name==='TimeoutError'){msg='That took a little too long. Please try again.';}else if(/Failed to fetch|NetworkError|Load failed/i.test(msg)){msg='I can’t reach the chat right now. Please refresh the page and try again.';}else{console.warn('[Elite Star Assistant] Chat error',error);msg='Sorry, I could not reply just now. Please try again in a moment.';}addMessage('assistant',msg);conversation.push({role:'model',text:msg});setStatus('Try again','error');}
