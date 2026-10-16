@@ -2704,6 +2704,64 @@ if(!REDUCE){
   #eliteAiRoot #eliteAiPanel.ea-drag-positioned{min-height:0!important;}
 }
 
+/* Final mobile-first sizing and keyboard-aware layout */
+#eliteAiRoot #eliteAiLauncher:not(.ea-drag-positioned){
+  left:auto!important;right:20px!important;top:auto!important;bottom:24px!important;
+  max-width:calc(100vw - 24px)!important;min-height:48px!important;
+}
+#eliteAiRoot #eliteAiPanel:not(.ea-drag-positioned){
+  left:auto!important;right:18px!important;top:auto!important;bottom:94px!important;
+  width:min(370px,calc(100vw - 36px))!important;
+  height:min(620px,calc(100dvh - 125px))!important;
+  max-height:calc(100dvh - 24px)!important;min-height:0!important;
+}
+#eliteAiRoot #eliteAiPanel.ea-drag-positioned{
+  width:min(var(--ea-panel-width),calc(100vw - 16px))!important;
+  max-width:calc(100vw - 16px)!important;max-height:calc(100dvh - 16px)!important;min-height:0!important;
+}
+#eliteAiRoot #eliteAiPanel .ea-view.active{min-height:0!important;overflow:hidden!important;}
+#eliteAiRoot #eliteAiPanel #eliteAiTranscript{flex:1 1 0!important;min-height:0!important;overflow-y:auto!important;}
+#eliteAiRoot #eliteAiPanel .ea-composer-wrap{flex:0 0 auto!important;padding-bottom:max(9px,env(safe-area-inset-bottom,0px))!important;}
+#eliteAiRoot #eliteAiInput{font-size:16px!important;line-height:1.4!important;max-height:88px!important;}
+@media(max-width:860px){
+  #eliteAiRoot #eliteAiLauncher:not(.ea-drag-positioned){
+    left:auto!important;right:12px!important;top:auto!important;
+    bottom:calc(130px + env(safe-area-inset-bottom,0px))!important;
+    width:max-content!important;max-width:calc(100vw - 24px)!important;min-height:46px!important;
+  }
+  #eliteAiRoot #eliteAiPanel:not(.ea-drag-positioned){
+    left:10px!important;right:10px!important;top:calc(8px + env(safe-area-inset-top,0px))!important;
+    bottom:calc(130px + env(safe-area-inset-bottom,0px))!important;
+    width:auto!important;height:auto!important;max-height:none!important;min-height:0!important;
+    border-radius:15px!important;
+  }
+  #eliteAiRoot #eliteAiPanel.ea-drag-positioned:not(.ea-keyboard-open){
+    max-width:calc(100vw - 16px)!important;max-height:calc(100dvh - 16px)!important;min-height:0!important;
+  }
+  /* When the soft keyboard opens, use the visual viewport as the available screen. */
+  #eliteAiRoot #eliteAiPanel.ea-keyboard-open,
+  #eliteAiRoot #eliteAiPanel.ea-keyboard-open.ea-drag-positioned{
+    position:fixed!important;left:max(6px,calc((100vw - 360px)/2))!important;right:auto!important;
+    top:calc(var(--ea-vv-top,0px) + 6px)!important;bottom:auto!important;
+    width:min(360px,calc(100vw - 12px))!important;
+    height:max(180px,calc(var(--ea-vv-height,100dvh) - 12px))!important;
+    min-height:0!important;max-height:none!important;border-radius:14px!important;
+    transform:none!important;overflow:hidden!important;
+  }
+  #eliteAiRoot #eliteAiPanel.ea-keyboard-open #eliteAiChatView{min-height:0!important;overflow:hidden!important;}
+  #eliteAiRoot #eliteAiPanel.ea-keyboard-open #eliteAiWelcome{display:none!important;}
+  #eliteAiRoot #eliteAiPanel.ea-keyboard-open #eliteAiTranscript{display:flex!important;flex:1 1 0!important;min-height:0!important;}
+  #eliteAiRoot #eliteAiPanel.ea-keyboard-open .ea-composer-wrap{flex:0 0 auto!important;padding:6px 8px max(7px,env(safe-area-inset-bottom,0px))!important;}
+  #eliteAiRoot #eliteAiPanel.ea-keyboard-open .ea-composer-meta,
+  #eliteAiRoot #eliteAiPanel.ea-keyboard-open .ea-privacy-note{display:none!important;}
+}
+@media(max-width:380px){
+  #eliteAiRoot #eliteAiPanel:not(.ea-keyboard-open){border-radius:13px!important;}
+  #eliteAiRoot #eliteAiPanel .ea-header{gap:7px!important;padding:9px!important;}
+  #eliteAiRoot #eliteAiPanel .ea-brand-mark{width:32px!important;height:32px!important;}
+  #eliteAiRoot #eliteAiPanel .ea-header-title strong{font-size:.88rem!important;}
+}
+
 </style>
 <div id="eliteAiRoot">
   <button id="eliteAiLauncher" type="button" aria-label="Open Elite Star Assistant" aria-controls="eliteAiPanel" aria-expanded="false">
@@ -2761,7 +2819,7 @@ if(!REDUCE){
   const chatTab=$('eliteAiChatTab'),updatesTab=$('eliteAiUpdatesTab'),chatView=$('eliteAiChatView'),updatesView=$('eliteAiUpdatesView');
   const welcome=$('eliteAiWelcome'),transcript=$('eliteAiTranscript'),form=$('eliteAiForm'),input=$('eliteAiInput'),sendBtn=$('eliteAiSend');
   const statusText=$('eliteAiStatusText'),statusDot=$('eliteAiStatusDot');
-  const RAW_WORKER_URL=String(window.ELITE_STAR_AI_CONFIG?.workerUrl||window.TEAM_ELITE_SUPABASE_CONFIG?.workerUrl||'').trim();
+  const RAW_WORKER_URL='https://elitestarai.mirrorleechbot202.workers.dev';
   function resolveWorkerEndpoint(raw){
     if(!raw||/YOUR[-_. ]*(?:ACTUAL[-_. ]*)?(?:WORKER|SUBDOMAIN)|PLACEHOLDER|CHANGE[-_. ]?ME/i.test(raw))return '';
     try{
@@ -2775,7 +2833,7 @@ if(!REDUCE){
   const conversation=[];
   let isBusy=false,hasCheckedHealth=false;
   const assistantHeader=panel.querySelector('.ea-header');
-  const positionPrefix='elite-star-assistant-pos-v3-';
+  const positionPrefix='elite-star-assistant-pos-v4-';
   let suppressLauncherClickUntil=0;
 
   function deviceBucket(){return matchMedia('(max-width: 860px)').matches?'mobile':'desktop';}
@@ -2933,7 +2991,7 @@ if(!REDUCE){
       let data={};try{data=await response.json()}catch{}
       if(response.status===403){setStatus('Check site access','error');return;}
       if(!response.ok||!data.ok){setStatus('Not connected','error');return;}
-      setStatus('Online','ready');
+      setStatus('Ready','ready');
     }catch{setStatus('Connection unavailable','error');}
   }
   async function sendMessage(raw){
@@ -2950,10 +3008,10 @@ if(!REDUCE){
       const history=conversation.slice(-12).map(m=>({role:m.role,text:m.text.slice(0,3000)}));
       const response=await fetch(WORKER_URL,{method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},body:JSON.stringify({messages:history}),signal:AbortSignal.timeout(45000),cache:'no-store'});
       let data={};try{data=await response.json()}catch{}
-      if(!response.ok){throw new Error('A reply could not be generated right now. Please try again in a moment.');}
+      if(!response.ok){const serverError=String(data.error||'');console.warn('[Elite Star Assistant] Worker request failed',{status:response.status,error:serverError});let publicError='Sorry, I could not reply just now. Please try again in a moment.';if(response.status===429)publicError='I’m a little busy right now. Please try again shortly.';throw new Error('PUBLIC: '+publicError);}
       const reply=String(data.reply||'I could not generate a reply. Please try again.').slice(0,12000);
       pending.node.remove();addMessage('assistant',reply);conversation.push({role:'model',text:reply});if(conversation.length>20)conversation.splice(0,conversation.length-20);setStatus('Online','ready');
-    }catch(error){pending.node.remove();let msg=error?.name==='TimeoutError'?'This request took too long. Please try again.':String(error?.message||'Connection failed. Please try again.');if(msg.includes('Failed to fetch')||msg.includes('NetworkError'))msg='The assistant is temporarily unavailable. Please try again in a moment.';else msg='A reply could not be generated right now. Please try again in a moment.';addMessage('assistant',msg);conversation.push({role:'model',text:msg});setStatus('Connection unavailable','error');}
+    }catch(error){pending.node.remove();let msg=String(error?.message||'');if(msg.startsWith('PUBLIC: ')){msg=msg.slice(8);}else if(error?.name==='TimeoutError'){msg='That took a little too long. Please try again.';}else if(/Failed to fetch|NetworkError|Load failed/i.test(msg)){msg='I can’t reach the chat right now. Please refresh the page and try again.';}else{console.warn('[Elite Star Assistant] Chat error',error);msg='Sorry, I could not reply just now. Please try again in a moment.';}addMessage('assistant',msg);conversation.push({role:'model',text:msg});setStatus('Try again','error');}
     finally{isBusy=false;sendBtn.disabled=false;input.disabled=false;input.focus({preventScroll:true});}
   }
   launcher.addEventListener('click',()=>{if(Date.now()<suppressLauncherClickUntil)return;panel.classList.contains('open')?closePanel():openPanel();});closeBtn.addEventListener('click',closePanel);newChatBtn.addEventListener('click',resetChat);chatTab.addEventListener('click',()=>setTab('chat'));updatesTab.addEventListener('click',()=>setTab('updates'));$('eliteAiClear').addEventListener('click',resetChat);
@@ -2964,7 +3022,52 @@ if(!REDUCE){
 })();
 </script>
 
-
+<script id="elite-star-mobile-keyboard-runtime">
+(()=>{
+  const root=document.getElementById('eliteAiRoot');
+  const panel=document.getElementById('eliteAiPanel');
+  const input=document.getElementById('eliteAiInput');
+  const welcome=document.getElementById('eliteAiWelcome');
+  const transcript=document.getElementById('eliteAiTranscript');
+  if(!root||!panel||!input)return;
+  const viewport=window.visualViewport;
+  let savedPanelVars=null;
+  function isSmall(){return window.matchMedia('(max-width: 860px)').matches;}
+  function updateViewport(){
+    const vv=window.visualViewport;
+    const height=vv&&Number.isFinite(vv.height)?vv.height:window.innerHeight;
+    const top=vv&&Number.isFinite(vv.offsetTop)?vv.offsetTop:0;
+    root.style.setProperty('--ea-vv-height',Math.max(180,height)+'px');
+    root.style.setProperty('--ea-vv-top',Math.max(0,top)+'px');
+    const shouldUseKeyboardLayout=isSmall()&&panel.classList.contains('open')&&document.activeElement===input;
+    if(shouldUseKeyboardLayout){
+      if(!panel.classList.contains('ea-keyboard-open')){
+        savedPanelVars={left:panel.style.getPropertyValue('--ea-panel-left'),top:panel.style.getPropertyValue('--ea-panel-top'),width:panel.style.getPropertyValue('--ea-panel-width'),height:panel.style.getPropertyValue('--ea-panel-height')};
+      }
+      panel.classList.add('ea-keyboard-open');
+      if(welcome&&transcript&&!transcript.children.length)welcome.hidden=true;
+    }else if(panel.classList.contains('ea-keyboard-open')){
+      panel.classList.remove('ea-keyboard-open');
+      if(savedPanelVars){
+        for(const [key,value] of Object.entries({left:'left',top:'top',width:'width',height:'height'})){
+          const prop='--ea-panel-'+key;
+          if(savedPanelVars[value])panel.style.setProperty(prop,savedPanelVars[value]);
+          else panel.style.removeProperty(prop);
+        }
+      }
+      savedPanelVars=null;
+      if(welcome&&transcript&&!transcript.children.length)welcome.hidden=false;
+    }
+  }
+  input.addEventListener('focus',()=>{updateViewport();setTimeout(updateViewport,100);setTimeout(updateViewport,320);});
+  input.addEventListener('blur',()=>setTimeout(updateViewport,120));
+  window.addEventListener('resize',updateViewport,{passive:true});
+  window.addEventListener('orientationchange',()=>setTimeout(updateViewport,150),{passive:true});
+  if(viewport){viewport.addEventListener('resize',updateViewport,{passive:true});viewport.addEventListener('scroll',updateViewport,{passive:true});}
+  document.getElementById('eliteAiClose')?.addEventListener('click',()=>setTimeout(updateViewport,50));
+  updateViewport();
+})();
+</script>
 
 <script id="team-elite-local-time-runtime">
 (()=>{
