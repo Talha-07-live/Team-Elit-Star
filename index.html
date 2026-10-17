@@ -3785,9 +3785,11 @@ if(!REDUCE){
   let scrollTimer=0;
   function keepLatestVisible(){
     const height=Math.ceil(composer.getBoundingClientRect().height||104);
+    const flowComposer=getComputedStyle(composer).position==='static';
+    const bottomSpace=flowComposer?12:height+18;
     panel.style.setProperty('--ea-composer-height',height+'px');
-    transcript.style.setProperty('padding-bottom',(height+18)+'px','important');
-    transcript.style.setProperty('scroll-padding-bottom',(height+18)+'px','important');
+    transcript.style.setProperty('padding-bottom',bottomSpace+'px','important');
+    transcript.style.setProperty('scroll-padding-bottom',bottomSpace+'px','important');
     if(!transcript.hidden){
       cancelAnimationFrame(scrollTimer);
       scrollTimer=requestAnimationFrame(()=>requestAnimationFrame(()=>{transcript.scrollTop=transcript.scrollHeight}))
@@ -3821,5 +3823,122 @@ if(!REDUCE){
   @keyframes talhaReplyCursor{0%,100%{opacity:.22}50%{opacity:1}}
   @media(prefers-reduced-motion:reduce){#eliteAiRoot #eliteAiPanel .ea-type-cursor{animation:none;opacity:.65}}
 </style>
+<style id="talha-reference-chat-fit">
+  #eliteAiRoot{--ea-safe-bottom:env(safe-area-inset-bottom,0px);--ea-keyboard-gap:0px}
+  #eliteAiRoot #eliteAiPanel,
+  #eliteAiRoot #eliteAiPanel.open,
+  #eliteAiRoot #eliteAiPanel.ea-drag-positioned{
+    width:min(390px,calc(100vw - 24px))!important;
+    height:min(650px,calc(100dvh - 120px - var(--ea-keyboard-gap)))!important;
+    min-height:360px!important;
+    max-height:calc(100dvh - 16px - var(--ea-keyboard-gap))!important;
+    flex-direction:column!important;
+    overflow:hidden!important;
+  }
+  #eliteAiRoot #eliteAiPanel.open{display:flex!important}
+  #eliteAiRoot #eliteAiPanel .ea-view.active{display:flex!important;flex:1 1 auto!important;min-height:0!important;overflow:hidden!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiChatView{display:flex!important;flex-direction:column!important;min-height:0!important;padding:0!important;overflow:hidden!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiTranscript{display:flex!important;flex:1 1 auto!important;width:100%!important;max-width:none!important;min-height:0!important;height:auto!important;margin:0!important;padding:13px 12px 12px!important;overflow-y:auto!important;overflow-x:hidden!important;scroll-behavior:smooth!important;overscroll-behavior:contain!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiTranscript[hidden]{display:none!important}
+  #eliteAiRoot #eliteAiPanel .ea-message{width:auto!important;max-width:91%!important;align-self:flex-start!important;margin:0 0 10px!important;gap:5px!important}
+  #eliteAiRoot #eliteAiPanel .ea-message.user{width:auto!important;max-width:84%!important;align-self:flex-end!important;align-items:flex-end!important}
+  #eliteAiRoot #eliteAiPanel .ea-bubble{font-size:.79rem!important;line-height:1.62!important;white-space:pre-wrap!important;overflow-wrap:anywhere!important}
+  #eliteAiRoot #eliteAiPanel .ea-composer-wrap{position:static!important;left:auto!important;right:auto!important;bottom:auto!important;flex:0 0 auto!important;width:100%!important;margin:0!important;padding:10px 11px calc(10px + var(--ea-safe-bottom))!important;border-top:1px solid rgba(255,255,255,.08)!important;background:rgba(8,7,12,.98)!important;z-index:30!important}
+  #eliteAiRoot #eliteAiPanel .ea-composer{width:100%!important}
+  #eliteAiRoot #eliteAiPanel .ea-composer-meta{margin-top:6px!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiUpdatesView{flex:1 1 auto!important;min-height:0!important;height:auto!important;overflow-y:auto!important;overflow-x:hidden!important;padding:13px 12px calc(16px + var(--ea-safe-bottom))!important}
+  @media(max-width:860px){
+    #eliteAiRoot #eliteAiPanel,
+    #eliteAiRoot #eliteAiPanel.open,
+    #eliteAiRoot #eliteAiPanel.ea-drag-positioned{width:auto!important;min-width:0!important;min-height:0!important;max-width:none!important;border-radius:18px!important}
+    #eliteAiRoot #eliteAiPanel .ea-message{max-width:93%!important}
+    #eliteAiRoot #eliteAiPanel .ea-message.user{max-width:90%!important}
+    #eliteAiRoot #eliteAiPanel #eliteAiTranscript{padding:10px 9px 10px!important}
+    #eliteAiRoot #eliteAiPanel .ea-composer-wrap{padding:8px 8px calc(9px + var(--ea-safe-bottom))!important}
+  }
+  @media(max-width:600px){
+    #eliteAiRoot #eliteAiPanel,
+    #eliteAiRoot #eliteAiPanel.open,
+    #eliteAiRoot #eliteAiPanel.ea-drag-positioned{left:4px!important;right:4px!important;top:auto!important;bottom:calc(82px + var(--ea-safe-bottom) + var(--ea-keyboard-gap))!important;height:min(72dvh,620px)!important;max-height:calc(100dvh - 16px - var(--ea-keyboard-gap))!important}
+    #eliteAiRoot #eliteAiPanel.ea-keyboard-open,
+    #eliteAiRoot #eliteAiPanel.ea-keyboard-open.ea-drag-positioned{left:4px!important;right:4px!important;top:4px!important;bottom:auto!important;height:calc(var(--ea-vv-height,100dvh) - 8px)!important;max-height:none!important;border-radius:16px!important}
+    #eliteAiRoot #eliteAiPanel .ea-header{padding:10px 10px 9px!important;gap:7px!important}
+    #eliteAiRoot #eliteAiPanel .ea-brand-mark{width:35px!important;height:35px!important;border-radius:12px!important}
+    #eliteAiRoot #eliteAiPanel .ea-header-title strong{font-size:.92rem!important}
+    #eliteAiRoot #eliteAiPanel .ea-header-title small{font-size:.56rem!important}
+    #eliteAiRoot #eliteAiPanel .ea-tabs{gap:4px!important;padding:7px 8px 6px!important}
+    #eliteAiRoot #eliteAiPanel .ea-tab{min-height:38px!important;padding:8px 4px!important;font-size:.62rem!important}
+    #eliteAiRoot #eliteAiPanel .ea-bubble{font-size:.78rem!important;padding:9px 11px!important}
+    #eliteAiRoot #eliteAiPanel #eliteAiInput{min-height:42px!important;max-height:115px!important;font-size:16px!important;line-height:1.4!important}
+    #eliteAiRoot #eliteAiPanel .ea-send-btn{width:46px!important;height:46px!important;border-radius:15px!important}
+    #eliteAiRoot #eliteAiPanel .ea-composer-meta{font-size:.54rem!important}
+    #eliteAiRoot #eliteAiPanel.ea-keyboard-open .ea-composer-wrap{padding:6px 8px max(7px,var(--ea-safe-bottom))!important}
+    #eliteAiRoot #eliteAiPanel.ea-keyboard-open .ea-composer-meta,
+    #eliteAiRoot #eliteAiPanel.ea-keyboard-open .ea-privacy-note{display:none!important}
+    #eliteAiRoot #eliteAiPanel.ea-keyboard-open #eliteAiTranscript{padding-bottom:10px!important;scroll-padding-bottom:10px!important}
+  }
+  @media(max-width:360px){
+    #eliteAiRoot #eliteAiPanel,
+    #eliteAiRoot #eliteAiPanel.open,
+    #eliteAiRoot #eliteAiPanel.ea-drag-positioned{left:3px!important;right:3px!important;height:min(74dvh,580px)!important}
+    #eliteAiRoot #eliteAiPanel .ea-header-title small{max-width:132px!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important}
+    #eliteAiRoot #eliteAiPanel .ea-message{max-width:95%!important}
+  }
+</style>
+<script id="talha-reference-chat-fit-runtime">
+(()=>{
+  const root=document.getElementById('eliteAiRoot');
+  const launcher=document.getElementById('eliteAiLauncher');
+  const panel=document.getElementById('eliteAiPanel');
+  const input=document.getElementById('eliteAiInput');
+  const transcript=document.getElementById('eliteAiTranscript');
+  if(!root||!launcher||!panel)return;
+  const vv=window.visualViewport;
+  const clamp=(value,min,max)=>Math.max(min,Math.min(value,Math.max(min,max)));
+  const viewport=()=>vv?{top:vv.offsetTop||0,bottom:(vv.offsetTop||0)+vv.height,height:vv.height}:{top:0,bottom:innerHeight,height:innerHeight};
+  function syncReferenceFit(){
+    const view=viewport();
+    const keyboardGap=Math.max(0,innerHeight-view.height-view.top);
+    root.style.setProperty('--ea-keyboard-gap',keyboardGap+'px');
+    if(!panel.classList.contains('open'))return;
+    const mobile=innerWidth<=600;
+    const keyboard=panel.classList.contains('ea-keyboard-open');
+    if(mobile||keyboard){
+      panel.style.setProperty('left','4px','important');
+      panel.style.setProperty('right','4px','important');
+      panel.style.setProperty('width','auto','important');
+      panel.style.setProperty('height',keyboard?'calc(var(--ea-vv-height,100dvh) - 8px)':'min(72dvh,620px)','important');
+      panel.style.setProperty('max-height',keyboard?'none':'calc(100dvh - 16px - var(--ea-keyboard-gap))','important');
+      panel.style.setProperty('bottom',keyboard?'auto':`calc(82px + ${keyboardGap}px + env(safe-area-inset-bottom,0px))`,'important');
+      panel.style.setProperty('top',keyboard?'4px':'auto','important');
+      return;
+    }
+    const launcherRect=launcher.getBoundingClientRect();
+    const width=Math.min(390,innerWidth-24);
+    const height=Math.min(650,Math.max(360,view.height-120));
+    const preferredLeft=launcherRect.left+launcherRect.width/2>innerWidth/2?launcherRect.right-width:launcherRect.left;
+    const left=clamp(preferredLeft,12,innerWidth-width-12);
+    const above=launcherRect.top-height-12;
+    const below=launcherRect.bottom+12;
+    const top=above>=view.top+8?above:below+height<=view.bottom-8?below:clamp(launcherRect.top-height/2,view.top+8,view.bottom-height-8);
+    panel.style.setProperty('left',left+'px','important');
+    panel.style.setProperty('right','auto','important');
+    panel.style.setProperty('top',top+'px','important');
+    panel.style.setProperty('bottom','auto','important');
+    panel.style.setProperty('width',width+'px','important');
+    panel.style.setProperty('height',height+'px','important');
+  }
+  const observer=new MutationObserver(syncReferenceFit);
+  observer.observe(panel,{attributes:true,attributeFilter:['class']});
+  launcher.addEventListener('click',()=>requestAnimationFrame(syncReferenceFit));
+  input?.addEventListener('focus',()=>setTimeout(syncReferenceFit,80),{passive:true});
+  input?.addEventListener('blur',()=>setTimeout(syncReferenceFit,140),{passive:true});
+  window.addEventListener('resize',syncReferenceFit,{passive:true});
+  window.addEventListener('orientationchange',()=>setTimeout(syncReferenceFit,160),{passive:true});
+  vv?.addEventListener('resize',syncReferenceFit,{passive:true});
+  vv?.addEventListener('scroll',syncReferenceFit,{passive:true});
+  syncReferenceFit();
+})();
+</script>
 </body>
 </html>
