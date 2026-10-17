@@ -2976,45 +2976,36 @@ if(!REDUCE){
   function scrollTranscript(){transcript.scrollTop=transcript.scrollHeight;}
   function animateAssistantText(bubble,text){
     const value=String(text??'');
-    const chars=Array.from(value);
     bubble.classList.add('ea-typing-text');
     bubble.setAttribute('aria-live','polite');
-    const copy=document.createElement('span');
-    copy.className='ea-typing-copy';
+    const copy=document.createTextNode('');
     const cursor=document.createElement('span');
     cursor.className='ea-type-cursor';
     cursor.setAttribute('aria-hidden','true');
     bubble.replaceChildren(copy,cursor);
     const finish=()=>{
-      copy.textContent=value;
+      copy.data=value;
       cursor.remove();
       bubble.removeAttribute('aria-live');
       bubble.classList.remove('ea-typing-text');
     };
-    if(!chars.length||matchMedia('(prefers-reduced-motion: reduce)').matches){finish();return Promise.resolve();}
-    const length=chars.length;
-    const duration=length<=90?Math.max(700,length*13):length<=360?1450+(length-90)*2.5:length<=1000?2125+(length-360)*1.2:Math.min(4200,2893+Math.log(length/1000)*650);
-    const started=performance.now();
-    let shown=0;
-    let pauseUntil=0;
+    if(!value||matchMedia('(prefers-reduced-motion: reduce)').matches){finish();return Promise.resolve();}
+    const length=Array.from(value).length;
+    const charDelay=length<=90?42:length<=220?28:length<=500?17:9;
+    const linePause=length<=220?180:length<=700?105:55;
+    const chunkSize=length>500?Math.max(1,Math.ceil(length/420)):1;
+    let index=0;
     return new Promise(resolve=>{
-      const frame=now=>{
-        if(now<pauseUntil){requestAnimationFrame(frame);return;}
-        const follow=transcript.scrollHeight-transcript.scrollTop-transcript.clientHeight<110;
-        const progress=Math.min(1,(now-started)/duration);
-        const next=progress>=1?length:Math.floor(length*progress);
-        if(next>shown){
-          const added=chars.slice(shown,next);
-          copy.textContent=chars.slice(0,next).join('');
-          shown=next;
-          if(follow)scrollTranscript();
-          if(length<=1000&&added.includes('\n'))pauseUntil=now+(length<=360?115:70);
-        }
-        if(shown<length){requestAnimationFrame(frame);return;}
-        finish();
-        resolve();
+      const writeNext=()=>{
+        if(!bubble.isConnected){resolve();return;}
+        if(index>=value.length){finish();resolve();return;}
+        const next=value.slice(index,index+chunkSize);
+        index+=next.length;
+        copy.data+=next;
+        scrollTranscript();
+        window.setTimeout(writeNext,next.includes('\n')?linePause:charDelay);
       };
-      requestAnimationFrame(frame);
+      window.setTimeout(writeNext,Math.min(120,charDelay*2));
     });
   }
   window.__eliteStarAnimateBubble=animateAssistantText;
