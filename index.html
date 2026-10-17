@@ -460,11 +460,11 @@ body.glow-off #spotlight,body.glow-off #sparkles{display:none}
   .tab-btn.active .tab-ic{text-shadow:0 0 14px var(--glow);}
 }
 
-.sheet-backdrop{position:fixed;inset:0;z-index:10050;background:rgba(4,4,6,.55);backdrop-filter:blur(3px);
+.sheet-backdrop{position:fixed;inset:0;z-index:10100;background:rgba(4,4,6,.55);backdrop-filter:blur(3px);
   opacity:0;visibility:hidden;transition:opacity .25s ease,visibility .25s ease;}
 .sheet-backdrop.open{opacity:1;visibility:visible;}
 .action-sheet{
-  position:fixed;left:0;right:0;bottom:0;z-index:10051;
+  position:fixed;left:0;right:0;bottom:0;z-index:10101;
   background:linear-gradient(180deg,var(--onyx),var(--obsidian-2));
   border-top:1px solid var(--line-strong);border-radius:18px 18px 0 0;
   padding:10px 18px calc(20px + env(safe-area-inset-bottom));
@@ -2931,7 +2931,10 @@ if(!REDUCE){
     });
     launcher.addEventListener('pointermove',e=>{
       if(!start||e.pointerId!==start.id)return;
-      const dx=e.clientX-start.x,dy=e.clientY-start.y;
+      // On phones keep the assistant's horizontal position stable and let
+      // the user move the launcher vertically with a touch drag.
+      const mobile=matchMedia('(max-width:860px)').matches;
+      const dx=mobile?0:e.clientX-start.x,dy=e.clientY-start.y;
       if(!dragging&&Math.hypot(dx,dy)>6){dragging=true;launcher.classList.add('ea-dragging');}
       if(dragging){e.preventDefault();placeLauncher(start.left+dx,start.top+dy,false);}
     });
