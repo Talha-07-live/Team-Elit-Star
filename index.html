@@ -2996,12 +2996,20 @@ if(!REDUCE){
     const duration=length<=90?Math.max(700,length*13):length<=360?1450+(length-90)*2.5:length<=1000?2125+(length-360)*1.2:Math.min(4200,2893+Math.log(length/1000)*650);
     const started=performance.now();
     let shown=0;
+    let pauseUntil=0;
     return new Promise(resolve=>{
       const frame=now=>{
+        if(now<pauseUntil){requestAnimationFrame(frame);return;}
         const follow=transcript.scrollHeight-transcript.scrollTop-transcript.clientHeight<110;
         const progress=Math.min(1,(now-started)/duration);
         const next=progress>=1?length:Math.floor(length*progress);
-        if(next>shown){copy.textContent=chars.slice(0,next).join('');shown=next;if(follow)scrollTranscript();}
+        if(next>shown){
+          const added=chars.slice(shown,next);
+          copy.textContent=chars.slice(0,next).join('');
+          shown=next;
+          if(follow)scrollTranscript();
+          if(length<=1000&&added.includes('\n'))pauseUntil=now+(length<=360?115:70);
+        }
         if(shown<length){requestAnimationFrame(frame);return;}
         finish();
         resolve();
