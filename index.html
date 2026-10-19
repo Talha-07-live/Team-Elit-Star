@@ -1270,6 +1270,15 @@ window.renderTeamMembers = function renderTeamMembers(){
   const fb='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.2c-1.2 0-1.6.8-1.6 1.5V12h2.7l-.4 2.9h-2.3v7A10 10 0 0 0 22 12z"/></svg>';
   const li='<svg viewBox="0 0 24 24" fill="currentColor"><path d="M4.98 3.5A2.5 2.5 0 1 1 5 8.5a2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM10 9h3.8v1.7h.1c.5-.9 1.8-1.9 3.6-1.9 3.9 0 4.6 2.5 4.6 5.8V21h-4v-5.2c0-1.2 0-2.8-1.7-2.8s-2 1.3-2 2.7V21h-4z"/></svg>';
   const mail='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>';
+  const socialLink=(url,label,icon,type='web')=>{
+    const raw=String(url||'').trim();
+    const href=type==='email'
+      ? (/^mailto:/i.test(raw)?raw:(/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(raw)?'mailto:'+raw:''))
+      : (/^https?:\/\//i.test(raw)?raw:'');
+    return href
+      ? `<a href="${esc(href)}" class="magnet" target="_blank" rel="noopener noreferrer" aria-label="${esc(label)}">${icon}</a>`
+      : `<span class="social-disabled" aria-label="${esc(label)}" aria-disabled="true">${icon}</span>`;
+  };
   const leader = TEAM_LEADER || EMPTY_TEAM_LEADER;
   let html = `
     <article class="member-card tl-card reveal in" tabindex="0">
@@ -1283,9 +1292,9 @@ window.renderTeamMembers = function renderTeamMembers(){
         <span class="badge">Team QA: ${esc(leader.qa||'Rasel Hossain')}</span>
       </div>
       <div class="socials">
-        <a href="#" class="magnet" aria-label="${esc(leader.name)} on Facebook">${fb}</a>
-        <a href="#" class="magnet" aria-label="${esc(leader.name)} on LinkedIn">${li}</a>
-        <a href="#" class="magnet" aria-label="Email ${esc(leader.name)}">${mail}</a>
+        ${socialLink(leader.facebookUrl,`${leader.name} on Facebook`,fb)}
+        ${socialLink(leader.linkedinUrl,`${leader.name} on LinkedIn`,li)}
+        ${socialLink(leader.email,`Email ${leader.name}`,mail,'email')}
       </div>
     </article>`;
   if(!leader.name) html='';
@@ -1303,16 +1312,16 @@ window.renderTeamMembers = function renderTeamMembers(){
         <span class="badge">Prod: ${esc(m.prodTime||'—')}</span>
       </div>
       <div class="socials">
-        <a href="#" class="magnet" aria-label="${esc(m.name)} on Facebook">${fb}</a>
-        <a href="#" class="magnet" aria-label="${esc(m.name)} on LinkedIn">${li}</a>
-        <a href="#" class="magnet" aria-label="Email ${esc(m.name)}">${mail}</a>
+        ${socialLink(m.facebookUrl,`${m.name} on Facebook`,fb)}
+        ${socialLink(m.linkedinUrl,`${m.name} on LinkedIn`,li)}
+        ${socialLink(m.email,`Email ${m.name}`,mail,'email')}
       </div>
     </article>`).join('');
   if(!html.trim()){
     html = `<div class="team-empty-state" role="status" aria-live="polite">
       <div class="team-empty-icon" aria-hidden="true">✦</div>
       <strong>Our stars are temporarily unavailable</strong>
-      <p>The team roster could not be displayed right now. Please refresh the roster, or check the website's database connection if the list stays empty.</p>
+      <p>The team roster could not be displayed right now. Please refresh the roster if the list stays empty.</p>
       <button type="button" id="teamRosterRetry">Refresh roster</button>
     </div>`;
   }
@@ -1332,7 +1341,7 @@ window.renderTeamMembers();(function marquee(){
   if(t)t.replaceChildren();
 })();
  
-document.getElementById('year').textContent = new Date().getFullYear();
+document.getElementById('year')?.replaceChildren(document.createTextNode(String(new Date().getFullYear())));
  
 const nav=document.getElementById('nav');
 const onScroll=()=>nav.classList.toggle('scrolled', window.scrollY>40);
@@ -2022,7 +2031,7 @@ if(!REDUCE){
       <kbd>Ctrl</kbd> + <kbd>K</kbd> / <kbd>⌘</kbd> + <kbd>K</kbd> — open menu ·
       <kbd>Esc</kbd> — close · <kbd>I</kbd> — immersive · <kbd>1–4</kbd> — visual modes
     </div>
-    <div class="exp-status">Current profile: <b id="experienceStatus">Standard</b> · saved locally</div>
+    <div class="exp-status">Current profile: <b id="experienceStatus">Standard</b></div>
   </div>
 </section>
 
@@ -2332,7 +2341,8 @@ if(!REDUCE){
     const leader=list.find(r=>r.is_leader);
     TEAM_LEADER=leader?{
       name:leader.name||'Team Leader',role:leader.role||'Team Leader',rank:leader.rank||leader.role||'Team Leader',
-      cubeId:leader.cube_id||'',bio:leader.bio||'',qa:leader.qa||'Rasel Hossain'
+      cubeId:leader.cube_id||'',bio:leader.bio||'',qa:leader.qa||'Rasel Hossain',
+      facebookUrl:leader.facebook_url||'',linkedinUrl:leader.linkedin_url||'',email:leader.email||''
     }:{...EMPTY_TEAM_LEADER};
     MEMBERS=list.filter(r=>!r.is_leader&&r.active!==false).map(r=>({
       dgId:r.dg_id||'',name:r.name||'',cubeId:r.cube_id||'',role:r.role||'CSR',rank:r.rank||r.role||'CSR',
@@ -2390,22 +2400,22 @@ if(!REDUCE){
     archive=(rows||[]).map(r=>({id:r.agent_id||'',name:r.name||'',location:r.location||'',cube:r.cube_id||'',role:r.role||'CSR',qa:r.qa||'',trainer:r.trainer||'',quality:pct(r.quality),attendance:pct(r.attendance),staffed:r.staffed_time||'—',productive:r.productive_time||'—',breakTime:r.break_time||'—',aht:r.aht||'—',onTimeLogin:pct(r.on_time_login),note:r.notes||'Archived member record.',archivedDate:r.archived_date||''}));
     renderArchive();
     syncPageData();
-    const note=document.querySelector('#previous-members .report-panel > .report-note');if(note)note.textContent='Previous Member records are loaded from Supabase.';
+    const note=document.querySelector('#previous-members .report-panel > .report-note');if(note)note.textContent='Previous member records are ready to review.';
   }
   function applySr(rows){
     srRows=(rows||[]).map(r=>({id:r.agent_id||'',name:r.agent_name||'',location:r.location||'',right:Number(r.right_count)||0,wrong:Number(r.wrong_count)||0,accuracy:r.accuracy==null?((Number(r.right_count)||0)+(Number(r.wrong_count)||0)?Number(r.right_count)/(Number(r.right_count)+Number(r.wrong_count))*100:0):Number(r.accuracy),reportDate:r.report_date||''}));
     renderSr();
     syncPageData();
-    const note=document.querySelector('#sr-data .report-panel > .report-note');if(note)note.textContent='SR records are loaded from Supabase. Accuracy is calculated from right/wrong counts when not provided.';
+    const note=document.querySelector('#sr-data .report-panel > .report-note');if(note)note.textContent='Accuracy is calculated from right/wrong counts when a percentage is not provided.';
   }
   function applyCalls(rows){
     callRows=(rows||[]).map(r=>({service:r.service_mobile_masked||'••••••',caller:r.caller_mobile_masked||'••••••',category:r.category||'',date:reportDateLabel(r.call_date),id:r.agent_id||'',name:r.agent_name||'',status:r.training_status||'Unknown',remarks:r.training_remarks||''}));
     renderCalls();
     syncPageData();
-    const note=document.querySelector('#call-data .report-panel > .report-note');if(note)note.textContent='Call-training records are loaded from Supabase. Phone numbers remain masked.';
+    const note=document.querySelector('#call-data .report-panel > .report-note');if(note)note.textContent='Call-training records are ready to review. Phone numbers remain masked.';
   }
   function signature(data){return JSON.stringify(data||[])}
-  const CACHE_KEY='teamEliteStar:lastSupabaseSnapshot:v1';
+  const CACHE_KEY='teamEliteStar:lastDataSnapshot:v1';
   function applySnapshot(snapshot){
     applyLiveAgents(snapshot.agents||[]);
     applyLiveSettings(snapshot.settings||[]);
@@ -2423,7 +2433,7 @@ if(!REDUCE){
     }catch(_){return null;}
   }
   function writeSnapshotCache(data){
-    try{localStorage.setItem(CACHE_KEY,JSON.stringify({version:1,savedAt:Date.now(),data}));}catch(err){console.warn('[Team Elite Star] Could not cache Supabase snapshot:',err);}
+    try{localStorage.setItem(CACHE_KEY,JSON.stringify({version:1,savedAt:Date.now(),data}));}catch(err){console.warn('[Team Elite Star] Could not cache the latest data snapshot:',err);}
   }
   function applyCachedSnapshot(reason){
     const cached=readSnapshotCache();
@@ -2431,7 +2441,7 @@ if(!REDUCE){
     applySnapshot(cached.data);
     const age=Math.max(0,Date.now()-(cached.savedAt||Date.now()));
     const ageText=age<60000?`${Math.round(age/1000)} seconds`:age<3600000?`${Math.round(age/60000)} minutes`:`${Math.round(age/3600000)} hours`;
-    setDbStatus('poll','CACHED DATA',`Supabase could not be read. Showing the last successfully saved Supabase snapshot (${ageText} old). ${reason||''}`.trim());
+    setDbStatus('poll','CACHED DATA',`The latest data could not be read. Showing the last available snapshot (${ageText} old). ${reason||''}`.trim());
     return true;
   }
   async function loadSupabaseData(source='manual'){
@@ -2449,12 +2459,12 @@ if(!REDUCE){
       const failed=results.filter(([_,r])=>r.error);
       if(failed.length){
         const message=failed.map(([name,r])=>`${name}: ${r.error.message}`).join('\n');
-        console.warn('[Team Elite Star] Supabase read failed:',message);
+        console.warn('[Team Elite Star] Data read failed:',message);
         if(!applyCachedSnapshot(message)){
           TEAM_LEADER={...EMPTY_TEAM_LEADER};MEMBERS=[];archive=[];srRows=[];callRows=[];
           window.renderTeamMembers?.();window.refreshTeamCommand?.();
           renderArchive();renderSr();renderCalls();
-          setDbStatus('error','NO DATA',`Supabase read failed and no prior Supabase snapshot exists. No bundled/static data is shown. ${message}`);
+          setDbStatus('error','NO DATA',`The latest data could not be read and no previous snapshot is available. ${message}`);
         }
         return;
       }
@@ -2466,13 +2476,13 @@ if(!REDUCE){
         signatures.agents=signature(snapshot.agents);signatures.settings=signature(snapshot.settings);signatures.previous=signature(snapshot.previous);signatures.sr=signature(snapshot.sr);signatures.calls=signature(snapshot.calls);
       }
       writeSnapshotCache(snapshot);
-      setDbStatus(realtimeReady?'live':'poll',realtimeReady?'DB LIVE':'DB SYNC OK',`Data read successfully from Supabase. Source: ${source}.`);
+      setDbStatus(realtimeReady?'live':'poll',realtimeReady?'LIVE':'SYNC OK','The latest team data is ready.');
     }catch(err){
-      console.error('[Team Elite Star] Supabase load failed:',err);
+      console.error('[Team Elite Star] Data load failed:',err);
       if(!applyCachedSnapshot(err?.message||String(err))){
         TEAM_LEADER={...EMPTY_TEAM_LEADER};MEMBERS=[];archive=[];srRows=[];callRows=[];
         window.renderTeamMembers?.();window.refreshTeamCommand?.();renderArchive();renderSr();renderCalls();
-        setDbStatus('error','NO DATA',`Supabase read failed and no prior Supabase snapshot exists. No bundled/static data is shown. ${err?.message||String(err)}`);
+        setDbStatus('error','NO DATA',`The latest data could not be read and no previous snapshot is available. ${err?.message||String(err)}`);
       }
     }finally{busy=false;if(again){again=false;scheduleRefresh('queued');}}
   }
@@ -2501,15 +2511,15 @@ if(!REDUCE){
   function startLiveData(){
     const cfg=window.TEAM_ELITE_SUPABASE_CONFIG;
     if(!cfg||!cfg.url||!cfg.key||String(cfg.url).includes('YOUR_SUPABASE')||String(cfg.key).includes('YOUR_SUPABASE')){
-      if(!applyCachedSnapshot('Supabase configuration is missing or still contains placeholders.')){
+      if(!applyCachedSnapshot('The data connection is missing or still contains placeholders.')){
         TEAM_LEADER={...EMPTY_TEAM_LEADER};MEMBERS=[];archive=[];srRows=[];callRows=[];
         window.renderTeamMembers?.();window.refreshTeamCommand?.();renderArchive();renderSr();renderCalls();
-        setDbStatus('error','NO DATA','Supabase configuration is missing and no prior Supabase snapshot exists. No bundled/static data is shown.');
+        setDbStatus('error','NO DATA','The data connection is not configured and no previous snapshot is available.');
       }
       return;
     }
     if(!window.supabase||typeof window.supabase.createClient!=='function'){
-      if(!applyCachedSnapshot('Supabase JavaScript library did not load.'))setDbStatus('error','NO DATA','Supabase library failed to load and no prior Supabase snapshot exists.');return;
+      if(!applyCachedSnapshot('The data library did not load.'))setDbStatus('error','NO DATA','The data library failed to load and no previous snapshot is available.');return;
     }
     try{liveClient=window.supabase.createClient(cfg.url,cfg.key,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false},realtime:{params:{eventsPerSecond:5}}});}
     catch(err){setDbStatus('error','DB CONFIG ERROR',err?.message||String(err));return;}
@@ -2844,7 +2854,7 @@ if(!REDUCE){
   const conversation=[];
   let isBusy=false,hasCheckedHealth=false;
   const assistantHeader=panel.querySelector('.ea-header');
-  const positionPrefix='elite-star-assistant-pos-v4-';
+  const positionPrefix='elite-star-assistant-pos-v5-';
   let suppressLauncherClickUntil=0;
 
   function deviceBucket(){return matchMedia('(max-width: 860px)').matches?'mobile':'desktop';}
@@ -2858,7 +2868,9 @@ if(!REDUCE){
     return a.left < b.right+pad && a.right > b.left-pad && a.top < b.bottom+pad && a.bottom > b.top-pad;
   }
   function safePosition(left,top,width,height,avoidClock=true){
-    const margin=8, maxLeft=Math.max(margin,innerWidth-width-margin),maxTop=Math.max(margin,innerHeight-height-margin);
+    const viewportWidth=Math.max(1,window.visualViewport?.width||innerWidth);
+    const viewportHeight=Math.max(1,window.visualViewport?.height||innerHeight);
+    const margin=8, maxLeft=Math.max(margin,viewportWidth-width-margin),maxTop=Math.max(margin,viewportHeight-height-margin);
     const clamp=(x,y)=>({left:Math.min(maxLeft,Math.max(margin,x)),top:Math.min(maxTop,Math.max(margin,y))});
     let p=clamp(left,top);
     const clock=$('localTimeBar');
@@ -2873,7 +2885,7 @@ if(!REDUCE){
           clamp(r.left-width-10,p.top),
           clamp(r.right+10,p.top)
         ];
-        const valid=candidates.find(q=>q.left+width<=innerWidth-margin&&q.top+height<=innerHeight-margin&&
+        const valid=candidates.find(q=>q.left+width<=viewportWidth-margin&&q.top+height<=viewportHeight-margin&&
           !intersects({left:q.left,right:q.left+width,top:q.top,bottom:q.top+height},target,7));
         if(valid)p=valid;
       }
@@ -2892,13 +2904,15 @@ if(!REDUCE){
   function placePanel(left,top,width,height,persist=true,avoidClock=true){
     const rect=panel.getBoundingClientRect();
     width=width||rect.width||Math.min(430,innerWidth-20);
-    height=height||rect.height||Math.min(620,innerHeight-150);
+    const viewportWidth=Math.max(1,window.visualViewport?.width||innerWidth);
+    const viewportHeight=Math.max(1,window.visualViewport?.height||innerHeight);
+    height=height||rect.height||Math.min(620,Math.max(300,viewportHeight-150));
     const p=safePosition(left,top,width,height,avoidClock);
     panel.classList.add('ea-drag-positioned');
     panel.style.setProperty('--ea-panel-left',p.left+'px');
     panel.style.setProperty('--ea-panel-top',p.top+'px');
-    panel.style.setProperty('--ea-panel-width',Math.min(width,innerWidth-16)+'px');
-    panel.style.setProperty('--ea-panel-height',Math.min(height,innerHeight-16)+'px');
+    panel.style.setProperty('--ea-panel-width',Math.min(width,Math.max(1,viewportWidth-16))+'px');
+    panel.style.setProperty('--ea-panel-height',Math.min(height,Math.max(1,viewportHeight-16))+'px');
     if(persist)savePosition('panel',p.left,p.top);
     return p;
   }
@@ -2958,13 +2972,13 @@ if(!REDUCE){
   }
   attachLauncherDrag();attachPanelDrag();restoreLauncherPosition();
   window.addEventListener('resize',()=>{
-    if(launcher.classList.contains('ea-drag-positioned')){const r=launcher.getBoundingClientRect();placeLauncher(r.left,r.top,false);}
-    if(panel.classList.contains('open')&&panel.classList.contains('ea-drag-positioned')){const r=panel.getBoundingClientRect();placePanel(r.left,r.top,r.width,r.height,false);}
+    if(launcher.classList.contains('ea-drag-positioned')){const r=launcher.getBoundingClientRect();placeLauncher(r.left,r.top,false,false);}
+    if(panel.classList.contains('open')&&panel.classList.contains('ea-drag-positioned')&&!panel.classList.contains('ea-keyboard-open')){const r=panel.getBoundingClientRect();placePanel(r.left,r.top,r.width,r.height,false,false);}
   },{passive:true});
   function setStatus(label,state){statusText.textContent=label;statusDot.className=state||'';}
   function setTab(which){const chat=which==='chat';chatTab.classList.toggle('active',chat);updatesTab.classList.toggle('active',!chat);chatTab.setAttribute('aria-selected',String(chat));updatesTab.setAttribute('aria-selected',String(!chat));chatView.classList.toggle('active',chat);updatesView.classList.toggle('active',!chat);}
   function openPanel(){panel.classList.add('open');panel.setAttribute('aria-hidden','false');launcher.setAttribute('aria-expanded','true');requestAnimationFrame(()=>{if(!panel.classList.contains('ea-drag-positioned'))restorePanelPosition();});if(!hasCheckedHealth)checkHealth();setTimeout(()=>{if(!matchMedia('(max-width:860px)').matches)input.focus({preventScroll:true})},60);}
-  function closePanel(){panel.classList.remove('open');panel.setAttribute('aria-hidden','true');launcher.setAttribute('aria-expanded','false');launcher.focus({preventScroll:true});}
+  function closePanel(){input.blur();panel.classList.remove('open','ea-keyboard-open','ea-panel-dragging');panel.setAttribute('aria-hidden','true');launcher.setAttribute('aria-expanded','false');launcher.focus({preventScroll:true});}
   function scrollTranscript(){transcript.scrollTop=transcript.scrollHeight;}
   function animateAssistantText(bubble,text){
     const value=String(text??'');
@@ -3077,6 +3091,7 @@ if(!REDUCE){
     }catch{return ''}
   }
   async function sendMessage(raw){
+    const shouldRestoreFocus=document.activeElement===input;
     const text=String(raw??input.value).trim();if(!text||isBusy)return;if(text.length>3000){addMessage('assistant','Please keep each message under 3,000 characters.');return;}
     input.value='';resizeInput();setTab('chat');addMessage('user',text);conversation.push({role:'user',text});
     const section=findSectionIntent(text);
@@ -3094,7 +3109,7 @@ if(!REDUCE){
       const reply=String(data.reply||'I could not generate a reply. Please try again.').slice(0,12000);
       pending.node.remove();const rendered=addMessage('assistant',reply);await rendered.done;conversation.push({role:'model',text:reply});if(conversation.length>20)conversation.splice(0,conversation.length-20);setStatus('Online','ready');
       }catch(error){pending.node.remove();let msg=String(error?.message||'');if(msg.startsWith('PUBLIC: ')){msg=msg.slice(8);}else if(error?.name==='TimeoutError'){msg='I’m still connecting to the assistant. Please send once more in a moment.';}else if(/Failed to fetch|NetworkError|Load failed/i.test(msg)){msg='I’m reconnecting to the assistant. Your message was not lost—please send once more.';}else{console.warn('[Elite Star Assistant] Chat error',error);msg='I’m reconnecting to the assistant. Please send once more in a moment.';}input.value=text;resizeInput();const rendered=addMessage('assistant',msg);await rendered.done;conversation.push({role:'model',text:msg});setStatus('Reconnect','error');}
-    finally{isBusy=false;sendBtn.disabled=false;input.disabled=false;input.focus({preventScroll:true});}
+    finally{isBusy=false;sendBtn.disabled=false;input.disabled=false;if(shouldRestoreFocus&&panel.classList.contains('open')&&document.visibilityState==='visible')input.focus({preventScroll:true});}
   }
   launcher.addEventListener('click',()=>{if(Date.now()<suppressLauncherClickUntil)return;panel.classList.contains('open')?closePanel():openPanel();});closeBtn.addEventListener('click',closePanel);newChatBtn.addEventListener('click',resetChat);chatTab.addEventListener('click',()=>setTab('chat'));updatesTab.addEventListener('click',()=>setTab('updates'));$('eliteAiClear').addEventListener('click',resetChat);
   form.addEventListener('submit',e=>{e.preventDefault();sendMessage(input.value)});input.addEventListener('input',resizeInput);input.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();form.requestSubmit();}});
@@ -4109,119 +4124,231 @@ if(!REDUCE){
 <style id="eitr-hero-scroll-stability">
   #heroInner{transform:none!important;opacity:1!important;will-change:auto!important;backface-visibility:visible!important}
 </style>
-
-
-<style id="elite-ai-position-stability-fix">
-  /* Keyboard resizing must never rewrite the saved launcher or panel coordinates. */
-  #eliteAiRoot #eliteAiLauncher.ea-drag-positioned {
-    left: var(--ea-launch-left) !important;
-    top: var(--ea-launch-top) !important;
-    right: auto !important;
-    bottom: auto !important;
+<style id="eitr-ai-layout-stability">
+  /* One authoritative geometry layer for the assistant. Older overrides above may remain
+     for backwards compatibility, but they can no longer change the open/close layout. */
+  .socials .social-disabled{width:34px;height:34px;border:1px solid var(--line);border-radius:6px;display:grid;place-items:center;color:var(--muted);opacity:.48}
+  html:has(#eliteAiPanel.open),
+  body:has(#eliteAiPanel.open){overscroll-behavior:none!important}
+  body:has(#eliteAiPanel.open){overflow:hidden!important;overflow-x:hidden!important}
+  body:has(#eliteAiPanel.open) #quickDock,
+  body:has(#eliteAiPanel.open) #experienceLauncher,
+  body:has(#eliteAiPanel.open) #localTimeBar,
+  body:has(#eliteAiPanel.open) #talhaUpdateToast{
+    opacity:0!important;visibility:hidden!important;pointer-events:none!important
   }
-  #eliteAiRoot #eliteAiPanel.ea-drag-positioned:not(.ea-keyboard-open) {
-    left: var(--ea-panel-left) !important;
-    top: var(--ea-panel-top) !important;
-    right: auto !important;
-    bottom: auto !important;
+  #eliteAiRoot #eliteAiLauncher:not(.ea-drag-positioned){
+    position:fixed!important;left:auto!important;right:20px!important;top:auto!important;
+    bottom:24px!important;z-index:10082!important;transform:none!important
   }
-  @media (max-width: 860px) {
-    #eliteAiRoot #eliteAiPanel.ea-keyboard-open {
-      position: fixed !important;
-      left: 8px !important;
-      right: 8px !important;
-      top: max(5px, var(--ea-vv-top, 0px)) !important;
-      bottom: auto !important;
-      width: auto !important;
-      height: min(620px, calc(var(--ea-vv-height, 100dvh) - 10px)) !important;
-      max-height: calc(var(--ea-vv-height, 100dvh) - 10px) !important;
-      min-height: 0 !important;
-      transform: none !important;
+  #eliteAiRoot #eliteAiPanel,
+  #eliteAiRoot #eliteAiPanel.open:not(.ea-drag-positioned){
+    position:fixed!important;inset:auto!important;left:auto!important;right:18px!important;top:auto!important;
+    bottom:94px!important;width:min(370px,calc(100vw - 36px))!important;
+    height:min(620px,max(300px,calc(100dvh - 118px)))!important;
+    max-width:calc(100vw - 20px)!important;max-height:calc(100dvh - 24px)!important;min-height:0!important;
+    margin:0!important;border:1px solid rgba(232,195,107,.52)!important;border-radius:18px!important;
+    transform:none!important;overflow:hidden!important;display:none!important;
+    background:linear-gradient(160deg,rgba(22,20,29,.99),rgba(8,7,12,.99) 72%)!important;
+    box-shadow:0 24px 70px -28px #000,0 0 36px -20px rgba(232,195,107,.34)!important
+  }
+  #eliteAiRoot #eliteAiPanel.open:not(.ea-keyboard-open){display:flex!important}
+  #eliteAiRoot #eliteAiPanel.ea-drag-positioned:not(.ea-keyboard-open){display:flex!important}
+  #eliteAiRoot #eliteAiPanel .ea-header{
+    position:relative!important;display:flex!important;flex:0 0 54px!important;height:54px!important;min-height:54px!important;
+    padding:8px 14px!important;inset:auto!important;background:rgba(8,7,12,.96)!important;z-index:40!important
+  }
+  #eliteAiRoot #eliteAiPanel .ea-brand-mark,
+  #eliteAiRoot #eliteAiPanel .ea-header-title,
+  #eliteAiRoot #eliteAiPanel #eliteAiNewChat,
+  #eliteAiRoot #eliteAiPanel #eliteAiClose{display:grid!important;visibility:visible!important;opacity:1!important}
+  #eliteAiRoot #eliteAiPanel .ea-header-title{display:block!important;flex:1 1 auto!important;min-width:0!important}
+  #eliteAiRoot #eliteAiPanel .ea-tabs{display:flex!important;position:relative!important;flex:0 0 42px!important;height:42px!important;padding:6px 12px 0!important;background:#08070c!important;z-index:9!important}
+  #eliteAiRoot #eliteAiPanel .ea-view.active{display:flex!important;flex:1 1 0!important;min-height:0!important;overflow:hidden!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiChatView{display:flex!important;flex-direction:column!important;padding:8px 0 0!important;min-height:0!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiWelcome{display:block!important;flex:0 0 auto!important;margin:10px 12px!important;max-height:none!important;overflow:visible!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiWelcome[hidden]{display:none!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiTranscript{display:flex!important;flex:1 1 0!important;min-height:0!important;width:100%!important;max-width:none!important;margin:0!important;padding:4px 12px 12px!important;overflow-y:auto!important;overflow-x:hidden!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiTranscript[hidden]{display:none!important}
+  #eliteAiRoot #eliteAiPanel .ea-composer-wrap{
+    position:relative!important;left:auto!important;right:auto!important;bottom:auto!important;flex:0 0 auto!important;
+    width:100%!important;margin:0!important;padding:10px 12px max(10px,env(safe-area-inset-bottom,0px))!important;
+    background:rgba(8,7,12,.98)!important;z-index:30!important
+  }
+  #eliteAiRoot #eliteAiPanel #eliteAiInput{font-size:16px!important;max-height:104px!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiUpdatesView{display:none!important;overflow-y:auto!important;padding:14px 12px 18px!important}
+  #eliteAiRoot #eliteAiPanel #eliteAiUpdatesView.active{display:flex!important}
+  @media(max-width:860px){
+    #eliteAiRoot #eliteAiLauncher:not(.ea-drag-positioned){right:12px!important;bottom:calc(92px + env(safe-area-inset-bottom,0px))!important;max-width:calc(100vw - 24px)!important}
+    #eliteAiRoot #eliteAiPanel,
+    #eliteAiRoot #eliteAiPanel.open:not(.ea-drag-positioned){
+      left:8px!important;right:8px!important;top:auto!important;bottom:calc(78px + env(safe-area-inset-bottom,0px))!important;
+      width:auto!important;height:min(620px,max(300px,calc(100dvh - 104px)))!important;max-width:none!important;max-height:calc(100dvh - 24px)!important;border-radius:16px!important
     }
-    #eliteAiRoot #eliteAiPanel.ea-keyboard-open.ea-drag-positioned {
-      left: 8px !important;
-      right: 8px !important;
-      top: max(5px, var(--ea-vv-top, 0px)) !important;
-      bottom: auto !important;
-      width: auto !important;
-      height: min(620px, calc(var(--ea-vv-height, 100dvh) - 10px)) !important;
-      max-height: calc(var(--ea-vv-height, 100dvh) - 10px) !important;
-    }
-  }
-  @media (max-width: 420px) {
+    #eliteAiRoot #eliteAiPanel .ea-header{flex-basis:50px!important;height:50px!important;min-height:50px!important;padding:7px 10px!important}
+    #eliteAiRoot #eliteAiPanel .ea-tabs{flex-basis:39px!important;height:39px!important;padding:5px 9px 0!important}
+    #eliteAiRoot #eliteAiPanel #eliteAiChatView{padding-top:5px!important}
+    #eliteAiRoot #eliteAiPanel #eliteAiWelcome{margin:8px 9px!important}
+    #eliteAiRoot #eliteAiPanel #eliteAiTranscript{padding:4px 9px 10px!important}
+    #eliteAiRoot #eliteAiPanel .ea-composer-wrap{padding:8px 9px max(9px,env(safe-area-inset-bottom,0px))!important}
     #eliteAiRoot #eliteAiPanel.ea-keyboard-open,
-    #eliteAiRoot #eliteAiPanel.ea-keyboard-open.ea-drag-positioned {
-      left: 5px !important;
-      right: 5px !important;
-      top: max(5px, var(--ea-vv-top, 0px)) !important;
-      height: calc(var(--ea-vv-height, 100dvh) - 10px) !important;
-      max-height: calc(var(--ea-vv-height, 100dvh) - 10px) !important;
+    #eliteAiRoot #eliteAiPanel.ea-keyboard-open.ea-drag-positioned{
+      display:flex!important;left:8px!important;right:8px!important;top:max(8px,calc(var(--ea-vv-top,0px) + 8px))!important;bottom:auto!important;
+      width:auto!important;height:max(220px,calc(var(--ea-vv-height,100dvh) - 16px))!important;max-width:none!important;max-height:none!important;border-radius:15px!important
     }
+    #eliteAiRoot #eliteAiPanel.ea-keyboard-open #eliteAiWelcome{display:none!important}
+    #eliteAiRoot #eliteAiPanel.ea-keyboard-open #eliteAiChatView{padding:0!important}
+    #eliteAiRoot #eliteAiPanel.ea-keyboard-open #eliteAiTranscript{padding-bottom:calc(var(--ea-composer-height,104px) + 14px)!important;scroll-padding-bottom:calc(var(--ea-composer-height,104px) + 14px)!important}
   }
+  @media(max-width:420px){
+    #eliteAiRoot #eliteAiPanel,
+    #eliteAiRoot #eliteAiPanel.open:not(.ea-drag-positioned){left:6px!important;right:6px!important;bottom:calc(68px + env(safe-area-inset-bottom,0px))!important;height:min(560px,max(280px,calc(100dvh - 92px)))!important;border-radius:14px!important}
+    #eliteAiRoot #eliteAiPanel.ea-keyboard-open,
+    #eliteAiRoot #eliteAiPanel.ea-keyboard-open.ea-drag-positioned{left:5px!important;right:5px!important;top:max(5px,calc(var(--ea-vv-top,0px) + 5px))!important;height:max(220px,calc(var(--ea-vv-height,100dvh) - 10px))!important}
+    #eliteAiRoot #eliteAiPanel .ea-header{padding-left:8px!important;padding-right:8px!important}
+    #eliteAiRoot #eliteAiPanel .ea-header-title strong{font-size:.88rem!important}
+    #eliteAiRoot #eliteAiPanel .ea-tabs{padding-left:7px!important;padding-right:7px!important}
+  }
+  @media(prefers-reduced-motion:reduce){#eliteAiRoot #eliteAiPanel.open{animation:none!important}}
 </style>
-<script id="elite-ai-position-stability-runtime">
+<script id="eitr-ai-navigation-stability">
 (()=>{
   const root=document.getElementById('eliteAiRoot');
   const panel=document.getElementById('eliteAiPanel');
   const launcher=document.getElementById('eliteAiLauncher');
   const input=document.getElementById('eliteAiInput');
-  if(!root||!panel||!input)return;
+  if(!root||!panel||!launcher)return;
 
-  const viewport=window.visualViewport;
-  let closeTimer=0;
-  let lastKeyboardState=false;
+  // Do not revive the old v4 coordinates that were written by the conflicting layout.
+  try{
+    ['desktop','mobile'].forEach(bucket=>['launcher','panel'].forEach(kind=>localStorage.removeItem('elite-star-assistant-pos-v4-'+bucket+'-'+kind)));
+  }catch{}
+  ['ea-drag-positioned','ea-dragging','ea-panel-dragging','ea-keyboard-open'].forEach(cls=>{panel.classList.remove(cls);launcher.classList.remove(cls)});
+  ['--ea-panel-left','--ea-panel-top','--ea-panel-width','--ea-panel-height','--ea-launch-left','--ea-launch-top'].forEach(name=>{panel.style.removeProperty(name);launcher.style.removeProperty(name)});
 
-  function syncStableViewport(){
-    const height=viewport&&Number.isFinite(viewport.height)?viewport.height:window.innerHeight;
-    const top=viewport&&Number.isFinite(viewport.offsetTop)?viewport.offsetTop:0;
-    root.style.setProperty('--ea-vv-height',Math.max(180,height)+'px');
-    root.style.setProperty('--ea-vv-top',Math.max(0,top)+'px');
-
-    const small=window.matchMedia('(max-width: 860px)').matches;
-    const focused=document.activeElement===input;
-    const panelOpen=panel.classList.contains('open');
-    const keyboardOpen=small&&panelOpen&&focused&&
-      ((window.innerHeight-height)>100 || (viewport&&height<window.innerHeight-100));
-
-    if(keyboardOpen){
-      panel.classList.add('ea-keyboard-open');
-      lastKeyboardState=true;
-    }else if(!focused||!panelOpen||!small){
-      panel.classList.remove('ea-keyboard-open');
-      lastKeyboardState=false;
-    }else if(lastKeyboardState && height>=window.innerHeight-40){
-      panel.classList.remove('ea-keyboard-open');
-      lastKeyboardState=false;
-    }
-  }
-
-  function restoreAfterKeyboard(){
-    clearTimeout(closeTimer);
-    closeTimer=setTimeout(()=>{
-      if(document.activeElement!==input || !panel.classList.contains('open')){
-        panel.classList.remove('ea-keyboard-open');
-        syncStableViewport();
+  let historyEntry=false;
+  let closingFromBack=false;
+  const isOpen=()=>panel.classList.contains('open');
+  const cleanClosedState=()=>{
+    if(input)input.blur();
+    panel.classList.remove('ea-keyboard-open','ea-panel-dragging');
+    launcher.classList.remove('ea-dragging');
+  };
+  const syncAssistantState=()=>{
+    if(isOpen()){
+      panel.setAttribute('aria-hidden','false');
+      launcher.setAttribute('aria-expanded','true');
+      if(!historyEntry){
+        try{history.pushState({...(history.state||{}),eliteStarAssistant:true},'',location.href);historyEntry=true}catch{}
       }
-    },180);
-  }
-
-  input.addEventListener('focus',syncStableViewport,{passive:true});
-  input.addEventListener('blur',restoreAfterKeyboard,{passive:true});
-  window.addEventListener('resize',syncStableViewport,{passive:true});
-  window.addEventListener('orientationchange',()=>setTimeout(syncStableViewport,180),{passive:true});
-  if(viewport){
-    viewport.addEventListener('resize',syncStableViewport,{passive:true});
-    viewport.addEventListener('scroll',syncStableViewport,{passive:true});
-  }
-  document.getElementById('eliteAiClose')?.addEventListener('click',()=>{
-    panel.classList.remove('ea-keyboard-open');
-    input.blur();
-    restoreAfterKeyboard();
+    }else{
+      panel.setAttribute('aria-hidden','true');
+      launcher.setAttribute('aria-expanded','false');
+      cleanClosedState();
+      if(historyEntry&&!closingFromBack){historyEntry=false;try{history.back()}catch{}}
+    }
+  };
+  new MutationObserver(syncAssistantState).observe(panel,{attributes:true,attributeFilter:['class']});
+  window.addEventListener('popstate',()=>{
+    if(!isOpen())return;
+    closingFromBack=true;
+    panel.classList.remove('open','ea-keyboard-open','ea-panel-dragging');
+    panel.setAttribute('aria-hidden','true');
+    launcher.setAttribute('aria-expanded','false');
+    cleanClosedState();
+    historyEntry=false;
+    setTimeout(()=>{closingFromBack=false},0);
   });
-  launcher?.addEventListener('click',()=>setTimeout(syncStableViewport,80));
-  syncStableViewport();
+  window.addEventListener('pageshow',()=>{if(!isOpen())cleanClosedState()},{passive:true});
+  window.addEventListener('pagehide',cleanClosedState,{passive:true});
+  syncAssistantState();
 })();
 </script>
-
+<style id="eitr-ai-position-lock">
+  /* The assistant always returns to the same anchored position after close/back,
+     including on tablet rotations and mobile viewport changes. */
+  html:has(#eliteAiPanel.open),
+  body:has(#eliteAiPanel.open){
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
+    overscroll-behavior:none!important;
+  }
+  #eliteAiRoot #eliteAiLauncher.ea-drag-positioned{
+    position:fixed!important;
+    left:auto!important;right:20px!important;top:auto!important;bottom:24px!important;
+    transform:none!important;
+  }
+  #eliteAiRoot #eliteAiPanel.ea-drag-positioned:not(.ea-keyboard-open),
+  #eliteAiRoot #eliteAiPanel.open.ea-drag-positioned:not(.ea-keyboard-open){
+    position:fixed!important;inset:auto!important;
+    left:auto!important;right:18px!important;top:auto!important;bottom:94px!important;
+    width:min(370px,calc(100vw - 36px))!important;
+    height:min(620px,max(300px,calc(100dvh - 118px)))!important;
+    max-width:calc(100vw - 20px)!important;
+    max-height:calc(100dvh - 24px)!important;
+    margin:0!important;transform:none!important;
+  }
+  @media(max-width:860px){
+    #eliteAiRoot #eliteAiLauncher.ea-drag-positioned{
+      right:12px!important;bottom:calc(92px + env(safe-area-inset-bottom,0px))!important;
+    }
+    #eliteAiRoot #eliteAiPanel.ea-drag-positioned:not(.ea-keyboard-open),
+    #eliteAiRoot #eliteAiPanel.open.ea-drag-positioned:not(.ea-keyboard-open){
+      left:8px!important;right:8px!important;top:auto!important;
+      bottom:calc(78px + env(safe-area-inset-bottom,0px))!important;
+      width:auto!important;height:min(620px,max(300px,calc(100dvh - 104px)))!important;
+      max-width:none!important;max-height:calc(100dvh - 24px)!important;
+    }
+  }
+  @media(max-width:420px){
+    #eliteAiRoot #eliteAiLauncher.ea-drag-positioned{
+      right:9px!important;bottom:calc(84px + env(safe-area-inset-bottom,0px))!important;
+    }
+    #eliteAiRoot #eliteAiPanel.ea-drag-positioned:not(.ea-keyboard-open),
+    #eliteAiRoot #eliteAiPanel.open.ea-drag-positioned:not(.ea-keyboard-open){
+      left:6px!important;right:6px!important;
+      bottom:calc(68px + env(safe-area-inset-bottom,0px))!important;
+      height:min(560px,max(280px,calc(100dvh - 92px)))!important;
+      border-radius:14px!important;
+    }
+  }
+</style>
+<script id="eitr-ai-position-lock-runtime">
+(()=>{
+  const panel=document.getElementById('eliteAiPanel');
+  const launcher=document.getElementById('eliteAiLauncher');
+  const input=document.getElementById('eliteAiInput');
+  if(!panel||!launcher)return;
+  const panelVars=['--ea-panel-left','--ea-panel-top','--ea-panel-width','--ea-panel-height'];
+  const launcherVars=['--ea-launch-left','--ea-launch-top'];
+  const clearPosition=()=>{
+    panelVars.forEach(name=>panel.style.removeProperty(name));
+    launcherVars.forEach(name=>launcher.style.removeProperty(name));
+  };
+  const sync=()=>{
+    launcher.classList.remove('ea-drag-positioned','ea-dragging');
+    panel.classList.remove('ea-drag-positioned','ea-panel-dragging');
+    clearPosition();
+    if(!panel.classList.contains('open')){
+      panel.classList.remove('ea-keyboard-open');
+      input?.blur();
+    }
+  };
+  try{
+    ['desktop','mobile'].forEach(bucket=>['launcher','panel'].forEach(kind=>{
+      localStorage.removeItem('elite-star-assistant-pos-v4-'+bucket+'-'+kind);
+    }));
+  }catch{}
+  const observer=new MutationObserver(sync);
+  observer.observe(panel,{attributes:true,attributeFilter:['class','style']});
+  observer.observe(launcher,{attributes:true,attributeFilter:['class','style']});
+  window.addEventListener('popstate',()=>requestAnimationFrame(sync),{passive:true});
+  window.addEventListener('pageshow',sync,{passive:true});
+  window.addEventListener('pagehide',sync,{passive:true});
+  window.addEventListener('resize',()=>requestAnimationFrame(sync),{passive:true});
+  window.addEventListener('orientationchange',()=>setTimeout(sync,160),{passive:true});
+  sync();
+})();
+</script>
 </body>
 </html>
