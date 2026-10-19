@@ -4109,5 +4109,21 @@ if(!REDUCE){
 <style id="eitr-hero-scroll-stability">
   #heroInner{transform:none!important;opacity:1!important;will-change:auto!important;backface-visibility:visible!important}
 </style>
+<style id="mobile-ai-chat-right-above-menu">
+  @media (max-width:860px){
+    #eliteAiRoot #eliteAiLauncher:not(.ea-drag-positioned){
+      left:auto!important;
+      right:12px!important;
+      top:auto!important;
+      bottom:calc(var(--mobile-bottom-menu-space,78px) + 14px + env(safe-area-inset-bottom,0px))!important;
+    }
+  }
+  @media (max-width:420px){
+    #eliteAiRoot #eliteAiLauncher:not(.ea-drag-positioned){
+      right:9px!important;
+      bottom:calc(var(--mobile-bottom-menu-space,74px) + 10px + env(safe-area-inset-bottom,0px))!important;
+    }
+  }
+</style>
 </body>
 </html>
