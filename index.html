@@ -1427,7 +1427,7 @@ if(!REDUCE){
   });
 }
  
-if(!REDUCE){
+if(!REDUCE&&!LOW_END){
   const hi=document.getElementById('heroInner');
   let heroTicking=false;
   const applyParallax=()=>{const y=window.scrollY;
@@ -2220,7 +2220,7 @@ if(!REDUCE){
   const layer=document.getElementById('weatherFx');
   if(!layer || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   const mobile=window.matchMedia('(max-width:860px)').matches;
-  const count=mobile?10:(LOW_END?18:30);
+  const count=mobile?10:(LOW_END?14:30);
   const frag=document.createDocumentFragment();
   for(let i=0;i<count;i++){
     const petal=document.createElement('i');
@@ -3999,8 +3999,6 @@ if(!REDUCE){
 </script>
 <style id="eitr-loading-visual-gate">
   #star-canvas,.weather-fx{transition:opacity .75s ease,visibility .75s ease}
-  html.is-loading .weather-fx,
-  html.is-loading #sparkles{opacity:0!important;visibility:hidden!important}
   html.is-loading #star-canvas{opacity:1!important;visibility:visible!important;transition:none!important}
 </style>
 <style id="eitr-chat-isolation-final">
@@ -4088,6 +4086,33 @@ if(!REDUCE){
   }
   #preloader,#preloader *{scrollbar-width:none!important;-ms-overflow-style:none!important}
   #preloader::-webkit-scrollbar,#preloader *::-webkit-scrollbar{width:0!important;height:0!important;display:none!important}
+</style>
+<style id="eitr-low-end-smooth">
+  html.low-end-device .reveal{filter:none!important;transition:opacity .55s ease,transform .55s ease}
+  html.low-end-device .hero-inner,
+  html.low-end-device .member-card{will-change:auto}
+  html.low-end-device body::after{opacity:.025}
+  html.low-end-device .weather-fx{opacity:.62}
+  html.low-end-device .weather-fx::before{filter:none!important;animation:none!important;opacity:.42}
+  html.low-end-device .weather-fx::after{animation:none!important;opacity:.24}
+  html.low-end-device .weather-fx .petal{box-shadow:none!important;will-change:auto}
+  html.low-end-device header.nav.scrolled,
+  html.low-end-device .command-panel,
+  html.low-end-device .report-panel,
+  html.low-end-device .dock-btn,
+  html.low-end-device .experience-launcher,
+  html.low-end-device #experiencePanel,
+  html.low-end-device #actionSheet,
+  html.low-end-device #eliteAiLauncher{
+    -webkit-backdrop-filter:none!important;
+    backdrop-filter:none!important;
+  }
+  html.low-end-device header.nav.scrolled{background:rgba(8,7,12,.92)}
+  html.low-end-device .command-panel,
+  html.low-end-device .report-panel{background:linear-gradient(180deg,rgba(27,26,34,.94),rgba(8,7,12,.97))}
+  html.low-end-device #experiencePanel,
+  html.low-end-device #actionSheet,
+  html.low-end-device #eliteAiLauncher{background:rgba(15,13,20,.96)}
 </style>
 </body>
 </html>
