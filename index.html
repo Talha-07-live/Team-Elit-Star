@@ -6,7 +6,6 @@
 <title>Team Elite Star</title>
 <meta name="description" content="Team Elite Star — the elite Nagad customer service squad under Team Leader Albina Jahan." />
 
-
 <meta name="theme-color" content="#08070C" />
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -3931,7 +3930,6 @@ if(!REDUCE){
   if(document.fonts?.ready){
     document.fonts.ready.then(()=>{fontsReady=true;finishLoader()}).catch(()=>{fontsReady=true;finishLoader()});
   }
-
   window.setTimeout(()=>{loadComplete=true;fontsReady=true;layoutReady=true;finishLoader()},12000);
   if(loadComplete)markLayoutReady();
 
@@ -4001,9 +3999,9 @@ if(!REDUCE){
 </script>
 <style id="eitr-loading-visual-gate">
   #star-canvas,.weather-fx{transition:opacity .75s ease,visibility .75s ease}
-  html.is-loading #star-canvas,
   html.is-loading .weather-fx,
   html.is-loading #sparkles{opacity:0!important;visibility:hidden!important}
+  html.is-loading #star-canvas{opacity:1!important;visibility:visible!important;transition:none!important}
 </style>
 <style id="eitr-chat-isolation-final">
   body:has(#eliteAiPanel.open){overflow-x:hidden!important;overflow-y:auto!important}
