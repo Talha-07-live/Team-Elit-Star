@@ -1427,14 +1427,6 @@ if(!REDUCE){
   });
 }
  
-if(!REDUCE&&!LOW_END){
-  const hi=document.getElementById('heroInner');
-  let heroTicking=false;
-  const applyParallax=()=>{const y=window.scrollY;
-    if(y<window.innerHeight){hi.style.transform=`translateY(${y*0.28}px)`;hi.style.opacity=String(Math.max(0,1-y/(window.innerHeight*0.8)));}};
-  window.addEventListener('scroll',()=>{ if(!heroTicking){ requestAnimationFrame(()=>{applyParallax();heroTicking=false;}); heroTicking=true; } },{passive:true});
-}
- 
 (function hero3d(){
   const canvas=document.getElementById('star-canvas');
   if(!canvas||typeof THREE==='undefined') return;
@@ -4113,6 +4105,9 @@ if(!REDUCE&&!LOW_END){
   html.low-end-device #experiencePanel,
   html.low-end-device #actionSheet,
   html.low-end-device #eliteAiLauncher{background:rgba(15,13,20,.96)}
+</style>
+<style id="eitr-hero-scroll-stability">
+  #heroInner{transform:none!important;opacity:1!important;will-change:auto!important;backface-visibility:visible!important}
 </style>
 </body>
 </html>
