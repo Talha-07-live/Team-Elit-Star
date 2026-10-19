@@ -4109,5 +4109,119 @@ if(!REDUCE){
 <style id="eitr-hero-scroll-stability">
   #heroInner{transform:none!important;opacity:1!important;will-change:auto!important;backface-visibility:visible!important}
 </style>
+
+
+<style id="elite-ai-position-stability-fix">
+  /* Keyboard resizing must never rewrite the saved launcher or panel coordinates. */
+  #eliteAiRoot #eliteAiLauncher.ea-drag-positioned {
+    left: var(--ea-launch-left) !important;
+    top: var(--ea-launch-top) !important;
+    right: auto !important;
+    bottom: auto !important;
+  }
+  #eliteAiRoot #eliteAiPanel.ea-drag-positioned:not(.ea-keyboard-open) {
+    left: var(--ea-panel-left) !important;
+    top: var(--ea-panel-top) !important;
+    right: auto !important;
+    bottom: auto !important;
+  }
+  @media (max-width: 860px) {
+    #eliteAiRoot #eliteAiPanel.ea-keyboard-open {
+      position: fixed !important;
+      left: 8px !important;
+      right: 8px !important;
+      top: max(5px, var(--ea-vv-top, 0px)) !important;
+      bottom: auto !important;
+      width: auto !important;
+      height: min(620px, calc(var(--ea-vv-height, 100dvh) - 10px)) !important;
+      max-height: calc(var(--ea-vv-height, 100dvh) - 10px) !important;
+      min-height: 0 !important;
+      transform: none !important;
+    }
+    #eliteAiRoot #eliteAiPanel.ea-keyboard-open.ea-drag-positioned {
+      left: 8px !important;
+      right: 8px !important;
+      top: max(5px, var(--ea-vv-top, 0px)) !important;
+      bottom: auto !important;
+      width: auto !important;
+      height: min(620px, calc(var(--ea-vv-height, 100dvh) - 10px)) !important;
+      max-height: calc(var(--ea-vv-height, 100dvh) - 10px) !important;
+    }
+  }
+  @media (max-width: 420px) {
+    #eliteAiRoot #eliteAiPanel.ea-keyboard-open,
+    #eliteAiRoot #eliteAiPanel.ea-keyboard-open.ea-drag-positioned {
+      left: 5px !important;
+      right: 5px !important;
+      top: max(5px, var(--ea-vv-top, 0px)) !important;
+      height: calc(var(--ea-vv-height, 100dvh) - 10px) !important;
+      max-height: calc(var(--ea-vv-height, 100dvh) - 10px) !important;
+    }
+  }
+</style>
+<script id="elite-ai-position-stability-runtime">
+(()=>{
+  const root=document.getElementById('eliteAiRoot');
+  const panel=document.getElementById('eliteAiPanel');
+  const launcher=document.getElementById('eliteAiLauncher');
+  const input=document.getElementById('eliteAiInput');
+  if(!root||!panel||!input)return;
+
+  const viewport=window.visualViewport;
+  let closeTimer=0;
+  let lastKeyboardState=false;
+
+  function syncStableViewport(){
+    const height=viewport&&Number.isFinite(viewport.height)?viewport.height:window.innerHeight;
+    const top=viewport&&Number.isFinite(viewport.offsetTop)?viewport.offsetTop:0;
+    root.style.setProperty('--ea-vv-height',Math.max(180,height)+'px');
+    root.style.setProperty('--ea-vv-top',Math.max(0,top)+'px');
+
+    const small=window.matchMedia('(max-width: 860px)').matches;
+    const focused=document.activeElement===input;
+    const panelOpen=panel.classList.contains('open');
+    const keyboardOpen=small&&panelOpen&&focused&&
+      ((window.innerHeight-height)>100 || (viewport&&height<window.innerHeight-100));
+
+    if(keyboardOpen){
+      panel.classList.add('ea-keyboard-open');
+      lastKeyboardState=true;
+    }else if(!focused||!panelOpen||!small){
+      panel.classList.remove('ea-keyboard-open');
+      lastKeyboardState=false;
+    }else if(lastKeyboardState && height>=window.innerHeight-40){
+      panel.classList.remove('ea-keyboard-open');
+      lastKeyboardState=false;
+    }
+  }
+
+  function restoreAfterKeyboard(){
+    clearTimeout(closeTimer);
+    closeTimer=setTimeout(()=>{
+      if(document.activeElement!==input || !panel.classList.contains('open')){
+        panel.classList.remove('ea-keyboard-open');
+        syncStableViewport();
+      }
+    },180);
+  }
+
+  input.addEventListener('focus',syncStableViewport,{passive:true});
+  input.addEventListener('blur',restoreAfterKeyboard,{passive:true});
+  window.addEventListener('resize',syncStableViewport,{passive:true});
+  window.addEventListener('orientationchange',()=>setTimeout(syncStableViewport,180),{passive:true});
+  if(viewport){
+    viewport.addEventListener('resize',syncStableViewport,{passive:true});
+    viewport.addEventListener('scroll',syncStableViewport,{passive:true});
+  }
+  document.getElementById('eliteAiClose')?.addEventListener('click',()=>{
+    panel.classList.remove('ea-keyboard-open');
+    input.blur();
+    restoreAfterKeyboard();
+  });
+  launcher?.addEventListener('click',()=>setTimeout(syncStableViewport,80));
+  syncStableViewport();
+})();
+</script>
+
 </body>
 </html>
