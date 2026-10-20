@@ -3359,7 +3359,8 @@ if(!REDUCE){
 </style>
 <style id="talha-responsive-safe-zones">
   @media(max-width:860px){
-    #eliteAiRoot #eliteAiLauncher:not(.ea-drag-positioned){
+    #eliteAiRoot #eliteAiLauncher,
+    #eliteAiRoot #eliteAiLauncher.ea-drag-positioned{
       left:12px!important;bottom:calc(78px + env(safe-area-inset-bottom,0px))!important;
     }
     #eliteAiRoot #eliteAiPanel:not(.ea-drag-positioned),
@@ -4111,7 +4112,8 @@ if(!REDUCE){
 </style>
 <style id="mobile-ai-chat-right-above-menu">
   @media (max-width:860px){
-    #eliteAiRoot #eliteAiLauncher:not(.ea-drag-positioned){
+    #eliteAiRoot #eliteAiLauncher,
+    #eliteAiRoot #eliteAiLauncher.ea-drag-positioned{
       left:auto!important;
       right:12px!important;
       top:auto!important;
@@ -4119,7 +4121,8 @@ if(!REDUCE){
     }
   }
   @media (max-width:420px){
-    #eliteAiRoot #eliteAiLauncher:not(.ea-drag-positioned){
+    #eliteAiRoot #eliteAiLauncher,
+    #eliteAiRoot #eliteAiLauncher.ea-drag-positioned{
       right:9px!important;
       bottom:calc(var(--mobile-bottom-menu-space,74px) + 10px + env(safe-area-inset-bottom,0px))!important;
     }
