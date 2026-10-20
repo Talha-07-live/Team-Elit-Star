@@ -198,7 +198,15 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
 .dropzone{border:1px dashed var(--line2);border-radius:14px;padding:28px 18px;text-align:center;background:radial-gradient(600px 200px at 50% 0%,rgba(232,195,107,.08),transparent 70%),rgba(255,255,255,.012);cursor:pointer;transition:.2s ease}
 .dropzone:hover,.dropzone.dragover{border-color:var(--gold);background:rgba(232,195,107,.06)}
 .drop-icon{font-size:2rem;color:var(--gold);line-height:1.3}.drop-title{font:600 1.3rem var(--serif);margin:6px 0}.drop-sub{color:var(--muted);font-size:.76rem}.import-options{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:14px 0}.progress-shell{height:7px;border-radius:99px;background:#24212a;overflow:hidden;margin:10px 0}.progress-shell progress{width:100%;height:100%;display:block;appearance:none;border:0;background:transparent}.progress-shell progress::-webkit-progress-bar{background:#24212a}.progress-shell progress::-webkit-progress-value{background:linear-gradient(90deg,var(--gold3),var(--gold2));transition:width .2s ease}.progress-shell progress::-moz-progress-bar{background:linear-gradient(90deg,var(--gold3),var(--gold2))}.import-status{color:var(--muted);font-size:.75rem;min-height:20px}.preview-group{margin-top:16px}.preview-title{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--line);font:600 .65rem var(--util);letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}.preview-wrap{overflow:auto}.preview-table{border-collapse:collapse;width:100%;min-width:850px}.preview-table th,.preview-table td{border-bottom:1px solid rgba(232,195,107,.1);padding:7px;text-align:left;vertical-align:top}.preview-table th{font:600 .55rem var(--util);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);background:#111016;position:sticky;top:0}.preview-table input,.preview-table textarea{width:100%;min-width:90px;border:1px solid var(--line);border-radius:5px;background:rgba(0,0,0,.2);color:var(--text);padding:7px;font-size:.7rem;outline:none}.preview-table textarea{min-width:180px;min-height:44px;resize:vertical}.preview-table input:focus,.preview-table textarea:focus{border-color:var(--gold)}.preview-table .source-cell{min-width:125px;color:var(--muted);font-size:.65rem;overflow-wrap:anywhere}.ocr-note{font-size:.75rem;color:var(--muted);line-height:1.7}.ocr-note b{color:var(--gold)}.record-edit-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;padding:18px 20px}.record-edit-grid .field.wide{grid-column:1/-1}.record-table td{white-space:normal}.record-table .record-long{min-width:240px;max-width:420px}.record-table .record-actions{min-width:140px}@media(max-width:700px){.import-options,.record-edit-grid{grid-template-columns:1fr}.record-edit-grid .field.wide{grid-column:auto}.dropzone{padding:24px 12px}}
-.custom-key-input{min-width:180px;width:100%;border:1px solid var(--line);background:rgba(0,0,0,.2);color:var(--text);padding:8px;border-radius:6px;font-size:.72rem}.custom-key-value{min-width:240px;width:100%;min-height:58px;resize:vertical;border:1px solid var(--line);background:rgba(0,0,0,.2);color:var(--text);padding:8px;border-radius:6px;font-size:.72rem}.settings-key-table{min-width:850px}.settings-key-table td{vertical-align:top}.setting-public-check{accent-color:var(--gold);width:17px;height:17px}
+.custom-key-input{min-width:180px;width:100%;border:1px solid var(--line);background:rgba(0,0,0,.2);color:var(--text);padding:8px;border-radius:6px;font-size:.72rem}.custom-key-value{min-width:240px;width:100%;min-height:58px;resize:vertical;border:1px solid var(--line);background:rgba(0,0,0,.2);color:var(--text);padding:8px;border-radius:6px;font-size:.72rem}.settings-key-table{min-width:850px} .settings-key-table td{vertical-align:top}.setting-public-check{accent-color:var(--gold);width:17px;height:17px}
+.ai-fix-panel{margin:16px 0;padding:15px;border:1px solid rgba(102,227,255,.24);border-radius:12px;background:linear-gradient(125deg,rgba(102,227,255,.045),rgba(156,139,255,.035) 55%,rgba(232,195,107,.025))}
+.ai-fix-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:6px}
+.ai-fix-title{color:var(--electric);font:600 .68rem var(--util);letter-spacing:.13em;text-transform:uppercase}
+.ai-fix-copy{color:var(--muted);font-size:.76rem;line-height:1.7;margin:4px 0 12px}
+.ai-fix-grid{display:grid;grid-template-columns:minmax(180px,.75fr) minmax(260px,1.5fr);gap:12px}
+.ai-fix-grid .field{margin:0}.ai-fix-grid select,.ai-fix-grid textarea{width:100%;border:1px solid var(--line);background:rgba(0,0,0,.22);color:var(--text);border-radius:8px;padding:11px 12px;outline:none}.ai-fix-grid textarea{min-height:94px;resize:vertical}.ai-fix-grid select:focus,.ai-fix-grid textarea:focus{border-color:var(--electric);box-shadow:0 0 0 3px rgba(102,227,255,.07)}
+.ai-fix-status{align-self:center;color:var(--muted);font-size:.72rem;min-width:160px}.review-cell{min-width:160px;max-width:240px}.review-flag{display:inline-block;border:1px solid rgba(131,227,174,.24);border-radius:6px;padding:5px 7px;color:var(--success);font-size:.62rem;line-height:1.5;white-space:normal}.review-flag.missing{border-color:rgba(255,197,91,.3);color:var(--gold2);background:rgba(255,197,91,.04)}
+@media(max-width:700px){.ai-fix-grid{grid-template-columns:1fr}.ai-fix-panel{padding:12px}.ai-fix-status{width:100%}}
 </style>
 
 </head>
@@ -215,7 +223,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
     <div class="login-head">
       <div class="eyebrow">Restricted Access</div>
       <h1>Command the team.</h1>
-      <p>Supabase Auth + database-level role enforcement for your admin workspace.</p>
+      <p>Secure password login. For security, refreshing this page signs you out and requires your email and password again.</p>
     </div>
     <div id="loginAlert" class="alert hidden"></div>
     <form id="loginForm">
@@ -232,7 +240,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
       </div>
       <button id="loginBtn" class="btn btn-primary" style="width:100%" type="submit">Enter Super Admin</button>
     </form>
-    <div class="login-note">This panel must use your Supabase project URL and publishable/anon key. Never place a Supabase service-role or secret key in this file.</div>
+    <div class="login-note">For security, refreshing or reopening this page signs you out; enter your email and password again. This panel must use your Supabase project URL and publishable/anon key. Never place a Supabase service-role or secret key in this file.</div>
   </div>
 </section>
 
@@ -418,6 +426,15 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
             <div class="toolbar"><button id="parsePasteBtn" class="btn btn-ghost" type="button">Parse Pasted Table</button><button id="aiParsePasteBtn" class="btn btn-ghost" type="button">Structure Text with AI</button></div>
             <label class="ai-consent"><input id="aiConsent" type="checkbox"><span><b>I have permission to process the selected files or pasted text.</b> Images, PDFs or unstructured text sent for AI reading are processed by Google through a protected service. Do not send confidential customer data unless permitted. Phone numbers are masked before the rows are saved; original source files are not stored in the database.</span></label>
             <div class="toolbar"><button id="processImagesBtn" class="btn btn-primary" type="button" disabled>✧ AI Read & Extract</button><button id="clearImportBtn" class="btn btn-ghost" type="button">Clear Batch</button><button id="saveImportBtn" class="btn btn-success" type="button" disabled>Save Unique Rows</button></div>
+            <div class="ai-fix-panel">
+              <div class="ai-fix-head"><span class="ai-fix-title">✧ AI Correction Desk</span><span id="aiCorrectionSourceBadge" class="badge">0 source images</span></div>
+              <p class="ai-fix-copy">Image theke data render howar por kono field missing ba vul thakle nirdesh likho. AI original image abar check kore missing row add ba existing value replace korbe. Proposed change review queue-te dekhabe; alada kore <b>Save Unique Rows</b> na chaple database-e save hobe na.</p>
+              <div class="ai-fix-grid">
+                <div class="field"><label>Recheck source image</label><select id="aiCorrectionSource" disabled><option value="">Process an image first</option></select></div>
+                <div class="field"><label>What should AI add or replace?</label><textarea id="aiCorrectionInstruction" placeholder="Example: Row 3-er Trainer missing—image theke add koro. Row 5-er Training Remarks image-er sathe miliye replace koro. Image-e thaka missing row add koro."></textarea></div>
+              </div>
+              <div class="toolbar" style="margin:12px 0 0"><button id="aiFixImportBtn" class="btn btn-primary" type="button" disabled>✧ Ask AI to Add / Replace</button><span id="aiCorrectionStatus" class="ai-fix-status" aria-live="polite">Process a screenshot first, then describe the missing or incorrect data.</span></div>
+            </div>
             <div class="progress-shell"><progress id="ocrProgress" max="100" value="0"></progress></div>
             <div id="ocrStatus" class="import-status" aria-live="polite">Select a file or paste rows. Tabular files are parsed locally; AI reading needs your consent.</div>
             <div class="info-box ocr-note" style="margin-top:12px"><b>Review-first workflow:</b> spreadsheet data is parsed in the browser; AI reads images/PDFs or unstructured text. Matching member/report identities are staged as updates; repeated rows in the same batch collapse into one reviewed row. Distinct call dates, categories and masked phone pairs remain separate. Review/edit rows before saving. Call/service phone values and card data are limited to masked metadata. Service quotas still apply.</div>
@@ -515,33 +532,30 @@ const SUPABASE_ANON_KEY=window.TEAM_ELITE_SUPABASE_CONFIG?.key||"YOUR_SUPABASE_P
 const AI_WORKER_URL="https://elitestarai.mirrorleechbot202.workers.dev";
 const {createClient}=supabase;
 
-// Keep the Supabase auth token in persistent browser storage so a normal page
-// refresh does not sign the administrator out. Use Supabase's default storage
-// key for this project URL, preserving any session created by the previous build.
+// Password login is intentionally required after every page load/refresh.
+// Remove a saved session left by an older build, then keep auth in memory only.
 const AUTH_STORAGE_KEY=(()=>{
   try{return `sb-${new URL(SUPABASE_URL).hostname.split(".")[0]}-auth-token`}
   catch{return "team-elite-star-admin-auth"}
 })();
-let persistentAuthStorage;
 try{
-  const storageProbe="__tes_auth_storage_probe__";
-  window.localStorage.setItem(storageProbe,"1");
-  window.localStorage.removeItem(storageProbe);
-  persistentAuthStorage=window.localStorage;
+  window.localStorage.removeItem(AUTH_STORAGE_KEY);
+  window.sessionStorage.removeItem(AUTH_STORAGE_KEY);
+  window.localStorage.removeItem("team-elite-star-admin-auth");
+  window.sessionStorage.removeItem("team-elite-star-admin-auth");
 }catch(storageError){
-  console.warn("Persistent browser storage is unavailable. Session persistence may be limited.",storageError);
+  console.warn("Could not clear an older saved admin session. The current build still uses memory-only authentication.",storageError);
 }
 const db=createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{
   auth:{
-    persistSession:true,
+    persistSession:false,
     autoRefreshToken:true,
-    detectSessionInUrl:true,
-    storageKey:AUTH_STORAGE_KEY,
-    ...(persistentAuthStorage?{storage:persistentAuthStorage}:{})
+    detectSessionInUrl:false,
+    storageKey:AUTH_STORAGE_KEY
   }
 });
 
-const state={agents:[],cards:[],settings:{},settingsRows:[],audit:[],previousMembers:[],srRecords:[],callRecords:[],importRows:[],session:null,profile:null,agentStatus:"all",cardStatus:"all",callStatus:"all",recordEditor:null,selectedFiles:[],importProcessing:false,importSaving:false,undoAvailable:false,lastUndo:null,lastRedo:null};
+const state={agents:[],cards:[],settings:{},settingsRows:[],audit:[],previousMembers:[],srRecords:[],callRecords:[],importRows:[],session:null,profile:null,agentStatus:"all",cardStatus:"all",callStatus:"all",recordEditor:null,selectedFiles:[],importSourceFiles:[],importProcessing:false,importSaving:false,importRefining:false,undoAvailable:false,lastUndo:null,lastRedo:null};
 const $=s=>document.querySelector(s);
 const $$=s=>[...document.querySelectorAll(s)];
 
@@ -1060,13 +1074,112 @@ async function requestAIExtraction(file,preferredType,reportDate,rawText=""){
   if(!response.ok||data.error)throw new Error(data.error||`AI import could not be completed (${response.status}).`);
   if(!data||!Array.isArray(data.rows))throw new Error("The data reader did not return a usable table. Try a clearer image or specify the table type.");return data;
 }
+function importMissingFields(type,data){
+  const requirements={
+    agents:["name","cube_id"],test_cards:["label"],app_settings:["key"],
+    previous_members:["name"],sr_records:["agent_name","report_date","right_count","wrong_count"],
+    call_records:["agent_name","call_date","category"]
+  };
+  return (requirements[type]||[]).filter(key=>data?.[key]===null||data?.[key]===undefined||String(data[key]).trim()==="").map(key=>IMPORT_LABELS[key]||key);
+}
 function renderImportPreview(){
-  const total=state.importRows.length;$("#importRowCount").textContent=`${total} row${total===1?"":"s"}`;$("#saveImportBtn").disabled=!total;
+  const total=state.importRows.length;const missingTotal=state.importRows.filter(r=>importMissingFields(r.type,r.data).length).length;
+  $("#importRowCount").textContent=`${total} row${total===1?"":"s"}${missingTotal?` · ${missingTotal} need review`:""}`;$("#saveImportBtn").disabled=!total;
   if(!total){$("#importPreviewBody").innerHTML='<div class="empty">Parsed or AI-extracted rows will appear here for review.</div>';return}
   const groups=Object.keys(IMPORT_FIELDS).filter(t=>state.importRows.some(r=>r.type===t));
   $("#importPreviewBody").innerHTML=groups.map(type=>{const indexes=state.importRows.map((r,i)=>({r,i})).filter(x=>x.r.type===type);const fields=IMPORT_FIELDS[type];
-    return `<div class="preview-group"><div class="preview-title"><span>${esc(IMPORT_TABLE_LABELS[type])}</span><span>${indexes.length} rows · ${indexes.filter(x=>x.r.targetId).length} updates</span></div><div class="preview-wrap"><table class="preview-table"><thead><tr><th>Source</th>${fields.map(f=>`<th>${esc(IMPORT_LABELS[f]||f)}</th>`).join("")}<th>Remove</th></tr></thead><tbody>${indexes.map(({r,i})=>`<tr><td class="source-cell">${esc(r.source)}</td>${fields.map(f=>{const v=r.data[f]??"";const long=["training_remarks","notes","bio","value"].includes(f);const typ=["archived_date","report_date","call_date"].includes(f)?"date":"text";return `<td>${long?`<textarea data-import-row="${i}" data-import-field="${f}">${esc(v)}</textarea>`:`<input type="${typ}" data-import-row="${i}" data-import-field="${f}" value="${esc(v)}">`}</td>`}).join("")}<td><button class="btn btn-danger btn-sm" data-import-remove="${i}">Remove</button></td></tr>`).join("")}</tbody></table></div></div>`;
+    return `<div class="preview-group"><div class="preview-title"><span>${esc(IMPORT_TABLE_LABELS[type])}</span><span>${indexes.length} rows · ${indexes.filter(x=>x.r.targetId).length} updates</span></div><div class="preview-wrap"><table class="preview-table"><thead><tr><th>Source</th><th>Completeness</th>${fields.map(f=>`<th>${esc(IMPORT_LABELS[f]||f)}</th>`).join("")}<th>Remove</th></tr></thead><tbody>${indexes.map(({r,i})=>{const missing=importMissingFields(type,r.data);const review=missing.length?`<span class="review-flag missing">Missing: ${esc(missing.join(", "))}</span>`:`<span class="review-flag">Required fields present</span>`;return `<tr><td class="source-cell">${esc(r.source)}</td><td class="review-cell">${review}</td>${fields.map(f=>{const v=r.data[f]??"";const long=["training_remarks","notes","bio","value"].includes(f);const typ=["archived_date","report_date","call_date"].includes(f)?"date":"text";return `<td>${long?`<textarea data-import-row="${i}" data-import-field="${f}">${esc(v)}</textarea>`:`<input type="${typ}" data-import-row="${i}" data-import-field="${f}" value="${esc(v)}">`}</td>`}).join("")}<td><button class="btn btn-danger btn-sm" data-import-remove="${i}">Remove</button></td></tr>`}).join("")}</tbody></table></div></div>`;
   }).join("");
+}
+
+function isVisualImportFile(file){return !!file&&(String(file.type||"").startsWith("image/")||file.type==="application/pdf"||/\.(png|jpe?g|webp|pdf)$/i.test(file.name||""))}
+function sameFile(a,b){return !!a&&!!b&&a.name===b.name&&a.size===b.size&&a.lastModified===b.lastModified}
+function syncAICorrectionSources(){
+  const select=$("#aiCorrectionSource");if(!select)return;
+  const files=state.importSourceFiles||[];const old=select.value;
+  if(!files.length){select.innerHTML='<option value="">Process an image first</option>';select.disabled=true;$("#aiCorrectionSourceBadge").textContent="0 source images";$("#aiFixImportBtn").disabled=true;return}
+  select.innerHTML=(files.length>1?'<option value="all">All processed images</option>':"")+files.map((f,i)=>`<option value="${i}">${esc(f.name)}</option>`).join("");
+  const valid=old==="all"&&files.length>1||/^\d+$/.test(old)&&Number(old)<files.length;
+  if(valid)select.value=old;else select.value=files.length>1?"all":"0";
+  select.disabled=state.importProcessing||state.importSaving||state.importRefining;
+  $("#aiCorrectionSourceBadge").textContent=`${files.length} source image${files.length===1?"":"s"}`;
+  $("#aiFixImportBtn").disabled=state.importProcessing||state.importSaving||state.importRefining;
+}
+function correctionCandidateMatch(type,incoming,candidate){
+  if(recordMatches(type,candidate,incoming))return true;
+  if((type==="agents"||type==="previous_members")&&samePerson(candidate,incoming))return true;
+  if(type==="sr_records"){
+    const sameDate=parseDateValue(candidate.report_date,"")===parseDateValue(incoming.report_date,"");
+    const sameId=identityText(candidate.agent_id)&&identityText(candidate.agent_id)===identityText(incoming.agent_id);
+    return sameDate&&(sameId||samePerson(candidate,incoming));
+  }
+  if(type==="call_records"){
+    if(parseDateValue(candidate.call_date,"")!==parseDateValue(incoming.call_date,""))return false;
+    const ca=identityText(candidate.category),cb=identityText(incoming.category);if(ca&&cb&&ca!==cb)return false;
+    const sameId=identityText(candidate.agent_id)&&identityText(candidate.agent_id)===identityText(incoming.agent_id);
+    const sameName=samePerson(candidate,incoming);
+    const phoneCompatible=(a,b)=>!identityText(a)||!identityText(b)||identityText(a)===identityText(b);
+    const phones=phoneCompatible(candidate.service_mobile_masked,incoming.service_mobile_masked)&&phoneCompatible(candidate.caller_mobile_masked,incoming.caller_mobile_masked);
+    return phones&&(sameId||sameName||(!ca||!cb));
+  }
+  return false;
+}
+async function refineImportWithAI(){
+  if(state.importProcessing||state.importSaving||state.importRefining)return;
+  const instruction=$("#aiCorrectionInstruction").value.trim();
+  if(!instruction){toast("Instruction needed","Tell AI which missing or incorrect data to add or replace.","error");$("#aiCorrectionInstruction").focus();return}
+  if(!$("#aiConsent").checked){toast("Permission needed","Confirm permission before sending images or data to AI.","error");return}
+  const chosen=$("#aiCorrectionSource").value;let files=[];
+  if(chosen==="all")files=[...state.importSourceFiles];else if(/^\d+$/.test(chosen)&&state.importSourceFiles[Number(chosen)])files=[state.importSourceFiles[Number(chosen)]];
+  if(!files.length){toast("Source image missing","Upload and process the original screenshot again before asking AI to correct it.","error");return}
+  state.importRefining=true;$("#aiFixImportBtn").disabled=true;$("#processImagesBtn").disabled=true;$("#clearImportBtn").disabled=true;$("#saveImportBtn").disabled=true;
+  const reportDate=$("#importReportDate").value||null;let corrected=0,added=0,skipped=0;const rawLog=[];
+  try{
+    for(let fileIndex=0;fileIndex<files.length;fileIndex++){
+      const file=files[fileIndex];const sourceRows=state.importRows.filter(r=>r.source===file.name);
+      const forced=$("#importType").value;const inferredType=sourceRows[0]?.type||"auto";const preferredType=forced!=="auto"?forced:inferredType;
+      const stagedSnapshot=sourceRows.map((row,i)=>({row_number:i+1,type:row.type,fields:row.data}));
+      const correctionPrompt=[
+        "TASK: CORRECT AN EXISTING IMAGE-EXTRACTION PREVIEW. The attached source image/PDF is the source of truth.",
+        "Table type: "+preferredType,
+        "USER INSTRUCTION: "+instruction,
+        "CURRENT STAGED ROWS FOR THIS SOURCE (JSON): "+JSON.stringify(stagedSnapshot),
+        "Return a complete corrected row list in the normal extraction response rows field, using the schema field names for the selected table.",
+        "Preserve all rows already present unless the source clearly proves a correction is needed. Add any visibly present missing rows the user asks for. Replace incorrect values only with values supported by the image. Do not invent unreadable values; leave unknowns blank. Do not remove other rows. Keep current row order wherever possible, then append truly missing rows. Return data only, no explanation."
+      ].join("\n\n");
+      $("#aiCorrectionStatus").textContent=`Rechecking ${fileIndex+1}/${files.length}: ${file.name}…`;
+      const ai=await requestAIExtraction(file,preferredType,reportDate,correctionPrompt);const type=preferredType==="auto"?ai.table_type:preferredType;
+      if(!IMPORT_FIELDS[type])throw new Error(`AI returned an unsupported table type for ${file.name}. Select the correct destination table and retry.`);
+      const candidateIndexes=state.importRows.map((row,index)=>({row,index})).filter(x=>x.row.type===type&&x.row.source===file.name);
+      const used=new Set();const validRows=(ai.rows||[]).map(raw=>({raw,data:normalizeAIRecord(type,raw,file.name,reportDate)})).filter(x=>x.data);
+      for(let responseIndex=0;responseIndex<validRows.length;responseIndex++){
+        const {raw,data}=validRows[responseIndex];let match=null;
+        for(const candidate of candidateIndexes){if(used.has(candidate.index))continue;if(correctionCandidateMatch(type,data,candidate.row.data)){match=candidate;break}}
+        if(!match&&validRows.length===candidateIndexes.length&&candidateIndexes[responseIndex]&&!used.has(candidateIndexes[responseIndex].index)){
+          match=candidateIndexes[responseIndex];
+        }
+        if(match){
+          used.add(match.index);const row=state.importRows[match.index];row.data=mergeImportedData(type,row.data,data);row.targetId=row.targetId||findExistingImportRecord(type,row.data)?.id||null;row.source=file.name;corrected++;
+        }else{
+          const existingStagedIndex=state.importRows.findIndex(row=>row.type===type&&recordMatches(type,row.data,data));
+          if(existingStagedIndex>=0){const row=state.importRows[existingStagedIndex];row.data=mergeImportedData(type,row.data,data);row.targetId=row.targetId||findExistingImportRecord(type,row.data)?.id||null;corrected++;}
+          else{
+            const dbExisting=findExistingImportRecord(type,data);state.importRows.push({type,data:mergeImportedData(type,dbExisting,data),targetId:dbExisting?.id||null,source:file.name});added++;
+          }
+        }
+      }
+      rawLog.push(`=== AI CORRECTION · ${file.name} · ${type} ===\n${maskTextMobileNumbers(JSON.stringify(ai.rows||[],null,2))}`);
+      if(!(ai.rows||[]).length)skipped++;
+    }
+    $("#ocrRaw").value=[$("#ocrRaw").value,rawLog.join("\n\n")].filter(Boolean).join("\n\n");
+    renderImportPreview();
+    const missing=state.importRows.filter(r=>importMissingFields(r.type,r.data).length).length;
+    $("#ocrStatus").textContent=`AI correction staged: ${corrected} existing row(s) refreshed, ${added} row(s) added; ${missing} row(s) still need review. Nothing has been saved yet.`;
+    $("#aiCorrectionStatus").textContent=`Review complete: ${corrected} updated, ${added} added${missing?`, ${missing} still need review`:""}. Check the preview before saving.`;
+    toast("AI correction ready",`${corrected} updated · ${added} added. Review before saving.`);
+  }catch(error){
+    const message=error?.message||"AI correction failed.";$("#aiCorrectionStatus").textContent=message;$("#ocrStatus").textContent=message;toast("AI correction failed",message,"error");
+  }finally{state.importRefining=false;updateImportControls();syncAICorrectionSources();$("#saveImportBtn").disabled=!state.importRows.length}
 }
 function readSheetText(text){
   if(!window.XLSX)throw new Error("Spreadsheet parser did not load. Check internet connectivity and reload the admin page.");
@@ -1084,8 +1197,10 @@ async function stageParsedText(text,source="Pasted clipboard"){
   const forced=$("#importType").value;const type=forced==="auto"?inferImportType(parsed.headers):forced;if(!type)throw new Error("Could not detect table columns. Select the destination table manually.");const result=stageImportRows(type,parsed.rows,source,$("#importReportDate").value||null);$("#ocrStatus").textContent=`Parsed ${parsed.rows.length} row(s): ${result.added} new and ${result.updated} matching record(s) queued for update; ${result.invalid} invalid.`;toast("Data parsed",`${result.added} new · ${result.updated} existing row(s) ready to review.`);return result;
 }
 async function processImportFiles(){
-  const files=state.selectedFiles;if(state.importProcessing||state.importSaving||!files.length)return;
-  state.importProcessing=true;$("#processImagesBtn").disabled=true;$("#clearImportBtn").disabled=true;$("#saveImportBtn").disabled=true;$("#ocrProgress").value=0;$("#ocrRaw").value="";
+  const files=state.selectedFiles;if(state.importProcessing||state.importSaving||state.importRefining||!files.length)return;
+  for(const file of files.filter(isVisualImportFile)){if(!state.importSourceFiles.some(old=>sameFile(old,file)))state.importSourceFiles.push(file)}
+  syncAICorrectionSources();
+  state.importProcessing=true;updateImportControls();$("#ocrProgress").value=0;$("#ocrRaw").value="";
   const override=$("#importType").value,reportDate=$("#importReportDate").value||null,raw=[];let totalAdded=0,totalSkipped=0;
   try{
     for(let i=0;i<files.length;i++){
@@ -1099,7 +1214,7 @@ async function processImportFiles(){
     }
     $("#ocrRaw").value=raw.join("\n\n");$("#ocrStatus").textContent=`Import preparation complete: ${totalAdded} new and ${totalSkipped} matching row(s) staged. Review values before saving.`;toast("Import ready",`${totalAdded} new · ${totalSkipped} existing row(s) queued for update.`);
   }catch(err){$("#ocrStatus").textContent=err.message||"Import failed.";toast("Import failed",err.message||"Import failed.","error");$("#ocrRaw").value=raw.join("\n\n")}
-  finally{state.importProcessing=false;updateImportControls();$("#saveImportBtn").disabled=!state.importRows.length}
+  finally{state.importProcessing=false;updateImportControls();syncAICorrectionSources();$("#saveImportBtn").disabled=!state.importRows.length}
 }
 async function aiStructurePastedText(){
   const text=$("#ocrPasteText").value.trim();if(!text){toast("No text","Paste table/text first.","error");return}if(!$("#aiConsent").checked){toast("Permission needed","Confirm permission before sending text for AI processing.","error");return}
@@ -1144,7 +1259,7 @@ async function saveImportRows(){
       $("#ocrProgress").value=Math.round((index+1)/staged.length*100);
       $("#ocrStatus").textContent=`Saving ${index+1}/${staged.length} · ${updated} existing row(s) to update · ${inserted} new row(s)`;
     }
-    state.importRows=[];renderImportPreview();$("#importFiles").value="";state.selectedFiles=[];$("#selectedFilesLabel").textContent="No files selected";$("#ocrProgress").value=100;await loadAll();
+    state.importRows=[];state.importSourceFiles=[];renderImportPreview();$("#importFiles").value="";state.selectedFiles=[];$("#selectedFilesLabel").textContent="No files selected";$("#aiCorrectionInstruction").value="";$("#aiCorrectionStatus").textContent="Process a screenshot first, then describe the missing or incorrect data.";syncAICorrectionSources();$("#ocrProgress").value=100;await loadAll();
     $("#ocrStatus").textContent=`Completed: ${inserted} new row(s), ${updated} existing row(s) updated. Matching rows were updated instead of duplicated.`;
     toast("Smart import complete",`${inserted} new · ${updated} updated · ${submitted} saved.`);
   }catch(err){$("#ocrStatus").textContent=err.message||"Database upload failed.";toast("Save failed",err.message||"Database upload failed.","error")}
@@ -1666,11 +1781,11 @@ async function boot(){
   }catch(err){
     $("#adminApp").classList.remove("ready");
     $("#loginScreen").classList.remove("hidden");
-    // Keep a saved session intact on refresh/temporary verification failures.
+    // Keep an in-memory session intact on temporary verification failures within this page load.
     try{
       const {data:{session}}=await db.auth.getSession();
       if(session?.user?.email&&!val("loginEmail")) $("#loginEmail").value=session.user.email;
-      if(session) console.warn("Admin boot verification failed; auth session was retained.",err);
+      if(session) console.warn("Admin boot verification failed; current in-memory auth session remains available.",err);
     }catch(sessionError){console.warn("Unable to inspect persisted auth session.",sessionError)}
     showLoginError(err.message||"Unable to initialize admin panel.");
   }
@@ -1701,12 +1816,14 @@ $("#recordEditorForm").addEventListener("submit",saveRecordEditor);
 ["previousRowsSearch","srRowsSearch","callRowsSearch"].forEach(id=>$("#"+id).addEventListener("input",renderReportRecords));
 $("#callWrongFilter").addEventListener("click",()=>{state.callStatus=state.callStatus==="all"?"wrong":"all";renderReportRecords()});
 $("#processImagesBtn").addEventListener("click",processImportFiles);
+$("#aiFixImportBtn").addEventListener("click",refineImportWithAI);
+$("#aiCorrectionSource").addEventListener("change",()=>{const value=$("#aiCorrectionSource").value;const files=state.importSourceFiles||[];const label=value==="all"?"all processed images":(/^\d+$/.test(value)?files[Number(value)]?.name:"the selected image");$("#aiCorrectionStatus").textContent=label?`AI will compare the instruction against ${label}.`:"Choose a processed source image."});
 $("#saveImportBtn").addEventListener("click",saveImportRows);
 $("#parsePasteBtn").addEventListener("click",async()=>{try{await stageParsedText($("#ocrPasteText").value,"Pasted clipboard text")}catch(e){toast("Paste parse failed",e.message||"Could not parse pasted data.","error");$("#ocrStatus").textContent=e.message||"Could not parse pasted data."}});
 $("#aiParsePasteBtn").addEventListener("click",aiStructurePastedText);
-function updateImportControls(){const hasFiles=state.selectedFiles.length>0;$("#processImagesBtn").disabled=!hasFiles||state.importProcessing||state.importSaving;$("#clearImportBtn").disabled=state.importProcessing||state.importSaving;$("#aiParsePasteBtn").disabled=state.importProcessing||state.importSaving;}
+function updateImportControls(){const busy=state.importProcessing||state.importSaving||state.importRefining;const hasFiles=state.selectedFiles.length>0;$("#processImagesBtn").disabled=!hasFiles||busy;$("#clearImportBtn").disabled=busy;$("#aiParsePasteBtn").disabled=busy;$("#aiFixImportBtn").disabled=!(state.importSourceFiles||[]).length||busy;$("#aiCorrectionSource").disabled=!(state.importSourceFiles||[]).length||busy;}
 $("#aiConsent").addEventListener("change",updateImportControls);
-$("#clearImportBtn").addEventListener("click",()=>{if(state.importProcessing||state.importSaving)return;state.selectedFiles=[];state.importRows=[];$("#importFiles").value="";$("#selectedFilesLabel").textContent="No files selected";$("#ocrRaw").value="";$("#ocrPasteText").value="";$("#ocrProgress").value=0;$("#ocrStatus").textContent="Select a file or paste rows. Tabular files are parsed locally; AI reading needs your consent.";$("#aiConsent").checked=false;updateImportControls();renderImportPreview()});
+$("#clearImportBtn").addEventListener("click",()=>{if(state.importProcessing||state.importSaving||state.importRefining)return;state.selectedFiles=[];state.importSourceFiles=[];state.importRows=[];$("#importFiles").value="";$("#selectedFilesLabel").textContent="No files selected";$("#ocrRaw").value="";$("#ocrPasteText").value="";$("#aiCorrectionInstruction").value="";$("#aiCorrectionStatus").textContent="Process a screenshot first, then describe the missing or incorrect data.";$("#ocrProgress").value=0;$("#ocrStatus").textContent="Select a file or paste rows. Tabular files are parsed locally; AI reading needs your consent.";$("#aiConsent").checked=false;syncAICorrectionSources();updateImportControls();renderImportPreview()});
 $("#importFiles").addEventListener("change",e=>{state.selectedFiles=[...(e.target.files||[])];$("#selectedFilesLabel").textContent=state.selectedFiles.length?state.selectedFiles.map(f=>f.name).join(" · "):"No files selected";updateImportControls()});
 $("#dropZone").addEventListener("click",()=>$("#importFiles").click());
 $("#dropZone").addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();$("#importFiles").click()}});
@@ -1748,6 +1865,7 @@ db.auth.onAuthStateChange((event)=>{
   if(event==="SIGNED_OUT"){state.session=null;state.profile=null;$("#adminApp").classList.remove("ready");$("#loginScreen").classList.remove("hidden")}
 });
 
+syncAICorrectionSources();
 updateImportControls();
 boot();
 </script>
