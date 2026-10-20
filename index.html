@@ -2390,19 +2390,19 @@ if(!REDUCE){
     archive=(rows||[]).map(r=>({id:r.agent_id||'',name:r.name||'',location:r.location||'',cube:r.cube_id||'',role:r.role||'CSR',qa:r.qa||'',trainer:r.trainer||'',quality:pct(r.quality),attendance:pct(r.attendance),staffed:r.staffed_time||'—',productive:r.productive_time||'—',breakTime:r.break_time||'—',aht:r.aht||'—',onTimeLogin:pct(r.on_time_login),note:r.notes||'Archived member record.',archivedDate:r.archived_date||''}));
     renderArchive();
     syncPageData();
-    const note=document.querySelector('#previous-members .report-panel > .report-note');if(note)note.textContent='Previous Member records are loaded from Supabase.';
+    const note=document.querySelector('#previous-members .report-panel > .report-note');if(note)note.textContent='Previous Member.';
   }
   function applySr(rows){
     srRows=(rows||[]).map(r=>({id:r.agent_id||'',name:r.agent_name||'',location:r.location||'',right:Number(r.right_count)||0,wrong:Number(r.wrong_count)||0,accuracy:r.accuracy==null?((Number(r.right_count)||0)+(Number(r.wrong_count)||0)?Number(r.right_count)/(Number(r.right_count)+Number(r.wrong_count))*100:0):Number(r.accuracy),reportDate:r.report_date||''}));
     renderSr();
     syncPageData();
-    const note=document.querySelector('#sr-data .report-panel > .report-note');if(note)note.textContent='SR records are loaded from Supabase. Accuracy is calculated from right/wrong counts when not provided.';
+    const note=document.querySelector('#sr-data .report-panel > .report-note');if(note)note.textContent='SR records.';
   }
   function applyCalls(rows){
     callRows=(rows||[]).map(r=>({service:r.service_mobile_masked||'••••••',caller:r.caller_mobile_masked||'••••••',category:r.category||'',date:reportDateLabel(r.call_date),id:r.agent_id||'',name:r.agent_name||'',status:r.training_status||'Unknown',remarks:r.training_remarks||''}));
     renderCalls();
     syncPageData();
-    const note=document.querySelector('#call-data .report-panel > .report-note');if(note)note.textContent='Call-training records are loaded from Supabase. Phone numbers remain masked.';
+    const note=document.querySelector('#call-data .report-panel > .report-note');if(note)note.textContent='Call-training records.';
   }
   function signature(data){return JSON.stringify(data||[])}
   const CACHE_KEY='teamEliteStar:lastSupabaseSnapshot:v1';
@@ -2423,7 +2423,7 @@ if(!REDUCE){
     }catch(_){return null;}
   }
   function writeSnapshotCache(data){
-    try{localStorage.setItem(CACHE_KEY,JSON.stringify({version:1,savedAt:Date.now(),data}));}catch(err){console.warn('[Team Elite Star] Could not cache Supabase snapshot:',err);}
+    try{localStorage.setItem(CACHE_KEY,JSON.stringify({version:1,savedAt:Date.now(),data}));}catch(err){console.warn('[Team Elite Star] Could not cache snapshot:',err);}
   }
   function applyCachedSnapshot(reason){
     const cached=readSnapshotCache();
@@ -2431,7 +2431,7 @@ if(!REDUCE){
     applySnapshot(cached.data);
     const age=Math.max(0,Date.now()-(cached.savedAt||Date.now()));
     const ageText=age<60000?`${Math.round(age/1000)} seconds`:age<3600000?`${Math.round(age/60000)} minutes`:`${Math.round(age/3600000)} hours`;
-    setDbStatus('poll','CACHED DATA',`Supabase could not be read. Showing the last successfully saved Supabase snapshot (${ageText} old). ${reason||''}`.trim());
+    setDbStatus('poll','CACHED DATA',`could not be read. Showing the last successfully saved snapshot (${ageText} old). ${reason||''}`.trim());
     return true;
   }
   async function loadSupabaseData(source='manual'){
@@ -2449,12 +2449,12 @@ if(!REDUCE){
       const failed=results.filter(([_,r])=>r.error);
       if(failed.length){
         const message=failed.map(([name,r])=>`${name}: ${r.error.message}`).join('\n');
-        console.warn('[Team Elite Star] Supabase read failed:',message);
+        console.warn('[Team Elite Star] read failed:',message);
         if(!applyCachedSnapshot(message)){
           TEAM_LEADER={...EMPTY_TEAM_LEADER};MEMBERS=[];archive=[];srRows=[];callRows=[];
           window.renderTeamMembers?.();window.refreshTeamCommand?.();
           renderArchive();renderSr();renderCalls();
-          setDbStatus('error','NO DATA',`Supabase read failed and no prior Supabase snapshot exists. No bundled/static data is shown. ${message}`);
+          setDbStatus('error','NO DATA',`read failed and no prior snapshot exists. No bundled/static data is shown. ${message}`);
         }
         return;
       }
@@ -2466,13 +2466,13 @@ if(!REDUCE){
         signatures.agents=signature(snapshot.agents);signatures.settings=signature(snapshot.settings);signatures.previous=signature(snapshot.previous);signatures.sr=signature(snapshot.sr);signatures.calls=signature(snapshot.calls);
       }
       writeSnapshotCache(snapshot);
-      setDbStatus(realtimeReady?'live':'poll',realtimeReady?'DB LIVE':'DB SYNC OK',`Data read successfully from Supabase. Source: ${source}.`);
+      setDbStatus(realtimeReady?'live':'poll',realtimeReady?'DB LIVE':'DB SYNC OK',`Data read successfully from Source: ${source}.`);
     }catch(err){
-      console.error('[Team Elite Star] Supabase load failed:',err);
+      console.error('[Team Elite Star] load failed:',err);
       if(!applyCachedSnapshot(err?.message||String(err))){
         TEAM_LEADER={...EMPTY_TEAM_LEADER};MEMBERS=[];archive=[];srRows=[];callRows=[];
         window.renderTeamMembers?.();window.refreshTeamCommand?.();renderArchive();renderSr();renderCalls();
-        setDbStatus('error','NO DATA',`Supabase read failed and no prior Supabase snapshot exists. No bundled/static data is shown. ${err?.message||String(err)}`);
+        setDbStatus('error','NO DATA',`read failed and no prior snapshot exists. No bundled/static data is shown. ${err?.message||String(err)}`);
       }
     }finally{busy=false;if(again){again=false;scheduleRefresh('queued');}}
   }
@@ -2504,12 +2504,12 @@ if(!REDUCE){
       if(!applyCachedSnapshot('Supabase configuration is missing or still contains placeholders.')){
         TEAM_LEADER={...EMPTY_TEAM_LEADER};MEMBERS=[];archive=[];srRows=[];callRows=[];
         window.renderTeamMembers?.();window.refreshTeamCommand?.();renderArchive();renderSr();renderCalls();
-        setDbStatus('error','NO DATA','Supabase configuration is missing and no prior Supabase snapshot exists. No bundled/static data is shown.');
+        setDbStatus('error','NO DATA','configuration is missing and no prior snapshot exists. No bundled/static data is shown.');
       }
       return;
     }
     if(!window.supabase||typeof window.supabase.createClient!=='function'){
-      if(!applyCachedSnapshot('Supabase JavaScript library did not load.'))setDbStatus('error','NO DATA','Supabase library failed to load and no prior Supabase snapshot exists.');return;
+      if(!applyCachedSnapshot('Supabase JavaScript library did not load.'))setDbStatus('error','NO DATA','library failed to load and no prior snapshot exists.');return;
     }
     try{liveClient=window.supabase.createClient(cfg.url,cfg.key,{auth:{persistSession:false,autoRefreshToken:false,detectSessionInUrl:false},realtime:{params:{eventsPerSecond:5}}});}
     catch(err){setDbStatus('error','DB CONFIG ERROR',err?.message||String(err));return;}
