@@ -273,6 +273,8 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
       </div>
       <div class="top-actions">
         <button id="mobileMenu" class="btn btn-ghost mobile-menu" type="button">MENU</button>
+        <button id="undoBtn" class="btn btn-ghost" type="button" disabled title="Undo history is not configured yet">↶ Undo</button>
+        <button id="redoBtn" class="btn btn-ghost" type="button" disabled title="Nothing to redo">↷ Redo</button>
         <button id="refreshBtn" class="btn btn-ghost" type="button">↻ Refresh</button>
         <button id="backupBtn" class="btn btn-ghost" type="button">↓ Backup JSON</button>
         <button id="logoutBtn" class="btn btn-danger" type="button">Logout</button>
@@ -282,9 +284,11 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
     <div class="content">
       <section id="view-dashboard" class="view active">
         <div class="page-head">
-          <div><div class="eyebrow">Command Center</div><h2>Everything under control.</h2><p>Live database overview for Team Elite Star.</p></div>
-          <div class="page-actions"><button class="btn btn-primary" data-jump="agents">+ Add Agent</button><button class="btn btn-ghost" data-jump="cards">+ Add Test Card</button></div>
+          <div><div class="eyebrow">Performance, decoded.</div><h2>Everything under control.</h2><p>Smart member lifecycle, historical reports and duplicate-safe updates for Team Elite Star.</p></div>
+          <div class="page-actions"><button id="integrityRepairBtn" class="btn btn-ghost" type="button">✧ Fix Data Duplicates</button><button class="btn btn-primary" data-jump="agents">+ Add Agent</button><button class="btn btn-ghost" data-jump="cards">+ Add Test Card</button></div>
         </div>
+        <div id="undoMigrationNotice" class="info-box" style="margin-bottom:14px">Undo/Redo is not enabled yet. Run <b>Team-Elite-Star-Undo-Migration.sql</b> in Supabase → SQL Editor to enable database-backed recovery.</div>
+        <div id="undoReadyNotice" class="info-box hidden" style="margin-bottom:14px">Undo/Redo is enabled. Recent admin changes are saved in the database, and the latest change can be restored.</div>
         <div class="kpi-grid">
           <div class="kpi"><div class="kpi-label">Total Agents</div><div id="kAgents" class="kpi-value">0</div><div id="kAgentsSub" class="kpi-sub">0 active</div></div>
           <div class="kpi"><div class="kpi-label">Test Cards</div><div id="kCards" class="kpi-value">0</div><div id="kCardsSub" class="kpi-sub">0 active</div></div>
@@ -416,7 +420,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opa
             <div class="toolbar"><button id="processImagesBtn" class="btn btn-primary" type="button" disabled>✧ AI Read & Extract</button><button id="clearImportBtn" class="btn btn-ghost" type="button">Clear Batch</button><button id="saveImportBtn" class="btn btn-success" type="button" disabled>Save Unique Rows</button></div>
             <div class="progress-shell"><progress id="ocrProgress" max="100" value="0"></progress></div>
             <div id="ocrStatus" class="import-status" aria-live="polite">Select a file or paste rows. Tabular files are parsed locally; AI reading needs your consent.</div>
-            <div class="info-box ocr-note" style="margin-top:12px"><b>Review-first workflow:</b> spreadsheet data is parsed in the browser; AI reads images/PDFs or unstructured text. Existing and in-batch duplicates are skipped where a stable identity exists. Review/edit rows before saving. Call/service phone values and card data are limited to masked metadata. Service quotas still apply.</div>
+            <div class="info-box ocr-note" style="margin-top:12px"><b>Review-first workflow:</b> spreadsheet data is parsed in the browser; AI reads images/PDFs or unstructured text. Matching member/report identities are staged as updates; repeated rows in the same batch collapse into one reviewed row. Distinct call dates, categories and masked phone pairs remain separate. Review/edit rows before saving. Call/service phone values and card data are limited to masked metadata. Service quotas still apply.</div>
             <details style="margin-top:14px"><summary style="cursor:pointer;color:var(--muted);font-size:.75rem">Show sanitized AI extraction output</summary><textarea id="ocrRaw" rows="8" style="width:100%;margin-top:8px;border:1px solid var(--line);border-radius:8px;background:#08070c;color:var(--text);padding:12px;font-size:.72rem" readonly></textarea></details>
           </div>
         </div>
@@ -510,9 +514,34 @@ const SUPABASE_URL=window.TEAM_ELITE_SUPABASE_CONFIG?.url||"YOUR_SUPABASE_PROJEC
 const SUPABASE_ANON_KEY=window.TEAM_ELITE_SUPABASE_CONFIG?.key||"YOUR_SUPABASE_PUBLISHABLE_OR_ANON_KEY";
 const AI_WORKER_URL="https://elitestarai.mirrorleechbot202.workers.dev";
 const {createClient}=supabase;
-const db=createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
 
-const state={agents:[],cards:[],settings:{},settingsRows:[],audit:[],previousMembers:[],srRecords:[],callRecords:[],importRows:[],session:null,profile:null,agentStatus:"all",cardStatus:"all",callStatus:"all",recordEditor:null,selectedFiles:[],importProcessing:false,importSaving:false};
+// Keep the Supabase auth token in persistent browser storage so a normal page
+// refresh does not sign the administrator out. Use Supabase's default storage
+// key for this project URL, preserving any session created by the previous build.
+const AUTH_STORAGE_KEY=(()=>{
+  try{return `sb-${new URL(SUPABASE_URL).hostname.split(".")[0]}-auth-token`}
+  catch{return "team-elite-star-admin-auth"}
+})();
+let persistentAuthStorage;
+try{
+  const storageProbe="__tes_auth_storage_probe__";
+  window.localStorage.setItem(storageProbe,"1");
+  window.localStorage.removeItem(storageProbe);
+  persistentAuthStorage=window.localStorage;
+}catch(storageError){
+  console.warn("Persistent browser storage is unavailable. Session persistence may be limited.",storageError);
+}
+const db=createClient(SUPABASE_URL,SUPABASE_ANON_KEY,{
+  auth:{
+    persistSession:true,
+    autoRefreshToken:true,
+    detectSessionInUrl:true,
+    storageKey:AUTH_STORAGE_KEY,
+    ...(persistentAuthStorage?{storage:persistentAuthStorage}:{})
+  }
+});
+
+const state={agents:[],cards:[],settings:{},settingsRows:[],audit:[],previousMembers:[],srRecords:[],callRecords:[],importRows:[],session:null,profile:null,agentStatus:"all",cardStatus:"all",callStatus:"all",recordEditor:null,selectedFiles:[],importProcessing:false,importSaving:false,undoAvailable:false,lastUndo:null,lastRedo:null};
 const $=s=>document.querySelector(s);
 const $$=s=>[...document.querySelectorAll(s)];
 
@@ -551,6 +580,68 @@ function go(view){
 
 function val(id){return $("#"+id).value.trim()}
 
+function identityText(value){
+  return String(value??"").normalize("NFKC").trim().toLocaleLowerCase().replace(/[\s._-]+/g," ");
+}
+function samePerson(a,b){
+  if(!a||!b)return false;
+  const nameA=identityText(a.name||a.agent_name),nameB=identityText(b.name||b.agent_name);
+  const idsA=[a.cube_id,a.dg_id,a.agent_id].map(identityText).filter(Boolean);
+  const idsB=[b.cube_id,b.dg_id,b.agent_id].map(identityText).filter(Boolean);
+  if(idsA.some(id=>idsB.includes(id)))return true;
+  return !!nameA&&nameA===nameB;
+}
+function memberMatch(person,rows=state.agents){
+  const matches=(rows||[]).filter(r=>samePerson(r,person));
+  if(!matches.length)return null;
+  return matches.sort((a,b)=>Number(!!b.active)-Number(!!a.active))[0];
+}
+function profileForArchive(agent,previous=null){
+  return {
+    agent_id:agent.dg_id||previous?.agent_id||null,
+    name:agent.name||previous?.name||"Unknown member",
+    location:previous?.location||"Jashore",
+    cube_id:agent.cube_id||previous?.cube_id||null,
+    role:agent.role||previous?.role||"CSR",
+    qa:agent.qa||previous?.qa||null,
+    trainer:agent.trainer||previous?.trainer||null,
+    quality:agent.mtd_score??previous?.quality??null,
+    attendance:agent.attendance??previous?.attendance??null,
+    staffed_time:agent.staffed_time||previous?.staffed_time||null,
+    productive_time:agent.prod_time||previous?.productive_time||null,
+    break_time:agent.break_time||previous?.break_time||null,
+    aht:agent.aht||previous?.aht||null,
+    on_time_login:agent.on_time_login??previous?.on_time_login??null,
+    archived_date:previous?.archived_date||new Date().toISOString().slice(0,10),
+    notes:previous?.notes||"Automatically archived when member became inactive."
+  };
+}
+async function removePreviousForPerson(person){
+  const matches=state.previousMembers.filter(r=>samePerson(r,person));
+  if(!matches.length)return;
+  const ids=matches.map(r=>r.id).filter(Boolean);
+  if(!ids.length)return;
+  const {error}=await db.from("previous_members").delete().in("id",ids);
+  if(error)throw new Error("Could not move the member out of Previous Members: "+error.message);
+}
+async function archiveMemberOnce(agent){
+  const matches=state.previousMembers.filter(r=>samePerson(r,agent));
+  const primary=matches[0]||null;
+  const payload=profileForArchive(agent,primary);
+  let result;
+  if(primary?.id)result=await db.from("previous_members").update(payload).eq("id",primary.id).select("*").single();
+  else result=await db.from("previous_members").insert(payload).select("*").single();
+  if(result.error)throw new Error("Could not archive member: "+result.error.message);
+  const duplicateIds=matches.slice(1).map(r=>r.id).filter(Boolean);
+  if(duplicateIds.length){const removed=await db.from("previous_members").delete().in("id",duplicateIds);if(removed.error)throw new Error("Archived member saved, but duplicate archive rows could not be removed: "+removed.error.message)}
+  return result.data;
+}
+async function syncMemberLifecycle(agent,active){
+  if(!agent)return;
+  if(active)await removePreviousForPerson(agent);
+  else await archiveMemberOnce(agent);
+}
+
 async function ensureAdmin(){
   if(SUPABASE_URL.includes("YOUR_SUPABASE")||SUPABASE_ANON_KEY.includes("YOUR_SUPABASE")){
     throw new Error("Set SUPABASE_URL and SUPABASE_ANON_KEY in admin.html first.");
@@ -559,10 +650,18 @@ async function ensureAdmin(){
   if(error) throw error;
   if(!session){$("#loginScreen").classList.remove("hidden");return false}
   const {data:profile,error:pe}=await db.from("admin_profiles").select("user_id,email,full_name,role").eq("user_id",session.user.id).maybeSingle();
-  if(pe) throw pe;
-  if(!profile||profile.role!=="super_admin"){
+  if(pe){
+    // A temporary database/RLS/network problem must not destroy a valid login.
+    throw new Error("Your session is still saved, but admin access could not be verified. Check the connection and refresh again. Details: "+pe.message);
+  }
+  if(!profile){
+    // Keep the persisted session; absence of a profile row is not proof that the
+    // Auth session is invalid. The admin UI remains locked until verification succeeds.
+    throw new Error("Your session is still saved, but no admin profile was found for this account. Check admin_profiles and try again.");
+  }
+  if(profile.role!=="super_admin"){
     await db.auth.signOut();
-    throw new Error("This account is not authorized as a Super Admin.");
+    throw new Error("This account is not authorized as a Super Admin. The session was signed out for security.");
   }
   state.session=session;
   state.profile=profile;
@@ -595,6 +694,7 @@ async function loadAll(){
   $("#lastRefresh").textContent=new Date().toLocaleTimeString();
   $("#topStatus").textContent=`Synced · ${state.agents.length} agents · ${state.cards.length} cards · ${state.callRecords.length} calls`;
   renderAll();
+  await refreshUndoControls();
 }
 
 function activeAgents(){
@@ -635,7 +735,7 @@ function renderAgents(){
       <td>${esc(a.aht||"—")}</td>
       <td>${a.attendance==null?"—":Number(a.attendance).toFixed(2)+"%"}</td>
       <td>${a.active?'<span class="badge success">Active</span>':'<span class="badge danger">Inactive</span>'}</td>
-      <td><div class="actions"><button class="btn btn-ghost btn-sm" data-edit-agent="${a.id}">Edit</button><button class="btn btn-ghost btn-sm" data-toggle-agent="${a.id}">${a.active?"Disable":"Enable"}</button><button class="btn btn-danger btn-sm" data-delete-agent="${a.id}">Delete</button></div></td>
+      <td><div class="actions"><button class="btn btn-ghost btn-sm" data-edit-agent="${a.id}">Edit</button><button class="btn btn-ghost btn-sm" data-toggle-agent="${a.id}">${a.active?"Deactivate":"Reactivate"}</button><button class="btn btn-danger btn-sm" data-delete-agent="${a.id}">Delete</button></div></td>
     </tr>`).join(""):`<tr><td colspan="8"><div class="empty">No agents match your filter.</div></td></tr>`;
 }
 
@@ -768,10 +868,22 @@ function recordPayloadFromForm(){
 async function saveRecordEditor(e){
   e.preventDefault();if(!state.recordEditor)return;
   const {table,id}=state.recordEditor;const payload=recordPayloadFromForm();
-  if(table==="previous_members"&&!payload.name||table==="sr_records"&&!payload.agent_name||table==="call_records"&&!payload.agent_name){toast("Missing required field","Please provide the member/agent name.","error");return}
-  const result=id?await db.from(table).update(payload).eq("id",id):await db.from(table).insert(payload);
+  if((table==="previous_members"&&!payload.name)||(table==="sr_records"&&!payload.agent_name)||(table==="call_records"&&!payload.agent_name)){toast("Missing required field","Please provide the member/agent name.","error");return}
+  const existingRows=table==="previous_members"?state.previousMembers:table==="sr_records"?state.srRecords:state.callRecords;
+  const collision=existingRows.find(r=>r.id!==id&&recordMatches(table,r,payload));
+  let result;
+  if(collision){
+    result=await db.from(table).update(payload).eq("id",collision.id);
+    if(result.error){toast("Save failed",result.error.message,"error");return}
+    if(id){const removed=await db.from(table).delete().eq("id",id);if(removed.error){toast("Merged with warning","The matching record updated, but the older duplicate could not be removed: "+removed.error.message,"error");return}}
+  }else if(id)result=await db.from(table).update(payload).eq("id",id);
+  else result=await db.from(table).insert(payload);
   if(result.error){toast("Save failed",result.error.message,"error");return}
-  closeModal("recordEditorModal");toast("Record saved",`${RECORD_CONFIG[table].label} updated.`);await loadAll();
+  if(table==="previous_members"){
+    const member=memberMatch(payload,state.agents);
+    if(member?.active){const {error}=await db.from("agents").update({active:false}).eq("id",member.id);if(error){toast("Saved with warning","Previous member saved, but the active profile could not be deactivated: "+error.message,"error");return}}
+  }
+  closeModal("recordEditorModal");toast(collision?"Existing record updated":"Record saved",`${RECORD_CONFIG[table].label} was saved without creating a matching duplicate.`);await loadAll();
 }
 
 async function deleteReportRecord(table,id){
@@ -844,7 +956,11 @@ function normalizeAIRecord(type,raw,fileName,reportDate){
   const fallback=reportDate||new Date().toISOString().slice(0,10);
   if(type==="agents"){
     const name=t("name"),cube=t("cube_id");if(!name&&!cube)return null;
-    return {dg_id:t("dg_id"),name:name||"Needs review",cube_id:cube||`IMPORT-${Date.now()}-${Math.random().toString(36).slice(2,7)}`,role:t("role")||"CSR",rank:t("rank")||t("role")||"CSR",qa:t("qa"),trainer:t("trainer"),mtd_score:n("mtd_score"),attendance:n("attendance"),staffed_time:t("staffed_time"),prod_time:t("prod_time"),break_time:t("break_time"),aht:t("aht"),on_time_login:n("on_time_login"),bio:t("bio"),avatar_url:t("avatar_url"),facebook_url:t("facebook_url"),linkedin_url:t("linkedin_url"),email:t("email"),active:safeBoolean(x.active,true),is_leader:safeBoolean(x.is_leader,false),sort_order:n("sort_order")??100};
+    const matched=memberMatch({name:name||"",cube_id:cube,dg_id:t("dg_id")},state.agents);
+    const archived=memberMatch({name:name||"",cube_id:cube,dg_id:t("dg_id")},state.previousMembers);
+    const canonicalName=matched?.name||archived?.name||name||"Needs review";
+    const canonicalCube=matched?.cube_id||archived?.cube_id||cube||`IMPORT-${normText(canonicalName).slice(0,40)||"MEMBER"}`;
+    return {dg_id:matched?.dg_id||t("dg_id")||archived?.agent_id||null,name:canonicalName,cube_id:canonicalCube,role:t("role")||matched?.role||archived?.role||"CSR",rank:t("rank")||matched?.rank||t("role")||"CSR",qa:t("qa")||matched?.qa||archived?.qa||null,trainer:t("trainer")||matched?.trainer||archived?.trainer||null,mtd_score:n("mtd_score")??matched?.mtd_score??archived?.quality??null,attendance:n("attendance")??matched?.attendance??archived?.attendance??null,staffed_time:t("staffed_time")||matched?.staffed_time||archived?.staffed_time||null,prod_time:t("prod_time")||matched?.prod_time||archived?.productive_time||null,break_time:t("break_time")||matched?.break_time||archived?.break_time||null,aht:t("aht")||matched?.aht||archived?.aht||null,on_time_login:n("on_time_login")??matched?.on_time_login??archived?.on_time_login??null,bio:t("bio")||matched?.bio||null,avatar_url:t("avatar_url")||matched?.avatar_url||null,facebook_url:t("facebook_url")||matched?.facebook_url||null,linkedin_url:t("linkedin_url")||matched?.linkedin_url||null,email:t("email")||matched?.email||null,active:safeBoolean(x.active,true),is_leader:safeBoolean(x.is_leader,!!matched?.is_leader),sort_order:n("sort_order")??matched?.sort_order??100};
   }
   if(type==="test_cards"){
     const label=t("label");if(!label)return null;const lastDigits=String(t("last4")||"").replace(/\D/g,"").slice(-4);
@@ -868,30 +984,62 @@ function normalizeAIRecord(type,raw,fileName,reportDate){
   return null;
 }
 function importIdentity(type,d){
-  const v=x=>String(x??"").trim().toLowerCase().replace(/\s+/g," ");
-  if(type==="agents")return [type,v(d.cube_id||d.dg_id||d.name)].join("¦");
-  if(type==="test_cards")return [type,v(d.label),v(d.provider),v(d.scenario),v(d.reference),v(d.last4)].join("¦");
+  const v=x=>identityText(x);
+  if(type==="agents"||type==="previous_members")return [type,v(d.name||d.agent_name)||v(d.cube_id||d.dg_id||d.agent_id)].join("¦");
+  if(type==="test_cards")return [type,v(d.reference)||[v(d.label),v(d.provider),v(d.scenario),v(d.last4)].join("¦")].join("¦");
   if(type==="app_settings")return [type,v(d.key)].join("¦");
-  if(type==="previous_members")return [type,v(d.agent_id||d.cube_id||d.name),v(d.cube_id),v(d.archived_date)].join("¦");
-  if(type==="sr_records")return [type,v(d.agent_id||d.agent_name),v(d.report_date)].join("¦");
-  if(type==="call_records")return [type,v(d.call_date),v(d.agent_id||d.agent_name),v(d.category),v(d.service_mobile_masked),v(d.caller_mobile_masked),v(d.training_status),v(d.training_remarks)].join("¦");
+  if(type==="sr_records")return [type,v(d.agent_name||d.name||d.agent_id),parseDateValue(d.report_date,"")].join("¦");
+  if(type==="call_records")return [type,v(d.agent_name||d.name||d.agent_id),parseDateValue(d.call_date,""),v(d.category),v(d.service_mobile_masked),v(d.caller_mobile_masked)].join("¦");
   return [type,JSON.stringify(d)].join("¦");
 }
+function recordMatches(type,a,b){
+  if(!a||!b)return false;
+  if(type==="agents"||type==="previous_members")return samePerson(a,b);
+  if(type==="sr_records")return samePerson(a,b)&&parseDateValue(a.report_date,"")===parseDateValue(b.report_date,"");
+  if(type==="call_records"){
+    if(!samePerson(a,b)||parseDateValue(a.call_date,"")!==parseDateValue(b.call_date,"")||identityText(a.category)!==identityText(b.category))return false;
+    const pairs=[[a.service_mobile_masked,b.service_mobile_masked],[a.caller_mobile_masked,b.caller_mobile_masked]];
+    return pairs.every(([left,right])=>!identityText(left)||!identityText(right)||identityText(left)===identityText(right));
+  }
+  if(type==="app_settings")return identityText(a.key)===identityText(b.key);
+  if(type==="test_cards"){
+    const ar=identityText(a.reference),br=identityText(b.reference);
+    if(ar&&br&&ar===br)return true;
+    return identityText(a.label)===identityText(b.label)&&identityText(a.provider)===identityText(b.provider)&&identityText(a.scenario)===identityText(b.scenario)&&identityText(a.last4)===identityText(b.last4);
+  }
+  return importIdentity(type,a)===importIdentity(type,b);
+}
 function existingImportRows(type){return type==="agents"?state.agents:type==="test_cards"?state.cards:type==="app_settings"?state.settingsRows:type==="previous_members"?state.previousMembers:type==="sr_records"?state.srRecords:state.callRecords}
-function existingImportKeys(includeStaged=true){
-  const keys=new Set();for(const type of Object.keys(IMPORT_FIELDS)){for(const row of existingImportRows(type))keys.add(importIdentity(type,row))}
-  if(includeStaged)for(const item of state.importRows)keys.add(importIdentity(item.type,item.data));return keys;
+function findExistingImportRecord(type,data){return existingImportRows(type).find(row=>recordMatches(type,row,data))||null}
+function mergeImportedData(type,existing,incoming){
+  const merged={};
+  for(const field of IMPORT_FIELDS[type]||[]){
+    const next=incoming[field],old=existing?.[field];
+    merged[field]=(next===null||next===undefined||next==="")?(old??next):next;
+  }
+  if(incoming.source_image)merged.source_image=incoming.source_image;
+  else if(existing?.source_image)merged.source_image=existing.source_image;
+  return merged;
 }
 function stageImportRows(type,rawRows,source,reportDate){
   if(!type||!IMPORT_FIELDS[type])throw new Error("Choose a destination table or provide recognizable column headers.");
-  const keys=existingImportKeys(),staged=[],before=state.importRows.length;let skipped=0;
-  for(const raw of rawRows){const data=normalizeAIRecord(type,raw,source,reportDate);if(!data)continue;
+  let added=0,updated=0,skipped=0,invalid=0;
+  for(const raw of rawRows){
+    let data=normalizeAIRecord(type,raw,source,reportDate);
+    if(!data){invalid++;continue}
+    const existing=findExistingImportRecord(type,data);
+    if(existing)data=mergeImportedData(type,existing,data);
     const key=importIdentity(type,data);
-    if(type!=="app_settings"&&keys.has(key)){skipped++;continue;}
-    if(type==="app_settings"&&state.importRows.some(x=>x.type===type&&x.data.key===data.key)){state.importRows=state.importRows.filter(x=>!(x.type===type&&x.data.key===data.key));}
-    keys.add(key);staged.push({type,data,source:source||"Pasted data"});
+    const stagedIndex=state.importRows.findIndex(item=>item.type===type&&recordMatches(type,item.data,data));
+    if(stagedIndex>=0){
+      const old=state.importRows[stagedIndex];
+      state.importRows[stagedIndex]={type,data:mergeImportedData(type,old.data,data),targetId:old.targetId||existing?.id||null,source:source||old.source||"Imported data"};
+      updated++;continue;
+    }
+    state.importRows.push({type,data,targetId:existing?.id||null,source:source||"Imported data"});
+    if(existing)updated++;else added++;
   }
-  state.importRows.push(...staged);renderImportPreview();return {added:staged.length,skipped,invalid:rawRows.length-staged.length-skipped};
+  renderImportPreview();return {added,updated,skipped,invalid};
 }
 async function fileToBase64(file){const buffer=await file.arrayBuffer();const bytes=new Uint8Array(buffer);let binary="";const step=0x8000;for(let i=0;i<bytes.length;i+=step)binary+=String.fromCharCode(...bytes.subarray(i,Math.min(i+step,bytes.length)));return btoa(binary)}
 async function prepareAIImage(file){
@@ -917,7 +1065,7 @@ function renderImportPreview(){
   if(!total){$("#importPreviewBody").innerHTML='<div class="empty">Parsed or AI-extracted rows will appear here for review.</div>';return}
   const groups=Object.keys(IMPORT_FIELDS).filter(t=>state.importRows.some(r=>r.type===t));
   $("#importPreviewBody").innerHTML=groups.map(type=>{const indexes=state.importRows.map((r,i)=>({r,i})).filter(x=>x.r.type===type);const fields=IMPORT_FIELDS[type];
-    return `<div class="preview-group"><div class="preview-title"><span>${esc(IMPORT_TABLE_LABELS[type])}</span><span>${indexes.length} rows</span></div><div class="preview-wrap"><table class="preview-table"><thead><tr><th>Source</th>${fields.map(f=>`<th>${esc(IMPORT_LABELS[f]||f)}</th>`).join("")}<th>Remove</th></tr></thead><tbody>${indexes.map(({r,i})=>`<tr><td class="source-cell">${esc(r.source)}</td>${fields.map(f=>{const v=r.data[f]??"";const long=["training_remarks","notes","bio","value"].includes(f);const typ=["archived_date","report_date","call_date"].includes(f)?"date":"text";return `<td>${long?`<textarea data-import-row="${i}" data-import-field="${f}">${esc(v)}</textarea>`:`<input type="${typ}" data-import-row="${i}" data-import-field="${f}" value="${esc(v)}">`}</td>`}).join("")}<td><button class="btn btn-danger btn-sm" data-import-remove="${i}">Remove</button></td></tr>`).join("")}</tbody></table></div></div>`;
+    return `<div class="preview-group"><div class="preview-title"><span>${esc(IMPORT_TABLE_LABELS[type])}</span><span>${indexes.length} rows · ${indexes.filter(x=>x.r.targetId).length} updates</span></div><div class="preview-wrap"><table class="preview-table"><thead><tr><th>Source</th>${fields.map(f=>`<th>${esc(IMPORT_LABELS[f]||f)}</th>`).join("")}<th>Remove</th></tr></thead><tbody>${indexes.map(({r,i})=>`<tr><td class="source-cell">${esc(r.source)}</td>${fields.map(f=>{const v=r.data[f]??"";const long=["training_remarks","notes","bio","value"].includes(f);const typ=["archived_date","report_date","call_date"].includes(f)?"date":"text";return `<td>${long?`<textarea data-import-row="${i}" data-import-field="${f}">${esc(v)}</textarea>`:`<input type="${typ}" data-import-row="${i}" data-import-field="${f}" value="${esc(v)}">`}</td>`}).join("")}<td><button class="btn btn-danger btn-sm" data-import-remove="${i}">Remove</button></td></tr>`).join("")}</tbody></table></div></div>`;
   }).join("");
 }
 function readSheetText(text){
@@ -933,7 +1081,7 @@ async function parseTabularFile(file){
 }
 async function stageParsedText(text,source="Pasted clipboard"){
   if(!String(text||"").trim())throw new Error("Paste or load some data first.");const parsed=readSheetText(text);if(!parsed.rows.length)throw new Error("No data rows detected. Use tab-separated or CSV text with a header row, or use Structure Text with AI.");
-  const forced=$("#importType").value;const type=forced==="auto"?inferImportType(parsed.headers):forced;if(!type)throw new Error("Could not detect table columns. Select the destination table manually.");const result=stageImportRows(type,parsed.rows,source,$("#importReportDate").value||null);$("#ocrStatus").textContent=`Parsed ${parsed.rows.length} row(s) locally: ${result.added} staged; ${result.skipped} duplicate(s) skipped.`;toast("Data parsed",`${result.added} row(s) ready to review.`);return result;
+  const forced=$("#importType").value;const type=forced==="auto"?inferImportType(parsed.headers):forced;if(!type)throw new Error("Could not detect table columns. Select the destination table manually.");const result=stageImportRows(type,parsed.rows,source,$("#importReportDate").value||null);$("#ocrStatus").textContent=`Parsed ${parsed.rows.length} row(s): ${result.added} new and ${result.updated} matching record(s) queued for update; ${result.invalid} invalid.`;toast("Data parsed",`${result.added} new · ${result.updated} existing row(s) ready to review.`);return result;
 }
 async function processImportFiles(){
   const files=state.selectedFiles;if(state.importProcessing||state.importSaving||!files.length)return;
@@ -946,35 +1094,59 @@ async function processImportFiles(){
       if(visual){if(!$("#aiConsent").checked)throw new Error("Approve AI processing before sending images or PDFs.");const ai=await requestAIExtraction(file,override,reportDate);type=override==="auto"?ai.table_type:override;rows=ai.rows||[];raw.push(`=== ${file.name} · ${type} ===\n${maskTextMobileNumbers(JSON.stringify(rows,null,2))}`)}
       else {const parsed=await parseTabularFile(file);type=override==="auto"?inferImportType(parsed.headers):override;if(!type)throw new Error(`Could not detect columns in ${file.name}. Choose its destination table manually.`);rows=parsed.rows;if(!rows.length)throw new Error(`${file.name} has no data rows after the header.`);raw.push(`=== ${file.name} · ${type} · locally parsed ===\n${maskTextMobileNumbers(JSON.stringify(rows.slice(0,10),null,2))}`)}
       if(!IMPORT_FIELDS[type])throw new Error(`Unsupported destination table for ${file.name}.`);
-      const result=stageImportRows(type,rows,file.name,reportDate);totalAdded+=result.added;totalSkipped+=result.skipped;
-      $("#ocrProgress").value=Math.round((i+1)/files.length*100);$("#ocrStatus").textContent=`${file.name}: ${rows.length} detected · ${result.added} staged · ${result.skipped} duplicate(s) skipped.`;
+      const result=stageImportRows(type,rows,file.name,reportDate);totalAdded+=result.added;totalSkipped+=result.updated;
+      $("#ocrProgress").value=Math.round((i+1)/files.length*100);$("#ocrStatus").textContent=`${file.name}: ${rows.length} detected · ${result.added} new · ${result.updated} existing row(s) to update.`;
     }
-    $("#ocrRaw").value=raw.join("\n\n");$("#ocrStatus").textContent=`Import preparation complete: ${totalAdded} row(s) staged; ${totalSkipped} duplicate(s) skipped. Review values before saving.`;toast("Import ready",`${totalAdded} row(s) staged for review.`);
+    $("#ocrRaw").value=raw.join("\n\n");$("#ocrStatus").textContent=`Import preparation complete: ${totalAdded} new and ${totalSkipped} matching row(s) staged. Review values before saving.`;toast("Import ready",`${totalAdded} new · ${totalSkipped} existing row(s) queued for update.`);
   }catch(err){$("#ocrStatus").textContent=err.message||"Import failed.";toast("Import failed",err.message||"Import failed.","error");$("#ocrRaw").value=raw.join("\n\n")}
   finally{state.importProcessing=false;updateImportControls();$("#saveImportBtn").disabled=!state.importRows.length}
 }
 async function aiStructurePastedText(){
   const text=$("#ocrPasteText").value.trim();if(!text){toast("No text","Paste table/text first.","error");return}if(!$("#aiConsent").checked){toast("Permission needed","Confirm permission before sending text for AI processing.","error");return}
   const forced=$("#importType").value;$("#aiParsePasteBtn").disabled=true;$("#ocrStatus").textContent="Structuring pasted data…";
-  try{const ai=await requestAIExtraction(null,forced,$("#importReportDate").value||null,text);const type=forced==="auto"?ai.table_type:forced;if(!IMPORT_FIELDS[type])throw new Error("Choose a supported table type first.");const result=stageImportRows(type,ai.rows,"Pasted clipboard text",$("#importReportDate").value||null);$("#ocrRaw").value=maskTextMobileNumbers(JSON.stringify(ai.rows.slice(0,30),null,2));$("#ocrStatus").textContent=`AI structured ${ai.rows.length} row(s): ${result.added} staged, ${result.skipped} duplicate(s) skipped.`;toast("Text structured",`${result.added} row(s) ready for review.`)}catch(e){$("#ocrStatus").textContent=e.message||"Could not structure text.";toast("Text read failed",e.message||"AI extraction failed.","error")}finally{$("#aiParsePasteBtn").disabled=false}
+  try{const ai=await requestAIExtraction(null,forced,$("#importReportDate").value||null,text);const type=forced==="auto"?ai.table_type:forced;if(!IMPORT_FIELDS[type])throw new Error("Choose a supported table type first.");const result=stageImportRows(type,ai.rows,"Pasted clipboard text",$("#importReportDate").value||null);$("#ocrRaw").value=maskTextMobileNumbers(JSON.stringify(ai.rows.slice(0,30),null,2));$("#ocrStatus").textContent=`AI structured ${ai.rows.length} row(s): ${result.added} new, ${result.updated} matching record(s) queued for update.`;toast("Text structured",`${result.added} row(s) ready for review.`)}catch(e){$("#ocrStatus").textContent=e.message||"Could not structure text.";toast("Text read failed",e.message||"AI extraction failed.","error")}finally{$("#aiParsePasteBtn").disabled=false}
 }
 async function saveImportRows(){
   if(state.importSaving||state.importProcessing||!state.importRows.length)return;
-  state.importSaving=true;$("#saveImportBtn").disabled=true;$("#processImagesBtn").disabled=true;$("#clearImportBtn").disabled=true;$("#ocrStatus").textContent="Validating and saving reviewed rows…";
+  state.importSaving=true;updateImportControls();$("#saveImportBtn").disabled=true;$("#ocrStatus").textContent="Checking identities and updating existing records…";
+  let submitted=0,updated=0,inserted=0;
   try{
-    const existing=existingImportKeys(false),groups={};let skipped=0;
-    for(const item of state.importRows){const type=item.type,data={...item.data};if(type==="call_records"){data.service_mobile_masked=maskPhone(data.service_mobile_masked);data.caller_mobile_masked=maskPhone(data.caller_mobile_masked)}
-      const identity=importIdentity(type,data);if(type!=="app_settings"&&existing.has(identity)){skipped++;continue}existing.add(identity);(groups[type]||(groups[type]=[])).push(data)}
-    let submitted=0;
-    for(const [type,rows] of Object.entries(groups)){
-      if(!rows.length)continue;let result;
-      if(type==="agents")result=await db.from(type).upsert(rows,{onConflict:"cube_id",ignoreDuplicates:true});
-      else if(type==="app_settings")result=await db.from(type).upsert(rows,{onConflict:"key"});
-      else if(type==="test_cards")result=await db.from(type).insert(rows);
-      else result=await db.from(type).upsert(rows.map(r=>({...r,source_image:r.source_image||"bulk-import"})),{onConflict:"record_hash",ignoreDuplicates:true});
-      if(result.error)throw new Error(`${IMPORT_TABLE_LABELS[type]}: ${result.error.message}`);submitted+=rows.length;
+    const archivedPeople=state.importRows.filter(x=>x.type==="previous_members").map(x=>x.data);
+    const staged=[...state.importRows].sort((a,b)=>{
+      const order={agents:0,previous_members:1,sr_records:2,call_records:3,test_cards:4,app_settings:5};return (order[a.type]??99)-(order[b.type]??99);
+    });
+    for(let index=0;index<staged.length;index++){
+      const item=staged[index],type=item.type;let data={...item.data};
+      if(type==="call_records"){data.service_mobile_masked=maskPhone(data.service_mobile_masked);data.caller_mobile_masked=maskPhone(data.caller_mobile_masked)}
+      if(type==="agents"&&archivedPeople.some(person=>samePerson(person,data)))data.active=false;
+      const existing=(item.targetId?existingImportRows(type).find(r=>String(r.id)===String(item.targetId)):null)||findExistingImportRecord(type,data);
+      let result;
+      if(type==="app_settings"){
+        result=await db.from(type).upsert(data,{onConflict:"key"}).select("*").single();
+      }else if(existing?.id){
+        result=await db.from(type).update(data).eq("id",existing.id).select("*").single();
+      }else{
+        result=await db.from(type).insert(data).select("*").single();
+      }
+      if(result.error)throw new Error(`${IMPORT_TABLE_LABELS[type]}: ${result.error.message}`);
+      submitted++;if(existing?.id)updated++;else inserted++;
+      if(type==="agents"){
+        const saved=result.data||{...data,id:existing?.id};
+        try{await syncMemberLifecycle(saved,!!saved.active)}catch(syncError){
+          await db.from("agents").update({active:!!existing?.active}).eq("id",saved.id);
+          throw new Error(`${saved.name}: member data was saved, but lifecycle sync failed: ${syncError.message}`);
+        }
+      }
+      if(type==="previous_members"){
+        const member=memberMatch(data,state.agents);
+        if(member?.id&&member.active){const moved=await db.from("agents").update({active:false}).eq("id",member.id);if(moved.error)throw new Error(`${data.name}: Previous Member saved, but active profile could not be deactivated: ${moved.error.message}`)}
+      }
+      $("#ocrProgress").value=Math.round((index+1)/staged.length*100);
+      $("#ocrStatus").textContent=`Saving ${index+1}/${staged.length} · ${updated} existing row(s) to update · ${inserted} new row(s)`;
     }
-    state.importRows=[];renderImportPreview();$("#importFiles").value="";state.selectedFiles=[];$("#selectedFilesLabel").textContent="No files selected";$("#ocrProgress").value=100;await loadAll();$("#ocrStatus").textContent=`Done: ${submitted} row(s) submitted; ${skipped} duplicate(s) skipped. Check the database for final counts.`;toast("Import saved",`${submitted} row(s) submitted; ${skipped} duplicate(s) skipped.`);
+    state.importRows=[];renderImportPreview();$("#importFiles").value="";state.selectedFiles=[];$("#selectedFilesLabel").textContent="No files selected";$("#ocrProgress").value=100;await loadAll();
+    $("#ocrStatus").textContent=`Completed: ${inserted} new row(s), ${updated} existing row(s) updated. Matching rows were updated instead of duplicated.`;
+    toast("Smart import complete",`${inserted} new · ${updated} updated · ${submitted} saved.`);
   }catch(err){$("#ocrStatus").textContent=err.message||"Database upload failed.";toast("Save failed",err.message||"Database upload failed.","error")}
   finally{state.importSaving=false;updateImportControls();$("#saveImportBtn").disabled=!state.importRows.length}
 }
@@ -1036,7 +1208,7 @@ function editCard(id){
 
 async function saveAgent(e){
   e.preventDefault();
-  const id=val("agent_id");
+  const requestedId=val("agent_id");
   const payload={
     name:val("agent_name"),dg_id:val("agent_dg_id")||null,cube_id:val("agent_cube_id"),role:val("agent_role")||"CSR",rank:val("agent_rank")||"CSR",
     qa:val("agent_qa")||null,trainer:val("agent_trainer")||null,avatar_url:val("agent_avatar_url")||null,
@@ -1048,10 +1220,28 @@ async function saveAgent(e){
     linkedin_url:val("agent_linkedin_url")||null,email:val("agent_email")||null,active:$("#agent_active").checked,is_leader:$("#agent_is_leader").checked
   };
   if(!payload.name||!payload.cube_id){toast("Validation","Name and Cube ID are required.","error");return}
-  const op=id?db.from("agents").update(payload).eq("id",id):db.from("agents").insert(payload);
-  const {error}=await op;
-  if(error){toast("Save failed",error.message,"error");return}
-  closeModal("agentModal");toast("Agent saved",id?"Agent updated successfully.":"Agent added successfully.");await loadAll();
+  const requestedExisting=requestedId?state.agents.find(a=>String(a.id)===String(requestedId)):null;
+  const collision=state.agents.find(a=>String(a.id)!==String(requestedId||"")&&samePerson(a,payload));
+  let target=requestedExisting||null;
+  if(collision){
+    if(requestedId){toast("Duplicate identity blocked",`“${payload.name}” already belongs to another member. Open that member's profile to update it; duplicate profiles are not allowed.`,"error");return}
+    target=collision;
+    payload.name=collision.name;
+    payload.cube_id=collision.cube_id||payload.cube_id;
+    payload.dg_id=collision.dg_id||payload.dg_id;
+    toast("Existing member found","Updating the existing member profile instead of creating a duplicate.");
+  }
+  const priorActive=target?!!target.active:true;
+  const query=target?db.from("agents").update(payload).eq("id",target.id):db.from("agents").insert(payload);
+  const result=await query.select("*").single();
+  if(result.error){toast("Save failed",result.error.message,"error");return}
+  const saved=result.data;
+  try{await syncMemberLifecycle(saved,!!saved.active)}catch(syncError){
+    await db.from("agents").update({active:priorActive}).eq("id",saved.id);
+    toast("Member sync failed","The profile change could not be fully synchronized, so the previous active state was restored where possible. "+syncError.message,"error");
+    await loadAll();return;
+  }
+  closeModal("agentModal");toast(target?"Member updated":"Member added",target?`${saved.name} was updated in place.`:`${saved.name} was added with duplicate protection.`);await loadAll();
 }
 
 async function saveCard(e){
@@ -1086,11 +1276,18 @@ async function removeAgent(id){
 }
 
 async function toggleAgent(id){
-  const a=state.agents.find(x=>x.id===id);
-  if(!a)return;
-  const {error}=await db.from("agents").update({active:!a.active}).eq("id",id);
+  const a=state.agents.find(x=>String(x.id)===String(id));if(!a)return;
+  const nextActive=!a.active;
+  if(a.active&&!confirm(`Deactivate ${a.name}? Their profile will move to Previous Members while their SR/Call history is kept.`))return;
+  const {data:saved,error}=await db.from("agents").update({active:nextActive}).eq("id",id).select("*").single();
   if(error){toast("Update failed",error.message,"error");return}
-  toast("Agent status updated",`${a.name} is now ${!a.active?"active":"inactive"}.`);await loadAll();
+  try{await syncMemberLifecycle(saved||{...a,active:nextActive},nextActive)}catch(syncError){
+    await db.from("agents").update({active:!!a.active}).eq("id",id);
+    toast("Member move failed",`${a.name} was not fully moved. Previous status was restored. ${syncError.message}`,"error");
+    await loadAll();return;
+  }
+  toast(nextActive?"Member reactivated":"Member archived",nextActive?`${a.name} was restored to active members and removed from Previous Members.`:`${a.name} was deactivated and saved to Previous Members exactly once.`);
+  await loadAll();
 }
 
 async function removeCard(id){
@@ -1156,6 +1353,297 @@ async function saveCustomSetting(oldKey,row){
 async function deleteCustomSetting(key){if(!confirm(`Delete setting "${key}"? This may revert that part of the public page to its default.`))return;const {error}=await db.from("app_settings").delete().eq("key",key);if(error){toast("Delete failed",error.message,"error");return}await loadAll();toast("Setting deleted",key);}
 
 
+function mergePreferExisting(preferred,other){
+  const out={...other,...preferred};
+  for(const [key,value] of Object.entries(other||{}))if((out[key]===null||out[key]===undefined||out[key]==="")&&value!==null&&value!==undefined&&value!=="")out[key]=value;
+  return out;
+}
+function uniqueGroups(rows,keyFn){
+  const groups=new Map();
+  for(const row of rows){const key=keyFn(row);if(!key)continue;if(!groups.has(key))groups.set(key,[]);groups.get(key).push(row)}
+  return [...groups.values()].filter(group=>group.length>1);
+}
+function uniqueMatchGroups(rows,matcher){
+  const groups=[];
+  for(const row of rows){
+    const hits=[];
+    for(let i=0;i<groups.length;i++)if(groups[i].some(existing=>matcher(existing,row)))hits.push(i);
+    if(!hits.length){groups.push([row]);continue}
+    const first=hits[0];groups[first].push(row);
+    for(let j=hits.length-1;j>=1;j--){groups[first].push(...groups[hits[j]]);groups.splice(hits[j],1)}
+  }
+  return groups.filter(group=>group.length>1);
+}
+async function repairDataIntegrity(){
+  if(!confirm("Fix duplicate data safely? This merges duplicate member profiles, updates matching report/event rows, and removes redundant records. Different call dates/categories are preserved. Download a JSON backup first if you need a rollback."))return;
+  const button=$("#integrityRepairBtn");if(button){button.disabled=true;button.textContent="Repairing…"}
+  let mergedAgents=0,mergedPrevious=0,mergedSR=0,mergedCalls=0,mergedCards=0;
+  try{
+    await loadAll();
+    const memberKey=r=>identityText(r.name||r.agent_name)||identityText(r.cube_id||r.dg_id||r.agent_id);
+    const agentGroups=uniqueMatchGroups(state.agents,(a,b)=>samePerson(a,b));
+    for(const group of agentGroups){
+      const sorted=[...group].sort((a,b)=>Number(!!b.active)-Number(!!a.active)||Number(!!b.is_leader)-Number(!!a.is_leader));
+      let primary=sorted[0];
+      for(const duplicate of sorted.slice(1)){
+        const merged=mergePreferExisting(primary,duplicate);
+        merged.id=primary.id;merged.name=primary.name;merged.cube_id=primary.cube_id||duplicate.cube_id;merged.dg_id=primary.dg_id||duplicate.dg_id;merged.active=!!(primary.active||duplicate.active);merged.is_leader=!!(primary.is_leader||duplicate.is_leader);
+        const up=await db.from("agents").update(Object.fromEntries(Object.entries(merged).filter(([k])=>!['id','created_at','updated_at'].includes(k)))).eq("id",primary.id);
+        if(up.error)throw new Error(`Could not merge agent ${primary.name}: ${up.error.message}`);
+        const cards=await db.from("test_cards").update({assigned_agent_id:primary.id}).eq("assigned_agent_id",duplicate.id);if(cards.error)throw new Error(`Could not merge assigned cards for ${duplicate.name}: ${cards.error.message}`);
+        const canonicalDgId=merged.dg_id;
+        if(duplicate.dg_id&&canonicalDgId&&duplicate.dg_id!==canonicalDgId){
+          for(const table of ["sr_records","call_records"]){const ref=await db.from(table).update({agent_id:canonicalDgId,agent_name:primary.name}).eq("agent_id",duplicate.dg_id);if(ref.error)throw new Error(`Could not update ${table} references: ${ref.error.message}`)}
+        }
+        const del=await db.from("agents").delete().eq("id",duplicate.id);if(del.error)throw new Error(`Could not remove duplicate profile ${duplicate.name}: ${del.error.message}`);
+        primary=merged;mergedAgents++;
+      }
+    }
+    await loadAll();
+    const previousGroups=uniqueMatchGroups(state.previousMembers,(a,b)=>samePerson(a,b));
+    for(const group of previousGroups){
+      const profile=memberMatch(group[0],state.agents);
+      if(profile?.active){const del=await db.from("previous_members").delete().in("id",group.map(x=>x.id));if(del.error)throw del.error;mergedPrevious+=group.length;continue}
+      const sorted=[...group].sort((a,b)=>String(b.archived_date||"").localeCompare(String(a.archived_date||"")));
+      const primary=sorted[0],merged=sorted.slice(1).reduce((acc,row)=>mergePreferExisting(acc,row),primary);
+      const upd=await db.from("previous_members").update(Object.fromEntries(Object.entries(merged).filter(([k])=>!["id","created_at","updated_at"].includes(k)))).eq("id",primary.id);if(upd.error)throw upd.error;
+      const del=await db.from("previous_members").delete().in("id",sorted.slice(1).map(x=>x.id));if(del.error)throw del.error;mergedPrevious+=sorted.length-1;
+    }
+    await loadAll();
+    const srKey=r=>identityText(r.agent_name||r.name||r.agent_id)+"¦"+parseDateValue(r.report_date,"");
+    for(const group of uniqueMatchGroups(state.srRecords,(a,b)=>recordMatches("sr_records",a,b))){
+      const sorted=[...group].sort((a,b)=>String(b.updated_at||b.created_at||"").localeCompare(String(a.updated_at||a.created_at||""))),primary=sorted[0];
+      const merged=sorted.slice(1).reduce((acc,row)=>mergePreferExisting(acc,row),primary);
+      const upd=await db.from("sr_records").update(Object.fromEntries(Object.entries(merged).filter(([k])=>!["id","created_at","updated_at"].includes(k)))).eq("id",primary.id);if(upd.error)throw upd.error;
+      const del=await db.from("sr_records").delete().in("id",sorted.slice(1).map(x=>x.id));if(del.error)throw del.error;mergedSR+=sorted.length-1;
+    }
+    await loadAll();
+    const exactCallDuplicate=(a,b)=>samePerson(a,b)&&parseDateValue(a.call_date,"")===parseDateValue(b.call_date,"")&&identityText(a.category)===identityText(b.category)&&identityText(a.service_mobile_masked)===identityText(b.service_mobile_masked)&&identityText(a.caller_mobile_masked)===identityText(b.caller_mobile_masked);
+    for(const group of uniqueMatchGroups(state.callRecords,exactCallDuplicate)){
+      const sorted=[...group].sort((a,b)=>String(b.updated_at||b.created_at||"").localeCompare(String(a.updated_at||a.created_at||""))),primary=sorted[0];
+      const merged=sorted.slice(1).reduce((acc,row)=>mergePreferExisting(acc,row),primary);
+      const upd=await db.from("call_records").update(Object.fromEntries(Object.entries(merged).filter(([k])=>!["id","created_at","updated_at"].includes(k)))).eq("id",primary.id);if(upd.error)throw upd.error;
+      const del=await db.from("call_records").delete().in("id",sorted.slice(1).map(x=>x.id));if(del.error)throw del.error;mergedCalls+=sorted.length-1;
+    }
+    await loadAll();
+    for(const group of uniqueMatchGroups(state.cards,(a,b)=>recordMatches("test_cards",a,b))){
+      const sorted=[...group].sort((a,b)=>Number(!!b.active)-Number(!!a.active)),primary=sorted[0];
+      const merged=sorted.slice(1).reduce((acc,row)=>mergePreferExisting(acc,row),primary);
+      const upd=await db.from("test_cards").update(Object.fromEntries(Object.entries(merged).filter(([k])=>!['id','created_at','updated_at','agents'].includes(k)))).eq("id",primary.id);if(upd.error)throw upd.error;
+      const del=await db.from("test_cards").delete().in("id",sorted.slice(1).map(x=>x.id));if(del.error)throw del.error;mergedCards+=sorted.length-1;
+    }
+    await loadAll();
+    toast("Integrity repair complete",`${mergedAgents} member · ${mergedPrevious} archive · ${mergedSR} SR · ${mergedCalls} call · ${mergedCards} test-card duplicate(s) merged.`);
+  }catch(error){toast("Integrity repair stopped",error.message||"A database operation failed. Some earlier safe merges may already be applied; refresh and run again.","error");try{await loadAll()}catch{}}
+  finally{if(button){button.disabled=false;button.textContent="✧ Fix Data Duplicates"}}
+}
+
+// ---------------- Database-backed Undo / Redo ----------------
+// The one-time SQL migration creates admin_undo_history with strict super-admin RLS.
+const UNDO_HISTORY_TABLE="admin_undo_history";
+const UNDO_PK={agents:"id",test_cards:"id",app_settings:"key",previous_members:"id",sr_records:"id",call_records:"id"};
+const UNDO_TABLE_ORDER=["agents","test_cards","app_settings","previous_members","sr_records","call_records"];
+const UNDO_PAGE_SIZE=500;
+
+function stableValue(value){
+  if(Array.isArray(value))return value.map(stableValue);
+  if(value&&typeof value==="object")return Object.fromEntries(Object.keys(value).sort().map(k=>[k,stableValue(value[k])]));
+  return value;
+}
+function stableJson(value){return JSON.stringify(stableValue(value));}
+function undoKey(table,row){const field=UNDO_PK[table];return row&&field&&row[field]!==undefined&&row[field]!==null?String(row[field]):null;}
+
+async function readUndoTable(table){
+  if(!UNDO_PK[table])throw new Error("Undo blocked for unknown table: "+table);
+  const rows=[];let offset=0;
+  while(true){
+    let query=db.from(table).select("*").order(UNDO_PK[table],{ascending:true}).range(offset,offset+UNDO_PAGE_SIZE-1);
+    const {data,error}=await query;
+    if(error)throw new Error(`Could not prepare undo snapshot for ${table}: ${error.message}`);
+    const batch=data||[];rows.push(...batch);
+    if(batch.length<UNDO_PAGE_SIZE)break;
+    offset+=batch.length;
+    if(offset>250000)throw new Error(`Undo snapshot for ${table} exceeded the safety row limit.`);
+  }
+  return rows;
+}
+async function readUndoSnapshots(tables){
+  const unique=[...new Set(tables)].filter(t=>UNDO_PK[t]).sort((a,b)=>UNDO_TABLE_ORDER.indexOf(a)-UNDO_TABLE_ORDER.indexOf(b));
+  const values=await Promise.all(unique.map(async table=>[table,await readUndoTable(table)]));
+  return Object.fromEntries(values);
+}
+function diffUndoSnapshots(before,after){
+  const changes=[];
+  for(const table of Object.keys(before)){
+    const pk=UNDO_PK[table],oldMap=new Map((before[table]||[]).map(row=>[undoKey(table,row),row])),newMap=new Map((after[table]||[]).map(row=>[undoKey(table,row),row]));
+    const keys=new Set([...oldMap.keys(),...newMap.keys()]);
+    for(const key of keys){
+      if(key===null)continue;
+      const oldRow=oldMap.get(key)??null,newRow=newMap.get(key)??null;
+      if(stableJson(oldRow)!==stableJson(newRow))changes.push({table,pk,key,before:oldRow,after:newRow});
+    }
+  }
+  return changes;
+}
+function tablesForImportUndo(){
+  const result=new Set();
+  for(const item of state.importRows){
+    const type=item.type;
+    if(type==="agents"){["agents","previous_members"].forEach(t=>result.add(t))}
+    else if(type==="previous_members"){["previous_members","agents"].forEach(t=>result.add(t))}
+    else if(type==="test_cards")result.add("test_cards");
+    else if(type==="app_settings")result.add("app_settings");
+    else if(type==="sr_records")result.add("sr_records");
+    else if(type==="call_records")result.add("call_records");
+  }
+  return [...result];
+}
+async function refreshUndoControls(){
+  const undoBtn=$("#undoBtn"),redoBtn=$("#redoBtn");
+  if(!undoBtn||!redoBtn)return;
+  state.undoAvailable=false;state.lastUndo=null;state.lastRedo=null;
+  try{
+    if(!state.session){undoBtn.disabled=true;redoBtn.disabled=true;return}
+    const [undoRes,redoRes]=await Promise.all([
+      db.from(UNDO_HISTORY_TABLE).select("id,action_label,created_at,status,changes").eq("status","ready").order("created_at",{ascending:false}).limit(1).maybeSingle(),
+      db.from(UNDO_HISTORY_TABLE).select("id,action_label,created_at,undone_at,status,changes").eq("status","undone").order("undone_at",{ascending:false}).limit(1).maybeSingle()
+    ]);
+    if(undoRes.error||redoRes.error)throw undoRes.error||redoRes.error;
+    state.undoAvailable=true;state.lastUndo=undoRes.data||null;state.lastRedo=redoRes.data||null;
+    const redoInvalidated=!!(state.lastUndo&&state.lastRedo&&Date.parse(state.lastUndo.created_at)>Date.parse(state.lastRedo.created_at));
+    undoBtn.disabled=!state.lastUndo;
+    redoBtn.disabled=!state.lastRedo||redoInvalidated;
+    undoBtn.title=state.lastUndo?`Undo: ${state.lastUndo.action_label} · ${new Date(state.lastUndo.created_at).toLocaleString()}`:"No saved changes to undo";
+    redoBtn.title=state.lastRedo&&!redoInvalidated?`Redo: ${state.lastRedo.action_label}`:"Nothing available to redo";
+    $("#undoMigrationNotice")?.classList.add("hidden");
+    $("#undoReadyNotice")?.classList.remove("hidden");
+  }catch(error){
+    state.undoAvailable=false;state.lastUndo=null;state.lastRedo=null;
+    undoBtn.disabled=true;redoBtn.disabled=true;
+    undoBtn.title="Run Team-Elite-Star-Undo-Migration.sql in Supabase first";
+    redoBtn.title="Run Team-Elite-Star-Undo-Migration.sql in Supabase first";
+    $("#undoMigrationNotice")?.classList.remove("hidden");
+    $("#undoReadyNotice")?.classList.add("hidden");
+  }
+}
+async function persistUndoEntry(label,changes){
+  if(!changes.length)return;
+  const serialized=JSON.stringify(changes);
+  if(serialized.length>12000000){toast("Undo history skipped","This change is too large for one undo entry. Keep the JSON backup before making large imports.","error");return}
+  const {data,error}=await db.from(UNDO_HISTORY_TABLE).insert({actor_id:state.session?.user?.id||null,action_label:label,changes,status:"ready"}).select("id").single();
+  if(error)throw error;
+  // A new action invalidates the old redo stack.
+  const {error:redoError}=await db.from(UNDO_HISTORY_TABLE).update({status:"superseded"}).eq("status","undone");
+  await refreshUndoControls();
+  if(redoError)toast("Undo saved with warning","The change is undoable, but the previous redo history could not be cleared.","error");
+}
+async function runUndoable(label,tables,action){
+  if(!state.undoAvailable)return action();
+  let before;
+  try{before=await readUndoSnapshots(tables)}
+  catch(error){toast("Undo snapshot failed","The change will still be attempted, but Undo may be unavailable: "+error.message,"error");return action()}
+  let result,thrown=null;
+  try{result=await action()}catch(error){thrown=error}
+  try{
+    const after=await readUndoSnapshots(Object.keys(before));
+    const changes=diffUndoSnapshots(before,after);
+    if(changes.length)await persistUndoEntry(label,changes);
+  }catch(error){toast("Change completed without Undo record","The database may have changed, but recovery history could not be saved. Please keep a backup. "+(error.message||""),"error")}
+  if(thrown)throw thrown;
+  return result;
+}
+function makeUndoWrapper(original,labelResolver,tablesResolver){
+  return async function(...args){
+    const label=typeof labelResolver==="function"?labelResolver(...args):labelResolver;
+    const tables=typeof tablesResolver==="function"?tablesResolver(...args):tablesResolver;
+    return runUndoable(label,tables,()=>original.apply(this,args));
+  };
+}
+function mapSnapshotRows(snapshot){
+  const maps={};
+  for(const [table,rows] of Object.entries(snapshot))maps[table]=new Map((rows||[]).map(row=>[undoKey(table,row),row]));
+  return maps;
+}
+async function applyUndoDesiredState(changes,desiredField){
+  const ordered=[...changes].sort((a,b)=>UNDO_TABLE_ORDER.indexOf(a.table)-UNDO_TABLE_ORDER.indexOf(b.table));
+  // Restore/update all present rows parent-first, then remove newly-created rows child-first.
+  for(const change of ordered){
+    const desired=change[desiredField];if(desired===null||desired===undefined)continue;
+    const {error}=await db.from(change.table).upsert(desired,{onConflict:change.pk});
+    if(error)throw new Error(`Could not restore ${change.table} ${change.key}: ${error.message}`);
+  }
+  for(const change of [...ordered].reverse()){
+    const desired=change[desiredField];if(desired!==null&&desired!==undefined)continue;
+    const {error}=await db.from(change.table).delete().eq(change.pk,change.key);
+    if(error)throw new Error(`Could not remove ${change.table} ${change.key}: ${error.message}`);
+  }
+}
+async function runUndoDirection(direction){
+  if(!state.undoAvailable){toast("Undo unavailable","Run Team-Elite-Star-Undo-Migration.sql in Supabase SQL Editor first.","error");return}
+  const entry=direction==="undo"?state.lastUndo:state.lastRedo;
+  if(!entry){toast(direction==="undo"?"Nothing to undo":"Nothing to redo","No eligible change was found.","error");return}
+  if(direction==="redo"&&state.lastUndo&&Date.parse(state.lastUndo.created_at)>Date.parse(entry.created_at)){toast("Redo cleared","A newer change was saved after this undo. Undo the newer action first or make a new change.","error");await refreshUndoControls();return}
+  const changes=Array.isArray(entry.changes)?entry.changes:[];
+  if(!changes.length){toast("Empty history","This entry contains no restorable changes.","error");return}
+  const verb=direction==="undo"?"Undo":"Redo";
+  const actionText=direction==="undo"?"restore the previous values":"re-apply the saved change";
+  if(!confirm(`${verb} “${entry.action_label}”? This will ${actionText} in Supabase.`))return;
+  const tables=[...new Set(changes.map(c=>c.table))];
+  let current;
+  try{
+    current=await readUndoSnapshots(tables);
+    const currentMaps=mapSnapshotRows(current);
+    for(const change of changes){
+      if(!UNDO_PK[change.table]||change.pk!==UNDO_PK[change.table])throw new Error("History contains an unsupported table or key.");
+      const actual=currentMaps[change.table]?.get(String(change.key))??null;
+      const expected=direction==="undo"?change.after:change.before;
+      if(stableJson(actual)!==stableJson(expected))throw new Error(`“${change.table}” record ${change.key} changed again after this history entry. To protect newer data, it was not overwritten.`);
+    }
+  }catch(error){toast(`${verb} blocked`,error.message||"Could not verify current data safely.","error");return}
+  const expectedField=direction==="undo"?"after":"before";
+  const desiredField=direction==="undo"?"before":"after";
+  try{
+    await applyUndoDesiredState(changes,desiredField);
+    const update=direction==="undo"
+      ?{status:"undone",undone_at:new Date().toISOString()}
+      :{status:"ready",undone_at:null};
+    const {error}=await db.from(UNDO_HISTORY_TABLE).update(update).eq("id",entry.id);
+    if(error)throw new Error("Data was restored, but history status could not be updated: "+error.message);
+  }catch(error){
+    // Best-effort recovery: put every touched row back to the exact state seen before the undo/redo attempt.
+    try{await applyUndoDesiredState(changes,expectedField)}
+    catch(rollbackError){toast(`${verb} needs attention`,`Some rows may have changed. Refresh the page and restore from Backup JSON if necessary. ${error.message} Rollback: ${rollbackError.message}`,"error");try{await loadAll()}catch{}return}
+    toast(`${verb} failed`,`No intentional change was kept; the original post-action state was restored where possible. ${error.message}`,"error");
+    await refreshUndoControls();
+    return;
+  }
+  try{await loadAll();toast(direction==="undo"?"Undo complete":"Redo complete",`“${entry.action_label}” ${direction==="undo"?"was reversed":"was re-applied"}.`)}
+  catch(refreshError){toast(`${verb} applied`,`${entry.action_label} was changed in the database, but the page could not refresh. Use Refresh to reload the data. ${refreshError.message}`,"error")}
+  await refreshUndoControls();
+}
+
+// Wrap database-changing paths. Snapshots are limited to the tables an operation can mutate.
+saveAgent=makeUndoWrapper(saveAgent,()=>"Save member profile",()=>["agents","previous_members"]);
+saveCard=makeUndoWrapper(saveCard,()=>"Save test card",()=>["test_cards"]);
+saveRecordEditor=makeUndoWrapper(saveRecordEditor,()=>{
+  const t=state.recordEditor?.table||"report";return "Save "+(RECORD_CONFIG[t]?.label||t);
+},()=>{
+  const t=state.recordEditor?.table;
+  return t==="previous_members"?["previous_members","agents"]:t?[t]:["previous_members","sr_records","call_records","agents"];
+});
+deleteReportRecord=makeUndoWrapper(deleteReportRecord,(table)=>"Delete "+(RECORD_CONFIG[table]?.label||table)+" record",(table)=>[table]);
+removeAgent=makeUndoWrapper(removeAgent,(id)=>"Delete member "+(state.agents.find(a=>String(a.id)===String(id))?.name||id),()=>["agents"]);
+toggleAgent=makeUndoWrapper(toggleAgent,(id)=>{
+  const a=state.agents.find(x=>String(x.id)===String(id));return (a?.active?"Deactivate ":"Reactivate ")+(a?.name||"member");
+},()=>["agents","previous_members"]);
+removeCard=makeUndoWrapper(removeCard,(id)=>"Delete test card "+(state.cards.find(c=>String(c.id)===String(id))?.label||id),()=>["test_cards"]);
+saveSettings=makeUndoWrapper(saveSettings,"Save site settings",["app_settings"]);
+addCustomSetting=makeUndoWrapper(addCustomSetting,"Add/update custom setting",["app_settings"]);
+saveCustomSetting=makeUndoWrapper(saveCustomSetting,(key)=>"Save custom setting "+key,["app_settings"]);
+deleteCustomSetting=makeUndoWrapper(deleteCustomSetting,(key)=>"Delete custom setting "+key,["app_settings"]);
+saveImportRows=makeUndoWrapper(saveImportRows,"Import data batch",()=>tablesForImportUndo());
+repairDataIntegrity=makeUndoWrapper(repairDataIntegrity,"Repair duplicate data",()=>[...UNDO_TABLE_ORDER.filter(t=>t!=="app_settings")]);
+
 $("#togglePassword").addEventListener("click",()=>{
   const el=$("#loginPassword");const show=el.type==="password";el.type=show?"text":"password";$("#togglePassword").textContent=show?"HIDE":"SHOW";
 });
@@ -1178,6 +1666,12 @@ async function boot(){
   }catch(err){
     $("#adminApp").classList.remove("ready");
     $("#loginScreen").classList.remove("hidden");
+    // Keep a saved session intact on refresh/temporary verification failures.
+    try{
+      const {data:{session}}=await db.auth.getSession();
+      if(session?.user?.email&&!val("loginEmail")) $("#loginEmail").value=session.user.email;
+      if(session) console.warn("Admin boot verification failed; auth session was retained.",err);
+    }catch(sessionError){console.warn("Unable to inspect persisted auth session.",sessionError)}
     showLoginError(err.message||"Unable to initialize admin panel.");
   }
 }
@@ -1187,6 +1681,9 @@ $$("[data-jump]").forEach(b=>b.addEventListener("click",()=>go(b.dataset.jump)))
 $("#mobileMenu").addEventListener("click",()=>$("#sidebar").classList.toggle("open"));
 $("#refreshBtn").addEventListener("click",async()=>{try{await loadAll();toast("Refreshed","Latest data loaded.")}catch(e){toast("Refresh failed",e.message,"error")}});
 $("#backupBtn").addEventListener("click",downloadBackup);
+$("#undoBtn").addEventListener("click",()=>runUndoDirection("undo"));
+$("#redoBtn").addEventListener("click",()=>runUndoDirection("redo"));
+$("#integrityRepairBtn").addEventListener("click",repairDataIntegrity);
 $("#logoutBtn").addEventListener("click",async()=>{await db.auth.signOut();location.reload()});
 $("#addAgentBtn").addEventListener("click",()=>{resetAgentForm();openModal("agentModal")});
 $("#addCardBtn").addEventListener("click",()=>{resetCardForm();openModal("cardModal")});
