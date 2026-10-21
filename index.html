@@ -962,7 +962,7 @@ body.weather-off #weatherFx{display:none!important;}
     <nav class="nav-links" aria-label="Primary">
       <a href="#about">About</a>
       <a href="#impact">Achievements</a>
-      <a href="#team">Members</a><a href="#command">Command</a><a href="#previous-members">Previous</a><a href="#sr-data">SR Data</a><a href="#call-data">Call Data</a>
+      <a href="#team">Members</a><a href="#command">Command</a><a href="#previous-members">Previous</a><a href="#sr-data">SR Data</a><a href="#call-data">Wrong Sr</a>
       <span class="nav-tag">Nagad&nbsp;·&nbsp;CSR</span>
     </nav>
     <button class="nav-toggle" id="navToggle" aria-label="Jump to members">
@@ -1193,7 +1193,7 @@ body.weather-off #weatherFx{display:none!important;}
   <button class="sheet-item" id="sheetTop" type="button"><span class="sheet-ic">↑</span> Back to Top</button>
   <button class="sheet-item" data-nav-target="#previous-members" type="button"><span class="sheet-ic">◷</span> Previous Members</button>
   <button class="sheet-item" data-nav-target="#sr-data" type="button"><span class="sheet-ic">▤</span> SR Data</button>
-  <button class="sheet-item" data-nav-target="#call-data" type="button"><span class="sheet-ic">☎</span> Call Data</button>
+  <button class="sheet-item" data-nav-target="#call-data" type="button"><span class="sheet-ic">☎</span> Wrong Sr</button>
   <button class="sheet-item" id="sheetInstall" type="button" hidden><span class="sheet-ic">⇩</span> Install App</button>
   <p class="sheet-ios-hint" id="sheetIosHint" hidden>To install as an app on iPhone/iPad: Tap the Share button below → select 'Add to Home Screen'.</p>
 </div>
@@ -3024,11 +3024,11 @@ if(!REDUCE){
   ];
   function findSectionIntent(text){
     const s=String(text).toLowerCase();
-    if(!/(\b(open|go to|jump to|scroll to|take me|navigate|show me|find|where is|where can i find|bring up)\b|খুলে|দেখাও|নিয়ে যাও|নিয়ে যাও|কোথায়|কোথায়)/i.test(s))return null;
+    if(!/(\b(open|go to|jump to|scroll to|take me|navigate|show me|find|where is|where can i find|bring up)\b|open|see|taking for here|taking for here|where|where)/i.test(s))return null;
     for(const item of sectionMap){if(item.names.some(name=>s.includes(name)))return item;}
     return null;
   }
-  const updateText='Here are the latest page improvements:\n\n• Quick assistant: ask for help in Bangla, Banglish, or English.\n• Page navigation: jump to About, Achievements, Team, Command Center, Previous Members, SR Data, or Call Data.\n• Dashboard guidance: get simple explanations of common page controls and KPIs.\n• CSR writing help: draft clear and polite customer-service replies.\n• Privacy reminder: do not share private customer numbers, passwords, PINs, or OTPs.';
+  const updateText='Here are the latest page improvements:\n\n• Quick assistant: ask for help in Bangla, Banglish, or English.\n• Page navigation: jump to About, Achievements, Team, Command Center, Previous Members, SR Data, or Wrong Sr.\n• Dashboard guidance: get simple explanations of common page controls and KPIs.\n• CSR writing help: draft clear and polite customer-service replies.\n• Privacy reminder: do not share private customer numbers, passwords, PINs, or OTPs.';
   async function checkHealth(){
     hasCheckedHealth=true;
     if(!isConfigured){setStatus('Not connected','error');return;}
