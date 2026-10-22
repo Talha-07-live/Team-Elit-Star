@@ -4,11 +4,11 @@
 */
 window.TEAM_ELITE_MEDIA = {
   photos: [
-    { title: 'Annual Team Event', type: 'photo', url: 'https://tse3.mm.bing.net/th/id/OIP.p0yE7llkTkp59R0_SFoFvAHaEo?r=0&rs=1&pid=ImgDetMain&o=7&rm=3' }
+    { title: 'Annual Team Event', type: 'photo', url: 'https://av-f2l-bot.avbotz26.workers.dev/81203?hash=AgAD0i' }
   ],
   videos: [
-    { title: 'Annual Team Event Video', type: 'video', url: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4' },
-    { title: 'Training Replay', type: 'video', url: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4' },
-    { title: 'the elites', type: 'video', url: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4' }
+    { title: 'Annual Team Event Video', type: 'video', url: 'https://av-f2l-bot.avbotz26.workers.dev/81201?hash=AgAD0S' }
+    //{ title: 'Training Replay', type: 'video', url: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4' },
+    //{ title: 'the elites', type: 'video', url: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4' }
   ]
 };
