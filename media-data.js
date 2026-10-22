@@ -4,7 +4,7 @@
 */
 window.TEAM_ELITE_MEDIA = {
   photos: [
-    { title: 'Annual Team Event', type: 'photo', url: 'https://av-f2l-bot.avbotz26.workers.dev/81203?hash=AgAD0i' }
+    { title: 'Annual Team Event', type: 'photo', url: 'https://s15.gifyu.com/images/bWx81.jpg' }
   ],
   videos: [
     { title: 'Annual Team Event Video', type: 'video', url: 'https://av-f2l-bot.avbotz26.workers.dev/81201?hash=AgAD0S' }
