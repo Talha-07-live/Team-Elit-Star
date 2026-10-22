@@ -7,7 +7,7 @@ window.TEAM_ELITE_MEDIA = {
     { title: 'Event', type: 'photo', url: 'https://s15.gifyu.com/images/bWx81.jpg' }
   ],
   videos: [
-    { title: 'Annual Team Event Video', type: 'video', url: 'https://hlsplayer.net/embed?type=mp4&src=https://github.com/Talha-07-live/Team-Elit-Star/raw/refs/heads/main/Event.mp4' }
+    { title: 'Annual Team Event Video', type: 'video', url: 'https://drive.google.com/file/d/1YumcPDew0g5HT7DEo208XBzMfEhhI3Q-/preview' }
     //{ title: 'Training Replay', type: 'video', url: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4' },
     //{ title: 'the elites', type: 'video', url: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4' }
   ]
