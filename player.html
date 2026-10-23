@@ -306,7 +306,7 @@ window.__TEAM_ELITE_MEDIA_READY=(async()=>{
       photoFrame.onload=()=>{if(token!==playbackToken)return;setAspect(photoFrame.naturalWidth,photoFrame.naturalHeight);markMediaReady(token);setStatus(`Photo ${index+1} of ${playlist.length}`,'success');startPhotoTimer(token);};
       photoFrame.onerror=()=>{if(token!==playbackToken)return;shell.classList.remove('is-loading','media-ready');setStatus('This photo could not load. Check the link permissions or use a direct image URL.','error');};
       photoFrame.src=info.src||item.url;
-    }else if(info.embed&&info.provider!=='Google Drive'){
+    }else if(info.embed&&info.provider!=='Drive'){
       shell.style.aspectRatio='16 / 9';videoFrame.hidden=false;videoFrame.title=item.title;
       videoFrame.onload=()=>{if(token!==playbackToken)return;markMediaReady(token);setTimeout(()=>registerEmbedEvents(info,token),180);};
       videoFrame.onerror=()=>{if(token!==playbackToken)return;shell.classList.remove('is-loading','media-ready');setStatus('This video could not load. Check the source link.','error');};
@@ -319,14 +319,14 @@ window.__TEAM_ELITE_MEDIA_READY=(async()=>{
       directVideo.oncanplay=()=>{if(token!==playbackToken)return;markMediaReady(token);};
       let driveFallbackUsed=false,driveFallbackTimer=0;
       const fallbackToDriveEmbed=()=>{
-        if(token!==playbackToken||driveFallbackUsed||info.provider!=='Google Drive'||!info.embed)return false;
+        if(token!==playbackToken||driveFallbackUsed||info.provider!=='Drive'||!info.embed)return false;
         driveFallbackUsed=true;clearTimeout(driveFallbackTimer);directVideo.pause();directVideo.onloadeddata=null;directVideo.oncanplay=null;directVideo.onerror=null;directVideo.removeAttribute('src');directVideo.load();directVideo.hidden=true;videoSkin.hidden=true;shell.style.aspectRatio='16 / 9';shell.classList.remove('media-ready');shell.classList.add('is-loading');videoFrame.hidden=false;videoFrame.title=item.title;
         videoFrame.onload=()=>{if(token!==playbackToken)return;markMediaReady(token);setTimeout(()=>registerEmbedEvents(info,token),180);};
-        videoFrame.onerror=()=>{if(token!==playbackToken)return;shell.classList.remove('is-loading','media-ready');setStatus('This Google Drive video could not open. Check sharing access.','error');};
+        videoFrame.onerror=()=>{if(token!==playbackToken)return;shell.classList.remove('is-loading','media-ready');setStatus('This Drive video could not open. Check sharing access.','error');};
         videoFrame.src=info.embed;setStatus('Opening video…');return true;
       };
       directVideo.onerror=()=>{if(token!==playbackToken)return;if(fallbackToDriveEmbed())return;shell.classList.remove('is-loading','media-ready');setStatus('This video could not play. Check the link and sharing access.','error');};
-      if(info.provider==='Google Drive')driveFallbackTimer=setTimeout(()=>{if(token===playbackToken&&directVideo.readyState<2)fallbackToDriveEmbed();},12000);
+      if(info.provider==='Drive')driveFallbackTimer=setTimeout(()=>{if(token===playbackToken&&directVideo.readyState<2)fallbackToDriveEmbed();},12000);
       directVideo.src=info.src||item.url;directVideo.load();
       if(autoplay){const attempt=directVideo.play();if(attempt&&typeof attempt.catch==='function')attempt.catch(()=>setStatus('Autoplay was blocked by the browser. Press Play to start the video.'));}
       setStatus(`Loading video ${index+1} of ${playlist.length}…`);
