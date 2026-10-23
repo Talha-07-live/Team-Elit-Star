@@ -7,6 +7,8 @@
 <meta name="color-scheme" content="dark" />
 <title>Photo &amp; Video Player</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="apple-touch-icon" href="icon.svg.png" />
+<link rel="icon" href="icon.svg.png" type="image/svg+xml" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
 <style>
@@ -74,7 +76,7 @@
 @media(max-width:560px){.skin-top{padding:10px}.skin-bottom{padding:0 10px 11px}.skin-controls{gap:6px;font-size:.61rem}.skin-controls .skin-icon{min-width:29px;height:29px;padding:0 7px}.skin-volume{width:48px}.skin-brand{font-size:.53rem;letter-spacing:.1em}.skin-title{font-size:.65rem}}
 @media(hover:none){.video-skin.controls-hidden .skin-top,.video-skin.controls-hidden .skin-bottom{opacity:1;pointer-events:auto}}
 
-.media-shell .wistia-host{position:absolute;inset:0;z-index:1;width:100%;height:100%;overflow:hidden;opacity:0;transform:scale(1.012);transition:opacity .18s ease,transform .28s cubic-bezier(.2,.7,.2,1);pointer-events:auto}.media-shell.media-ready .wistia-host{opacity:1;transform:scale(1)}.media-shell .wistia-host[hidden]{display:none!important}.media-shell .wistia-host wistia-player{display:block;position:absolute;inset:0;width:100%;height:100%;max-width:100%;max-height:100%;--wistia-player-color:var(--gold)}.media-shell:fullscreen .wistia-host,.media-shell:-webkit-full-screen .wistia-host{width:100vw;height:100vh}.media-shell:fullscreen .wistia-host wistia-player,.media-shell:-webkit-full-screen .wistia-host wistia-player{width:100%;height:100%}
+.media-shell .-host{position:absolute;inset:0;z-index:1;width:100%;height:100%;overflow:hidden;opacity:0;transform:scale(1.012);transition:opacity .18s ease,transform .28s cubic-bezier(.2,.7,.2,1);pointer-events:auto}.media-shell.media-ready .-host{opacity:1;transform:scale(1)}.media-shell .-host[hidden]{display:none!important}.media-shell .wistia-host wistia-player{display:block;position:absolute;inset:0;width:100%;height:100%;max-width:100%;max-height:100%;--wistia-player-color:var(--gold)}.media-shell:fullscreen .wistia-host,.media-shell:-webkit-full-screen .wistia-host{width:100vw;height:100vh}.media-shell:fullscreen .wistia-host wistia-player,.media-shell:-webkit-full-screen .wistia-host wistia-player{width:100%;height:100%}
 #mediaShell.drive-embed{width:min(100%,132svh,1457px);aspect-ratio:16/9!important;height:auto;max-height:none;min-height:0;margin-inline:auto}
 #mediaShell.drive-embed iframe{position:absolute;inset:0;width:100%;height:100%;min-width:0;min-height:0;max-width:100%;max-height:100%;border:0}
 @supports not (height: 1svh){#mediaShell.drive-embed{width:min(100%,132vh,1457px)}}
@@ -442,7 +444,7 @@ window.__TEAM_ELITE_MEDIA_READY=(async()=>{
     }else if(info.provider==='Wistia'){
       shell.style.aspectRatio=String(info.aspect||16/9);
       videoSkin.hidden=false;skinTitle.textContent=item.title;skinSeek.value='0';skinCurrent.textContent='0:00';skinDuration.textContent='0:00';skinMute.textContent='Muted';skinPip.disabled=true;
-      setStatus('Loading Wistia video…');
+      setStatus('Loading video…');
       try{
         await prepareWistia(info.wistiaId);
         if(token!==playbackToken||!playerSectionVisible())return;
@@ -453,14 +455,14 @@ window.__TEAM_ELITE_MEDIA_READY=(async()=>{
         const tryStart=()=>{if(!autoplay||requestedPlay||!apiReady||!canPlay||token!==playbackToken)return;if(player.paused===false){requestedPlay=true;return;}requestedPlay=true;try{player.muted=true;const result=player.play();if(result&&typeof result.catch==='function')result.catch(()=>setStatus('Autoplay was blocked. Press Play to start the video.'));}catch(_){setStatus('Press Play to start the video.');}};
         player.addEventListener('api-ready',()=>{if(token!==playbackToken)return;apiReady=true;try{player.volume=Number(skinVolume.value)||0.8;player.muted=true;}catch(_){}tryStart();syncVideoControls();});
         player.addEventListener('loaded-metadata',()=>{if(token!==playbackToken)return;markMediaReady(token);syncVideoControls();});
-        player.addEventListener('loaded-data',()=>{if(token!==playbackToken)return;markMediaReady(token);setStatus('Wistia video ready.','success');syncVideoControls();});
+        player.addEventListener('loaded-data',()=>{if(token!==playbackToken)return;markMediaReady(token);setStatus('video ready.','success');syncVideoControls();});
         player.addEventListener('can-play',()=>{if(token!==playbackToken)return;canPlay=true;markMediaReady(token);tryStart();});
         player.addEventListener('time-update',syncVideoControls);player.addEventListener('second-change',syncVideoControls);player.addEventListener('volume-change',syncVideoControls);
         player.addEventListener('play',()=>{if(token!==playbackToken)return;videoSkin.classList.add('is-playing');setStatus('Video is playing.','success');syncVideoControls();revealSkinControls();});
         player.addEventListener('pause',()=>{if(token!==playbackToken)return;videoSkin.classList.remove('is-playing','controls-hidden');clearTimeout(skinTimer);syncVideoControls();});
         player.addEventListener('ended',()=>{if(token===playbackToken&&autoNext)advance();else if(token===playbackToken)setStatus('Video finished. Auto-next is off.');});
-        player.addEventListener('error',()=>{if(token!==playbackToken)return;shell.classList.remove('is-loading','media-ready');setStatus('Wistia video could not load. Check its sharing and privacy settings.','error');});
-      }catch(_){if(token===playbackToken){videoSkin.hidden=true;shell.classList.remove('is-loading','media-ready');setStatus('Wistia player could not load. Check the video ID and internet connection.','error');}}
+        player.addEventListener('error',()=>{if(token!==playbackToken)return;shell.classList.remove('is-loading','media-ready');setStatus('video could not load. Check its sharing and privacy settings.','error');});
+      }catch(_){if(token===playbackToken){videoSkin.hidden=true;shell.classList.remove('is-loading','media-ready');setStatus('player could not load. Check the video ID and internet connection.','error');}}
     }else if(info.embed&&info.provider!=='Google Drive'){
       shell.style.aspectRatio='16 / 9';videoFrame.hidden=false;videoFrame.title=item.title;
       videoFrame.onload=()=>{if(token!==playbackToken)return;markMediaReady(token);setTimeout(()=>registerEmbedEvents(info,token),180);};
