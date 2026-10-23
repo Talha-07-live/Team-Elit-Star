@@ -7,6 +7,6 @@ window.TEAM_ELITE_MEDIA = {
     { title: 'Event', type: 'photo', url: 'https://s15.gifyu.com/images/bWx81.jpg' }
   ],
   videos: [
-    { title: 'Annual Team Event Video', type: 'video', url: 'https://drive.google.com/file/d/1YumcPDew0g5HT7DEo208XBzMfEhhI3Q-/preview' }
+    { title: 'Annual Team Event Video', type: 'video', url: 'https://drive.google.com/uc?export=download&id=1YumcPDew0g5HT7DEo208XBzMfEhhI3Q-' }
   ]
 };
