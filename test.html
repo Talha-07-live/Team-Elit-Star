@@ -65,6 +65,8 @@ body.fx #cursorDot,body.fx #cursorRing{opacity:1;}
 body.fx.cursorHot #cursorRing{width:64px;height:64px;background:rgba(232,195,107,.10);border-color:var(--gold);}
 body.fx.cursorHot #cursorDot{background:#fff;}
 @media (pointer:fine){body.fx *{cursor:none;}}
+body.fx.cursor-frame-fallback *{cursor:auto!important;}
+body.cursor-frame-fallback #cursorDot,body.cursor-frame-fallback #cursorRing{opacity:0!important;}
  
 #progress{position:fixed;top:0;left:0;height:3px;width:100%;transform:scaleX(0);transform-origin:0 50%;z-index:60;
   background:linear-gradient(90deg,var(--gold-deep),var(--gold-shine),var(--gold));box-shadow:0 0 14px var(--glow);}
@@ -1497,6 +1499,111 @@ if(FINE && !REDUCE){
   };
   window.addEventListener('pointermove',()=>{cursorDirty=true;if(!cursorRaf)cursorRaf=requestAnimationFrame(updateCursor);},{passive:true});
   updateCursor();
+  document.querySelectorAll('iframe').forEach(frame=>{
+    const installFrameTracking=()=>{
+      let childDoc;
+      try{
+        childDoc=frame.contentDocument;
+        if(!childDoc||!childDoc.documentElement)throw new Error('Frame document unavailable');
+      }catch(error){
+        frame.dataset.cursorTracking='0';
+        return;
+      }
+      frame.dataset.cursorTracking='1';
+      document.body.classList.remove('cursor-frame-fallback');
+      const childRoot=childDoc.documentElement;
+      if(childRoot.dataset.eliteCursorTracking==='local-v2')return;
+      childRoot.dataset.eliteCursorTracking='local-v2';
+      let cursorStyle=childDoc.getElementById('elite-frame-cursor-style');
+      if(!cursorStyle){
+        cursorStyle=childDoc.createElement('style');
+        cursorStyle.id='elite-frame-cursor-style';
+        cursorStyle.textContent=`
+html,html *,body,body *{cursor:none!important}
+iframe{cursor:auto!important}
+#elite-frame-cursor-layer{position:fixed;inset:0;z-index:2147483647;pointer-events:none;overflow:hidden;opacity:0;transition:opacity .12s ease;contain:strict}
+html.elite-frame-cursor-visible #elite-frame-cursor-layer{opacity:1}
+#elite-frame-cursor-dot,#elite-frame-cursor-ring{position:fixed;left:0;top:0;border-radius:50%;pointer-events:none;will-change:transform;transform:translate(-50%,-50%)}
+#elite-frame-cursor-dot{width:7px;height:7px;background:#FCE7B8;box-shadow:0 0 12px #E8C36B}
+#elite-frame-cursor-ring{width:38px;height:38px;border:1px solid rgba(232,195,107,.72);transition:width .2s ease,height .2s ease,background .2s ease,border-color .2s ease}
+html.elite-frame-cursor-hot #elite-frame-cursor-ring{width:62px;height:62px;background:rgba(232,195,107,.12);border-color:#E8C36B}
+html.elite-frame-cursor-hot #elite-frame-cursor-dot{background:#fff}
+#elite-frame-cursor-glow{position:absolute;inset:0;background:radial-gradient(270px 270px at var(--elite-cx,50%) var(--elite-cy,50%),rgba(232,195,107,.09),transparent 72%)}
+#elite-frame-sparkles{position:absolute;inset:0;overflow:hidden}
+.elite-frame-spark{position:absolute;width:6px;height:6px;border-radius:50%;background:radial-gradient(circle,#FCE7B8,#E8C36B 55%,transparent 72%);transform:translate(-50%,-50%);animation:eliteFrameSparkFade .7s ease-out forwards}
+@keyframes eliteFrameSparkFade{to{opacity:0;transform:translate(-50%,-50%) scale(.2) translateY(-12px)}}
+@media(prefers-reduced-motion:reduce){#elite-frame-cursor-ring{transition:none}.elite-frame-spark{animation:none;display:none}}
+`;
+        (childDoc.head||childRoot).appendChild(cursorStyle);
+      }
+      let layer=childDoc.getElementById('elite-frame-cursor-layer');
+      if(!layer){
+        layer=childDoc.createElement('div');
+        layer.id='elite-frame-cursor-layer';
+        layer.setAttribute('aria-hidden','true');
+        layer.innerHTML='<div id="elite-frame-cursor-glow"></div><div id="elite-frame-sparkles"></div><div id="elite-frame-cursor-ring"></div><div id="elite-frame-cursor-dot"></div>';
+        (childDoc.body||childRoot).appendChild(layer);
+      }
+      const frameDot=childDoc.getElementById('elite-frame-cursor-dot');
+      const frameRing=childDoc.getElementById('elite-frame-cursor-ring');
+      const frameGlow=childDoc.getElementById('elite-frame-cursor-glow');
+      const frameSparkles=childDoc.getElementById('elite-frame-sparkles');
+      if(!frameDot||!frameRing||!frameGlow||!frameSparkles)return;
+      let tx=childDoc.defaultView.innerWidth/2,ty=childDoc.defaultView.innerHeight/2;
+      let rx=tx,ry=ty,raf=0,lastSpark=0;
+      const step=()=>{
+        rx+=(tx-rx)*.22;
+        ry+=(ty-ry)*.22;
+        frameRing.style.transform=`translate3d(${rx}px,${ry}px,0) translate(-50%,-50%)`;
+        if(Math.abs(tx-rx)>.45||Math.abs(ty-ry)>.45){raf=childDoc.defaultView.requestAnimationFrame(step);}
+        else raf=0;
+      };
+      const hotSelector='a,button,.btn,input,textarea,select,[role="button"],[tabindex]:not([tabindex="-1"])';
+      const trackFramePointer=e=>{
+        if(e.target&&e.target.tagName==='IFRAME')return;
+        tx=e.clientX;ty=e.clientY;
+        frameDot.style.transform=`translate3d(${tx}px,${ty}px,0) translate(-50%,-50%)`;
+        frameGlow.style.setProperty('--elite-cx',tx+'px');
+        frameGlow.style.setProperty('--elite-cy',ty+'px');
+        childRoot.classList.add('elite-frame-cursor-visible');
+        if(!raf)raf=childDoc.defaultView.requestAnimationFrame(step);
+        const now=performance.now();
+        if(now-lastSpark<(LOW_END?145:80))return;
+        lastSpark=now;
+        const spark=childDoc.createElement('span');
+        spark.className='elite-frame-spark';
+        spark.style.left=(tx+(Math.random()-.5)*14)+'px';
+        spark.style.top=(ty+(Math.random()-.5)*14)+'px';
+        const size=4.5+Math.random()*3;
+        spark.style.width=spark.style.height=size+'px';
+        frameSparkles.appendChild(spark);
+        childDoc.defaultView.setTimeout(()=>spark.remove(),750);
+      };
+      const isHot=target=>!!(target&&target.closest&&target.closest(hotSelector));
+      childDoc.addEventListener('pointermove',trackFramePointer,{passive:true,capture:true});
+      childDoc.addEventListener('pointerover',e=>{
+        if(e.target&&e.target.tagName==='IFRAME'){
+          childRoot.classList.remove('elite-frame-cursor-visible','elite-frame-cursor-hot');
+          return;
+        }
+        if(isHot(e.target))childRoot.classList.add('elite-frame-cursor-hot');
+      },{passive:true,capture:true});
+      childDoc.addEventListener('pointerout',e=>{
+        if(isHot(e.target)&&!isHot(e.relatedTarget))childRoot.classList.remove('elite-frame-cursor-hot');
+        if(e.relatedTarget&&e.relatedTarget.tagName==='IFRAME')childRoot.classList.remove('elite-frame-cursor-visible','elite-frame-cursor-hot');
+      },{passive:true,capture:true});
+      childDoc.addEventListener('pointerenter',()=>childRoot.classList.add('elite-frame-cursor-visible'),{passive:true});
+      childDoc.addEventListener('pointerleave',()=>childRoot.classList.remove('elite-frame-cursor-visible','elite-frame-cursor-hot'),{passive:true});
+    };
+    frame.addEventListener('load',installFrameTracking);
+    frame.addEventListener('pointerenter',()=>{
+      if(frame.dataset.cursorTracking!=='1')document.body.classList.add('cursor-frame-fallback');
+    },{passive:true});
+    frame.addEventListener('pointerleave',()=>{
+      document.body.classList.remove('cursor-frame-fallback','cursorHot');
+    },{passive:true});
+    installFrameTracking();
+  });
 }else{
   window.addEventListener('pointermove',e=>{MX=e.clientX;MY=e.clientY;},{passive:true});
 }
