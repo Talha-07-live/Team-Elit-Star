@@ -1016,10 +1016,15 @@ body.weather-off #weatherFx{display:none!important;}
   .event-embed-top,.event-embed-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 18px;color:var(--muted);font:600 .68rem var(--util);letter-spacing:.08em;text-transform:uppercase}
   .event-embed-top{border-bottom:1px solid var(--line);background:rgba(8,7,12,.3)}
   .event-embed-top span{color:var(--ivory)}.event-embed-top i{display:inline-grid;place-items:center;width:25px;height:25px;margin-right:7px;border:1px solid var(--line-strong);border-radius:7px;color:var(--gold);font-style:normal}
-  .event-embed-top small{font:400 .64rem var(--sans);letter-spacing:0;text-transform:none;color:var(--muted)}.event-embed-top code{color:var(--gold)}
-  .event-embed-frame{display:block;width:100%;height:min(720px,72vh);min-height:580px;border:0;background:#08070c}
+  .event-embed-frame{display:block;width:100%;height:auto;aspect-ratio:16/9;min-height:0;max-height:min(78svh,760px);border:0;background:#08070c}
   .event-embed-foot{border-top:1px solid var(--line);font-size:.6rem}.event-embed-foot a{color:var(--gold);transition:color .25s ease}.event-embed-foot a:hover{color:var(--gold-shine)}
-  @media(max-width:680px){.event-embed-top,.event-embed-foot{padding:12px 13px;font-size:.57rem}.event-embed-top small{display:none}.event-embed-frame{height:790px;min-height:790px}}
+  @media(max-width:680px){.event-embed-top,.event-embed-foot{padding:12px 13px;font-size:.57rem}.event-embed-frame{max-height:72svh}}
+  .hero-star-fallback{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none;background:radial-gradient(ellipse at 50% 48%,rgba(232,195,107,.12),transparent 48%),radial-gradient(ellipse at 50% 90%,rgba(184,145,46,.09),transparent 55%)}
+  .hero-star-fallback::before{content:"";position:absolute;left:50%;top:48%;width:clamp(110px,24vw,260px);aspect-ratio:1;transform:translate(-50%,-50%);clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);background:linear-gradient(145deg,#FCE7B8,#E8C36B 48%,#8F681D);filter:drop-shadow(0 0 18px rgba(232,195,107,.32));animation:heroFallbackFloat 6s ease-in-out infinite}
+  .hero-star-fallback::after{content:"";position:absolute;inset:0;background-image:radial-gradient(circle,rgba(252,231,184,.85) 0 1px,transparent 1.8px),radial-gradient(circle,rgba(232,195,107,.58) 0 1px,transparent 2px);background-size:67px 83px,109px 127px;background-position:8px 14px,34px 58px;opacity:.45}
+  @keyframes heroFallbackFloat{0%,100%{margin-top:0;filter:drop-shadow(0 0 16px rgba(232,195,107,.25))}50%{margin-top:-9px;filter:drop-shadow(0 0 27px rgba(232,195,107,.44))}}
+  @media(max-width:680px){.hero-star-fallback::before{width:clamp(105px,38vw,190px)}}
+  @media(prefers-reduced-motion:reduce){.hero-star-fallback::before{animation:none}}
 </style>
 </head>
 <body>
@@ -1144,9 +1149,9 @@ body.weather-off #weatherFx{display:none!important;}
       <p></p>
     </div>
     <div class="event-embed-shell reveal">
-      <div class="event-embed-top"><span><i aria-hidden="true">▶</i> Elite Event Player</span><small>Embedded from <code>player.html</code></small></div>
-      <iframe class="event-embed-frame" src="./player.html" title="Team Elite Star event playlist player" loading="lazy" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen></iframe>
-      <div class="event-embed-foot"><span>Standalone playlist player</span><a href="./player.html" target="_blank" rel="noopener">Open player ↗</a></div>
+      <div class="event-embed-top"><span><i aria-hidden="true">▶</i> Elite Event Player</span></div>
+      <iframe class="event-embed-frame" src="/player" title="Team Elite Star event playlist player" loading="lazy" allow="autoplay; fullscreen; picture-in-picture; encrypted-media" allowfullscreen></iframe>
+      <div class="event-embed-foot"><span>Standalone playlist player</span><a href="/player" target="_blank" rel="noopener noreferrer">Open player ↗</a></div>
     </div>
   </div>
 </section>
@@ -1472,7 +1477,7 @@ window.addEventListener('scroll',()=>{ if(!progTicking){ requestAnimationFrame((
  
  
 let MX=window.innerWidth/2, MY=window.innerHeight/2;
-if(FINE && !REDUCE && !LOW_END){
+if(FINE && !REDUCE){
   document.body.classList.add('fx');
   const dot=document.getElementById('cursorDot'), ring=document.getElementById('cursorRing'), spot=document.getElementById('spotlight');
   let rx=MX,ry=MY,sx=MX,sy=MY;
@@ -1496,10 +1501,10 @@ if(FINE && !REDUCE && !LOW_END){
   window.addEventListener('pointermove',e=>{MX=e.clientX;MY=e.clientY;},{passive:true});
 }
  
-if(FINE && !REDUCE && !LOW_END){
-  const box=document.getElementById('sparkles'); let last=0;
+if(FINE && !REDUCE){
+  const box=document.getElementById('sparkles'); let last=0; const sparkleInterval=LOW_END?125:70;
   window.addEventListener('pointermove',e=>{
-    const now=performance.now(); if(now-last<70) return; last=now;
+    const now=performance.now(); if(now-last<sparkleInterval) return; last=now;
     const s=document.createElement('span'); s.className='spark';
     const jx=(Math.random()-.5)*16, jy=(Math.random()-.5)*16;
     s.style.left=(e.clientX+jx)+'px'; s.style.top=(e.clientY+jy)+'px';
@@ -1528,11 +1533,28 @@ if(!REDUCE){
  
 (function hero3d(){
   const canvas=document.getElementById('star-canvas');
-  if(!canvas||typeof THREE==='undefined') return;
+  if(!canvas) return;
+  const showFallback=()=>{
+    let fallback=document.getElementById('heroStarFallback');
+    if(!fallback){
+      fallback=document.createElement('div');
+      fallback.id='heroStarFallback';
+      fallback.className='hero-star-fallback';
+      fallback.setAttribute('aria-hidden','true');
+      canvas.insertAdjacentElement('afterend',fallback);
+    }
+  };
+  const hideFallback=()=>document.getElementById('heroStarFallback')?.remove();
+  if(typeof THREE==='undefined'){showFallback();return;}
   let W=innerWidth,H=innerHeight;
   const lite = !FINE;
-  const renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true,powerPreference:'high-performance',preserveDrawingBuffer:false});
-  renderer.setPixelRatio(Math.min(devicePixelRatio||1,LOW_END?1.5:2)); renderer.setSize(W,H); renderer.setClearColor(0x000000,0);
+  let renderer;
+  try{
+    renderer=new THREE.WebGLRenderer({canvas,alpha:true,antialias:true,powerPreference:'high-performance',preserveDrawingBuffer:false});
+    renderer.setPixelRatio(Math.min(devicePixelRatio||1,LOW_END?1.5:2));
+    renderer.setSize(W,H);
+    renderer.setClearColor(0x000000,0);
+  }catch(_){showFallback();return;}
   const scene=new THREE.Scene();
   const camera=new THREE.PerspectiveCamera(46,W/H,0.1,100); camera.position.set(0,0,6.2);
   const rig=new THREE.Group(); scene.add(rig);
@@ -1567,8 +1589,8 @@ if(!REDUCE){
     },{threshold:0}).observe(canvas);
   }
 
-  canvas.addEventListener('webglcontextlost',e=>{ e.preventDefault(); contextLost=true; },false);
-  canvas.addEventListener('webglcontextrestored',()=>{ contextLost=false; loop(); },false);
+  canvas.addEventListener('webglcontextlost',e=>{ e.preventDefault(); contextLost=true; showFallback(); },false);
+  canvas.addEventListener('webglcontextrestored',()=>{ contextLost=false; hideFallback(); loop(); },false);
 
   let rafId=0,running=false,lastFrameTime=0;
   function loop(){
