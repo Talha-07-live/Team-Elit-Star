@@ -158,6 +158,7 @@ window.__TEAM_ELITE_MEDIA_READY=(async()=>{
   const PHOTO_DURATION=6500;
   const MOTION_DELAY=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches?0:155;
   let playlist=[...configured],activeIndex=-1,photoTimer=0,playbackToken=0,lastAdvanceAt=0,autoNext=true,fitMode='contain',skinTimer=0,seeking=false;
+  let stageIsVisible=false,frameIsVisible=true,playerWasVisible=false;
   const warmedOrigins=new Set();
 
   function mediaInfo(raw,forced){
@@ -327,14 +328,68 @@ window.__TEAM_ELITE_MEDIA_READY=(async()=>{
     if(!data)return;
     if(data.event==='finish'||(data.event==='onStateChange'&&Number(data.info)===0))advance();
   }
+  function playerSectionVisible(){return stageIsVisible&&frameIsVisible;}
+  function suspendOffscreenMedia(){
+    playbackToken++;
+    clearTimeout(photoTimer);photoTimer=0;clearTimeout(skinTimer);skinTimer=0;
+    stopCurrentMediaSources();
+    videoSkin.classList.remove('is-playing','controls-hidden');
+    shell.classList.remove('media-ready','is-loading');
+    empty.hidden=false;
+    if(activeIndex>=0)setStatus('Media is ready and will load when the player section is visible.');
+  }
+  function syncPlayerVisibility(){
+    const visible=playerSectionVisible();
+    if(visible===playerWasVisible)return;
+    playerWasVisible=visible;
+    if(visible){
+      if(playlist.length){const index=activeIndex>=0?activeIndex:0;select(index,true);}
+    }else if(activeIndex>=0){suspendOffscreenMedia();}
+  }
+  function setupVisibilityObservers(){
+    if('IntersectionObserver' in window){
+      const stageObserver=new IntersectionObserver(entries=>{
+        const entry=entries[entries.length-1];
+        stageIsVisible=Boolean(entry&&entry.isIntersecting&&entry.intersectionRatio>=0.08);
+        syncPlayerVisibility();
+      },{threshold:[0,0.08,0.2]});
+      stageObserver.observe(shell);
+    }else stageIsVisible=true;
+    if(window.parent!==window){
+      try{
+        const outerFrame=window.frameElement;
+        const ParentObserver=window.parent.IntersectionObserver;
+        if(outerFrame&&ParentObserver){
+          frameIsVisible=false;
+          const frameObserver=new ParentObserver(entries=>{
+            const entry=entries[entries.length-1];
+            frameIsVisible=Boolean(entry&&entry.isIntersecting&&entry.intersectionRatio>0.01);
+            syncPlayerVisibility();
+          },{threshold:[0,0.01,0.1]});
+          frameObserver.observe(outerFrame);
+        }else frameIsVisible=true;
+      }catch(_){frameIsVisible=true;}
+    }else frameIsVisible=true;
+    syncPlayerVisibility();
+  }
   async function select(index,autoplay){
     const item=playlist[index];if(!item)return;
     activeIndex=index;playbackToken++;const token=playbackToken;
     clearTimeout(photoTimer);photoTimer=0;clearTimeout(skinTimer);skinTimer=0;
     stopCurrentMediaSources();
-    shell.classList.remove('media-ready');
+    shell.classList.remove('media-ready','is-loading');
+    videoSkin.classList.remove('is-playing','controls-hidden');
+    if(!playerSectionVisible()){
+      empty.hidden=false;
+      titleEl.textContent=item.title;metaEl.textContent=item.meta;
+      kickerEl.textContent=item.info.type==='photo'?'NOW SHOWING':'NOW PLAYING';
+      stageLabel.textContent=item.info.type==='photo'?'Featured photo':'Featured video';
+      setStatus('Selected. Media will load when you enter the player section.');
+      render();
+      return;
+    }
     if(MOTION_DELAY)await new Promise(resolve=>setTimeout(resolve,MOTION_DELAY));
-    if(token!==playbackToken)return;
+    if(token!==playbackToken||!playerSectionVisible())return;
     clearMedia();shell.classList.add('is-loading');
     const info=item.info;
     empty.hidden=true;titleEl.textContent=item.title;metaEl.textContent=item.meta;kickerEl.textContent=info.type==='photo'?'NOW SHOWING':'NOW PLAYING';stageLabel.textContent=info.type==='photo'?'Featured photo':'Featured video';
@@ -450,8 +505,10 @@ window.__TEAM_ELITE_MEDIA_READY=(async()=>{
   skinFullscreen.addEventListener('click',toggleFullscreen);
   skinTopFullscreen.addEventListener('click',toggleFullscreen);
   updateAutoButton();shell.style.setProperty('--fit',fitMode);render();
-  if(playlist.length)select(0,true);
-  else setStatus(mediaDataLoaded?'No valid media items found in media-data.js.':'Could not load media-data.js. Check the file location and name.','error');
+  if(playlist.length){
+    setStatus('Ready. Media loads when the player section comes into view.');
+    setupVisibilityObservers();
+  }else setStatus(mediaDataLoaded?'No valid media items found in media-data.js.':'Could not load media-data.js. Check the file location and name.','error');
 })();
 </script>
 </body>
