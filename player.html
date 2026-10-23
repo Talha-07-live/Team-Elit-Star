@@ -126,12 +126,12 @@
 
 <script>
 window.__TEAM_ELITE_MEDIA_READY=(async()=>{
-  const candidates=[
-    new URL('/media-data.js',location.origin).href,
-    new URL('../media-data.js',location.href).href,
-    new URL('./media-data.js',location.href).href
-  ];
-  for(const src of [...new Set(candidates)]){
+  const candidates=[];
+  const addCandidate=value=>{try{const url=new URL(value,location.href).href;if(!candidates.includes(url))candidates.push(url);}catch(_){}};
+  addCandidate('/media-data.js');
+  addCandidate('../media-data.js');
+  addCandidate('./media-data.js');
+  for(const src of candidates){
     try{
       await new Promise((resolve,reject)=>{
         const script=document.createElement('script');
@@ -143,7 +143,7 @@ window.__TEAM_ELITE_MEDIA_READY=(async()=>{
       if(window.TEAM_ELITE_MEDIA&&(Array.isArray(window.TEAM_ELITE_MEDIA.photos)||Array.isArray(window.TEAM_ELITE_MEDIA.videos)))return true;
     }catch(_){ }
   }
-  return false;
+  return Boolean(window.TEAM_ELITE_MEDIA&&(Array.isArray(window.TEAM_ELITE_MEDIA.photos)||Array.isArray(window.TEAM_ELITE_MEDIA.videos)));
 })();
 </script>
 <script>
@@ -201,6 +201,40 @@ window.__TEAM_ELITE_MEDIA_READY=(async()=>{
     const info=mediaInfo(url,type);
     if(!info)return null;
     return{title:String(value.title||value.name||value.label||`${info.provider} ${info.type}`).trim().slice(0,90)||'Media item',meta:String(value.meta||`${info.provider} · ${info.type==='photo'?'Photo':'Video'}`).trim().slice(0,100),url,info};
+  }
+
+  function setStatus(message,type=''){
+    statusEl.textContent=String(message||'');
+    statusEl.dataset.state=type||'';
+  }
+
+  function updateCount(){
+    const amount=playlist.length;
+    countEl.textContent=`${amount} ${amount===1?'item':'items'}`;
+    playerCount.textContent=amount?`${amount} ${amount===1?'item':'items'} ready`:'Media playlist';
+    prevBtn.disabled=amount<2;
+    nextBtn.disabled=amount<2;
+  }
+
+  function makeThumbnail(item){
+    const wrap=document.createElement('span');
+    wrap.className='thumb';
+    const source=item.thumbSrc||item.info.thumb||(item.info.type==='photo'?(item.info.src||item.url):'');
+    if(source){
+      const image=document.createElement('img');
+      image.alt=`${item.title} thumbnail`;
+      image.loading='lazy';
+      image.decoding='async';
+      image.src=source;
+      image.addEventListener('error',()=>image.remove(),{once:true});
+      wrap.appendChild(image);
+    }
+    const play=document.createElement('span');
+    play.className='thumb-play';
+    play.setAttribute('aria-hidden','true');
+    play.textContent=item.info.type==='photo'?'▧':'▶';
+    wrap.appendChild(play);
+    return wrap;
   }
 
   function requestVideoThumbnail(item,wrap){
