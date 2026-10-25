@@ -233,10 +233,71 @@ html.elite-iframe-context .video-skin {
 }
 
 </style>
-<script>try{if(window.self!==window.top)document.documentElement.classList.add('elite-iframe-context')}catch(_){document.documentElement.classList.add('elite-iframe-context')}</script>
+<script>try{if(window.self!==window.top||(window.innerHeight<=520&&window.innerWidth>window.innerHeight*1.15))document.documentElement.classList.add('elite-iframe-context')}catch(_){document.documentElement.classList.add('elite-iframe-context')}</script>
 
 <style>
 .elite-watermark-cover{position:absolute;right:clamp(8px,1.5%,20px);bottom:clamp(8px,1.6%,18px);z-index:5;width:clamp(112px,12%,156px);height:auto;aspect-ratio:156/38;display:block;overflow:hidden;border-radius:4px;pointer-events:none;user-select:none;-webkit-user-select:none;filter:drop-shadow(0 2px 5px rgba(0,0,0,.22))}.elite-watermark-cover[hidden]{display:none!important}.elite-watermark-cover svg{display:block;width:100%;height:100%}@media(max-width:560px){.elite-watermark-cover{right:8px;bottom:8px;width:clamp(106px,25%,132px)}}.media-shell:fullscreen .elite-watermark-cover,.media-shell:-webkit-full-screen .elite-watermark-cover{right:clamp(12px,1.5vw,24px);bottom:clamp(12px,1.5vh,24px);width:clamp(130px,11vw,172px)}
+</style>
+
+
+<style>
+.player-app{container-type:inline-size;container-name:elite-player;min-width:0}
+.playlist-list{grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));align-content:start}
+.playlist-item{min-width:0;min-height:88px;overflow:hidden;grid-template-columns:minmax(82px,32%) minmax(0,1fr);align-items:center}
+.item-copy{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:3px;min-width:0;min-height:0;max-width:100%;overflow:hidden;align-self:stretch}
+.item-copy strong{display:-webkit-box;width:100%;max-width:100%;margin:0;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:2;font-size:clamp(11px,1.25vw,13px);line-height:1.2;max-height:2.4em;overflow-wrap:anywhere;word-break:normal}
+.item-copy small{display:block;width:100%;max-width:100%;margin:0;overflow:hidden;font-size:clamp(9px,1vw,10px);line-height:1.15;white-space:nowrap;text-overflow:ellipsis}
+.item-type{display:inline-flex;max-width:100%;margin:0;overflow:hidden;font-size:clamp(8px,.9vw,9px);line-height:1.1;white-space:nowrap;text-overflow:ellipsis}
+@media(max-width:900px){.playlist-list{grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:8px}.playlist-item{grid-template-columns:minmax(86px,32%) minmax(0,1fr);min-height:88px}}
+@media(max-width:560px){.playlist-list{display:flex;flex-direction:column;gap:8px}.playlist-item{grid-template-columns:104px minmax(0,1fr);min-height:84px}.item-copy strong{font-size:12px;line-height:1.2}.item-copy small{font-size:10px}.item-type{font-size:9px}}
+html.elite-iframe-context,html.elite-iframe-context body{width:100%;height:100%;min-width:0;min-height:0;margin:0;padding:0!important;overflow:hidden;overscroll-behavior:none}
+html.elite-iframe-context .player-app{width:100%;height:100vh;height:100dvh;max-width:none;min-width:0;min-height:0;margin:0;overflow:hidden;border:0;border-radius:0;box-shadow:none}
+html.elite-iframe-context .player-grid{display:flex;flex:1 1 auto;flex-direction:column;width:100%;height:100%;min-width:0;min-height:0;overflow:hidden}
+html.elite-iframe-context .stage{display:flex;flex:1 1 0;flex-direction:column;align-items:center;justify-content:center;gap:5px;width:100%;height:auto;min-width:0;min-height:0;overflow:hidden;padding:7px}
+html.elite-iframe-context .media-shell{flex:0 1 auto;width:100%;max-width:100%;min-width:0;min-height:0;max-height:none;margin:0 auto;transition:none}
+html.elite-iframe-context .control-bar{display:flex;flex:0 0 auto;flex-wrap:nowrap;justify-content:center;width:100%;max-width:100%;min-width:0;gap:clamp(3px,.7vw,7px);padding:0;border:0}
+html.elite-iframe-context .control-bar .btn{flex:0 1 auto;min-width:0;min-height:28px;padding:4px clamp(5px,.8vw,9px);font-size:clamp(9px,.8vw,11px);letter-spacing:0}
+html.elite-iframe-context .control-spacer{display:none}
+html.elite-iframe-context .playlist{display:flex;flex:0 0 72px;flex-direction:column;width:100%;height:72px;min-width:0;min-height:72px;max-height:72px;overflow:hidden;border:0;border-top:1px solid var(--line)}
+html.elite-iframe-context .playlist-head{display:none!important}
+html.elite-iframe-context .playlist-list{display:flex;flex:1 1 auto;flex-direction:row;align-items:stretch;gap:6px;width:100%;height:100%;min-width:0;min-height:0;max-height:none;padding:5px;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;scrollbar-width:none}
+html.elite-iframe-context .playlist-list::-webkit-scrollbar{display:none}
+html.elite-iframe-context .playlist-item{display:grid;flex:0 0 clamp(170px,29vw,245px);grid-template-columns:minmax(54px,32%) minmax(0,1fr);gap:5px;width:clamp(170px,29vw,245px);min-width:0;height:100%;min-height:0;max-height:100%;padding:4px;overflow:hidden;align-items:center}
+html.elite-iframe-context .playlist-item .thumb{width:100%;height:auto;min-width:0;aspect-ratio:16/9;align-self:center}
+html.elite-iframe-context .playlist-item .item-copy{display:flex;flex-direction:column;justify-content:center;align-items:flex-start;gap:2px;min-width:0;min-height:0;max-width:100%;height:100%;overflow:hidden}
+html.elite-iframe-context .playlist-item .item-copy strong{display:-webkit-box;width:100%;max-width:100%;max-height:2.3em;margin:0;overflow:hidden;-webkit-box-orient:vertical;-webkit-line-clamp:2;font-size:clamp(10px,1.15vw,12px);line-height:1.15;overflow-wrap:anywhere}
+html.elite-iframe-context .playlist-item .item-copy small{width:100%;margin:0;font-size:clamp(9px,.9vw,10px);line-height:1.1}
+html.elite-iframe-context .playlist-item .item-type{margin:0;font-size:clamp(8px,.85vw,9px);line-height:1.1}
+html.elite-iframe-context .photo-skin,html.elite-iframe-context .video-skin{touch-action:manipulation}
+@media(min-width:561px) and (max-height:520px){
+  html.elite-iframe-context .player-grid{flex-direction:row;align-items:stretch}
+  html.elite-iframe-context .stage{flex:1 1 0;width:auto;height:100%;min-width:0;min-height:0;padding:7px;gap:5px}
+  html.elite-iframe-context .media-shell{flex:0 1 auto;max-width:100%;max-height:none}
+  html.elite-iframe-context .playlist{flex:0 0 clamp(190px,27%,280px);width:auto;height:100%;min-width:0;min-height:0;max-height:none;border:0;border-left:1px solid var(--line)}
+  html.elite-iframe-context .playlist-list{flex:1 1 auto;flex-direction:column;justify-content:flex-start;gap:5px;padding:6px;overflow-x:hidden;overflow-y:auto;overscroll-behavior-y:contain;scrollbar-width:thin;scrollbar-color:rgba(232,195,107,.35) transparent}
+  html.elite-iframe-context .playlist-item{flex:0 0 auto;grid-template-columns:minmax(54px,34%) minmax(0,1fr);gap:6px;width:100%;height:auto;min-height:61px;max-height:none;padding:5px}
+  html.elite-iframe-context .playlist-item .thumb{width:100%;height:auto;aspect-ratio:16/9}
+  html.elite-iframe-context .playlist-item .item-copy strong{font-size:clamp(10px,.95vw,12px);line-height:1.15}
+  html.elite-iframe-context .playlist-item .item-copy small{font-size:clamp(9px,.75vw,10px)}
+  html.elite-iframe-context .playlist-item .item-type{font-size:8px}
+}
+@media(max-width:560px){
+  html.elite-iframe-context .stage{padding:5px;gap:4px}
+  html.elite-iframe-context .control-bar{gap:3px}
+  html.elite-iframe-context .control-bar .btn{min-height:27px;padding:4px 5px;font-size:clamp(8px,2.2vw,10px)}
+  html.elite-iframe-context .playlist{flex-basis:66px;height:66px;min-height:66px;max-height:66px}
+  html.elite-iframe-context .playlist-list{padding:4px;gap:5px}
+  html.elite-iframe-context .playlist-item{flex-basis:clamp(158px,53vw,215px);width:clamp(158px,53vw,215px);grid-template-columns:minmax(50px,32%) minmax(0,1fr);gap:5px;padding:4px}
+  html.elite-iframe-context .playlist-item .item-copy strong{font-size:clamp(10px,2.7vw,12px);line-height:1.15}
+  html.elite-iframe-context .playlist-item .item-copy small{font-size:9px}
+  html.elite-iframe-context .playlist-item .item-type{font-size:8px}
+}
+@media(max-height:330px){
+  html.elite-iframe-context .playlist{flex-basis:54px;height:54px;min-height:54px;max-height:54px}
+  html.elite-iframe-context .playlist-item .item-copy small{display:none}
+  html.elite-iframe-context .playlist-item .item-type{margin-top:2px}
+  html.elite-iframe-context .control-bar .btn{min-height:24px;padding-top:3px;padding-bottom:3px}
+}
 </style>
 
 </head>
@@ -328,8 +389,10 @@ window.__TEAM_ELITE_MEDIA_READY = (async () => {
   const listEl=$('playlistList'),shell=$('mediaShell'),videoFrame=$('videoFrame'),directVideo=$('directVideo'),wistiaHost=$('wistiaHost'),eliteBrandOverlay=$('eliteBrandOverlay'),photoFrame=$('photoFrame'),empty=$('emptyState'),titleEl=$('nowTitle'),metaEl=$('nowMeta'),kickerEl=$('mediaKicker'),stageLabel=$('stageLabel'),statusEl=$('status'),countEl=$('playlistCount'),playerCount=$('playerCount'),prevBtn=$('prevBtn'),nextBtn=$('nextBtn'),autoNextBtn=$('autoNextBtn'),fitBtn=$('fitBtn'),fullscreenBtn=$('fullscreenBtn'),videoSkin=$('videoSkin'),skinTitle=$('skinTitle'),skinPlay=$('skinPlay'),skinCenterPlay=$('skinCenterPlay'),skinSeek=$('skinSeek'),skinCurrent=$('skinCurrent'),skinDuration=$('skinDuration'),skinMute=$('skinMute'),skinVolume=$('skinVolume'),skinPip=$('skinPip'),skinFullscreen=$('skinFullscreen'),skinTopFullscreen=$('skinTopFullscreen'),photoSkin=$('photoSkin'),photoTitle=$('photoTitle'),photoCounter=$('photoCounter'),photoFit=$('photoFit');
   const photoSource=Array.isArray(window.TEAM_ELITE_MEDIA?.photos)?window.TEAM_ELITE_MEDIA.photos:[];
   const videoSource=Array.isArray(window.TEAM_ELITE_MEDIA?.videos)?window.TEAM_ELITE_MEDIA.videos:[];
-  const isEmbedded=(()=>{try{return window.self!==window.top}catch(_){return true}})();
-  if(isEmbedded){document.documentElement.classList.add('elite-iframe-context');document.body.classList.add('elite-iframe-embed');}
+  const isFramed=()=>{try{return window.self!==window.top}catch(_){return true}};
+  let isEmbedded=isFramed()||(window.innerHeight<=520&&window.innerWidth>window.innerHeight*1.15);
+  const syncEmbedContext=()=>{isEmbedded=isFramed()||(window.innerHeight<=520&&window.innerWidth>window.innerHeight*1.15);document.documentElement.classList.toggle('elite-iframe-context',isEmbedded);document.body.classList.toggle('elite-iframe-embed',isEmbedded);};
+  syncEmbedContext();
   const configured=[...photoSource.map(item=>normalize(item,'photo')),...videoSource.map(item=>normalize(item,'video'))].filter(Boolean);
   const PHOTO_DURATION=6500;
   const MOTION_DELAY=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches?0:120;
@@ -572,7 +635,7 @@ window.__TEAM_ELITE_MEDIA_READY = (async () => {
   skinPlay.addEventListener('click',togglePlayback);skinCenterPlay.addEventListener('click',togglePlayback);directVideo.addEventListener('click',()=>{revealSkinControls();togglePlayback();});directVideo.addEventListener('timeupdate',syncVideoControls);directVideo.addEventListener('loadedmetadata',syncVideoControls);directVideo.addEventListener('durationchange',syncVideoControls);directVideo.addEventListener('play',()=>{videoSkin.classList.add('is-playing');syncVideoControls();revealSkinControls();});directVideo.addEventListener('pause',()=>{videoSkin.classList.remove('is-playing','controls-hidden');clearTimeout(skinTimer);syncVideoControls();});
   skinSeek.addEventListener('input',()=>{seeking=true;const duration=targetDuration(playbackTarget());if(duration>0){skinCurrent.textContent=formatTime(duration*(Number(skinSeek.value)/1000));updateSeekPaint();}});skinSeek.addEventListener('change',()=>{const target=playbackTarget(),duration=targetDuration(target);if(target&&duration>0)target.currentTime=duration*(Number(skinSeek.value)/1000);seeking=false;syncVideoControls();});skinMute.addEventListener('click',toggleMute);skinVolume.addEventListener('input',()=>{const target=playbackTarget();if(target)applyTargetVolume(target,skinVolume.value);skinMute.textContent=Number(skinVolume.value)===0?'Muted':'Sound';});skinPip.addEventListener('click',async()=>{try{if(!activeWistiaPlayer&&!directVideo.hidden&&document.pictureInPictureEnabled&&directVideo.requestPictureInPicture)await directVideo.requestPictureInPicture();else setStatus('Picture in picture is not available for this hosted player.');}catch(_){setStatus('Picture in picture is not available in this browser.','error');}});fullscreenBtn.addEventListener('click',toggleFullscreen);skinFullscreen.addEventListener('click',toggleFullscreen);skinTopFullscreen.addEventListener('click',toggleFullscreen);
   $('photoPrev').addEventListener('click',()=>prevBtn.click());$('photoPrevLarge').addEventListener('click',()=>prevBtn.click());$('photoNext').addEventListener('click',()=>nextBtn.click());$('photoNextLarge').addEventListener('click',()=>nextBtn.click());$('photoFullscreen').addEventListener('click',toggleFullscreen);photoFit.addEventListener('click',()=>{photoCropMode=photoCropMode==='contain'?'cover':'contain';fitPhotoToViewport();setStatus(photoCropMode==='cover'?'Photo fills the screen; edges may be cropped.':'Entire photo visible without cropping.');});
-  photoFrame.addEventListener('load',()=>{updatePhotoUI();});photoFrame.addEventListener('error',()=>{photoSkin.hidden=true;});window.addEventListener('resize',()=>{cancelAnimationFrame(photoResizeFrame);photoResizeFrame=requestAnimationFrame(()=>{fitPhotoToViewport();updatePhotoUI();scheduleEmbeddedFit();});},{passive:true});window.addEventListener('orientationchange',()=>setTimeout(()=>{fitPhotoToViewport();updatePhotoUI();scheduleEmbeddedFit();},100),{passive:true});document.addEventListener('fullscreenchange',()=>{fitPhotoToViewport();updatePhotoUI();scheduleEmbeddedFit();});document.addEventListener('webkitfullscreenchange',()=>{fitPhotoToViewport();updatePhotoUI();scheduleEmbeddedFit();});
+  photoFrame.addEventListener('load',()=>{updatePhotoUI();});photoFrame.addEventListener('error',()=>{photoSkin.hidden=true;});window.addEventListener('resize',()=>{syncEmbedContext();cancelAnimationFrame(photoResizeFrame);photoResizeFrame=requestAnimationFrame(()=>{fitPhotoToViewport();updatePhotoUI();scheduleEmbeddedFit();});},{passive:true});window.addEventListener('orientationchange',()=>setTimeout(()=>{syncEmbedContext();fitPhotoToViewport();updatePhotoUI();scheduleEmbeddedFit();},100),{passive:true});document.addEventListener('fullscreenchange',()=>{fitPhotoToViewport();updatePhotoUI();scheduleEmbeddedFit();});document.addEventListener('webkitfullscreenchange',()=>{fitPhotoToViewport();updatePhotoUI();scheduleEmbeddedFit();});
   new MutationObserver(()=>{if(activeWistiaPlayer){activeWistiaPlayer.style.pointerEvents='none';activeWistiaPlayer.setAttribute('controls-visible-on-load','false');activeWistiaPlayer.setAttribute('big-play-button','false');activeWistiaPlayer.setAttribute('play-pause-control','false');activeWistiaPlayer.setAttribute('play-bar-control','false');activeWistiaPlayer.setAttribute('volume-control','false');activeWistiaPlayer.setAttribute('fullscreen-control','false');activeWistiaPlayer.setAttribute('settings-control','false');activeWistiaPlayer.setAttribute('playback-rate-control','false');}}).observe(wistiaHost,{childList:true,subtree:true});
   if('ResizeObserver' in window){const stageResizeObserver=new ResizeObserver(()=>scheduleEmbeddedFit());const stageForResize=shell.closest('.stage');if(stageForResize)stageResizeObserver.observe(stageForResize);}
   new MutationObserver(()=>scheduleEmbeddedFit()).observe(shell,{attributes:true,attributeFilter:['style','class']});
