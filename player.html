@@ -363,6 +363,64 @@ html.elite-iframe-context .photo-skin,html.elite-iframe-context .video-skin{touc
 }
 </style>
 
+<style id="iframe-scroll-enabled">
+html.elite-iframe-context {
+  width:100%!important;
+  height:auto!important;
+  min-height:100%!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  overscroll-behavior-x:none!important;
+  overscroll-behavior-y:auto!important;
+  touch-action:pan-y;
+}
+html.elite-iframe-context body,
+body.elite-iframe-embed {
+  width:100%!important;
+  height:auto!important;
+  min-height:100%!important;
+  overflow-x:hidden!important;
+  overflow-y:auto!important;
+  overscroll-behavior-x:none!important;
+  overscroll-behavior-y:auto!important;
+  touch-action:pan-y;
+}
+html.elite-iframe-context .player-app,
+body.elite-iframe-embed .player-app {
+  height:auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  overflow:visible!important;
+  padding-bottom:max(14px,env(safe-area-inset-bottom))!important;
+}
+html.elite-iframe-context .player-grid,
+body.elite-iframe-embed .player-grid {
+  height:auto!important;
+  min-height:0!important;
+  flex:0 0 auto!important;
+  overflow:visible!important;
+}
+html.elite-iframe-context .stage,
+body.elite-iframe-embed .stage {
+  min-height:0!important;
+  overflow:visible!important;
+}
+html.elite-iframe-context .playlist-list,
+body.elite-iframe-embed .playlist-list {
+  overscroll-behavior-y:auto!important;
+}
+@media(max-width:560px) {
+  html.elite-iframe-context .player-grid,
+  body.elite-iframe-embed .player-grid {
+    flex-direction:column!important;
+  }
+  html.elite-iframe-context .stage,
+  body.elite-iframe-embed .stage {
+    flex:0 0 auto!important;
+    height:auto!important;
+  }
+}
+</style>
 </head>
 <body>
 <main class="player-app" aria-label="Elite photo and video player">
@@ -716,6 +774,79 @@ window.__TEAM_ELITE_MEDIA_READY = (async () => {
   if(window.visualViewport)window.visualViewport.addEventListener('resize',scheduleEmbeddedFit,{passive:true});
   updateAutoButton();shell.style.setProperty('--fit',fitMode);render();scheduleEmbeddedFit();
   if(playlist.length){setStatus('Ready to play.');setupVisibilityObservers();}else setStatus('No media available right now.','error');
+})();
+</script>
+<script id="iframe-scroll-handoff">
+(() => {
+  'use strict';
+  let framed = false;
+  try { framed = window.self !== window.top; } catch (_) { framed = true; }
+  if (!framed) return;
+
+  const messageType = 'elite-player-scroll-handoff-v1';
+  const root = document.scrollingElement || document.documentElement;
+  const clamp = value => Math.max(-120, Math.min(120, Number(value) || 0));
+
+  const installParentRelay = () => {
+    try {
+      const parentWindow = window.parent;
+      const ownFrame = window.frameElement;
+      if (ownFrame) ownFrame.setAttribute('data-elite-player-scroll', 'true');
+      if (parentWindow.location.origin !== window.location.origin) return;
+      if (parentWindow.__elitePlayerScrollRelayInstalled) return;
+      parentWindow.__elitePlayerScrollRelayInstalled = true;
+      parentWindow.addEventListener('message', event => {
+        if (event.data?.type !== messageType) return;
+        const trustedFrame = Array.from(parentWindow.document.querySelectorAll('iframe[data-elite-player-scroll="true"]'))
+          .some(frame => frame.contentWindow === event.source);
+        if (!trustedFrame) return;
+        const delta = clamp(event.data.deltaY);
+        if (delta) parentWindow.scrollBy(0, delta);
+      }, { passive: true });
+    } catch (_) {}
+  };
+
+  const sendToParent = deltaY => {
+    const delta = clamp(deltaY);
+    if (!delta) return;
+    try { window.parent.postMessage({ type: messageType, deltaY: delta }, '*'); } catch (_) {}
+  };
+
+  const canScrollLocally = deltaY => {
+    const maxScroll = Math.max(0, root.scrollHeight - root.clientHeight);
+    if (maxScroll <= 2) return false;
+    return deltaY < 0 ? root.scrollTop > 1 : root.scrollTop < maxScroll - 1;
+  };
+
+  window.addEventListener('wheel', event => {
+    if (!event.deltaY || event.ctrlKey) return;
+    if (canScrollLocally(event.deltaY)) return;
+    sendToParent(event.deltaY);
+  }, { passive: true });
+
+  let touchY = 0;
+  let touchRelayAllowed = false;
+  window.addEventListener('touchstart', event => {
+    if (event.touches.length !== 1) {
+      touchRelayAllowed = false;
+      return;
+    }
+    const target = event.target instanceof Element ? event.target : null;
+    touchRelayAllowed = !target?.closest('button,input,select,textarea,a,[role="slider"]');
+    touchY = event.touches[0].clientY;
+  }, { passive: true });
+
+  window.addEventListener('touchmove', event => {
+    if (!touchRelayAllowed || event.touches.length !== 1) return;
+    const nextY = event.touches[0].clientY;
+    const deltaY = (touchY - nextY) * 1.15;
+    touchY = nextY;
+    if (Math.abs(deltaY) < 1) return;
+    if (canScrollLocally(deltaY)) return;
+    sendToParent(deltaY);
+  }, { passive: true });
+
+  installParentRelay();
 })();
 </script>
 </body>
