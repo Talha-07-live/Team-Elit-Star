@@ -300,6 +300,69 @@ html.elite-iframe-context .photo-skin,html.elite-iframe-context .video-skin{touc
 }
 </style>
 
+
+<style id="compact-mobile-embed-fix">
+@media(max-width:560px){
+  html.elite-iframe-context,
+  html.elite-iframe-context body{
+    height:auto!important;
+    min-height:0!important;
+    overflow:hidden!important;
+  }
+  html.elite-iframe-context .player-app{
+    display:flex!important;
+    flex-direction:column!important;
+    width:100%!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow:hidden!important;
+  }
+  html.elite-iframe-context .player-grid{
+    display:flex!important;
+    flex:0 0 auto!important;
+    flex-direction:column!important;
+    width:100%!important;
+    height:auto!important;
+    min-height:0!important;
+    overflow:hidden!important;
+  }
+  html.elite-iframe-context .stage{
+    display:flex!important;
+    flex:0 0 auto!important;
+    flex-direction:column!important;
+    align-items:center!important;
+    justify-content:flex-start!important;
+    width:100%!important;
+    height:auto!important;
+    min-height:0!important;
+    padding:5px!important;
+    gap:4px!important;
+    overflow:hidden!important;
+  }
+  html.elite-iframe-context .media-shell{
+    flex:0 0 auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    aspect-ratio:16/9!important;
+    margin:0 auto!important;
+  }
+  html.elite-iframe-context .playlist{
+    flex:0 0 62px!important;
+    width:100%!important;
+    height:62px!important;
+    min-height:62px!important;
+    max-height:62px!important;
+  }
+  html.elite-iframe-context .playlist-list{
+    min-height:0!important;
+    height:100%!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+  }
+}
+</style>
+
 </head>
 <body>
 <main class="player-app" aria-label="Elite photo and video player">
@@ -500,7 +563,7 @@ window.__TEAM_ELITE_MEDIA_READY = (async () => {
   }
 
   function fitEmbeddedPlayer(){
-    if(!isEmbedded||!stageIsVisible&&shell.hidden)return;
+    if(!isEmbedded)return;
     const stage=shell.closest('.stage');
     const controlBar=document.querySelector('.control-bar');
     if(!stage)return;
@@ -508,28 +571,39 @@ window.__TEAM_ELITE_MEDIA_READY = (async () => {
     const horizontalPadding=(parseFloat(stageStyle.paddingLeft)||0)+(parseFloat(stageStyle.paddingRight)||0);
     const verticalPadding=(parseFloat(stageStyle.paddingTop)||0)+(parseFloat(stageStyle.paddingBottom)||0);
     const availableWidth=Math.max(1,stage.clientWidth-horizontalPadding);
-    const gap=parseFloat(stageStyle.rowGap||stageStyle.gap)||5;
+    const compact=window.innerWidth<=560||stage.clientWidth<=560;
     const controlsHeight=controlBar&&!controlBar.hidden?controlBar.getBoundingClientRect().height:0;
-    const availableHeight=Math.max(45,stage.clientHeight-verticalPadding-controlsHeight-gap);
+    const gap=parseFloat(stageStyle.rowGap||stageStyle.gap)||4;
+    const availableHeight=Math.max(80,Math.min(window.innerHeight||600,stage.clientHeight)-verticalPadding-controlsHeight-gap);
     let ratio=parseAspectRatio(shell.style.aspectRatio||'16 / 9');
-    if(activePhoto()){
-      const naturalRatio=photoFrame.naturalWidth/photoFrame.naturalHeight;
-      ratio=photoCropMode==='contain'?naturalRatio:availableWidth/availableHeight;
+    let width,height;
+    if(compact){
+      ratio=16/9;
+      const maxPlayerHeight=Math.max(140,Math.min((window.innerHeight||600)*.46,260));
+      width=Math.min(availableWidth,maxPlayerHeight*ratio);
+      height=width/ratio;
+      if(activePhoto()){
+        photoFrame.style.objectFit=photoCropMode;
+        shell.classList.toggle('photo-auto-crop',photoCropMode==='cover');
+        shell.classList.toggle('photo-auto-fit',photoCropMode==='contain');
+      }
+    }else{
+      if(activePhoto()){
+        const naturalRatio=photoFrame.naturalWidth/photoFrame.naturalHeight;
+        ratio=photoCropMode==='contain'?Math.min(16/9,naturalRatio):availableWidth/Math.max(80,availableHeight);
+      }
+      if(!Number.isFinite(ratio)||ratio<=0)ratio=16/9;
+      const maxHeight=Math.max(80,availableHeight);
+      width=Math.min(availableWidth,maxHeight*ratio);
+      height=width/ratio;
     }
-    if(!Number.isFinite(ratio)||ratio<=0)ratio=16/9;
-    const width=Math.max(1,Math.min(availableWidth,availableHeight*ratio));
-    const height=Math.max(1,Math.min(availableHeight,width/ratio));
-    const roundedWidth=Math.round(width),roundedHeight=Math.round(height);
+    const roundedWidth=Math.max(1,Math.round(width));
+    const roundedHeight=Math.max(1,Math.round(height));
     shell.style.width=roundedWidth+'px';
     shell.style.height=roundedHeight+'px';
     shell.style.maxHeight='none';
     shell.style.aspectRatio=String(ratio);
     shell.style.marginInline='auto';
-    if(activePhoto()){
-      photoFrame.style.objectFit=photoCropMode;
-      shell.classList.toggle('photo-auto-crop',photoCropMode==='cover');
-      shell.classList.toggle('photo-auto-fit',photoCropMode==='contain');
-    }
   }
 
   function scheduleEmbeddedFit(){
