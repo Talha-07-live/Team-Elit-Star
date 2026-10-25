@@ -31,210 +31,7 @@
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
 .media-shell:fullscreen{width:100vw;height:100vh;max-height:none;min-height:0;aspect-ratio:auto;border:0;border-radius:0;background:#000}.media-shell:fullscreen iframe,.media-shell:fullscreen video,.media-shell:fullscreen>img{width:100%;height:100%;object-fit:contain}.media-shell:-webkit-full-screen{width:100vw;height:100vh;max-height:none;aspect-ratio:auto;border:0;border-radius:0;background:#000}.media-shell:fullscreen .wistia-host,.media-shell:-webkit-full-screen .wistia-host{width:100vw;height:100vh}.media-shell:fullscreen .wistia-host wistia-player,.media-shell:-webkit-full-screen .wistia-host wistia-player{width:100%;height:100%}
 
-html.elite-iframe-context,
-html.elite-iframe-context body {
-  width:100%;
-  height:100%;
-  min-width:0;
-  min-height:0;
-  margin:0;
-  padding:0!important;
-  overflow:hidden!important;
-  overscroll-behavior:none;
-}
-html.elite-iframe-context body {
-  background:#08070c;
-}
-html.elite-iframe-context .player-app {
-  display:flex;
-  flex-direction:column;
-  width:100%;
-  height:100vh;
-  height:100dvh;
-  min-width:0;
-  min-height:0;
-  max-width:none;
-  margin:0;
-  overflow:hidden;
-  border:0;
-  border-radius:0;
-  box-shadow:none;
-}
-html.elite-iframe-context .player-top,
-html.elite-iframe-context .section-eyebrow,
-html.elite-iframe-context .now-playing,
-html.elite-iframe-context .status {
-  display:none!important;
-}
-html.elite-iframe-context .player-grid {
-  display:flex;
-  flex:1 1 auto;
-  flex-direction:column;
-  width:100%;
-  min-width:0;
-  min-height:0;
-  overflow:hidden;
-}
-html.elite-iframe-context .stage {
-  display:flex;
-  flex:1 1 0;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  gap:7px;
-  width:100%;
-  height:auto;
-  min-width:0;
-  min-height:0;
-  overflow:hidden;
-  padding:7px;
-}
-html.elite-iframe-context .media-shell {
-  flex:0 0 auto;
-  width:100%;
-  max-width:100%;
-  min-width:0;
-  min-height:0;
-  max-height:none;
-  margin:0 auto;
-  transition:none;
-}
-html.elite-iframe-context .media-shell iframe,
-html.elite-iframe-context .media-shell video,
-html.elite-iframe-context .media-shell>img,
-html.elite-iframe-context .media-shell .wistia-host,
-html.elite-iframe-context .media-shell .wistia-host wistia-player {
-  max-width:100%;
-  max-height:100%;
-}
-html.elite-iframe-context .control-bar {
-  display:flex;
-  flex:0 0 auto;
-  justify-content:center;
-  width:100%;
-  max-width:100%;
-  min-width:0;
-  gap:5px;
-  padding:0;
-  border:0;
-}
-html.elite-iframe-context .control-bar .btn {
-  min-width:0;
-  min-height:29px;
-  padding:5px 8px;
-  font-size:.59rem;
-  letter-spacing:0;
-}
-html.elite-iframe-context .control-spacer {
-  display:none;
-}
-html.elite-iframe-context .playlist {
-  display:flex;
-  flex:0 0 66px;
-  flex-direction:column;
-  width:100%;
-  height:66px;
-  min-width:0;
-  min-height:66px;
-  max-height:66px;
-  overflow:hidden;
-  border:0;
-  border-top:1px solid var(--line);
-}
-html.elite-iframe-context .playlist-head {
-  display:none!important;
-}
-html.elite-iframe-context .playlist-list {
-  display:flex;
-  flex:1 1 auto;
-  flex-direction:row;
-  align-items:stretch;
-  gap:6px;
-  width:100%;
-  height:100%;
-  min-height:0;
-  max-height:none;
-  padding:6px;
-  overflow-x:auto;
-  overflow-y:hidden;
-  overscroll-behavior-x:contain;
-  scrollbar-width:none;
-}
-html.elite-iframe-context .playlist-list::-webkit-scrollbar {
-  display:none;
-}
-html.elite-iframe-context .playlist-item {
-  display:grid;
-  flex:0 0 165px;
-  grid-template-columns:66px minmax(0,1fr);
-  gap:7px;
-  width:165px;
-  min-width:0;
-  height:100%;
-  min-height:0;
-  padding:5px;
-}
-html.elite-iframe-context .playlist-item .thumb {
-  width:100%;
-  height:100%;
-  min-width:0;
-  aspect-ratio:16/9;
-}
-html.elite-iframe-context .playlist-item .item-copy {
-  min-width:0;
-  overflow:hidden;
-}
-html.elite-iframe-context .playlist-item .item-copy strong {
-  font-size:.66rem;
-  line-height:1.25;
-}
-html.elite-iframe-context .playlist-item .item-copy small {
-  margin-top:3px;
-  font-size:.55rem;
-}
-html.elite-iframe-context .playlist-item .item-type {
-  margin-top:3px;
-  font-size:.49rem;
-}
-html.elite-iframe-context .photo-skin,
-html.elite-iframe-context .video-skin {
-  touch-action:manipulation;
-}
-@media(max-width:420px) {
-  html.elite-iframe-context .stage {
-    padding:5px;
-    gap:5px;
-  }
-  html.elite-iframe-context .control-bar {
-    gap:4px;
-  }
-  html.elite-iframe-context .control-bar .btn {
-    min-height:27px;
-    padding:4px 6px;
-    font-size:.55rem;
-  }
-  html.elite-iframe-context .playlist {
-    flex-basis:59px;
-    height:59px;
-    min-height:59px;
-    max-height:59px;
-  }
-  html.elite-iframe-context .playlist-list {
-    padding:5px;
-    gap:5px;
-  }
-  html.elite-iframe-context .playlist-item {
-    flex-basis:146px;
-    width:146px;
-    grid-template-columns:56px minmax(0,1fr);
-    gap:5px;
-    padding:4px;
-  }
-}
-
 </style>
-<script>try{if(window.self!==window.top)document.documentElement.classList.add('elite-iframe-context')}catch(_){document.documentElement.classList.add('elite-iframe-context')}</script>
-
 <style>
 .elite-watermark-cover{position:absolute;right:clamp(8px,1.5%,20px);bottom:clamp(8px,1.6%,18px);z-index:5;width:clamp(112px,12%,156px);height:auto;aspect-ratio:156/38;display:block;overflow:hidden;border-radius:4px;pointer-events:none;user-select:none;-webkit-user-select:none;filter:drop-shadow(0 2px 5px rgba(0,0,0,.22))}.elite-watermark-cover[hidden]{display:none!important}.elite-watermark-cover svg{display:block;width:100%;height:100%}@media(max-width:560px){.elite-watermark-cover{right:8px;bottom:8px;width:clamp(106px,25%,132px)}}.media-shell:fullscreen .elite-watermark-cover,.media-shell:-webkit-full-screen .elite-watermark-cover{right:clamp(12px,1.5vw,24px);bottom:clamp(12px,1.5vh,24px);width:clamp(130px,11vw,172px)}
 </style>
@@ -457,6 +254,13 @@ html.elite-iframe-context .video-skin {
   }
 }
 </style>
+
+<style>
+html,body{width:100%;min-width:0;min-height:100%;overflow-x:hidden;overflow-y:auto;overscroll-behavior-y:auto;-webkit-overflow-scrolling:touch}
+.player-app{min-width:0;max-width:100%}
+.player-grid,.stage,.playlist{min-width:0}
+@media(max-width:560px){body{padding:0}.player-app{min-height:100svh;min-height:100dvh}.media-shell{width:100%;max-width:100%;aspect-ratio:16/9;min-height:0;max-height:72svh}.playlist-list{max-height:380px;overflow-x:hidden;overflow-y:auto;touch-action:pan-y}.playlist-item{min-width:0}.item-copy{min-width:0;overflow-wrap:anywhere}.item-copy strong{overflow-wrap:anywhere;word-break:normal}.item-copy small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}
+</style>
 </head>
 <body>
 <main class="player-app" aria-label="Elite photo and video player">
@@ -547,7 +351,7 @@ window.__TEAM_ELITE_MEDIA_READY = (async () => {
   const photoSource=Array.isArray(window.TEAM_ELITE_MEDIA?.photos)?window.TEAM_ELITE_MEDIA.photos:[];
   const videoSource=Array.isArray(window.TEAM_ELITE_MEDIA?.videos)?window.TEAM_ELITE_MEDIA.videos:[];
   const isEmbedded=(()=>{try{return window.self!==window.top}catch(_){return true}})();
-  if(isEmbedded){document.documentElement.classList.add('elite-iframe-context');document.body.classList.add('elite-iframe-embed');}
+  
   const configured=[...photoSource.map(item=>normalize(item,'photo')),...videoSource.map(item=>normalize(item,'video'))].filter(Boolean);
   const PHOTO_DURATION=6500;
   const MOTION_DELAY=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches?0:120;
