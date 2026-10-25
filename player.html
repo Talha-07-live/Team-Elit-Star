@@ -421,6 +421,154 @@ body.elite-iframe-embed .playlist-list {
   }
 }
 </style>
+
+<style id="mobile-iframe-fit-only">
+@media(max-width:560px){
+  html.elite-iframe-context,
+  html.elite-iframe-context body{
+    width:100%!important;
+    height:auto!important;
+    min-height:100%!important;
+    margin:0!important;
+    padding:0!important;
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
+    overscroll-behavior-x:none!important;
+    overscroll-behavior-y:auto!important;
+  }
+  html.elite-iframe-context .player-app{
+    display:flex!important;
+    flex-direction:column!important;
+    width:100%!important;
+    height:auto!important;
+    min-height:0!important;
+    max-height:none!important;
+    margin:0!important;
+    overflow:visible!important;
+    padding-bottom:max(12px,env(safe-area-inset-bottom))!important;
+  }
+  html.elite-iframe-context .player-grid{
+    display:flex!important;
+    flex:0 0 auto!important;
+    flex-direction:column!important;
+    width:100%!important;
+    height:auto!important;
+    min-height:0!important;
+    overflow:visible!important;
+  }
+  html.elite-iframe-context .stage{
+    display:flex!important;
+    flex:0 0 auto!important;
+    flex-direction:column!important;
+    align-items:stretch!important;
+    justify-content:flex-start!important;
+    width:100%!important;
+    height:auto!important;
+    min-width:0!important;
+    min-height:0!important;
+    padding:5px!important;
+    gap:5px!important;
+    overflow:visible!important;
+  }
+  html.elite-iframe-context .media-shell{
+    display:block!important;
+    flex:0 0 auto!important;
+    width:100%!important;
+    height:auto!important;
+    min-width:0!important;
+    min-height:0!important;
+    max-width:100%!important;
+    max-height:none!important;
+    aspect-ratio:16/9!important;
+    margin:0 auto!important;
+  }
+  html.elite-iframe-context .media-shell iframe,
+  html.elite-iframe-context .media-shell video,
+  html.elite-iframe-context .media-shell>img,
+  html.elite-iframe-context .media-shell .wistia-host,
+  html.elite-iframe-context .media-shell .wistia-host wistia-player{
+    width:100%!important;
+    height:100%!important;
+    max-width:100%!important;
+    max-height:100%!important;
+  }
+  html.elite-iframe-context .media-shell>img{
+    object-fit:var(--fit,contain);
+    object-position:center;
+  }
+  html.elite-iframe-context .control-bar{
+    display:flex!important;
+    flex:0 0 auto!important;
+    flex-wrap:wrap!important;
+    justify-content:center!important;
+    width:100%!important;
+    min-width:0!important;
+    gap:4px!important;
+    padding:0!important;
+  }
+  html.elite-iframe-context .control-bar .btn{
+    flex:0 1 auto!important;
+    min-width:0!important;
+    min-height:27px!important;
+    padding:4px 6px!important;
+    font-size:clamp(8px,2.3vw,10px)!important;
+    white-space:nowrap;
+  }
+  html.elite-iframe-context .playlist{
+    display:flex!important;
+    flex:0 0 62px!important;
+    width:100%!important;
+    height:62px!important;
+    min-width:0!important;
+    min-height:62px!important;
+    max-height:62px!important;
+    overflow:hidden!important;
+  }
+  html.elite-iframe-context .playlist-list{
+    display:flex!important;
+    flex:1 1 auto!important;
+    flex-direction:row!important;
+    width:100%!important;
+    height:100%!important;
+    min-height:0!important;
+    max-height:none!important;
+    overflow-x:auto!important;
+    overflow-y:hidden!important;
+    overscroll-behavior-x:contain!important;
+    padding:4px!important;
+    gap:5px!important;
+  }
+  html.elite-iframe-context .playlist-item{
+    flex:0 0 clamp(158px,53vw,215px)!important;
+    width:clamp(158px,53vw,215px)!important;
+    min-width:0!important;
+    min-height:0!important;
+    height:100%!important;
+    max-height:100%!important;
+    grid-template-columns:minmax(50px,32%) minmax(0,1fr)!important;
+    gap:5px!important;
+    padding:4px!important;
+    overflow:hidden!important;
+  }
+  html.elite-iframe-context .playlist-item .item-copy{
+    min-width:0!important;
+    max-width:100%!important;
+    min-height:0!important;
+    height:100%!important;
+    overflow:hidden!important;
+  }
+  html.elite-iframe-context .playlist-item .item-copy strong{
+    width:100%!important;
+    max-width:100%!important;
+    font-size:clamp(10px,2.7vw,12px)!important;
+    line-height:1.15!important;
+    overflow-wrap:anywhere;
+  }
+  html.elite-iframe-context .playlist-item .item-copy small{font-size:9px!important}
+  html.elite-iframe-context .playlist-item .item-type{font-size:8px!important}
+}
+</style>
+
 </head>
 <body>
 <main class="player-app" aria-label="Elite photo and video player">
