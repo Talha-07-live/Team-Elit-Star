@@ -932,15 +932,27 @@ window.__TEAM_ELITE_MEDIA_READY = (async () => {
   if (!framed) return;
 
   const messageType = 'elite-player-scroll-handoff-v1';
-  const root = document.scrollingElement || document.documentElement;
-  const clamp = value => Math.max(-120, Math.min(120, Number(value) || 0));
+  const clamp = value => Math.max(-160, Math.min(160, Number(value) || 0));
+  const interactiveSelector = 'button,input,select,textarea,a,[role="slider"],.skin-seek,.skin-volume';
+  const isInteractive = target => target instanceof Element && Boolean(target.closest(interactiveSelector));
+  const isHorizontalList = target => target instanceof Element && Boolean(target.closest('.playlist-list'));
+  let ownFrame = null;
+
+  try { ownFrame = window.frameElement; } catch (_) {}
+
+  const sendToParent = deltaY => {
+    const delta = clamp(deltaY);
+    if (!delta) return;
+    try {
+      window.parent.postMessage({ type: messageType, deltaY: delta }, '*');
+    } catch (_) {}
+  };
 
   const installParentRelay = () => {
     try {
       const parentWindow = window.parent;
-      const ownFrame = window.frameElement;
-      if (ownFrame) ownFrame.setAttribute('data-elite-player-scroll', 'true');
-      if (parentWindow.location.origin !== window.location.origin) return;
+      if (!ownFrame || parentWindow.location.origin !== window.location.origin) return;
+      ownFrame.setAttribute('data-elite-player-scroll', 'true');
       if (parentWindow.__elitePlayerScrollRelayInstalled) return;
       parentWindow.__elitePlayerScrollRelayInstalled = true;
       parentWindow.addEventListener('message', event => {
@@ -949,50 +961,57 @@ window.__TEAM_ELITE_MEDIA_READY = (async () => {
           .some(frame => frame.contentWindow === event.source);
         if (!trustedFrame) return;
         const delta = clamp(event.data.deltaY);
-        if (delta) parentWindow.scrollBy(0, delta);
-      }, { passive: true });
+        if (delta) parentWindow.scrollBy({ top: delta, left: 0, behavior: 'auto' });
+      });
     } catch (_) {}
   };
 
-  const sendToParent = deltaY => {
-    const delta = clamp(deltaY);
-    if (!delta) return;
-    try { window.parent.postMessage({ type: messageType, deltaY: delta }, '*'); } catch (_) {}
-  };
-
-  const canScrollLocally = deltaY => {
-    const maxScroll = Math.max(0, root.scrollHeight - root.clientHeight);
-    if (maxScroll <= 2) return false;
-    return deltaY < 0 ? root.scrollTop > 1 : root.scrollTop < maxScroll - 1;
-  };
-
   window.addEventListener('wheel', event => {
-    if (!event.deltaY || event.ctrlKey) return;
-    if (canScrollLocally(event.deltaY)) return;
+    if (event.ctrlKey || !event.deltaY || isInteractive(event.target)) return;
+    if (isHorizontalList(event.target) && Math.abs(event.deltaX) > Math.abs(event.deltaY)) return;
+    if (event.cancelable) event.preventDefault();
     sendToParent(event.deltaY);
-  }, { passive: true });
+  }, { passive: false, capture: true });
 
+  let touchX = 0;
   let touchY = 0;
-  let touchRelayAllowed = false;
+  let touchCanRelay = false;
+  let touchStartedInPlaylist = false;
+
   window.addEventListener('touchstart', event => {
     if (event.touches.length !== 1) {
-      touchRelayAllowed = false;
+      touchCanRelay = false;
+      touchStartedInPlaylist = false;
       return;
     }
     const target = event.target instanceof Element ? event.target : null;
-    touchRelayAllowed = !target?.closest('button,input,select,textarea,a,[role="slider"]');
+    touchCanRelay = !isInteractive(target);
+    touchStartedInPlaylist = isHorizontalList(target);
+    touchX = event.touches[0].clientX;
     touchY = event.touches[0].clientY;
-  }, { passive: true });
+  }, { passive: true, capture: true });
 
   window.addEventListener('touchmove', event => {
-    if (!touchRelayAllowed || event.touches.length !== 1) return;
-    const nextY = event.touches[0].clientY;
-    const deltaY = (touchY - nextY) * 1.15;
-    touchY = nextY;
-    if (Math.abs(deltaY) < 1) return;
-    if (canScrollLocally(deltaY)) return;
-    sendToParent(deltaY);
-  }, { passive: true });
+    if (!touchCanRelay || event.touches.length !== 1) return;
+    const touch = event.touches[0];
+    const deltaX = touchX - touch.clientX;
+    const deltaY = touchY - touch.clientY;
+    touchX = touch.clientX;
+    touchY = touch.clientY;
+    if (Math.abs(deltaY) < 2 || Math.abs(deltaY) < Math.abs(deltaX) * 1.15) return;
+    if (touchStartedInPlaylist && Math.abs(deltaX) > 8) return;
+    if (event.cancelable) event.preventDefault();
+    sendToParent(deltaY * 1.15);
+  }, { passive: false, capture: true });
+
+  window.addEventListener('touchend', () => {
+    touchCanRelay = false;
+    touchStartedInPlaylist = false;
+  }, { passive: true, capture: true });
+  window.addEventListener('touchcancel', () => {
+    touchCanRelay = false;
+    touchStartedInPlaylist = false;
+  }, { passive: true, capture: true });
 
   installParentRelay();
 })();
