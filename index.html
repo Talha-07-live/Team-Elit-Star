@@ -420,7 +420,7 @@ body.glow-off #spotlight,body.glow-off #sparkles{display:none}
 
 </style>
 <style id="elite-events-player-style">
-  /* Event video player */
+  
   #events{scroll-margin-top:92px}
   .event-section{padding-top:clamp(70px,10vh,128px)}
   .event-app{position:relative;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:linear-gradient(145deg,rgba(27,26,34,.94),rgba(8,7,12,.98) 78%);box-shadow:0 30px 90px -54px #000,0 0 38px -26px var(--glow)}
@@ -1029,7 +1029,7 @@ body.weather-off #weatherFx{display:none!important;}
   @media(prefers-reduced-motion:reduce){.hero-star-fallback::before{animation:none}}
 </style>
 <style id="inline-event-player-style">
-/* The standalone player is mounted directly inside the Events section. */
+
 .event-player-inline{width:100%;min-width:0;color:var(--text);font-family:var(--sans);line-height:1.5;-webkit-font-smoothing:antialiased}
 .event-player-inline button,.event-player-inline input,.event-player-inline select{font:inherit}
 .event-player-inline .player-app{width:100%;max-width:none;margin:0}
@@ -1047,7 +1047,7 @@ body.weather-off #weatherFx{display:none!important;}
 
 .event-player-inline .player-app{min-width:0;max-width:100%}.event-player-inline .player-grid,.event-player-inline .stage,.event-player-inline .playlist{min-width:0}
 @media(max-width:560px){.event-player-inline .player-app{min-height:100svh;min-height:100dvh}.event-player-inline .media-shell{width:100%;max-width:100%;aspect-ratio:16/9;min-height:0;max-height:72svh}.event-player-inline .playlist-list{max-height:380px;overflow-x:hidden;overflow-y:auto;touch-action:pan-y}.event-player-inline .playlist-item{min-width:0}.event-player-inline .item-copy{min-width:0;overflow-wrap:anywhere}.event-player-inline .item-copy strong{overflow-wrap:anywhere;word-break:normal}.event-player-inline .item-copy small{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}}
-</style>
+.event-player-inline .open-player-link{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:8px 12px;border:1px solid rgba(232,195,107,.45);border-radius:8px;background:rgba(232,195,107,.08);color:var(--gold-bright);font:700 .67rem var(--display);letter-spacing:.035em;text-decoration:none;white-space:nowrap;transition:background .18s ease,border-color .18s ease,transform .18s ease}.event-player-inline .open-player-link:hover{border-color:var(--gold);background:rgba(232,195,107,.16);transform:translateY(-1px)}@media(max-width:560px){.event-player-inline .open-player-link{min-height:34px;padding:7px 9px;font-size:.59rem}}</style>
 </head>
 <body>
  
@@ -1174,6 +1174,7 @@ body.weather-off #weatherFx{display:none!important;}
 <div class="player-app" data-inline-player="true" aria-label="Elite photo and video player">
   <header class="player-top">
     <div class="brand"><span class="brand-mark" aria-hidden="true">▶</span><div class="brand-copy"><strong>Photo &amp; Video Player</strong><small id="playerCount">MEDIA LIBRARY</small></div></div>
+    <a class="open-player-link" href="/player" target="_blank" rel="noopener noreferrer" aria-label="Open the standalone player">Open Player ↗</a>
   </header>
   <div class="player-grid">
     <section class="stage" aria-label="Media player">
