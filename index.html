@@ -4375,9 +4375,7 @@ if(!REDUCE){
   const resetBtn=document.getElementById('eventResetPlaylist');
   if(!listEl||!frame)return;
 
-  /* Add permanent starter links here when you want videos included in the page source. */
   window.TEAM_ELITE_EVENT_PLAYLIST=window.TEAM_ELITE_EVENT_PLAYLIST||[
-    /* {title:'Annual Team Event',meta:'Team Elite Star · YouTube',url:'https://youtu.be/YOUR_VIDEO_ID'} */
   ];
   const configured=Array.isArray(window.TEAM_ELITE_EVENT_PLAYLIST)?window.TEAM_ELITE_EVENT_PLAYLIST.map(normalize).filter(Boolean):[];
   const storageKey='team-elite-event-playlist-v1';
