@@ -7,7 +7,7 @@ window.TEAM_ELITE_MEDIA = {
     { title: 'Event', type: 'photo', url: 'https://s15.gifyu.com/images/bWx81.jpg' }
   ],
   videos: [
-    { title: 'Our Picnic Day Memory's', type: 'video', url: 'https://fast.wistia.com/embed/sup7r2q1n3.js' },
+    { title: 'Our Picnic Day Memory\'s', type: 'video', url: 'https://fast.wistia.com/embed/sup7r2q1n3.js' },
     { title: 'Annual Team Event Video', type: 'video', url: 'https://fast.wistia.com/embed/6ne5vy3ijp.js' }
   ]
 };
